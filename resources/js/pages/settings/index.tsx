@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { useForm, usePage, router } from '@inertiajs/react';
 import { PageProps, User as UserType } from '@/types';
 import {
@@ -425,47 +426,49 @@ export default function SettingsIndex({
                             {/* Require source total toggle */}
                             <div className="flex items-start justify-between p-4 rounded-xl bg-zinc-950/70 border border-zinc-800 gap-4">
                                 <div className="space-y-1">
-                                    <div className="text-sm font-semibold text-zinc-200">
+                                    <label
+                                        htmlFor="require_source_total"
+                                        className="text-sm font-semibold text-zinc-200 cursor-pointer block"
+                                    >
                                         Require Physical Source-Total Reconciliation
-                                    </div>
+                                    </label>
                                     <p className="text-xs text-zinc-400">
                                         When enabled, cashier must enter old POS / paper slip total. If calculated total does not match with $0.00 variance, saving and finalization is blocked.
                                     </p>
                                 </div>
-                                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                                    <input
-                                        type="checkbox"
-                                        checked={entryForm.data.require_source_total}
-                                        onChange={(e) =>
-                                            entryForm.setData('require_source_total', e.target.checked)
-                                        }
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:width-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                </label>
+                                <Switch
+                                    id="require_source_total"
+                                    name="require_source_total"
+                                    checked={entryForm.data.require_source_total}
+                                    onCheckedChange={(checked) =>
+                                        entryForm.setData('require_source_total', checked)
+                                    }
+                                    ariaLabel="Require Physical Source-Total Reconciliation"
+                                />
                             </div>
 
                             {/* Show sale time toggle */}
                             <div className="flex items-start justify-between p-4 rounded-xl bg-zinc-950/70 border border-zinc-800 gap-4">
                                 <div className="space-y-1">
-                                    <div className="text-sm font-semibold text-zinc-200">
+                                    <label
+                                        htmlFor="show_event_time"
+                                        className="text-sm font-semibold text-zinc-200 cursor-pointer block"
+                                    >
                                         Record Event Sale Time
-                                    </div>
+                                    </label>
                                     <p className="text-xs text-zinc-400">
                                         Includes exact time picker on high-speed entry tray to establish chronological sorting for sequence stamping.
                                     </p>
                                 </div>
-                                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                                    <input
-                                        type="checkbox"
-                                        checked={entryForm.data.show_event_time}
-                                        onChange={(e) =>
-                                            entryForm.setData('show_event_time', e.target.checked)
-                                        }
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:width-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                </label>
+                                <Switch
+                                    id="show_event_time"
+                                    name="show_event_time"
+                                    checked={entryForm.data.show_event_time}
+                                    onCheckedChange={(checked) =>
+                                        entryForm.setData('show_event_time', checked)
+                                    }
+                                    ariaLabel="Record Event Sale Time"
+                                />
                             </div>
 
                             <div className="flex justify-end pt-2">
