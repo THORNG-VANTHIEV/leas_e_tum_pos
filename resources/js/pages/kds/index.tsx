@@ -22,6 +22,7 @@ import {
     Loader2,
     Scale,
     Sparkles,
+    Receipt,
 } from 'lucide-react';
 
 interface KdsItem {
@@ -121,14 +122,50 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
         }
     };
 
-    const getUrgencyClass = (elapsedMinutes: number) => {
+    const getUrgencyClass = (elapsedMinutes: number, status: string) => {
+        if (status === 'served') {
+            return 'kds-card-normal border-zinc-800/80 bg-zinc-900/60 opacity-80';
+        }
         if (elapsedMinutes >= 20) {
-            return 'kds-card-urgent border-rose-500/50 bg-rose-500/5 ring-1 ring-rose-500/30 shadow-lg shadow-rose-950/20';
+            return 'kds-card-urgent border-rose-500/50 bg-zinc-900/90 ring-1 ring-rose-500/30 shadow-lg shadow-rose-950/20';
         }
         if (elapsedMinutes >= 10) {
-            return 'kds-card-warning border-amber-500/40 bg-amber-500/5 ring-1 ring-amber-500/20 shadow-md shadow-amber-950/15';
+            return 'kds-card-warning border-amber-500/50 bg-zinc-900/90 ring-1 ring-amber-500/20 shadow-md shadow-amber-950/15';
         }
-        return 'kds-card-normal border-zinc-800/80 bg-zinc-900/60 hover:border-zinc-700/80 shadow-md shadow-black/20';
+        return 'kds-card-normal border-zinc-800/80 bg-zinc-900/70 hover:border-zinc-700 shadow-lg shadow-black/20';
+    };
+
+    const getStatusBadge = (status: 'pending' | 'cooking' | 'ready' | 'served') => {
+        switch (status) {
+            case 'pending':
+                return (
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 font-semibold flex items-center gap-1 shrink-0">
+                        <Flame className="w-3 h-3 text-rose-500" />
+                        <span>រង់ចាំ</span>
+                    </span>
+                );
+            case 'cooking':
+                return (
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30 font-semibold flex items-center gap-1 shrink-0">
+                        <UtensilsCrossed className="w-3 h-3 text-amber-500" />
+                        <span>កំពុងធ្វើ</span>
+                    </span>
+                );
+            case 'ready':
+                return (
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30 font-semibold flex items-center gap-1 shrink-0">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                        <span>ឆ្អិនរួចរាល់</span>
+                    </span>
+                );
+            case 'served':
+                return (
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30 font-semibold flex items-center gap-1 shrink-0">
+                        <Coffee className="w-3 h-3 text-blue-500" />
+                        <span>លើកជូនរួច</span>
+                    </span>
+                );
+        }
     };
 
     const getTimerBadge = (elapsedMinutes: number) => {
@@ -163,44 +200,41 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
         <AppLayout title="Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ">
             <Head title="Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ" />
 
-            <div className="space-y-6 pb-16">
-                {/* Fixed / Sticky Header Synchronized with Catalog & Dashboard */}
-                <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
-                    {/* Header Row */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                                    <span className="p-2.5 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-2xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
-                                        <ChefHat className="w-5 h-5 stroke-[2.5]" />
-                                    </span>
-                                    <span>Kitchen Display (KDS)</span>
-                                </h1>
-                                <Badge variant="amber" className="text-xs">
-                                    ផ្ទាំងផ្ទះបាយ
-                                </Badge>
-                                {totalActiveOrders > 0 && (
-                                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                                        {totalActiveOrders} Live
-                                    </span>
-                                )}
+            <div className="space-y-6 pb-12">
+                {/* Fixed / Sticky Header Synchronized with Floor & Tables Style */}
+                <div className="sticky top-0 z-30 -mx-4 -mt-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3.5 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0">
+                                <ChefHat className="w-5 h-5 stroke-[2.5]" />
                             </div>
-                            <p className="text-xs text-zinc-400 mt-1">
-                                គ្រប់គ្រងលំដាប់លំហូរចម្អិនម្ហូប និងជូនភ្ញៀវតាមតុក្នុងពេលវេលាពិត • Real-Time Kitchen Workflow & Dispatch
-                            </p>
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
+                                    Kitchen Display (KDS)
+                                    <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                                        ផ្ទាំងផ្ទះបាយ
+                                    </span>
+                                    {totalActiveOrders > 0 && (
+                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                                            {totalActiveOrders} Live
+                                        </span>
+                                    )}
+                                </h1>
+                                <p className="text-xs text-zinc-400">
+                                    គ្រប់គ្រងលំដាប់លំហូរចម្អិនម្ហូប និងជូនភ្ញៀវតាមតុក្នុងពេលវេលាពិត
+                                </p>
+                            </div>
                         </div>
 
                         {/* Top Utility Controls */}
                         <div className="flex items-center gap-2">
-                            <Button
-                                variant={soundEnabled ? 'secondary' : 'ghost'}
-                                size="sm"
+                            <button
                                 onClick={() => setSoundEnabled(!soundEnabled)}
-                                className={`gap-1.5 cursor-pointer text-xs rounded-xl ${
+                                className={`px-3 py-2 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition-all cursor-pointer ${
                                     soundEnabled
-                                        ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
-                                        : 'text-zinc-400'
+                                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                                        : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-zinc-200'
                                 }`}
                                 title="សំឡេងប្រាប់ដំណឹង (Sound Alert)"
                             >
@@ -215,239 +249,171 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                         <span>សំឡេង បិទ</span>
                                     </>
                                 )}
-                            </Button>
+                            </button>
 
-                            <Button
-                                variant="secondary"
-                                size="sm"
+                            <button
                                 onClick={() => router.reload()}
-                                className="gap-1.5 cursor-pointer text-xs rounded-xl"
+                                className="px-3 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-850 flex items-center gap-1.5 transition-all cursor-pointer"
                                 title="ផ្ទុកឡើងវិញ (Reload)"
                             >
                                 <RefreshCw className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                                 <span>ផ្ទុកឡើងវិញ</span>
-                            </Button>
+                            </button>
 
-                            <Button
-                                variant="secondary"
-                                size="sm"
+                            <button
                                 onClick={toggleFullscreen}
-                                className="p-2 cursor-pointer rounded-xl"
+                                className="p-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-850 flex items-center transition-all cursor-pointer"
                                 title="ពង្រីកពេញអេក្រង់ (Fullscreen)"
                             >
                                 <Maximize2 className="w-4 h-4 text-zinc-300" />
-                            </Button>
+                            </button>
                         </div>
                     </div>
 
-                    {/* Unified Filter Tabs Switcher */}
-                    <div className="flex items-center gap-1.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl w-fit overflow-x-auto max-w-full scrollbar-none shadow-xs">
-                        <button
-                            type="button"
+                    {/* KPI Metrics Summary Strip (Matches Floor & Tables) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mt-4">
+                        <div
                             onClick={() => handleFilterChange('active')}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                                 filter === 'active'
-                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                                    ? 'bg-zinc-900 border-amber-500/50 ring-1 ring-amber-500/30 shadow-xs'
+                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                            <span>កំពុងដំណើរការទាំងអស់</span>
-                            <span
-                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                    filter === 'active'
-                                        ? 'bg-zinc-950/20 text-zinc-950'
-                                        : 'bg-zinc-800 text-zinc-300 border border-zinc-700/60'
-                                }`}
-                            >
-                                {totalActiveOrders}
+                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
+                                <ChefHat className="w-3.5 h-3.5" /> កំពុងដំណើរការ (Active)
                             </span>
-                        </button>
+                            <p className="text-xl font-bold text-amber-300 mt-1">
+                                {totalActiveOrders}{' '}
+                                <span className="text-xs text-zinc-500 font-normal">សំបុត្រ</span>
+                            </p>
+                        </div>
 
-                        <button
-                            type="button"
+                        <div
                             onClick={() => handleFilterChange('pending')}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                                 filter === 'pending'
-                                    ? 'bg-rose-600 text-white font-bold shadow-md shadow-rose-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                                    ? 'bg-zinc-900 border-rose-500/50 ring-1 ring-rose-500/30 shadow-xs'
+                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <Flame className={`w-3.5 h-3.5 shrink-0 ${filter === 'pending' ? 'text-white' : 'text-rose-400'}`} />
-                            <span>រង់ចាំចម្អិន</span>
-                            <span
-                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                    filter === 'pending'
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
-                                }`}
-                            >
-                                {counts.pending}
+                            <span className="text-[11px] text-rose-400 flex items-center gap-1.5 font-medium">
+                                <Flame className="w-3.5 h-3.5" /> រង់ចាំចម្អិន (Pending)
                             </span>
-                        </button>
+                            <p className="text-xl font-bold text-rose-400 mt-1">
+                                {counts.pending}{' '}
+                                <span className="text-xs text-zinc-500 font-normal">បន្ទាន់</span>
+                            </p>
+                        </div>
 
-                        <button
-                            type="button"
+                        <div
                             onClick={() => handleFilterChange('cooking')}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                                 filter === 'cooking'
-                                    ? 'bg-amber-600 text-white font-bold shadow-md shadow-amber-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                                    ? 'bg-zinc-900 border-amber-500/50 ring-1 ring-amber-500/30 shadow-xs'
+                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <UtensilsCrossed className={`w-3.5 h-3.5 shrink-0 ${filter === 'cooking' ? 'text-white' : 'text-amber-400'}`} />
-                            <span>កំពុងចម្អិន</span>
-                            <span
-                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                    filter === 'cooking'
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                                }`}
-                            >
-                                {counts.cooking}
+                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
+                                <UtensilsCrossed className="w-3.5 h-3.5" /> កំពុងចម្អិន (Cooking)
                             </span>
-                        </button>
+                            <p className="text-xl font-bold text-amber-300 mt-1">
+                                {counts.cooking}{' '}
+                                <span className="text-xs text-zinc-500 font-normal">លើចង្ក្រាន</span>
+                            </p>
+                        </div>
 
-                        <button
-                            type="button"
+                        <div
                             onClick={() => handleFilterChange('ready')}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                                 filter === 'ready'
-                                    ? 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                                    ? 'bg-zinc-900 border-emerald-500/50 ring-1 ring-emerald-500/30 shadow-xs'
+                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${filter === 'ready' ? 'text-white' : 'text-emerald-400'}`} />
-                            <span>ឆ្អិនរួចរាល់ (រង់ចាំលើក)</span>
-                            <span
-                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                    filter === 'ready'
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                                }`}
-                            >
-                                {counts.ready}
+                            <span className="text-[11px] text-emerald-400 flex items-center gap-1.5 font-medium">
+                                <CheckCircle2 className="w-3.5 h-3.5" /> ឆ្អិនរួចរាល់ (Ready)
                             </span>
-                        </button>
+                            <p className="text-xl font-bold text-emerald-300 mt-1">
+                                {counts.ready}{' '}
+                                <span className="text-xs text-zinc-500 font-normal">រង់ចាំលើក</span>
+                            </p>
+                        </div>
 
-                        <button
-                            type="button"
+                        <div
                             onClick={() => handleFilterChange('served')}
-                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer col-span-2 sm:col-span-1 ${
                                 filter === 'served'
-                                    ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/20'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+                                    ? 'bg-zinc-900 border-blue-500/50 ring-1 ring-blue-500/30 shadow-xs'
+                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <Coffee className={`w-3.5 h-3.5 shrink-0 ${filter === 'served' ? 'text-white' : 'text-blue-400'}`} />
-                            <span>បានលើកជូនថ្ងៃនេះ</span>
-                            <span
-                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                    filter === 'served'
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-blue-500/15 text-blue-300 border border-blue-500/30'
-                                }`}
-                            >
-                                {counts.served_today}
+                            <span className="text-[11px] text-blue-400 flex items-center gap-1.5 font-medium">
+                                <Coffee className="w-3.5 h-3.5" /> លើកជូនថ្ងៃនេះ (Served)
                             </span>
+                            <p className="text-xl font-bold text-blue-300 mt-1">
+                                {counts.served_today}{' '}
+                                <span className="text-xs text-zinc-500 font-normal">សរុប</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Status Filter Pills (Exact Floor & Tables zone pills design) */}
+                    <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
+                        <button
+                            onClick={() => handleFilterChange('active')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                                filter === 'active'
+                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                            }`}
+                        >
+                            គ្រប់ការកុម្ម៉ង់ទាំងអស់ ({totalActiveOrders})
+                        </button>
+                        <button
+                            onClick={() => handleFilterChange('pending')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                                filter === 'pending'
+                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                            }`}
+                        >
+                            រង់ចាំចម្អិន ({counts.pending})
+                        </button>
+                        <button
+                            onClick={() => handleFilterChange('cooking')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                                filter === 'cooking'
+                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                            }`}
+                        >
+                            កំពុងចម្អិន ({counts.cooking})
+                        </button>
+                        <button
+                            onClick={() => handleFilterChange('ready')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                                filter === 'ready'
+                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                            }`}
+                        >
+                            ឆ្អិនរួចរាល់ ({counts.ready})
+                        </button>
+                        <button
+                            onClick={() => handleFilterChange('served')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                                filter === 'served'
+                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                            }`}
+                        >
+                            បានលើកជូនថ្ងៃនេះ ({counts.served_today})
                         </button>
                     </div>
                 </div>
 
-                {/* Key Metrics KPI Cards Row - Synchronized with Catalog & Dashboard */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-                    <Card
-                        onClick={() => handleFilterChange('active')}
-                        className={`p-3.5 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all ${
-                            filter === 'active' ? 'ring-1 ring-amber-500/40 border-amber-500/40 bg-amber-500/5' : ''
-                        }`}
-                    >
-                        <div>
-                            <div className="text-[10.5px] font-mono text-zinc-400 uppercase tracking-wide">កំពុងដំណើរការ</div>
-                            <div className="text-xl font-bold text-white mt-0.5">
-                                {totalActiveOrders}
-                                <span className="text-xs text-amber-400 font-normal ml-1 font-khmer">សំបុត្រ</span>
-                            </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                            <ChefHat className="w-4 h-4" />
-                        </div>
-                    </Card>
-
-                    <Card
-                        onClick={() => handleFilterChange('pending')}
-                        className={`p-3.5 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between cursor-pointer hover:border-rose-500/40 transition-all ${
-                            filter === 'pending' ? 'ring-1 ring-rose-500/40 border-rose-500/40 bg-rose-500/5' : ''
-                        }`}
-                    >
-                        <div>
-                            <div className="text-[10.5px] font-mono text-rose-400 uppercase tracking-wide">រង់ចាំចម្អិន</div>
-                            <div className="text-xl font-bold text-white mt-0.5">
-                                {counts.pending}
-                                <span className="text-xs text-rose-400 font-normal ml-1 font-khmer">បន្ទាន់</span>
-                            </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 shrink-0">
-                            <Flame className="w-4 h-4" />
-                        </div>
-                    </Card>
-
-                    <Card
-                        onClick={() => handleFilterChange('cooking')}
-                        className={`p-3.5 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all ${
-                            filter === 'cooking' ? 'ring-1 ring-amber-500/40 border-amber-500/40 bg-amber-500/5' : ''
-                        }`}
-                    >
-                        <div>
-                            <div className="text-[10.5px] font-mono text-amber-400 uppercase tracking-wide">កំពុងចម្អិន</div>
-                            <div className="text-xl font-bold text-white mt-0.5">
-                                {counts.cooking}
-                                <span className="text-xs text-amber-400 font-normal ml-1 font-khmer">លើចង្ក្រាន</span>
-                            </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                            <UtensilsCrossed className="w-4 h-4" />
-                        </div>
-                    </Card>
-
-                    <Card
-                        onClick={() => handleFilterChange('ready')}
-                        className={`p-3.5 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between cursor-pointer hover:border-emerald-500/40 transition-all ${
-                            filter === 'ready' ? 'ring-1 ring-emerald-500/40 border-emerald-500/40 bg-emerald-500/5' : ''
-                        }`}
-                    >
-                        <div>
-                            <div className="text-[10.5px] font-mono text-emerald-400 uppercase tracking-wide">ឆ្អិនរួចរាល់</div>
-                            <div className="text-xl font-bold text-white mt-0.5">
-                                {counts.ready}
-                                <span className="text-xs text-emerald-400 font-normal ml-1 font-khmer">រង់ចាំលើក</span>
-                            </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                            <CheckCircle2 className="w-4 h-4" />
-                        </div>
-                    </Card>
-
-                    <Card
-                        onClick={() => handleFilterChange('served')}
-                        className={`p-3.5 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between cursor-pointer hover:border-blue-500/40 transition-all col-span-2 sm:col-span-1 ${
-                            filter === 'served' ? 'ring-1 ring-blue-500/40 border-blue-500/40 bg-blue-500/5' : ''
-                        }`}
-                    >
-                        <div>
-                            <div className="text-[10.5px] font-mono text-blue-400 uppercase tracking-wide">លើកជូនថ្ងៃនេះ</div>
-                            <div className="text-xl font-bold text-white mt-0.5">
-                                {counts.served_today}
-                                <span className="text-xs text-blue-400 font-normal ml-1 font-khmer">សរុប</span>
-                            </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-                            <Coffee className="w-4 h-4" />
-                        </div>
-                    </Card>
-                </div>
-
-                {/* Orders Ticket Grid */}
+                {/* Orders Ticket Grid (Matching Table Cards Visual Grid) */}
                 {orders.length === 0 ? (
                     <div className="py-24 text-center border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30">
                         <div className="w-16 h-16 rounded-2xl bg-zinc-800/80 border border-zinc-700 flex items-center justify-center mx-auto mb-4 text-zinc-500">
@@ -459,7 +425,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         {orders.map((order) => {
                             const isPending = order.kitchen_status === 'pending';
                             const isCooking = order.kitchen_status === 'cooking';
@@ -472,100 +438,101 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             return (
                                 <div
                                     key={order.id}
-                                    className={`flex flex-col justify-between rounded-2xl border p-4 transition-all duration-200 ${getUrgencyClass(
-                                        order.elapsed_minutes
+                                    className={`rounded-2xl border p-4 flex flex-col justify-between transition-all duration-200 shadow-lg ${getUrgencyClass(
+                                        order.elapsed_minutes,
+                                        order.kitchen_status
                                     )}`}
                                 >
                                     <div>
-                                        {/* Card Header: Two-Row Architecture preventing overlap */}
-                                        <div className="kds-card-divider border-b border-zinc-800/80 pb-3 mb-3">
-                                            {/* Row 1: Table Badge on Left, Timer Badge on Right */}
-                                            <div className="flex items-center justify-between gap-2 mb-2">
-                                                <div className="flex items-center gap-1.5 min-w-0">
-                                                    {isTakeaway ? (
-                                                        <span className="kds-table-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-amber-500/15 text-amber-300 border border-amber-500/30 truncate shadow-2xs">
-                                                            <ShoppingBag className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                                            <span className="truncate">{order.reference_identifier}</span>
-                                                        </span>
-                                                    ) : (
-                                                        <span className="kds-table-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide bg-amber-500/15 text-amber-300 border border-amber-500/30 truncate shadow-2xs">
-                                                            <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                                            <span className="truncate">{order.reference_identifier}</span>
-                                                        </span>
-                                                    )}
+                                        {/* Top Card Info (Table code, Doc #, Status badge) */}
+                                        <div className="flex items-start justify-between gap-2 mb-2">
+                                            <div className="min-w-0">
+                                                <div className="flex items-center gap-1.5 flex-wrap">
+                                                    <span className="text-lg font-bold text-zinc-100 font-mono whitespace-nowrap">
+                                                        {order.reference_identifier}
+                                                    </span>
+                                                    <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 whitespace-nowrap shrink-0 font-mono">
+                                                        <Receipt className="w-3 h-3 text-zinc-400" />
+                                                        <span>#{order.document_number}</span>
+                                                    </div>
                                                 </div>
-                                                {getTimerBadge(order.elapsed_minutes)}
+                                                <p className="text-xs font-semibold text-amber-400 mt-0.5 truncate">
+                                                    {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : `សំបុត្រម្ហូប #${order.document_number}`}
+                                                </p>
                                             </div>
-
-                                            {/* Row 2: Document / Order # Pill & Server/Customer Info */}
-                                            <div className="flex items-center justify-between gap-2 text-xs">
-                                                <span className="kds-doc-badge font-mono font-bold text-[11px] px-2 py-0.5 rounded-md bg-zinc-800/90 text-zinc-300 border border-zinc-700/60 shrink-0">
-                                                    #{order.document_number}
-                                                </span>
-                                                <div className="kds-card-meta text-[11px] text-zinc-400 truncate text-right">
-                                                    <span>បុគ្គលិក: <strong className="font-semibold text-zinc-300">{order.creator_name}</strong></span>
-                                                    {order.customer_name && (
-                                                        <span className="text-amber-300 font-semibold truncate ml-1">
-                                                            • {order.customer_name}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
+                                            {getStatusBadge(order.kitchen_status)}
                                         </div>
 
-                                        {/* Special Order Note */}
+                                        {/* Creator & Timer row (like zone bullet in table card) */}
+                                        <div className="text-[11px] text-zinc-400 mb-3 flex items-center justify-between gap-1">
+                                            <span className="flex items-center gap-1.5 truncate">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0" />
+                                                <span className="truncate">អ្នកកត់: <strong className="text-zinc-300 font-medium">{order.creator_name}</strong></span>
+                                            </span>
+                                            {getTimerBadge(order.elapsed_minutes)}
+                                        </div>
+
+                                        {/* Order Note if any */}
                                         {order.note && (
-                                            <div className="mb-3 px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-medium">
+                                            <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3 text-xs text-amber-300 font-medium">
                                                 <span className="font-bold">ចំណាំ: </span>
                                                 {order.note}
                                             </div>
                                         )}
 
-                                        {/* Items List */}
-                                        <div className="space-y-2 mb-4">
-                                            {order.items.map((item) => (
-                                                <div
-                                                    key={item.id}
-                                                    className="flex items-start justify-between gap-2.5 py-1.5 px-2 rounded-xl hover:bg-zinc-800/40 transition-colors"
-                                                >
-                                                    <div className="flex items-start gap-2.5 min-w-0">
-                                                        <span className="kds-qty-badge w-7 h-7 rounded-lg bg-amber-500 text-zinc-950 font-black font-mono text-xs flex items-center justify-center shrink-0 shadow-sm shadow-amber-500/20">
-                                                            {item.quantity}
-                                                        </span>
-                                                        <div className="min-w-0">
-                                                            <p className="kds-item-name text-sm font-bold text-zinc-100 leading-snug">
-                                                                {item.product_name}
-                                                            </p>
-                                                            {item.product_name_en && (
-                                                                <p className="kds-item-sub text-[11px] font-medium text-zinc-400 leading-tight">
-                                                                    {item.product_name_en}
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                        {/* Items Details Container (Identical to active_order details in floor card) */}
+                                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3 text-xs space-y-2">
+                                            <div className="flex items-center justify-between text-amber-300 font-semibold border-b border-amber-500/20 pb-1.5">
+                                                <span>មុខម្ហូបត្រូវធ្វើ</span>
+                                                <span className="font-mono text-[10px] text-zinc-400">
+                                                    {order.items.reduce((sum, it) => sum + it.quantity, 0)} ចាន / មុខ
+                                                </span>
+                                            </div>
 
-                                                    {/* Unit Badge Synchronized with Catalog */}
-                                                    <div className="catalog-unit-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap bg-sky-50 text-sky-800 border border-sky-200/90 shadow-2xs dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-500/30 shrink-0">
-                                                        <Scale className="w-3 h-3 text-sky-600 dark:text-sky-400 shrink-0" />
-                                                        <span className="font-semibold tracking-tight">{item.unit}</span>
+                                            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-0.5 scrollbar-thin">
+                                                {order.items.map((item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        className="flex items-start justify-between gap-2 text-xs py-0.5"
+                                                    >
+                                                        <div className="flex items-start gap-2 min-w-0">
+                                                            <span className="w-5 h-5 rounded bg-amber-500 text-zinc-950 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 shadow-xs">
+                                                                {item.quantity}
+                                                            </span>
+                                                            <div className="min-w-0">
+                                                                <p className="font-bold text-zinc-100 truncate leading-tight">
+                                                                    {item.product_name}
+                                                                </p>
+                                                                {item.product_name_en && (
+                                                                    <p className="text-[10px] text-zinc-400 truncate leading-tight">
+                                                                        {item.product_name_en}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
+                                                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono shrink-0">
+                                                            {item.unit}
+                                                        </span>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="kds-card-divider pt-3 border-t border-zinc-800/80 mt-2">
+                                    {/* Action Buttons & Quick Status Switches */}
+                                    <div className="space-y-2 pt-2 border-t border-zinc-800/80">
+                                        {/* Primary Progress Action Button */}
                                         {isPending && (
                                             <button
                                                 disabled={updatingId === order.id}
                                                 onClick={() => handleUpdateStatus(order.id, 'cooking')}
-                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 active:scale-[0.99] text-zinc-950 flex items-center justify-center gap-2 transition-all shadow-md shadow-amber-500/20 border border-amber-400 disabled:opacity-50 cursor-pointer"
+                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20 cursor-pointer"
                                             >
                                                 {updatingId === order.id ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
+                                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
                                                 ) : (
-                                                    <Flame className="w-4 h-4 text-zinc-950" />
+                                                    <Flame className="w-3.5 h-3.5 text-zinc-950" />
                                                 )}
                                                 <span>ចាប់ផ្ដើមធ្វើ (Start Cooking)</span>
                                             </button>
@@ -575,12 +542,12 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             <button
                                                 disabled={updatingId === order.id}
                                                 onClick={() => handleUpdateStatus(order.id, 'ready')}
-                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 active:scale-[0.99] text-white flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 border border-emerald-500 disabled:opacity-50 cursor-pointer"
+                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
                                             >
                                                 {updatingId === order.id ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
                                                 ) : (
-                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <CheckCircle2 className="w-3.5 h-3.5 text-zinc-950" />
                                                 )}
                                                 <span>ឆ្អិនរួចរាល់ (Mark Ready)</span>
                                             </button>
@@ -590,12 +557,12 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             <button
                                                 disabled={updatingId === order.id}
                                                 onClick={() => handleUpdateStatus(order.id, 'served')}
-                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 active:scale-[0.99] text-white flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-600/20 border border-blue-500 disabled:opacity-50 cursor-pointer"
+                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-blue-500 hover:bg-blue-400 text-white flex items-center justify-center gap-1.5 transition-all shadow-md shadow-blue-500/20 cursor-pointer"
                                             >
                                                 {updatingId === order.id ? (
-                                                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                                                 ) : (
-                                                    <Check className="w-4 h-4 text-white" />
+                                                    <Coffee className="w-3.5 h-3.5 text-white" />
                                                 )}
                                                 <span>បានលើកជូនភ្ញៀវ (Mark Served)</span>
                                             </button>
@@ -607,6 +574,50 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 <span>បានបញ្ចប់ការលើកម្ហូបជូន</span>
                                             </div>
                                         )}
+
+                                        {/* Quick Status Toggle like in Table cards */}
+                                        <div className="flex items-center justify-between gap-1 text-[10px]">
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'pending')}
+                                                className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
+                                                    isPending
+                                                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 font-semibold'
+                                                        : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
+                                                }`}
+                                            >
+                                                រង់ចាំ
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'cooking')}
+                                                className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
+                                                    isCooking
+                                                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-semibold'
+                                                        : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
+                                                }`}
+                                            >
+                                                ចម្អិន
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'ready')}
+                                                className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
+                                                    isReady
+                                                        ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold'
+                                                        : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
+                                                }`}
+                                            >
+                                                ឆ្អិន
+                                            </button>
+                                            <button
+                                                onClick={() => handleUpdateStatus(order.id, 'served')}
+                                                className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
+                                                    isServed
+                                                        ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 font-semibold'
+                                                        : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
+                                                }`}
+                                            >
+                                                លើកជូន
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             );
