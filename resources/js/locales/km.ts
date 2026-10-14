@@ -27,6 +27,10 @@ export const km = {
         help_shortcuts: 'ជំនួយ & គ្រាប់ចុចកាត់',
         collapse: 'បង្រួមម៉ឺនុយ',
         expand: 'ពង្រីកម៉ឺនុយ',
+        logout_confirm_title: 'តើអ្នកពិតជាចង់ចាកចេញមែនទេ?',
+        logout_confirm_desc: 'សូមប្រាកដថាអ្នកបានរក្សាទុក ឬទូទាត់ការកុម្ម៉ង់ទាំងអស់រួចរាល់ មុនពេលចាកចេញពីប្រព័ន្ធ។',
+        logout_cancel: 'បោះបង់',
+        logout_proceed: 'ចាកចេញពីប្រព័ន្ធ',
     },
 
     // POS Terminal

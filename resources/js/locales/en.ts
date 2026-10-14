@@ -29,6 +29,10 @@ export const en: TranslationDict = {
         help_shortcuts: 'Help & Shortcuts',
         collapse: 'Collapse Sidebar',
         expand: 'Expand Sidebar',
+        logout_confirm_title: 'Are you sure you want to log out?',
+        logout_confirm_desc: 'Please ensure all active orders and tables are saved or settled before logging out.',
+        logout_cancel: 'Cancel',
+        logout_proceed: 'Log Out',
     },
 
     // POS Terminal

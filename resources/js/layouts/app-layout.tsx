@@ -103,6 +103,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [helpModalOpen, setHelpModalOpen] = useState(false);
+    const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
     const [isDark, setIsDark] = useState<boolean>(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('pos_theme');
@@ -193,6 +194,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 setCollapsedFlyout(null);
                 setUserMenuOpen(false);
                 setHelpModalOpen(false);
+                setLogoutConfirmOpen(false);
             } else if (e.key === 'F2') {
                 e.preventDefault();
                 router.visit('/invoices/create');
@@ -206,6 +208,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
     }, []);
 
     const handleLogout = () => {
+        setUserMenuOpen(false);
+        setCollapsedFlyout(null);
+        setMobileMenuOpen(false);
+        setLogoutConfirmOpen(true);
+    };
+
+    const confirmLogout = () => {
+        setLogoutConfirmOpen(false);
         router.post('/logout');
     };
 
@@ -794,6 +804,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                     </div>
                     <div className="pt-1 border-t border-zinc-800">
                         <button
+                            id="logout-trigger-desktop"
                             type="button"
                             onClick={() => {
                                 setUserMenuOpen(false);
@@ -831,6 +842,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
                     {/* Three-dots options button */}
                     <button
+                        id="user-menu-trigger-desktop"
                         type="button"
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
                         className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
@@ -932,6 +944,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         {currentTime}
                     </span>
                     <Button
+                        id="logout-trigger-mobile"
                         variant="ghost"
                         size="sm"
                         onClick={handleLogout}
@@ -1113,6 +1126,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 </div>
                                 <div className="pt-1 border-t border-zinc-800">
                                     <button
+                                        id="logout-trigger-collapsed"
                                         type="button"
                                         onClick={() => {
                                             setUserMenuOpen(false);
@@ -1301,6 +1315,92 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             >
                                 យល់ព្រម (Got it)
                             </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Logout Confirmation Dialog */}
+            {logoutConfirmOpen && (
+                <div
+                    id="logout-confirm-overlay"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) setLogoutConfirmOpen(false);
+                    }}
+                >
+                    <div
+                        id="logout-confirm-dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="logout-dialog-title"
+                        className="relative w-full max-w-sm sm:max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden p-5 sm:p-6 text-center select-none animate-in zoom-in-95 duration-150"
+                    >
+                        {/* Close 'X' Button */}
+                        <button
+                            id="logout-confirm-close-btn"
+                            type="button"
+                            onClick={() => setLogoutConfirmOpen(false)}
+                            title="បិទ (Close)"
+                            className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition cursor-pointer"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+
+                        {/* Visual Alert Icon */}
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-500 mx-auto mb-4 shadow-lg shadow-rose-500/10">
+                            <LogOut className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2.2]" />
+                        </div>
+
+                        {/* Title & Description */}
+                        <h3 id="logout-dialog-title" className="text-base sm:text-lg font-bold text-zinc-100 font-khmer leading-snug">
+                            {t('nav.logout_confirm_title', 'តើអ្នកពិតជាចង់ចាកចេញមែនទេ?')}
+                        </h3>
+                        <p className="text-xs text-zinc-400 font-khmer mt-2 leading-relaxed">
+                            {t(
+                                'nav.logout_confirm_desc',
+                                'សូមប្រាកដថាអ្នកបានរក្សាទុក ឬទូទាត់ការកុម្ម៉ង់ទាំងអស់រួចរាល់ មុនពេលចាកចេញពីប្រព័ន្ធ។'
+                            )}
+                        </p>
+
+                        {/* Logged in User Card */}
+                        <div className="p-3 my-4 rounded-xl bg-zinc-800/80 border border-zinc-700/80 flex items-center justify-between gap-3 text-left">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="w-9 h-9 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-xs font-bold text-amber-500 shrink-0 shadow-inner tracking-wider">
+                                    {getInitials(user?.name)}
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-bold text-zinc-100 truncate">
+                                        {user?.name || 'Administrator'}
+                                    </p>
+                                    <p className="text-[11px] text-zinc-400 font-khmer truncate">
+                                        {displayRole} • @{user?.username || 'user'}
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 whitespace-nowrap shrink-0">
+                                {business.business_name_primary || 'លៀសហាល'}
+                            </span>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2.5 pt-2">
+                            <button
+                                id="logout-confirm-cancel-btn"
+                                type="button"
+                                onClick={() => setLogoutConfirmOpen(false)}
+                                className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 hover:text-zinc-100 text-xs font-semibold font-khmer transition cursor-pointer"
+                            >
+                                {t('nav.logout_cancel', 'បោះបង់ (Cancel)')}
+                            </button>
+                            <button
+                                id="logout-confirm-proceed-btn"
+                                type="button"
+                                onClick={confirmLogout}
+                                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs font-khmer transition shadow-lg shadow-rose-600/30 active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                            >
+                                <LogOut className="w-3.5 h-3.5" />
+                                <span>{t('nav.logout_proceed', 'ចាកចេញពីប្រព័ន្ធ')}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
