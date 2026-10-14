@@ -884,25 +884,25 @@ export default function SettingsIndex({
                 {activeTab === 'backup' && (
                     <div className="space-y-6">
                         <div>
-                            <h2 className="text-base font-bold text-white flex items-center gap-2">
-                                <Database className="w-5 h-5 text-emerald-400" />
+                            <h2 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                                <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                                 Full-Data Backup and Recoverable Restore Engine
                             </h2>
-                            <p className="text-xs text-zinc-400">
+                            <p className="text-xs text-zinc-600 dark:text-zinc-400">
                                 Invariant INV-04: Deterministic, staged backup archives with per-table SHA-256 checksums and automated emergency recovery points.
                             </p>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {/* Card 1: Full System Backup Export */}
-                            <Card className="p-6 space-y-5 border-zinc-800 bg-zinc-900/40">
+                            <Card className="p-6 space-y-5 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 shadow-sm">
                                 <div className="flex items-start justify-between">
                                     <div className="space-y-1">
-                                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                                            <Download className="w-4 h-4 text-emerald-400" />
+                                        <h3 className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                                            <Download className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                             System Backup Archive
                                         </h3>
-                                        <p className="text-xs text-zinc-400">
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-400">
                                             Download a complete, self-describing archive of the live POS database.
                                         </p>
                                     </div>
@@ -911,9 +911,9 @@ export default function SettingsIndex({
                                     </Badge>
                                 </div>
 
-                                <div className="space-y-2 rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/80 text-xs">
-                                    <h4 className="font-semibold text-zinc-300 mb-2">Included 14 Authoritative Tables:</h4>
-                                    <div className="grid grid-cols-2 gap-1.5 font-mono text-[11px] text-zinc-400">
+                                <div className="space-y-2 rounded-xl bg-zinc-50 dark:bg-zinc-950/70 p-4 border border-zinc-200 dark:border-zinc-800/80 text-xs">
+                                    <h4 className="font-semibold text-zinc-800 dark:text-zinc-300 mb-2">Included 14 Authoritative Tables:</h4>
+                                    <div className="grid grid-cols-2 gap-1.5 font-mono text-[11px] text-zinc-600 dark:text-zinc-400">
                                         <div>• users & accounts</div>
                                         <div>• business_settings</div>
                                         <div>• locations & mappings</div>
@@ -931,9 +931,9 @@ export default function SettingsIndex({
                                     </div>
                                 </div>
 
-                                <div className="text-xs text-zinc-400 space-y-1">
+                                <div className="text-xs text-zinc-600 dark:text-zinc-400 space-y-1">
                                     <p>• Automatically signs each table payload with SHA-256 cryptographic hashes.</p>
-                                    <p>• Logs audit trail event <code className="text-emerald-400 font-mono">backup.exported</code>.</p>
+                                    <p>• Logs audit trail event <code className="text-emerald-700 dark:text-emerald-400 font-mono font-medium">backup.exported</code>.</p>
                                 </div>
 
                                 <form action="/settings/backup" method="POST" className="pt-2">
@@ -944,7 +944,7 @@ export default function SettingsIndex({
                                     />
                                     <Button
                                         type="submit"
-                                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-950/40"
+                                        className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-md shadow-emerald-600/20"
                                     >
                                         <Download className="w-4 h-4 mr-2" />
                                         Download Full System Backup (.zip)
@@ -953,14 +953,14 @@ export default function SettingsIndex({
                             </Card>
 
                             {/* Card 2: Disaster Recovery Restore */}
-                            <Card className="p-6 space-y-5 border-zinc-800 bg-zinc-900/40">
+                            <Card className="p-6 space-y-5 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 shadow-sm">
                                 <div className="flex items-start justify-between">
                                     <div className="space-y-1">
-                                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                                            <UploadCloud className="w-4 h-4 text-amber-400" />
+                                        <h3 className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                                            <UploadCloud className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                                             Disaster Recovery Restore
                                         </h3>
-                                        <p className="text-xs text-zinc-400">
+                                        <p className="text-xs text-zinc-600 dark:text-zinc-400">
                                             Restore database tables from a verified V2.0 backup archive ZIP.
                                         </p>
                                     </div>
@@ -969,20 +969,20 @@ export default function SettingsIndex({
                                     </Badge>
                                 </div>
 
-                                {/* Danger Warning Banner */}
-                                <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200/90 text-xs space-y-1.5">
-                                    <div className="flex items-center gap-2 font-bold text-amber-300">
-                                        <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                                {/* Danger Warning Banner - High Contrast in Light & Dark Mode */}
+                                <div className="p-3.5 rounded-xl bg-amber-500/15 dark:bg-amber-500/10 border border-amber-500/30 dark:border-amber-500/30 space-y-1.5">
+                                    <div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300">
+                                        <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                                         <span>Atomicity & Safety Boundary</span>
                                     </div>
-                                    <p className="text-[11px] leading-relaxed text-amber-200/80">
-                                        Live database tables will be atomically replaced in dependency order. A pre-restore emergency snapshot will be captured to <code className="font-mono text-[10px] bg-zinc-950 px-1 py-0.5 rounded">storage/app/backups/recovery_points/</code> prior to replacement.
+                                    <p className="text-[11.5px] leading-relaxed text-amber-950/85 dark:text-amber-200/90 font-normal">
+                                        Live database tables will be atomically replaced in dependency order. A pre-restore emergency snapshot will be captured to <code className="font-mono text-[10.5px] bg-amber-500/20 dark:bg-zinc-950 text-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 dark:border-zinc-800">storage/app/backups/recovery_points/</code> prior to replacement.
                                     </p>
                                 </div>
 
                                 {/* File Input */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-zinc-300 block">
+                                    <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block">
                                         Select Backup Archive File (.zip):
                                     </label>
                                     <input
@@ -992,7 +992,7 @@ export default function SettingsIndex({
                                             setRestoreFile(e.target.files?.[0] || null);
                                             setInspectResult(null);
                                         }}
-                                        className="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-zinc-800 file:text-zinc-200 hover:file:bg-zinc-700 cursor-pointer bg-zinc-950 p-2 rounded-xl border border-zinc-800"
+                                        className="w-full text-xs text-zinc-600 dark:text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-zinc-100 hover:file:bg-zinc-200 file:text-zinc-800 dark:file:bg-zinc-800 dark:file:text-zinc-200 dark:hover:file:bg-zinc-700 cursor-pointer bg-zinc-50 dark:bg-zinc-950 p-2 rounded-xl border border-zinc-200 dark:border-zinc-800"
                                     />
                                 </div>
 
@@ -1003,9 +1003,9 @@ export default function SettingsIndex({
                                         variant="outline"
                                         disabled={!restoreFile || isInspecting}
                                         onClick={handleInspectArchive}
-                                        className="flex-1 text-xs border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                                        className="flex-1 text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-40"
                                     >
-                                        <ShieldCheck className="w-4 h-4 mr-1.5 text-blue-400" />
+                                        <ShieldCheck className="w-4 h-4 mr-1.5 text-blue-500 dark:text-blue-400" />
                                         <span>{isInspecting ? 'Inspecting...' : 'Preflight Inspect Archive'}</span>
                                     </Button>
 
@@ -1013,7 +1013,7 @@ export default function SettingsIndex({
                                         type="button"
                                         disabled={!restoreFile || isRestoring}
                                         onClick={() => setShowRestoreConfirm(true)}
-                                        className="flex-1 text-xs bg-rose-600 hover:bg-rose-500 text-white font-semibold"
+                                        className="flex-1 text-xs bg-rose-600 hover:bg-rose-500 text-white font-semibold shadow-md shadow-rose-600/20 disabled:opacity-40"
                                     >
                                         <RotateCcw className="w-4 h-4 mr-1.5" />
                                         <span>Restore Database...</span>
@@ -1025,33 +1025,33 @@ export default function SettingsIndex({
                                     <div
                                         className={`p-4 rounded-xl border text-xs space-y-2 ${
                                             inspectResult.valid
-                                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200'
-                                                : 'bg-rose-500/10 border-rose-500/30 text-rose-200'
+                                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-200'
+                                                : 'bg-rose-500/10 border-rose-500/30 text-rose-900 dark:text-rose-200'
                                         }`}
                                     >
                                         {inspectResult.valid ? (
                                             <>
-                                                <div className="flex items-center gap-2 font-bold text-emerald-300">
-                                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                                <div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-300">
+                                                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                                     <span>Preflight Integrity Verification Passed</span>
                                                 </div>
-                                                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-zinc-300 pt-1">
+                                                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-zinc-700 dark:text-zinc-300 pt-1">
                                                     <div>Manifest: V{inspectResult.format_version}</div>
                                                     <div>Tables: {inspectResult.tables_count} verified</div>
                                                     <div>Total Records: {inspectResult.total_rows}</div>
                                                     <div>Generated: {inspectResult.generated_at?.substring(0, 19)}</div>
                                                 </div>
-                                                <div className="text-[10px] text-emerald-400 font-mono mt-1">
+                                                <div className="text-[10.5px] text-emerald-700 dark:text-emerald-400 font-mono mt-1 font-medium">
                                                     ✓ All SHA-256 checksums match expected manifest digests.
                                                 </div>
                                             </>
                                         ) : (
                                             <>
-                                                <div className="flex items-center gap-2 font-bold text-rose-300">
-                                                    <AlertCircle className="w-4 h-4 text-rose-400" />
+                                                <div className="flex items-center gap-2 font-bold text-rose-800 dark:text-rose-300">
+                                                    <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                                                     <span>Archive Verification Failed</span>
                                                 </div>
-                                                <p className="text-[11px] text-rose-200">
+                                                <p className="text-[11px] text-rose-900 dark:text-rose-200">
                                                     {inspectResult.error || 'The uploaded file does not comply with V2.0 blueprint standards.'}
                                                 </p>
                                             </>
@@ -1062,21 +1062,21 @@ export default function SettingsIndex({
                         </div>
 
                         {/* Recovery Architecture Specs Reference */}
-                        <Card className="p-6 border-zinc-800 bg-zinc-950/50 space-y-3">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 font-mono flex items-center gap-2">
-                                <FileArchive className="w-4 h-4 text-emerald-400" />
+                        <Card className="p-6 border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/50 space-y-3 shadow-xs">
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 font-mono flex items-center gap-2">
+                                <FileArchive className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                                 Specification 11: Referential Integrity Guarantees
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-zinc-400 leading-relaxed">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                                 <div className="space-y-1">
-                                    <h4 className="font-semibold text-zinc-200">Foreign Key Safe Deletion Order:</h4>
-                                    <p className="font-mono text-[11px] text-zinc-500">
+                                    <h4 className="font-semibold text-zinc-800 dark:text-zinc-200">Foreign Key Safe Deletion Order:</h4>
+                                    <p className="font-mono text-[11px] text-zinc-500 dark:text-zinc-500">
                                         print_logs → revisions → items → approvals → documents → periods → products → categories → units → user_locations → locations → audits → settings → users
                                     </p>
                                 </div>
                                 <div className="space-y-1">
-                                    <h4 className="font-semibold text-zinc-200">Parent-First Insertion Order:</h4>
-                                    <p className="font-mono text-[11px] text-zinc-500">
+                                    <h4 className="font-semibold text-zinc-800 dark:text-zinc-200">Parent-First Insertion Order:</h4>
+                                    <p className="font-mono text-[11px] text-zinc-500 dark:text-zinc-500">
                                         users → settings → locations → user_locations → units → categories → products → periods → documents → items → approvals → revisions → audits → print_logs
                                     </p>
                                 </div>
@@ -1088,22 +1088,22 @@ export default function SettingsIndex({
                 {/* Restore Confirmation Modal */}
                 {showRestoreConfirm && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                        <Card className="max-w-md w-full p-6 space-y-4 border-rose-600/40 bg-zinc-950 shadow-2xl animate-in fade-in zoom-in-95">
+                        <Card className="max-w-md w-full p-6 space-y-4 border border-rose-500/30 dark:border-rose-600/40 bg-white dark:bg-zinc-950 shadow-2xl animate-in fade-in zoom-in-95">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
-                                    <AlertTriangle className="w-5 h-5 text-rose-400" />
+                                <div className="w-10 h-10 rounded-full bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
+                                    <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                                 </div>
                                 <div>
-                                    <h3 className="text-base font-bold text-white">
+                                    <h3 className="text-base font-bold text-zinc-900 dark:text-white">
                                         Confirm Destructive Database Restore
                                     </h3>
-                                    <p className="text-xs text-zinc-400">
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate max-w-[280px]">
                                         Archive: {restoreFile?.name}
                                     </p>
                                 </div>
                             </div>
 
-                            <p className="text-xs text-zinc-300 leading-relaxed">
+                            <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
                                 Are you sure you want to replace live data? All existing database tables will be cleared and replaced with the contents of this archive. An emergency recovery point will be saved first to disk.
                             </p>
 
@@ -1114,7 +1114,7 @@ export default function SettingsIndex({
                                     size="sm"
                                     disabled={isRestoring}
                                     onClick={() => setShowRestoreConfirm(false)}
-                                    className="border-zinc-700 text-zinc-300"
+                                    className="border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                                 >
                                     Cancel
                                 </Button>
@@ -1123,7 +1123,7 @@ export default function SettingsIndex({
                                     size="sm"
                                     disabled={isRestoring}
                                     onClick={handleExecuteRestore}
-                                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold"
+                                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold shadow-md shadow-rose-600/20"
                                 >
                                     {isRestoring ? 'Restoring Database...' : 'Yes, Replace Database Now'}
                                 </Button>
