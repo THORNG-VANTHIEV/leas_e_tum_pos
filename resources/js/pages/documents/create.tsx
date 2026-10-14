@@ -780,18 +780,18 @@ export default function DocumentCreate({
                     </div>
 
                     {/* Cart Tray & Settlement Sidebar (Drawer on mobile/tablet, right 4-5 cols on desktop) */}
-                    <div className={`col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col h-full min-h-0 bg-gradient-to-b from-zinc-950 via-zinc-900/95 to-zinc-950 border-l border-zinc-800/80 shadow-2xl overflow-hidden select-none z-40 transition-all ${
+                    <div className={`col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col h-full min-h-0 bg-zinc-950 border-l border-zinc-800 shadow-2xl overflow-hidden select-none z-40 transition-all ${
                         isMobileCartOpen
                             ? 'fixed inset-0 lg:static lg:inset-auto flex'
                             : 'hidden lg:flex'
                     }`}>
                         {/* Cart Header */}
-                        <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
+                        <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-zinc-800 bg-zinc-900/90 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
                             <div className="flex items-center gap-2.5 min-w-0">
                                 <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shadow-md transition-all shrink-0 ${
                                     orderMode === 'takeaway'
-                                        ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-amber-500/10'
-                                        : 'bg-teal-500/15 text-teal-400 border border-teal-500/30 shadow-teal-500/10'
+                                        ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 shadow-amber-500/10'
+                                        : 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30 shadow-teal-500/10'
                                 }`}>
                                     {orderMode === 'takeaway' ? (
                                         <ShoppingBag className="w-4 h-4 stroke-[2.2]" />
@@ -799,18 +799,16 @@ export default function DocumentCreate({
                                         <Utensils className="w-4 h-4 stroke-[2.2]" />
                                     )}
                                 </div>
-                                <div className="min-w-0">
+                                <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-1.5">
-                                        <h2 className="font-bold text-xs sm:text-sm text-white font-khmer whitespace-nowrap leading-normal py-0.5">
-                                            {orderMode === 'takeaway' ? t('pos.order_type_takeaway') : selectedTable}
+                                        <h2 className="font-bold text-xs sm:text-sm text-zinc-100 font-khmer whitespace-nowrap leading-normal py-0.5">
+                                            {orderMode === 'takeaway' ? (language === 'km' ? 'កុម្ម៉ង់ខ្ចប់' : 'Takeaway Order') : selectedTable}
                                         </h2>
-                                        <span className={`text-[9px] sm:text-[10px] font-mono uppercase px-1.5 py-0.2 rounded-full font-bold border shrink-0 ${
-                                            orderMode === 'takeaway'
-                                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                                                : 'bg-teal-500/10 text-teal-400 border-teal-500/20'
-                                        }`}>
-                                            {orderMode === 'takeaway' ? t('pos.order_type_takeaway') : t('pos.order_type_dine_in')}
-                                        </span>
+                                        {orderMode === 'dine_in' && (
+                                            <span className="text-[9px] sm:text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-full font-bold border shrink-0 bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30">
+                                                {language === 'km' ? 'ញ៉ាំនៅហាង' : 'DINE-IN'}
+                                            </span>
+                                        )}
                                     </div>
                                     <p className="text-[10px] sm:text-[11px] text-zinc-400 font-mono mt-0.5 whitespace-nowrap truncate">
                                         {totals.totalItems} {language === 'km' ? 'មុខក្នុងកន្ត្រក' : 'items'} • {lines.reduce((acc, l) => acc + l.quantity, 0)} {language === 'km' ? 'ចំនួន' : 'qty'}
@@ -820,9 +818,9 @@ export default function DocumentCreate({
 
                             {/* Right Side: Currency Exchange Rate Badge, Clear Button & Mobile Close Button */}
                             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-800/90 text-amber-300 font-mono text-[11px] sm:text-xs font-bold shadow-sm shadow-black/40">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
-                                    <span className="whitespace-nowrap">1 USD = {exchange_rate.toLocaleString()} ៛</span>
+                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700/80 text-amber-600 dark:text-amber-300 font-mono text-[11px] sm:text-xs font-bold shadow-sm whitespace-nowrap shrink-0">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shrink-0" />
+                                    <span>$1 = {exchange_rate.toLocaleString()}៛</span>
                                 </div>
 
                                 {lines.length > 0 && (
@@ -830,10 +828,10 @@ export default function DocumentCreate({
                                         type="button"
                                         onClick={clearCart}
                                         title={t('pos.clear_order')}
-                                        className="p-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-medium text-rose-400 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95 shrink-0"
+                                        className="p-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95 shrink-0"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
-                                        <span className="font-khmer text-[11px] hidden sm:inline">{t('pos.clear_order')}</span>
+                                        <span className="font-khmer text-[11px] hidden xl:inline">{t('pos.clear_order')}</span>
                                     </button>
                                 )}
 
@@ -841,7 +839,7 @@ export default function DocumentCreate({
                                     type="button"
                                     onClick={() => setIsMobileCartOpen(false)}
                                     title="បិទកន្ត្រក (Close)"
-                                    className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white bg-zinc-800 border border-zinc-700 transition cursor-pointer"
+                                    className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 bg-zinc-800 border border-zinc-700 transition cursor-pointer"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -888,10 +886,10 @@ export default function DocumentCreate({
                                     return (
                                         <div
                                             key={item.product_id}
-                                            className="p-2.5 rounded-2xl bg-zinc-900/80 hover:bg-zinc-850/90 border border-zinc-800/90 hover:border-zinc-700/80 flex items-center justify-between gap-2.5 group transition-all shadow-sm shadow-black/20"
+                                            className="p-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-850/90 border border-zinc-200 dark:border-zinc-800/90 hover:border-zinc-300 dark:hover:border-zinc-700/80 flex items-center justify-between gap-2.5 group transition-all shadow-sm shadow-black/5 dark:shadow-black/20"
                                         >
                                             {item.image_url && (
-                                                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-zinc-700/60 bg-zinc-800">
+                                                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700/60 bg-zinc-100 dark:bg-zinc-800">
                                                     <img
                                                         src={item.image_url}
                                                         alt={item.name_primary}
@@ -901,32 +899,32 @@ export default function DocumentCreate({
                                                 </div>
                                             )}
                                             <div className="flex-1 min-w-0">
-                                                <h4 className={`font-bold text-xs sm:text-sm text-zinc-100 group-hover:text-amber-400 transition-colors truncate leading-normal py-0.5 ${language === 'km' ? 'font-khmer' : ''}`}>
+                                                <h4 className={`font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors truncate leading-normal py-0.5 ${language === 'km' ? 'font-khmer' : ''}`}>
                                                     {getName(item)}
                                                 </h4>
-                                                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-zinc-400 font-mono">
-                                                    <span className="text-zinc-300 font-semibold">${unitPriceUSD.toFixed(2)}</span>
+                                                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
+                                                    <span className="text-zinc-700 dark:text-zinc-300 font-semibold">${unitPriceUSD.toFixed(2)}</span>
                                                     <span>/</span>
-                                                    <span className="text-zinc-400">{item.unit_name}</span>
+                                                    <span className="text-zinc-500 dark:text-zinc-400">{item.unit_name}</span>
                                                 </div>
                                             </div>
 
                                             {/* Stepper Buttons */}
-                                            <div className="flex items-center gap-1 bg-zinc-950/90 p-1 rounded-xl border border-zinc-800 shrink-0 shadow-inner">
+                                            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-950/90 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0 shadow-inner">
                                                 <button
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, -1)}
-                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
+                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
                                                 >
                                                     <Minus className="w-3.5 h-3.5" />
                                                 </button>
-                                                <span className="w-7 text-center font-bold text-xs text-white font-mono">
+                                                <span className="w-7 text-center font-bold text-xs text-zinc-900 dark:text-white font-mono">
                                                     {item.quantity}
                                                 </span>
                                                 <button
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, 1)}
-                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
+                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
                                                 >
                                                     <Plus className="w-3.5 h-3.5" />
                                                 </button>
@@ -934,10 +932,10 @@ export default function DocumentCreate({
 
                                             {/* Line Total */}
                                             <div className="text-right min-w-[70px] shrink-0">
-                                                <div className="font-bold text-xs sm:text-sm text-amber-400 font-mono">
+                                                <div className="font-bold text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-mono">
                                                     ${lineTotalUSD}
                                                 </div>
-                                                <div className="text-[10px] text-emerald-400 font-mono">
+                                                <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
                                                     {lineTotalKHR.toLocaleString()} ៛
                                                 </div>
                                             </div>
@@ -946,7 +944,7 @@ export default function DocumentCreate({
                                             <button
                                                 type="button"
                                                 onClick={() => removeLine(item.product_id)}
-                                                className="text-zinc-500 hover:text-rose-400 p-1 rounded-lg hover:bg-rose-500/10 transition cursor-pointer shrink-0"
+                                                className="text-zinc-400 hover:text-rose-500 dark:text-zinc-500 dark:hover:text-rose-400 p-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer shrink-0"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
                                             </button>
@@ -957,14 +955,14 @@ export default function DocumentCreate({
                         </div>
 
                         {/* Bill Summary & Settlement Controls */}
-                        <div className="p-3.5 sm:p-4 border-t border-zinc-800/90 bg-zinc-950/95 backdrop-blur-md shrink-0 space-y-3">
+                        <div className="p-3.5 sm:p-4 border-t border-zinc-200 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shrink-0 space-y-3">
                             {/* Fast Discount Chips */}
                             <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap sm:flex-nowrap">
-                                <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
+                                <span className="text-zinc-500 dark:text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
                                     <span>{t('pos.discount_label')}</span>
-                                    <span className="text-[10px] text-zinc-400 font-mono uppercase">Discount</span>
+                                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono uppercase">Discount</span>
                                 </span>
-                                <div className="flex items-center gap-0.5 sm:gap-1 bg-zinc-900/90 p-0.5 sm:p-1 rounded-xl border border-zinc-800 shrink-0">
+                                <div className="flex items-center gap-0.5 sm:gap-1 bg-zinc-100 dark:bg-zinc-900/90 p-0.5 sm:p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0">
                                     {[
                                         { label: '0%', type: 'none', val: '0' },
                                         { label: '5%', type: 'percent', val: '5' },
@@ -986,7 +984,7 @@ export default function DocumentCreate({
                                                 className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold font-mono transition-all cursor-pointer whitespace-nowrap ${
                                                     active
                                                         ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20 scale-105'
-                                                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80'
+                                                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/80 dark:hover:bg-zinc-800/80'
                                                 }`}
                                             >
                                                 {d.label}
@@ -997,17 +995,17 @@ export default function DocumentCreate({
                             </div>
 
                             {/* Subtotal & Discount Calculation Rows */}
-                            <div className="space-y-1.5 text-xs text-zinc-400 px-1 font-mono">
+                            <div className="space-y-1.5 text-xs text-zinc-500 dark:text-zinc-400 px-1 font-mono">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
-                                    <span className="text-zinc-200 font-bold">
-                                        ${totals.subtotalUSD} <span className="text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} ៛)</span>
+                                    <span className="text-zinc-600 dark:text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
+                                    <span className="text-zinc-900 dark:text-zinc-200 font-bold">
+                                        ${totals.subtotalUSD} <span className="text-zinc-500 dark:text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} ៛)</span>
                                     </span>
                                 </div>
                                 {parseFloat(totals.discountUSD) > 0 && (
-                                    <div className="flex justify-between items-center text-emerald-400">
+                                    <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
                                         <span className="font-khmer">{t('pos.discount_label')}:</span>
-                                        <span className="font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                                        <span className="font-bold bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20">
                                             -${totals.discountUSD}
                                         </span>
                                     </div>
@@ -1015,19 +1013,19 @@ export default function DocumentCreate({
                             </div>
 
                             {/* Luxury Grand Total Banner */}
-                            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-orange-500/15 border border-amber-500/35 flex items-center justify-between shadow-lg shadow-black/30 backdrop-blur-md relative overflow-hidden">
+                            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-orange-500/15 border border-amber-500/35 flex items-center justify-between shadow-lg shadow-black/10 dark:shadow-black/30 backdrop-blur-md relative overflow-hidden">
                                 <div className="space-y-1">
-                                    <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-amber-400 font-black">
-                                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                                    <div className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-wider text-amber-600 dark:text-amber-400 font-black">
+                                        <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                                         <span>{t('pos.grand_total')}</span>
                                     </div>
-                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/25 text-xs font-mono font-bold text-emerald-400">
+                                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/25 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
                                         <span>៛</span>
                                         <span>{totals.grandTotalKHR.toLocaleString()}</span>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl sm:text-3xl font-black text-amber-400 font-mono tracking-tight drop-shadow-md">
+                                    <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 font-mono tracking-tight drop-shadow-sm">
                                         ${totals.grandTotalUSD}
                                     </div>
                                 </div>
