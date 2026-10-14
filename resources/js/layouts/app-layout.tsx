@@ -449,30 +449,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         });
     }, [currentPath]);
 
-    // Restore scroll position and smoothly reveal the active menu item in view
+    // Restore scroll position instantly and silently without any visible scroll movement
     useLayoutEffect(() => {
         if (!sidebarNavRef.current) return;
-
-        // Restore scroll position first
         const savedScroll = sessionStorage.getItem('leashal_etum_sidebar_scroll');
         if (savedScroll !== null) {
             sidebarNavRef.current.scrollTop = Number(savedScroll);
         }
-
-        // Scroll the active menu item into view so the user never loses their position
-        const timer = setTimeout(() => {
-            if (!sidebarNavRef.current) return;
-            const activeEl = sidebarNavRef.current.querySelector<HTMLElement>('[data-nav-active="true"]');
-            if (activeEl) {
-                activeEl.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'nearest',
-                });
-            }
-        }, 60);
-
-        return () => clearTimeout(timer);
-    }, [currentPath, collapsed]);
+    }, [currentPath]);
 
     const renderNavLinks = (isCollapsed: boolean = false) => (
         <div className="space-y-1.5">
@@ -738,14 +722,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             onClick={() => toggleGroup(group.id)}
                             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer border ${
                                 isGroupActive
-                                    ? 'text-amber-300 bg-zinc-900/90 border-amber-500/30 shadow-xs'
+                                    ? 'text-zinc-200 bg-zinc-900/60 border-zinc-800/80'
                                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent'
                             }`}
                         >
                             <div className="flex items-center gap-3 min-w-0">
                                 <GroupIcon
                                     className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-105 ${
-                                        isGroupActive ? 'text-amber-400' : 'text-zinc-400 group-hover:text-zinc-300'
+                                        isGroupActive ? 'text-amber-400/90' : 'text-zinc-400 group-hover:text-zinc-300'
                                     }`}
                                 />
                                 <div className="flex flex-col text-left min-w-0">
@@ -753,7 +737,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         {getName(group)}
                                     </span>
                                     {getSecondaryName(group) && (
-                                        <span className={`text-[11px] leading-normal mt-0.5 truncate text-zinc-400 group-hover:text-zinc-300 ${language === 'km' ? '' : 'font-khmer'}`}>
+                                        <span className={`text-[11px] leading-normal mt-0.5 truncate text-zinc-500 group-hover:text-zinc-400 ${language === 'km' ? '' : 'font-khmer'}`}>
                                             {getSecondaryName(group)}
                                         </span>
                                     )}
@@ -761,13 +745,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
-                                {isGroupActive && (
-                                    <span className="w-2 h-2 rounded-full bg-amber-400 shadow-xs shadow-amber-400/80 shrink-0" />
-                                )}
                                 <span
                                     className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full border ${
                                         isGroupActive
-                                            ? 'bg-amber-500/15 text-amber-400 border-amber-500/30 font-bold'
+                                            ? 'bg-zinc-800 text-zinc-300 border-zinc-700/80'
                                             : 'bg-zinc-800 text-zinc-400 border-zinc-700/60'
                                     }`}
                                 >
@@ -775,7 +756,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 </span>
                                 <ChevronDown
                                     className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                                        isOpen ? 'rotate-180 text-amber-400' : 'text-zinc-400'
+                                        isOpen ? 'rotate-180 text-zinc-300' : 'text-zinc-500'
                                     }`}
                                 />
                             </div>
@@ -823,10 +804,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                                     )}
                                                 </div>
                                             </div>
-
-                                            {childActive && (
-                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 shadow-xs shadow-amber-400/60" />
-                                            )}
                                         </Link>
                                     );
                                 })}
@@ -1162,7 +1139,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 <nav
                     ref={sidebarNavRef}
                     onScroll={handleSidebarScroll}
-                    className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto'} space-y-3 scroll-smooth`}
+                    className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto'} space-y-3`}
                 >
                     {!collapsed && (
                         <div className="px-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold flex items-center justify-between">
