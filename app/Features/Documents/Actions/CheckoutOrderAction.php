@@ -1,0 +1,239 @@
+<?php
+
+namespace App\Features\Documents\Actions;
+
+use App\Enums\DocumentStatus;
+use App\Enums\PeriodStatus;
+use App\Features\Documents\Services\DocumentCalculator;
+use App\Models\Document;
+use App\Models\Period;
+use App\Models\Product;
+use App\Support\Audit\AuditService;
+use DomainException;
+use Illuminate\Support\Facades\DB;
+
+final class CheckoutOrderAction
+{
+    public function __construct(
+        private readonly DocumentCalculator $calculator,
+        private readonly AuditService $audit,
+    ) {}
+
+    /**
+     * Execute instant real-time POS checkout with authoritative sequence number.
+     *
+     * @param array<string, mixed> $data
+     * @param int $cashierId
+     * @return Document
+     */
+    public function handle(array $data, int $cashierId): Document
+    {
+        return DB::transaction(function () use ($data, $cashierId) {
+            // 1. Resolve or activate operational shift period
+            $period = Period::where('status', PeriodStatus::Active)->lockForUpdate()->first();
+            if (! $period) {
+                $period = Period::resolveActive(1, $cashierId);
+            }
+
+            // 2. Resolve Products and Authoritative Prices
+            $rawItems = $data['items'] ?? [];
+            if (empty($rawItems)) {
+                throw new DomainException('Please add at least one item to checkout.');
+            }
+
+            $productIds = array_column($rawItems, 'product_id');
+            $products = Product::with(['category', 'unit'])
+                ->whereIn('id', $productIds)
+                ->where('is_active', true)
+                ->get()
+                ->keyBy('id');
+
+            $resolvedItems = [];
+            $calcItems = [];
+
+            foreach ($rawItems as $position => $rawItem) {
+                $productId = (int) $rawItem['product_id'];
+                $product = $products->get($productId);
+
+                if (! $product) {
+                    throw new DomainException("Product #{$productId} is not available.");
+                }
+
+                $quantity = max(1, (int) ($rawItem['quantity'] ?? 1));
+                $unitPrice = $product->unit_price;
+
+                $resolvedItems[] = [
+                    'product_id' => $product->id,
+                    'line_position' => $position + 1,
+                    'category_type_snapshot' => $product->category->category_type ?? 'regular',
+                    'product_name_primary_snapshot' => $product->name_primary,
+                    'product_name_secondary_snapshot' => $product->name_secondary,
+                    'unit_snapshot' => $product->unit->name_primary ?? 'ចាន',
+                    'quantity' => $quantity,
+                    'master_price_at_entry' => $unitPrice,
+                    'unit_price' => $unitPrice,
+                    'is_primary_package_snapshot' => (bool) $product->is_primary_package,
+                    'is_price_override' => false,
+                ];
+
+                $calcItems[] = [
+                    'quantity' => $quantity,
+                    'unit_price' => $unitPrice,
+                    'is_primary_package' => (bool) $product->is_primary_package,
+                ];
+            }
+
+            // 3. Authoritative Totals Calculation
+            $discountAmountInput = (string) ($data['discount_amount'] ?? '0.00');
+            $paymentMethod = (string) ($data['payment_method'] ?? 'cash');
+
+            // Compute expected grand total
+            $itemsSubtotalCents = 0;
+            foreach ($calcItems as $ci) {
+                $itemsSubtotalCents += \App\Support\Money\Money::toCents((string) $ci['unit_price']) * (int) $ci['quantity'];
+            }
+            $discountCents = \App\Support\Money\Money::toCents($discountAmountInput);
+            $expectedGrandTotalCents = max(0, $itemsSubtotalCents - $discountCents);
+            $expectedGrandTotal = \App\Support\Money\Money::fromCents($expectedGrandTotalCents);
+
+            $amountReceivedInput = (string) ($data['amount_received'] ?? '');
+            if ($paymentMethod !== 'cash' || $amountReceivedInput === '' || bccomp($amountReceivedInput, $expectedGrandTotal, 2) === -1) {
+                $amountReceivedInput = $expectedGrandTotal;
+            }
+
+            $calc = $this->calculator->calculate(
+                items: $calcItems,
+                sourceTotal: null,
+                amountReceived: $amountReceivedInput,
+                taxAmount: '0.00',
+                discountAmount: $discountAmountInput,
+                paymentMethod: $paymentMethod,
+            );
+
+            // 4. Atomic Sequential Number Stamping
+            $nextSequence = ($period->last_sequence_no ?? 0) + 1;
+            $period->last_sequence_no = $nextSequence;
+            $period->save();
+
+            $docPrefix = $period->document_prefix ?? 'INV';
+            $documentNumber = sprintf('%s-%s-%04d', $docPrefix, $period->code, $nextSequence);
+
+            $tableName = $data['table_identifier'] ?? $data['reference_identifier'] ?? 'Takeaway';
+
+            // 5. Update Existing Table Draft or Insert New Finalized Document
+            $existingDocId = $data['document_id'] ?? null;
+            if ($existingDocId) {
+                $document = Document::findOrFail($existingDocId);
+                $document->items()->delete();
+
+                $document->update([
+                    'sequence_no' => $nextSequence,
+                    'document_number' => $documentNumber,
+                    'unit_count' => $calc['unit_count'],
+                    'source_total' => $calc['grand_total'],
+                    'source_total_verified' => true,
+                    'subtotal' => $calc['subtotal'],
+                    'tax_amount' => $calc['tax_amount'],
+                    'discount_amount' => $calc['discount_amount'],
+                    'grand_total' => $calc['grand_total'],
+                    'amount_received' => $calc['amount_received'],
+                    'change_amount' => $calc['change_amount'],
+                    'payment_method' => $paymentMethod,
+                    'status' => DocumentStatus::Finalized,
+                    'reference_identifier' => $tableName,
+                    'kitchen_status' => 'pending',
+                    'customer_id' => ! empty($data['customer_id']) ? (int) $data['customer_id'] : null,
+                    'points_earned' => ! empty($data['customer_id']) ? (int) floor((float) $calc['grand_total']) : 0,
+                    'note' => $data['note'] ?? null,
+                    'finalized_by' => $cashierId,
+                    'finalized_at' => now(),
+                    'updated_by' => $cashierId,
+                ]);
+            } else {
+                $customerId = ! empty($data['customer_id']) ? (int) $data['customer_id'] : null;
+                $pointsEarned = $customerId ? (int) floor((float) $calc['grand_total']) : 0;
+
+                $document = Document::create([
+                    'period_id' => $period->id,
+                    'provisional_order' => $nextSequence,
+                    'sequence_no' => $nextSequence,
+                    'document_number' => $documentNumber,
+                    'business_date' => now()->toDateString(),
+                    'event_time' => now()->format('H:i:s'),
+                    'reference_identifier' => $tableName,
+                    'unit_count' => $calc['unit_count'],
+                    'source_total' => $calc['grand_total'],
+                    'source_total_verified' => true,
+                    'subtotal' => $calc['subtotal'],
+                    'tax_amount' => $calc['tax_amount'],
+                    'discount_amount' => $calc['discount_amount'],
+                    'grand_total' => $calc['grand_total'],
+                    'amount_received' => $calc['amount_received'],
+                    'change_amount' => $calc['change_amount'],
+                    'payment_method' => $paymentMethod,
+                    'status' => DocumentStatus::Finalized,
+                    'kitchen_status' => 'pending',
+                    'customer_id' => $customerId,
+                    'points_earned' => $pointsEarned,
+                    'note' => $data['note'] ?? null,
+                    'print_settings_snapshot' => $period->print_settings_snapshot,
+                    'entry_settings_snapshot' => $period->entry_settings_snapshot,
+                    'created_by' => $cashierId,
+                    'updated_by' => $cashierId,
+                    'finalized_by' => $cashierId,
+                    'finalized_at' => now(),
+                    'lock_version' => 0,
+                ]);
+            }
+
+            // Accrue loyalty points to customer if attached
+            if (! empty($document->customer_id)) {
+                $customer = \App\Models\Customer::find($document->customer_id);
+                if ($customer) {
+                    $customer->increment('visits_count');
+                    $customer->increment('loyalty_points', $document->points_earned);
+                    $customer->increment('total_spent_usd', (float) $calc['grand_total']);
+                    if ($customer->total_spent_usd >= 200 && $customer->tier !== 'vip') {
+                        $customer->update(['tier' => 'vip']);
+                    } elseif ($customer->total_spent_usd >= 100 && in_array($customer->tier, ['standard', 'silver'])) {
+                        $customer->update(['tier' => 'gold']);
+                    } elseif ($customer->total_spent_usd >= 40 && $customer->tier === 'standard') {
+                        $customer->update(['tier' => 'silver']);
+                    }
+                }
+            }
+
+            // If table order checked out, set restaurant table back to available
+            $resTable = \App\Models\RestaurantTable::where('name', $tableName)->orWhere('code', $tableName)->first();
+            if ($resTable) {
+                $resTable->update(['status' => 'available']);
+            }
+
+            // 6. Insert Line Items
+            foreach ($resolvedItems as $pos => $item) {
+                $document->items()->create([
+                    ...$item,
+                    'line_total' => $calc['line_totals'][$pos],
+                ]);
+            }
+
+            // 7. Audit Log
+            $this->audit->record(
+                'document.checkout_completed',
+                $document,
+                null,
+                [
+                    'document_number' => $documentNumber,
+                    'grand_total' => $calc['grand_total'],
+                    'payment_method' => $paymentMethod,
+                    'table' => $tableName,
+                ],
+                null,
+                $cashierId,
+                "Live POS checkout completed: {$documentNumber} for {$tableName}"
+            );
+
+            return $document->load(['items.product', 'creator', 'period']);
+        });
+    }
+}

@@ -1,0 +1,738 @@
+@import 'tailwindcss';
+
+@source '../views/**/*.blade.php';
+@source '../js/**/*.{ts,tsx}';
+
+@theme {
+    --font-sans: 'Inter', 'Kantumruy Pro', 'Battambang', 'Siemreap', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-khmer: 'Kantumruy Pro', 'Battambang', 'Siemreap', sans-serif;
+}
+
+/* Khmer Typography & Metric Normalization (Prevents ascender/descender clipping) */
+:lang(km),
+.font-khmer,
+[class*="font-khmer"] {
+    font-family: 'Kantumruy Pro', 'Battambang', 'Siemreap', sans-serif;
+    letter-spacing: normal !important;
+    line-height: 1.6;
+}
+
+.font-khmer.leading-tight,
+.font-khmer.leading-snug,
+.font-khmer.leading-none,
+[class*="font-khmer"].leading-tight,
+[class*="font-khmer"].leading-snug,
+[class*="font-khmer"].leading-none {
+    line-height: 1.45 !important;
+}
+
+/* Give truncated text breathing room so upper vowels and lower subscripts are never clipped */
+.truncate {
+    padding-top: 1.5px;
+    padding-bottom: 2px;
+}
+
+:root {
+    --bg-dark: #09090b;
+    --card-dark: #121215;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+}
+
+/* Glassmorphism primitives */
+.glass-panel {
+    background: rgba(18, 18, 22, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-interactive {
+    background: rgba(24, 24, 29, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-interactive:hover {
+    background: rgba(30, 30, 38, 0.85);
+    border-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-1px);
+}
+
+/* Completely hide scrollbars globally while preserving full scrolling (touch, wheel, keyboard) */
+html,
+body,
+* {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+    background: transparent !important;
+    display: none !important;
+}
+
+.scrollbar-none,
+.no-scrollbar {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+html {
+    overflow-y: auto;
+}
+
+html.pos-terminal-fixed,
+body.pos-terminal-fixed {
+    overflow: hidden !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    touch-action: pan-x;
+}
+
+/* Smooth Page Transitions without Layout Shifts */
+@keyframes pageEnter {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.page-transition {
+    animation: pageEnter 0.16s ease-out both;
+    will-change: opacity;
+}
+
+/* Inertia NProgress Top Progress Bar */
+#nprogress {
+    pointer-events: none;
+}
+
+#nprogress .bar {
+    background: linear-gradient(90deg, #f59e0b, #10b981);
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.6), 0 0 6px rgba(16, 185, 129, 0.4);
+    transition: all 200ms ease;
+}
+
+#nprogress .peg {
+    display: block;
+    position: absolute;
+    right: 0px;
+    width: 100px;
+    height: 100%;
+    box-shadow: 0 0 10px #f59e0b, 0 0 5px #10b981;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* Print layout rules */
+@media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* ========================================================
+   LIGHT THEME SYSTEM (Active when html.light is applied)
+   ======================================================== */
+html.light {
+    color-scheme: light;
+
+    /* Dynamic Tailwind v4 Color Token Mapping for Light Theme */
+    --color-zinc-950: #f8fafc;
+    --color-zinc-900: #ffffff;
+    --color-zinc-850: #f8fafc;
+    --color-zinc-800: #f1f5f9;
+    --color-zinc-750: #e2e8f0;
+    --color-zinc-700: #cbd5e1;
+    --color-zinc-600: #94a3b8;
+    --color-zinc-500: #64748b;
+    --color-zinc-400: #64748b;
+    --color-zinc-300: #334155;
+    --color-zinc-200: #1e293b;
+    --color-zinc-100: #0f172a;
+    --color-zinc-50: #09090b;
+
+    /* Slate mappings for pages using slate */
+    --color-slate-950: #f8fafc;
+    --color-slate-900: #ffffff;
+    --color-slate-850: #f8fafc;
+    --color-slate-800: #f1f5f9;
+    --color-slate-750: #e2e8f0;
+    --color-slate-700: #cbd5e1;
+    --color-slate-600: #94a3b8;
+    --color-slate-500: #64748b;
+    --color-slate-400: #64748b;
+    --color-slate-300: #334155;
+    --color-slate-200: #1e293b;
+    --color-slate-100: #0f172a;
+    --color-slate-50: #09090b;
+
+    --card-dark: #ffffff;
+    --bg-dark: #f8fafc;
+    --card-border: #e2e8f0;
+}
+
+/* Global Selection Styling */
+html.light ::selection {
+    background-color: #a7f3d0 !important;
+    color: #065f46 !important;
+}
+
+/* Gradient overrides in light mode */
+html.light .from-zinc-950,
+html.light .from-zinc-900,
+html.light .from-zinc-800,
+html.light .from-zinc-800\/80,
+html.light .from-slate-950,
+html.light .from-slate-900 {
+    --tw-gradient-from: #ffffff !important;
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)) !important;
+}
+
+html.light .via-zinc-950,
+html.light .via-zinc-900,
+html.light .via-zinc-900\/95,
+html.light .via-zinc-800,
+html.light .via-slate-950,
+html.light .via-slate-900 {
+    --tw-gradient-via: #f8fafc !important;
+}
+
+html.light .to-zinc-950,
+html.light .to-zinc-900,
+html.light .to-zinc-900\/90,
+html.light .to-zinc-800,
+html.light .to-slate-950,
+html.light .to-slate-900 {
+    --tw-gradient-to: #f8fafc !important;
+}
+
+/* Dashboard Active Period card gradient override */
+html.light .from-emerald-950\/20 {
+    --tw-gradient-from: #ecfdf5 !important;
+}
+
+/* POS Terminal Horizontal Mask Gradients */
+html.light .bg-gradient-to-l.from-slate-950,
+html.light .bg-gradient-to-r.from-slate-950,
+html.light .bg-gradient-to-l.from-zinc-950,
+html.light .bg-gradient-to-r.from-zinc-950 {
+    --tw-gradient-from: #f8fafc !important;
+}
+
+html.light body {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+/* Base Canvas & Outer Containers */
+html.light .bg-zinc-950,
+html.light .bg-slate-950,
+html.light header.bg-zinc-950,
+html.light aside.bg-zinc-950,
+html.light nav.bg-zinc-950 {
+    background-color: #f8fafc !important;
+}
+
+/* Card, Panel, Modal, Drawer & Main Surfaces */
+html.light .bg-zinc-900,
+html.light .bg-zinc-900\/95,
+html.light .bg-zinc-900\/90,
+html.light .bg-zinc-900\/80,
+html.light .bg-zinc-900\/70,
+html.light .bg-zinc-900\/60,
+html.light .bg-zinc-900\/50,
+html.light .bg-zinc-900\/40,
+html.light .bg-slate-900,
+html.light .bg-slate-900\/95,
+html.light .bg-slate-900\/90,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/60,
+html.light .bg-slate-900\/50,
+html.light .bg-slate-900\/40 {
+    background-color: #ffffff !important;
+}
+
+/* Secondary Backgrounds, Active Tabs, Sub-menu Bars, Table Row Hovers */
+html.light .bg-zinc-800,
+html.light .bg-zinc-800\/90,
+html.light .bg-zinc-800\/80,
+html.light .bg-zinc-800\/70,
+html.light .bg-zinc-800\/60,
+html.light .bg-zinc-800\/50,
+html.light .bg-zinc-800\/40,
+html.light .bg-zinc-800\/30,
+html.light .bg-slate-800,
+html.light .bg-slate-800\/90,
+html.light .bg-slate-800\/80,
+html.light .bg-slate-800\/70,
+html.light .bg-slate-800\/60,
+html.light .bg-slate-800\/50,
+html.light .bg-slate-800\/40,
+html.light .bg-slate-800\/30 {
+    background-color: #f1f5f9 !important;
+}
+
+/* Subtle Secondary Hovers */
+html.light .hover\:bg-zinc-900:hover,
+html.light .hover\:bg-zinc-800:hover,
+html.light .hover\:bg-zinc-800\/80:hover,
+html.light .hover\:bg-zinc-800\/40:hover,
+html.light .hover\:bg-slate-900:hover,
+html.light .hover\:bg-slate-800:hover,
+html.light .hover\:bg-slate-800\/80:hover,
+html.light .hover\:bg-slate-800\/40:hover {
+    background-color: #e2e8f0 !important;
+}
+
+/* Dividers & Borders */
+html.light .border-zinc-800,
+html.light .border-zinc-800\/90,
+html.light .border-zinc-800\/80,
+html.light .border-zinc-800\/70,
+html.light .border-zinc-800\/60,
+html.light .border-zinc-800\/40,
+html.light .divide-zinc-800,
+html.light .divide-zinc-800\/80,
+html.light .divide-zinc-800\/60,
+html.light .divide-zinc-800\/40,
+html.light .border-slate-800,
+html.light .border-slate-800\/90,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .divide-slate-800 {
+    border-color: #e2e8f0 !important;
+}
+
+html.light .border-zinc-700,
+html.light .border-zinc-700\/90,
+html.light .border-zinc-700\/80,
+html.light .border-zinc-700\/70,
+html.light .border-zinc-700\/60,
+html.light .border-zinc-700\/50,
+html.light .border-slate-700,
+html.light .border-slate-700\/90,
+html.light .border-slate-700\/80 {
+    border-color: #cbd5e1 !important;
+}
+
+/* ========================================================
+   TYPOGRAPHY HIERARCHY & TEXT CONTRAST IN LIGHT MODE
+   ======================================================== */
+/* Primary text: Headings, big metric numbers, document codes, bold labels */
+html.light .text-white,
+html.light .text-zinc-100,
+html.light .text-zinc-200,
+html.light .text-slate-100,
+html.light .text-slate-200 {
+    color: #0f172a !important;
+}
+
+/* Secondary & body text */
+html.light .text-zinc-300,
+html.light .text-slate-300 {
+    color: #334155 !important;
+}
+
+/* Subtitles, secondary table info, inactive item labels */
+html.light .text-zinc-400,
+html.light .text-slate-400 {
+    color: #64748b !important;
+}
+
+/* Faint labels & placeholders */
+html.light .text-zinc-500,
+html.light .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+/* Dark badges and text */
+html.light .text-zinc-950,
+html.light .text-slate-950 {
+    color: #09090b !important;
+}
+
+/* ========================================================
+   ACCENT COLORS & BADGES (High-contrast for light surfaces)
+   ======================================================== */
+/* Emerald / Green Accents */
+html.light .text-emerald-400,
+html.light .text-emerald-300 {
+    color: #059669 !important;
+}
+html.light .bg-emerald-500\/10,
+html.light .bg-emerald-500\/15,
+html.light .bg-emerald-500\/20 {
+    background-color: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+}
+html.light .border-emerald-500\/20,
+html.light .border-emerald-500\/30 {
+    border-color: #6ee7b7 !important;
+}
+
+/* Amber / Gold Accents */
+html.light .text-amber-400,
+html.light .text-amber-300 {
+    color: #d97706 !important;
+}
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/15,
+html.light .bg-amber-500\/20 {
+    background-color: #fef3c7 !important;
+    border-color: #fde68a !important;
+}
+html.light .border-amber-500\/20,
+html.light .border-amber-500\/30,
+html.light .border-amber-500\/35,
+html.light .border-amber-500\/40 {
+    border-color: #fcd34d !important;
+}
+
+/* Teal Accents */
+html.light .text-teal-400,
+html.light .text-teal-300 {
+    color: #0d9488 !important;
+}
+html.light .bg-teal-500\/10,
+html.light .bg-teal-500\/15,
+html.light .bg-teal-500\/20 {
+    background-color: #f0fdfa !important;
+    border-color: #99f6e4 !important;
+}
+
+/* Sky / Blue Accents */
+html.light .text-sky-400,
+html.light .text-blue-400 {
+    color: #0284c7 !important;
+}
+html.light .bg-sky-500\/10,
+html.light .bg-sky-500\/20,
+html.light .bg-blue-500\/10 {
+    background-color: #f0f9ff !important;
+    border-color: #bae6fd !important;
+}
+
+/* Rose / Red Accents */
+html.light .text-rose-400,
+html.light .text-rose-500,
+html.light .text-red-400 {
+    color: #e11d48 !important;
+}
+html.light .bg-rose-500\/10,
+html.light .bg-rose-500\/20 {
+    background-color: #fff1f2 !important;
+    border-color: #fecdd3 !important;
+}
+
+/* Purple Accents */
+html.light .text-purple-400,
+html.light .text-purple-300 {
+    color: #9333ea !important;
+}
+html.light .bg-purple-500\/10,
+html.light .bg-purple-500\/20 {
+    background-color: #faf5ff !important;
+    border-color: #e9d5ff !important;
+}
+
+/* ========================================================
+   SOLID ACTION BUTTONS & SENSITIVE CONTROLS
+   ======================================================== */
+/* Buttons with rich saturated backgrounds keep white text */
+html.light button.bg-emerald-600,
+html.light button.bg-emerald-500,
+html.light button.bg-rose-600,
+html.light button.bg-rose-500,
+html.light button.bg-indigo-600,
+html.light button.bg-indigo-500,
+html.light button.bg-blue-600,
+html.light button.bg-blue-500,
+html.light button[class*="from-emerald-"],
+html.light button[class*="from-rose-"],
+html.light button[class*="from-indigo-"],
+html.light button.bg-emerald-600 *,
+html.light button.bg-emerald-500 *,
+html.light button.bg-rose-600 *,
+html.light button.bg-rose-500 *,
+html.light button.bg-indigo-600 *,
+html.light button.bg-indigo-500 *,
+html.light button.bg-blue-600 *,
+html.light button.bg-blue-500 *,
+html.light button[class*="from-emerald-"] *,
+html.light button[class*="from-rose-"] *,
+html.light button[class*="from-indigo-"] * {
+    color: #ffffff !important;
+}
+
+/* Buttons with Amber / Gold backgrounds keep dark text */
+html.light button.bg-amber-500,
+html.light button.bg-amber-400,
+html.light button[class*="from-amber-"],
+html.light button.bg-amber-500 *,
+html.light button.bg-amber-400 *,
+html.light button[class*="from-amber-"] * {
+    color: #09090b !important;
+}
+
+/* In-cart counter pill on product card */
+html.light span[class*="bg-amber-500"].text-zinc-950,
+html.light span[class*="bg-amber-500"].text-slate-950 {
+    color: #09090b !important;
+}
+
+/* ========================================================
+   IMAGE OVERLAYS & PHOTO BADGES
+   ======================================================== */
+/* Badges and text overlaid directly on product/dish photos must stay white */
+html.light .relative img ~ span,
+html.light .relative img ~ div,
+html.light .relative [class*="bg-black/"],
+html.light .relative [class*="bg-black/"] *,
+html.light .relative [class*="bg-zinc-950/80"],
+html.light .relative [class*="bg-zinc-950/80"] * {
+    color: #ffffff !important;
+}
+
+/* ========================================================
+   TABLE PRESENTATION IN LIGHT MODE
+   ======================================================== */
+html.light thead,
+html.light thead tr,
+html.light thead th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    border-color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+html.light tbody tr {
+    background-color: #ffffff;
+    border-color: #f1f5f9 !important;
+}
+
+html.light tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* ========================================================
+   SIDEBAR POLISH & BRANDING IN LIGHT MODE
+   ======================================================== */
+html.light aside,
+html.light header.md\:hidden {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.light aside a div span.font-bold,
+html.light aside a span.font-bold,
+html.light header.md\:hidden a span.font-bold {
+    color: #0f172a !important;
+}
+
+/* Inactive nav items */
+html.light aside a.text-zinc-400,
+html.light aside button.text-zinc-400 {
+    color: #475569 !important;
+}
+
+/* Active navigation link in Light Mode */
+html.light aside nav a.bg-zinc-800,
+html.light aside a.bg-zinc-800 {
+    background-color: #fef3c7 !important;
+    border-color: #fde68a !important;
+    color: #b45309 !important;
+}
+html.light aside nav a.bg-zinc-800 svg,
+html.light aside a.bg-zinc-800 svg {
+    color: #d97706 !important;
+}
+
+/* POS Terminal special highlight item */
+html.light aside a.text-amber-400.bg-amber-500\/10 {
+    background-color: #fef3c7 !important;
+    border-color: #fde68a !important;
+    color: #b45309 !important;
+}
+
+/* ========================================================
+   POS TERMINAL ORDER TRAY & GRAND TOTAL
+   ======================================================== */
+/* Luxury Grand Total Banner in Light Mode */
+html.light .border-amber-500\/35 {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fed7aa 100%) !important;
+    border-color: #fcd34d !important;
+    box-shadow: 0 4px 14px -2px rgba(217, 119, 6, 0.15) !important;
+}
+html.light .border-amber-500\/35 .text-amber-400 {
+    color: #b45309 !important;
+}
+
+/* Inputs, Textareas, Selects in Light Mode */
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 1px #10b981 !important;
+}
+
+/* Glass Panels & Shadows in Light Mode */
+html.light .glass-panel {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .glass-panel-interactive {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .glass-panel-interactive:hover {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Dropdown popovers & Flyouts */
+html.light .backdrop-blur-xl,
+html.light .backdrop-blur-md {
+    background-color: rgba(255, 255, 255, 0.98) !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Collapsed Sidebar Flyout Submenu in Light Mode */
+html.light [data-collapsed-group] .bg-zinc-900\/98,
+html.light [data-collapsed-group] .bg-zinc-900 {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light [data-collapsed-flyout-arrow] {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.light [data-collapsed-group] .border-zinc-800\/70,
+html.light [data-collapsed-group] .border-zinc-800 {
+    border-color: #f1f5f9 !important;
+}
+
+html.light [data-collapsed-group] .text-zinc-400,
+html.light [data-collapsed-group] .text-zinc-500 {
+    color: #64748b !important;
+}
+
+html.light [data-collapsed-group] .text-zinc-300 {
+    color: #334155 !important;
+}
+
+html.light [data-collapsed-group] .hover\:bg-zinc-800\/80:hover {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+/* Global Shadow Softening in Light Mode */
+html.light .shadow-2xl,
+html.light .shadow-xl,
+html.light .shadow-lg,
+html.light .shadow-md {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02) !important;
+}
+
+html.light [class*="shadow-black"] {
+    --tw-shadow-color: rgba(0, 0, 0, 0.02) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Clean Flat Card Surfaces in Light Mode (No muddy card shadows) */
+html.light .bg-zinc-900,
+html.light .bg-slate-900 {
+    box-shadow: none !important;
+}
+
+/* Sticky top headers: completely eliminate the heavy drop shadow */
+.sticky.shadow-xl,
+.sticky.shadow-lg,
+.sticky.shadow-md,
+.sticky.shadow-black,
+.sticky[class*="shadow-black"] {
+    box-shadow: none !important;
+}
+
+html.light .sticky {
+    box-shadow: none !important;
+}
+
+/* Scrollbars in Light Mode - completely hidden */
+html.light,
+html.light body,
+html.light * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+html.light ::-webkit-scrollbar,
+html.light *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
