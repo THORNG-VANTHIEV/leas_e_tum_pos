@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { Link, usePage, router, Head } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import {
@@ -223,6 +223,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
     const currentPath = url.split('?')[0];
     const isPosPage = currentPath === '/invoices/create';
 
+    const sidebarNavRef = useRef<HTMLElement>(null);
+
+    // Track and persist sidebar scroll in sessionStorage
+    const handleSidebarScroll = () => {
+        if (sidebarNavRef.current) {
+            sessionStorage.setItem('leashal_etum_sidebar_scroll', String(sidebarNavRef.current.scrollTop));
+        }
+    };
+
     useEffect(() => {
         setCollapsedFlyout(null);
     }, [currentPath]);
@@ -245,7 +254,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         if (href === '/invoices') {
             return (
                 currentPath === '/invoices' ||
-                (currentPath.startsWith('/invoices/') && currentPath !== '/invoices/create')
+                (currentPath.startsWith('/invoices/') && currentPath !== '/invoices/create' && !currentPath.startsWith('/invoices/print-range'))
             );
         }
         if (href === '/dashboard') {
@@ -255,19 +264,42 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
     };
 
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
-        const path = typeof window !== 'undefined' ? window.location.pathname : '';
+        if (typeof window === 'undefined') {
+            return { operations: true, inventory: false, finance: false };
+        }
+        const path = window.location.pathname;
+        let stored: Record<string, boolean> = {};
+        try {
+            const raw = localStorage.getItem('leashal_etum_sidebar_open_groups');
+            if (raw) stored = JSON.parse(raw);
+        } catch {
+            stored = {};
+        }
+
+        const isOp = path.startsWith('/tables') || path.startsWith('/kds') || (path.startsWith('/invoices') && path !== '/invoices/create');
+        const isInv = path.startsWith('/catalog') || path.startsWith('/purchases');
+        const isFin = path.startsWith('/expenses') || path.startsWith('/customers') || path.startsWith('/approvals');
+
         return {
-            operations: true,
-            inventory: path.startsWith('/catalog') || path.startsWith('/purchases'),
-            finance: path.startsWith('/expenses') || path.startsWith('/customers') || path.startsWith('/approvals'),
+            operations: isOp || (stored.operations !== undefined ? stored.operations : isOp),
+            inventory: isInv || stored.inventory === true,
+            finance: isFin || stored.finance === true,
         };
     });
 
     const toggleGroup = (groupId: string) => {
-        setOpenGroups((prev) => ({
-            ...prev,
-            [groupId]: !prev[groupId],
-        }));
+        setOpenGroups((prev) => {
+            const next = {
+                ...prev,
+                [groupId]: !prev[groupId],
+            };
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem('leashal_etum_sidebar_open_groups', JSON.stringify(next));
+                } catch {}
+            }
+            return next;
+        });
     };
 
     const navEntries: NavEntry[] = [
@@ -402,11 +434,45 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
             if (entry.type === 'group') {
                 const hasActive = entry.group.children.some((child) => isItemActive(child.href));
                 if (hasActive) {
-                    setOpenGroups((prev) => ({ ...prev, [entry.group.id]: true }));
+                    setOpenGroups((prev) => {
+                        if (prev[entry.group.id]) return prev;
+                        const next = { ...prev, [entry.group.id]: true };
+                        if (typeof window !== 'undefined') {
+                            try {
+                                localStorage.setItem('leashal_etum_sidebar_open_groups', JSON.stringify(next));
+                            } catch {}
+                        }
+                        return next;
+                    });
                 }
             }
         });
     }, [currentPath]);
+
+    // Restore scroll position and smoothly reveal the active menu item in view
+    useLayoutEffect(() => {
+        if (!sidebarNavRef.current) return;
+
+        // Restore scroll position first
+        const savedScroll = sessionStorage.getItem('leashal_etum_sidebar_scroll');
+        if (savedScroll !== null) {
+            sidebarNavRef.current.scrollTop = Number(savedScroll);
+        }
+
+        // Scroll the active menu item into view so the user never loses their position
+        const timer = setTimeout(() => {
+            if (!sidebarNavRef.current) return;
+            const activeEl = sidebarNavRef.current.querySelector<HTMLElement>('[data-nav-active="true"]');
+            if (activeEl) {
+                activeEl.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                });
+            }
+        }, 60);
+
+        return () => clearTimeout(timer);
+    }, [currentPath, collapsed]);
 
     const renderNavLinks = (isCollapsed: boolean = false) => (
         <div className="space-y-1.5">
@@ -421,15 +487,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             <div key={item.href} className="relative group flex justify-center">
                                 <Link
                                     href={item.href}
+                                    data-nav-active={active ? 'true' : undefined}
                                     onClick={() => setCollapsedFlyout(null)}
                                     title={`${getName(item)}${getSecondaryName(item) ? ` (${getSecondaryName(item)})` : ''} ${
                                         item.shortcut ? `[${item.shortcut}]` : ''
                                     }`}
                                     className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all border relative ${
                                         active
-                                            ? 'bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-md shadow-black/20'
+                                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md shadow-amber-500/20 ring-1 ring-amber-500/40'
                                             : item.highlight
-                                            ? 'text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 hover:border-amber-500/50'
+                                            ? 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800 border-zinc-800/80 hover:border-zinc-700'
                                             : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent'
                                     }`}
                                 >
@@ -438,7 +505,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                             active
                                                 ? 'text-amber-400'
                                                 : item.highlight
-                                                ? 'text-amber-400'
+                                                ? 'text-amber-400/90'
                                                 : 'text-zinc-400 group-hover:text-zinc-200'
                                         }`}
                                     />
@@ -449,7 +516,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                             className={`absolute -top-1 -right-1 font-mono text-[9px] font-bold px-1 rounded-full leading-tight border ${
                                                 active
                                                     ? 'bg-amber-400 text-zinc-950 border-amber-300'
-                                                    : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                                                    : 'bg-zinc-800 text-amber-400 border-zinc-700'
                                             }`}
                                         >
                                             {item.shortcut}
@@ -487,22 +554,26 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <Link
                             key={item.href}
                             href={item.href}
+                            data-nav-active={active ? 'true' : undefined}
                             onClick={() => setMobileMenuOpen(false)}
                             className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group border ${
                                 active
-                                    ? 'bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-md shadow-black/20'
+                                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-sm font-semibold'
                                     : item.highlight
-                                    ? 'text-amber-400 bg-amber-500/5 hover:bg-amber-500/15 border-amber-500/25 hover:border-amber-500/40'
+                                    ? 'text-zinc-300 hover:text-white bg-zinc-900/50 hover:bg-zinc-850 border-zinc-800/80 hover:border-zinc-700'
                                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent'
                             }`}
                         >
                             <div className="flex items-center gap-3 min-w-0">
+                                {active && (
+                                    <span className="w-1.5 h-4 rounded-full bg-amber-400 shrink-0 shadow-xs shadow-amber-400/80 -ml-1" />
+                                )}
                                 <Icon
                                     className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${
                                         active
                                             ? 'text-amber-400'
                                             : item.highlight
-                                            ? 'text-amber-400'
+                                            ? 'text-amber-400/80'
                                             : 'text-zinc-400 group-hover:text-zinc-200'
                                     }`}
                                 />
@@ -529,7 +600,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     className={`font-mono text-[9px] px-1.5 py-0.5 rounded leading-none shrink-0 ${
                                         active
                                             ? 'bg-amber-400 text-zinc-950 font-bold'
-                                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                            : 'bg-zinc-800 text-amber-400 border border-zinc-700'
                                     }`}
                                 >
                                     {item.shortcut}
@@ -565,7 +636,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 aria-expanded={isFlyoutOpen}
                                 className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all border relative cursor-pointer ${
                                     isFlyoutOpen || isGroupActive
-                                        ? 'bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-md shadow-black/20'
+                                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md shadow-amber-500/20 ring-1 ring-amber-500/40'
                                         : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent'
                                 }`}
                                 title={`${group.name} (${group.khmerName || ''})`}
@@ -576,7 +647,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     }`}
                                 />
                                 {isGroupActive && (
-                                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-zinc-950" />
+                                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-zinc-950 shadow-xs shadow-amber-400/80" />
                                 )}
                             </button>
 
@@ -614,6 +685,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                             <Link
                                                 key={child.href}
                                                 href={child.href}
+                                                data-nav-active={childActive ? 'true' : undefined}
                                                 onClick={() => {
                                                     setCollapsedFlyout(null);
                                                     setMobileMenuOpen(false);
@@ -666,7 +738,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             onClick={() => toggleGroup(group.id)}
                             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all group cursor-pointer border ${
                                 isGroupActive
-                                    ? 'text-zinc-100 bg-zinc-900/90 border-zinc-700/70 shadow-sm'
+                                    ? 'text-amber-300 bg-zinc-900/90 border-amber-500/30 shadow-xs'
                                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent'
                             }`}
                         >
@@ -689,6 +761,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
+                                {isGroupActive && (
+                                    <span className="w-2 h-2 rounded-full bg-amber-400 shadow-xs shadow-amber-400/80 shrink-0" />
+                                )}
                                 <span
                                     className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full border ${
                                         isGroupActive
@@ -716,14 +791,18 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         <Link
                                             key={child.href}
                                             href={child.href}
+                                            data-nav-active={childActive ? 'true' : undefined}
                                             onClick={() => setMobileMenuOpen(false)}
                                             className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all group border ${
                                                 childActive
-                                                    ? 'bg-zinc-800 text-amber-400 border-zinc-700/80 shadow-sm font-semibold'
+                                                    ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 shadow-sm font-semibold'
                                                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border-transparent font-medium'
                                             }`}
                                         >
                                             <div className="flex items-center gap-2.5 min-w-0">
+                                                {childActive && (
+                                                    <span className="w-1.5 h-3.5 rounded-full bg-amber-400 shrink-0 shadow-xs shadow-amber-400/80 -ml-1" />
+                                                )}
                                                 <ChildIcon
                                                     className={`w-3.5 h-3.5 shrink-0 transition-transform group-hover:scale-110 ${
                                                         childActive ? 'text-amber-400' : 'text-zinc-400 group-hover:text-zinc-200'
@@ -744,6 +823,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                                     )}
                                                 </div>
                                             </div>
+
+                                            {childActive && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 shadow-xs shadow-amber-400/60" />
+                                            )}
                                         </Link>
                                     );
                                 })}
@@ -1076,7 +1159,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 )}
 
                 {/* Left Navigation Menu Links */}
-                <nav className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto'} space-y-3`}>
+                <nav
+                    ref={sidebarNavRef}
+                    onScroll={handleSidebarScroll}
+                    className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto'} space-y-3 scroll-smooth`}
+                >
                     {!collapsed && (
                         <div className="px-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold flex items-center justify-between">
                             <span>Navigation</span>

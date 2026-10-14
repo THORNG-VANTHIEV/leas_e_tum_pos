@@ -77,7 +77,22 @@ export default function CatalogIndex({
     units,
     exchange_rate,
 }: CatalogProps) {
-    const [activeTab, setActiveTab] = useState<TabType>('products');
+    const [activeTab, setActiveTab] = useState<TabType>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = sessionStorage.getItem('catalog_active_tab') as TabType;
+            if (saved && ['products', 'units', 'categories'].includes(saved)) {
+                return saved;
+            }
+        }
+        return 'products';
+    });
+
+    const handleTabChange = (tab: TabType) => {
+        setActiveTab(tab);
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('catalog_active_tab', tab);
+        }
+    };
     const [searchQuery, setSearchQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState<string>('all');
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
@@ -165,10 +180,12 @@ export default function CatalogIndex({
         e.preventDefault();
         if (editingProduct) {
             productForm.patch(`/catalog/products/${editingProduct.id}`, {
+                preserveScroll: true,
                 onSuccess: () => setProductModalOpen(false),
             });
         } else {
             productForm.post('/catalog/products', {
+                preserveScroll: true,
                 onSuccess: () => setProductModalOpen(false),
             });
         }
@@ -208,10 +225,12 @@ export default function CatalogIndex({
         e.preventDefault();
         if (editingUnit) {
             unitForm.patch(`/catalog/units/${editingUnit.id}`, {
+                preserveScroll: true,
                 onSuccess: () => setUnitModalOpen(false),
             });
         } else {
             unitForm.post('/catalog/units', {
+                preserveScroll: true,
                 onSuccess: () => setUnitModalOpen(false),
             });
         }
@@ -253,10 +272,12 @@ export default function CatalogIndex({
         e.preventDefault();
         if (editingCategory) {
             categoryForm.patch(`/catalog/categories/${editingCategory.id}`, {
+                preserveScroll: true,
                 onSuccess: () => setCategoryModalOpen(false),
             });
         } else {
             categoryForm.post('/catalog/categories', {
+                preserveScroll: true,
                 onSuccess: () => setCategoryModalOpen(false),
             });
         }
@@ -345,7 +366,7 @@ export default function CatalogIndex({
                     <div className="flex items-center gap-1.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl w-fit overflow-x-auto max-w-full scrollbar-none shadow-xs">
                         <button
                             type="button"
-                            onClick={() => setActiveTab('products')}
+                            onClick={() => handleTabChange('products')}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'products'
                                     ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
@@ -367,7 +388,7 @@ export default function CatalogIndex({
 
                         <button
                             type="button"
-                            onClick={() => setActiveTab('units')}
+                            onClick={() => handleTabChange('units')}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'units'
                                     ? 'bg-emerald-500 text-zinc-950 font-bold shadow-md shadow-emerald-500/20'
@@ -389,7 +410,7 @@ export default function CatalogIndex({
 
                         <button
                             type="button"
-                            onClick={() => setActiveTab('categories')}
+                            onClick={() => handleTabChange('categories')}
                             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'categories'
                                     ? 'bg-teal-500 text-zinc-950 font-bold shadow-md shadow-teal-500/20'

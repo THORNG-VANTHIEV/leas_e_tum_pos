@@ -70,7 +70,7 @@ export default function DocumentIndex({ documents, filters, active_period }: Ind
                 search: search || undefined,
                 status: newStatus !== undefined ? newStatus : status || undefined,
             },
-            { preserveState: true }
+            { preserveState: true, preserveScroll: true }
         );
     };
 

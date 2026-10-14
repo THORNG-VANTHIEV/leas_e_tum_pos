@@ -514,7 +514,7 @@ export default function PurchasesIndex({
                             >
                                 <option value="all">អ្នកផ្គត់ផ្គង់ទាំងអស់ (All Suppliers)</option>
                                 {suppliers.map((s) => (
-                                    <option key={s.id} value={s.id}>
+                                    <option key={s.id} value={s.id.toString()}>
                                         {s.name}
                                     </option>
                                 ))}
