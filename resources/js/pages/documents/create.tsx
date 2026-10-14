@@ -886,10 +886,10 @@ export default function DocumentCreate({
                                     return (
                                         <div
                                             key={item.product_id}
-                                            className="p-2.5 rounded-2xl bg-zinc-50 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-850/90 border border-zinc-200 dark:border-zinc-800/90 hover:border-zinc-300 dark:hover:border-zinc-700/80 flex items-center justify-between gap-2.5 group transition-all shadow-sm shadow-black/5 dark:shadow-black/20"
+                                            className="pos-cart-item p-2.5 sm:p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800/80 hover:border-zinc-700/80 hover:bg-zinc-850/90 flex items-center justify-between gap-2.5 group transition-all shadow-sm"
                                         >
                                             {item.image_url && (
-                                                <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-zinc-200 dark:border-zinc-700/60 bg-zinc-100 dark:bg-zinc-800">
+                                                <div className="pos-cart-img-wrap w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 border border-zinc-700/60 bg-zinc-800 shadow-xs">
                                                     <img
                                                         src={item.image_url}
                                                         alt={item.name_primary}
@@ -899,43 +899,45 @@ export default function DocumentCreate({
                                                 </div>
                                             )}
                                             <div className="flex-1 min-w-0">
-                                                <h4 className={`font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors truncate leading-normal py-0.5 ${language === 'km' ? 'font-khmer' : ''}`}>
+                                                <h4 className={`font-bold text-xs sm:text-sm text-zinc-100 group-hover:text-amber-500 transition-colors truncate leading-normal py-0.5 ${language === 'km' ? 'font-khmer' : ''}`}>
                                                     {getName(item)}
                                                 </h4>
-                                                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
-                                                    <span className="text-zinc-700 dark:text-zinc-300 font-semibold">${unitPriceUSD.toFixed(2)}</span>
+                                                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-zinc-400 font-mono">
+                                                    <span className="text-zinc-300 font-semibold">${unitPriceUSD.toFixed(2)}</span>
                                                     <span>/</span>
-                                                    <span className="text-zinc-500 dark:text-zinc-400">{item.unit_name}</span>
+                                                    <span className="text-zinc-400">{item.unit_name}</span>
                                                 </div>
                                             </div>
 
                                             {/* Stepper Buttons */}
-                                            <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-950/90 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0 shadow-inner">
+                                            <div className="pos-cart-stepper flex items-center gap-1 bg-zinc-800 p-1 rounded-xl border border-zinc-700/80 shrink-0 shadow-inner">
                                                 <button
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, -1)}
-                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
+                                                    className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
+                                                    title="Decrease"
                                                 >
                                                     <Minus className="w-3.5 h-3.5" />
                                                 </button>
-                                                <span className="w-7 text-center font-bold text-xs text-zinc-900 dark:text-white font-mono">
+                                                <span className="w-7 text-center font-bold text-xs sm:text-sm text-zinc-100 font-mono">
                                                     {item.quantity}
                                                 </span>
                                                 <button
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, 1)}
-                                                    className="w-6 h-6 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition active:scale-90 cursor-pointer"
+                                                    className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
+                                                    title="Increase"
                                                 >
                                                     <Plus className="w-3.5 h-3.5" />
                                                 </button>
                                             </div>
 
                                             {/* Line Total */}
-                                            <div className="text-right min-w-[70px] shrink-0">
-                                                <div className="font-bold text-xs sm:text-sm text-amber-600 dark:text-amber-400 font-mono">
+                                            <div className="text-right min-w-[70px] sm:min-w-[76px] shrink-0">
+                                                <div className="font-bold text-xs sm:text-sm text-amber-400 font-mono">
                                                     ${lineTotalUSD}
                                                 </div>
-                                                <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
+                                                <div className="text-[10px] text-emerald-400 font-mono font-medium">
                                                     {lineTotalKHR.toLocaleString()} ៛
                                                 </div>
                                             </div>
@@ -944,9 +946,10 @@ export default function DocumentCreate({
                                             <button
                                                 type="button"
                                                 onClick={() => removeLine(item.product_id)}
-                                                className="text-zinc-400 hover:text-rose-500 dark:text-zinc-500 dark:hover:text-rose-400 p-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer shrink-0"
+                                                className="pos-cart-remove-btn text-zinc-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition cursor-pointer shrink-0"
+                                                title="Remove"
                                             >
-                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             </button>
                                         </div>
                                     );
@@ -955,14 +958,14 @@ export default function DocumentCreate({
                         </div>
 
                         {/* Bill Summary & Settlement Controls */}
-                        <div className="p-3.5 sm:p-4 border-t border-zinc-200 dark:border-zinc-800/90 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shrink-0 space-y-3">
+                        <div className="p-3.5 sm:p-4 border-t border-zinc-800 bg-zinc-900/90 backdrop-blur-md shrink-0 space-y-3">
                             {/* Fast Discount Chips */}
                             <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap sm:flex-nowrap">
-                                <span className="text-zinc-500 dark:text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
+                                <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
                                     <span>{t('pos.discount_label')}</span>
-                                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono uppercase">Discount</span>
+                                    <span className="text-[10px] text-zinc-500 font-mono uppercase">Discount</span>
                                 </span>
-                                <div className="flex items-center gap-0.5 sm:gap-1 bg-zinc-100 dark:bg-zinc-900/90 p-0.5 sm:p-1 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                <div className="pos-discount-bar flex items-center gap-0.5 sm:gap-1 bg-zinc-800 p-0.5 sm:p-1 rounded-xl border border-zinc-700/80 shrink-0">
                                     {[
                                         { label: '0%', type: 'none', val: '0' },
                                         { label: '5%', type: 'percent', val: '5' },
@@ -981,10 +984,10 @@ export default function DocumentCreate({
                                                     setDiscountType(d.type as any);
                                                     setDiscountValue(d.val);
                                                 }}
-                                                className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold font-mono transition-all cursor-pointer whitespace-nowrap ${
+                                                className={`pos-discount-chip-inactive px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold font-mono transition-all cursor-pointer whitespace-nowrap ${
                                                     active
                                                         ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20 scale-105'
-                                                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 hover:bg-zinc-200/80 dark:hover:bg-zinc-800/80'
+                                                        : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700/80'
                                                 }`}
                                             >
                                                 {d.label}
@@ -995,17 +998,17 @@ export default function DocumentCreate({
                             </div>
 
                             {/* Subtotal & Discount Calculation Rows */}
-                            <div className="space-y-1.5 text-xs text-zinc-500 dark:text-zinc-400 px-1 font-mono">
+                            <div className="space-y-1.5 text-xs text-zinc-400 px-1 font-mono">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-zinc-600 dark:text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
-                                    <span className="text-zinc-900 dark:text-zinc-200 font-bold">
-                                        ${totals.subtotalUSD} <span className="text-zinc-500 dark:text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} ៛)</span>
+                                    <span className="text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
+                                    <span className="text-zinc-100 font-bold">
+                                        ${totals.subtotalUSD} <span className="text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} ៛)</span>
                                     </span>
                                 </div>
                                 {parseFloat(totals.discountUSD) > 0 && (
-                                    <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
+                                    <div className="flex justify-between items-center text-emerald-400">
                                         <span className="font-khmer">{t('pos.discount_label')}:</span>
-                                        <span className="font-bold bg-emerald-50 dark:bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-500/20">
+                                        <span className="font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
                                             -${totals.discountUSD}
                                         </span>
                                     </div>
