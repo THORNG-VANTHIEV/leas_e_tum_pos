@@ -306,7 +306,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         icon: LayoutGrid,
                     },
                     {
-                        name: 'Kitchen (KDS)',
+                        name: 'Kitchen Display (KDS)',
                         khmerName: 'ផ្ទាំងផ្ទះបាយ',
                         href: '/kds',
                         icon: ChefHat,

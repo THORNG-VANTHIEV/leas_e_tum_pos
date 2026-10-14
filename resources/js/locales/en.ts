@@ -7,7 +7,7 @@ export const en: TranslationDict = {
         pos_terminal: 'POS Terminal',
         store_operations: 'Store Operations',
         floor_tables: 'Floor & Tables',
-        kitchen_kds: 'Kitchen (KDS)',
+        kitchen_kds: 'Kitchen Display (KDS)',
         register: 'Register',
         menu_inventory: 'Menu & Inventory',
         items_units: 'Items & Units',
