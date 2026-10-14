@@ -45,3 +45,15 @@ php artisan boost:install
 
 Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
 </laravel-boost-guidelines>
+
+# Session Control Rules (ច្បាប់គ្រប់គ្រងដំណើរការគម្រោង)
+
+- **When the user says "taking a break"**:
+  1. Check git status, commit and push changes to GitHub.
+  2. Stop and kill all running development processes (`php artisan dev`, `artisan serve`, `vite`, `queue:listen`, `pail`) so the computer can relax.
+  3. Confirm to the user that the project has been stopped and saved.
+
+- **When the user says "on time coding"**:
+  1. Start the project development environment immediately in the background using `php artisan dev` (or `composer run dev`).
+  2. Verify that the local server is listening on `http://127.0.0.1:8000` and Vite is ready.
+  3. Inform the user that the project is running and ready for coding.
