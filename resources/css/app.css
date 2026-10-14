@@ -367,27 +367,39 @@ html.light .border-slate-700\/80 {
 html.light .text-white,
 html.light .text-zinc-100,
 html.light .text-zinc-200,
+html.light .text-zinc-900,
 html.light .text-slate-100,
-html.light .text-slate-200 {
+html.light .text-slate-200,
+html.light .text-slate-900 {
     color: #0f172a !important;
 }
 
+/* Strong subheadings, section titles & bold labels */
+html.light .text-zinc-800,
+html.light .text-slate-800 {
+    color: #1e293b !important;
+}
+
 /* Secondary & body text */
+html.light .text-zinc-700,
 html.light .text-zinc-300,
+html.light .text-slate-700,
 html.light .text-slate-300 {
     color: #334155 !important;
 }
 
 /* Subtitles, secondary table info, inactive item labels */
+html.light .text-zinc-600,
 html.light .text-zinc-400,
+html.light .text-slate-600,
 html.light .text-slate-400 {
-    color: #64748b !important;
+    color: #475569 !important;
 }
 
 /* Faint labels & placeholders */
 html.light .text-zinc-500,
 html.light .text-slate-500 {
-    color: #94a3b8 !important;
+    color: #64748b !important;
 }
 
 /* Dark badges and text */
