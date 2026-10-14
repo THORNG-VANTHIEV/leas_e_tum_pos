@@ -296,7 +296,7 @@ export default function CatalogIndex({
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                                    <span className="p-2 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-xl text-zinc-950 shadow-md shadow-amber-500/20">
+                                    <span className="p-2.5 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-2xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
                                         <Package className="w-5 h-5 stroke-[2.5]" />
                                     </span>
                                     <span>Items & Units Catalog</span>
@@ -314,7 +314,7 @@ export default function CatalogIndex({
                             {activeTab === 'products' && (
                                 <Button
                                     onClick={openAddProductModal}
-                                    className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-amber-500/20 cursor-pointer"
+                                    className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-amber-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
                                     New Product / បន្ថែមមុខទំនិញ
@@ -323,7 +323,7 @@ export default function CatalogIndex({
                             {activeTab === 'units' && (
                                 <Button
                                     onClick={openAddUnitModal}
-                                    className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-emerald-500/20 cursor-pointer"
+                                    className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-emerald-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
                                     New Unit / បន្ថែមឯកតា
@@ -332,7 +332,7 @@ export default function CatalogIndex({
                             {activeTab === 'categories' && (
                                 <Button
                                     onClick={openAddCategoryModal}
-                                    className="bg-teal-500 hover:bg-teal-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-teal-500/20 cursor-pointer"
+                                    className="bg-teal-500 hover:bg-teal-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-teal-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
                                     New Category / បន្ថែមប្រភេទ
@@ -341,49 +341,70 @@ export default function CatalogIndex({
                         </div>
                     </div>
 
-                    {/* Tabs Switcher */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {/* Tabs Switcher - Rounded Container & Pills */}
+                    <div className="flex items-center gap-1.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl w-fit overflow-x-auto max-w-full scrollbar-none shadow-xs">
                         <button
+                            type="button"
                             onClick={() => setActiveTab('products')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'products'
-                                    ? 'bg-zinc-800 text-amber-400 border border-zinc-700 shadow-sm'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-md shadow-amber-500/20'
+                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                             }`}
                         >
-                            <Utensils className="w-4 h-4" />
+                            <Utensils className="w-3.5 h-3.5 shrink-0" />
                             <span>Products & Dishes / មុខទំនិញ</span>
-                            <span className="text-[10px] bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-700">
+                            <span
+                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+                                    activeTab === 'products'
+                                        ? 'bg-zinc-950/20 text-zinc-950'
+                                        : 'bg-zinc-800 text-zinc-300 border border-zinc-700/60'
+                                }`}
+                            >
                                 {products.length}
                             </span>
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => setActiveTab('units')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'units'
-                                    ? 'bg-zinc-800 text-emerald-400 border border-zinc-700 shadow-sm'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                                    ? 'bg-emerald-500 text-zinc-950 font-bold shadow-md shadow-emerald-500/20'
+                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                             }`}
                         >
-                            <Scale className="w-4 h-4" />
+                            <Scale className="w-3.5 h-3.5 shrink-0" />
                             <span>Units of Measure / ឯកតា</span>
-                            <span className="text-[10px] bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-700">
+                            <span
+                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+                                    activeTab === 'units'
+                                        ? 'bg-zinc-950/20 text-zinc-950'
+                                        : 'bg-zinc-800 text-zinc-300 border border-zinc-700/60'
+                                }`}
+                            >
                                 {units.length}
                             </span>
                         </button>
 
                         <button
+                            type="button"
                             onClick={() => setActiveTab('categories')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                                 activeTab === 'categories'
-                                    ? 'bg-zinc-800 text-teal-400 border border-zinc-700 shadow-sm'
-                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                                    ? 'bg-teal-500 text-zinc-950 font-bold shadow-md shadow-teal-500/20'
+                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                             }`}
                         >
-                            <Tags className="w-4 h-4" />
+                            <Tags className="w-3.5 h-3.5 shrink-0" />
                             <span>Categories / ប្រភេទមុខទំនិញ</span>
-                            <span className="text-[10px] bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-700">
+                            <span
+                                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+                                    activeTab === 'categories'
+                                        ? 'bg-zinc-950/20 text-zinc-950'
+                                        : 'bg-zinc-800 text-zinc-300 border border-zinc-700/60'
+                                }`}
+                            >
                                 {categories.length}
                             </span>
                         </button>

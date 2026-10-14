@@ -171,7 +171,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         <div>
                             <div className="flex items-center gap-3">
                                 <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-                                    <span className="p-2 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
+                                    <span className="p-2.5 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-2xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
                                         <ChefHat className="w-5 h-5 stroke-[2.5]" />
                                     </span>
                                     <span>Kitchen Display (KDS)</span>
@@ -197,7 +197,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                 variant={soundEnabled ? 'secondary' : 'ghost'}
                                 size="sm"
                                 onClick={() => setSoundEnabled(!soundEnabled)}
-                                className={`gap-1.5 cursor-pointer text-xs ${
+                                className={`gap-1.5 cursor-pointer text-xs rounded-xl ${
                                     soundEnabled
                                         ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20'
                                         : 'text-zinc-400'
@@ -221,7 +221,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                 variant="secondary"
                                 size="sm"
                                 onClick={() => router.reload()}
-                                className="gap-1.5 cursor-pointer text-xs"
+                                className="gap-1.5 cursor-pointer text-xs rounded-xl"
                                 title="ផ្ទុកឡើងវិញ (Reload)"
                             >
                                 <RefreshCw className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -232,7 +232,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                 variant="secondary"
                                 size="sm"
                                 onClick={toggleFullscreen}
-                                className="p-2 cursor-pointer"
+                                className="p-2 cursor-pointer rounded-xl"
                                 title="ពង្រីកពេញអេក្រង់ (Fullscreen)"
                             >
                                 <Maximize2 className="w-4 h-4 text-zinc-300" />
@@ -241,7 +241,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                     </div>
 
                     {/* Unified Filter Tabs Switcher */}
-                    <div className="flex items-center gap-1.5 p-1 bg-zinc-900 border border-zinc-800 rounded-xl w-fit overflow-x-auto max-w-full scrollbar-none">
+                    <div className="flex items-center gap-1.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl w-fit overflow-x-auto max-w-full scrollbar-none shadow-xs">
                         <button
                             type="button"
                             onClick={() => handleFilterChange('active')}
