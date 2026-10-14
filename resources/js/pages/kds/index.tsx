@@ -122,76 +122,62 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
         }
     };
 
-    const getUrgencyClass = (elapsedMinutes: number, status: string) => {
-        if (status === 'served') {
-            return 'kds-card-normal border-zinc-800/80 bg-zinc-900/60 opacity-80';
+    const formatElapsed = (mins: number) => {
+        if (mins < 1) return 'ទើបកុម្ម៉ង់';
+        if (mins < 60) return `${mins} នាទី`;
+        const hours = Math.floor(mins / 60);
+        const rem = mins % 60;
+        if (hours < 24) {
+            return rem > 0 ? `${hours} ម៉ោង ${rem} ន` : `${hours} ម៉ោង`;
         }
-        if (elapsedMinutes >= 20) {
-            return 'kds-card-urgent border-rose-500/50 bg-zinc-900/90 ring-1 ring-rose-500/30 shadow-lg shadow-rose-950/20';
+        const days = Math.floor(hours / 24);
+        return `${days} ថ្ងៃមុន`;
+    };
+
+    const getCardStyle = (status: string) => {
+        switch (status) {
+            case 'cooking':
+                return 'bg-zinc-900/90 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs';
+            case 'ready':
+                return 'bg-zinc-900/90 border-emerald-500/60 ring-1 ring-emerald-500/20 shadow-xs';
+            case 'served':
+                return 'bg-zinc-900/60 border-zinc-800/80 opacity-75';
+            default: // pending
+                return 'bg-zinc-900/80 border-zinc-800 hover:border-zinc-700 shadow-xs';
         }
-        if (elapsedMinutes >= 10) {
-            return 'kds-card-warning border-amber-500/50 bg-zinc-900/90 ring-1 ring-amber-500/20 shadow-md shadow-amber-950/15';
-        }
-        return 'kds-card-normal border-zinc-800/80 bg-zinc-900/70 hover:border-zinc-700 shadow-lg shadow-black/20';
     };
 
     const getStatusBadge = (status: 'pending' | 'cooking' | 'ready' | 'served') => {
         switch (status) {
-            case 'pending':
-                return (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 font-semibold flex items-center gap-1 shrink-0">
-                        <Flame className="w-3 h-3 text-rose-500" />
-                        <span>រង់ចាំ</span>
-                    </span>
-                );
             case 'cooking':
                 return (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30 font-semibold flex items-center gap-1 shrink-0">
-                        <UtensilsCrossed className="w-3 h-3 text-amber-500" />
-                        <span>កំពុងធ្វើ</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <UtensilsCrossed className="w-3 h-3 text-amber-400 shrink-0" />
+                        កំពុងធ្វើ
                     </span>
                 );
             case 'ready':
                 return (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30 font-semibold flex items-center gap-1 shrink-0">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                        <span>ឆ្អិនរួចរាល់</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                        ឆ្អិនរួចរាល់
                     </span>
                 );
             case 'served':
                 return (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/15 dark:text-blue-400 dark:border-blue-500/30 font-semibold flex items-center gap-1 shrink-0">
-                        <Coffee className="w-3 h-3 text-blue-500" />
-                        <span>លើកជូនរួច</span>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <Coffee className="w-3 h-3 text-zinc-400 shrink-0" />
+                        លើកជូនរួច
+                    </span>
+                );
+            default: // pending
+                return (
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <Clock className="w-3 h-3 text-amber-400 shrink-0" />
+                        រង់ចាំ
                     </span>
                 );
         }
-    };
-
-    const getTimerBadge = (elapsedMinutes: number) => {
-        const mins = Math.max(0, elapsedMinutes);
-        if (mins >= 20) {
-            return (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/40 animate-pulse whitespace-nowrap shrink-0 shadow-2xs">
-                    <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
-                    <span>{mins} នាទី (យឺត)</span>
-                </div>
-            );
-        }
-        if (mins >= 10) {
-            return (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30 whitespace-nowrap shrink-0 shadow-2xs">
-                    <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <span>{mins} នាទី</span>
-                </div>
-            );
-        }
-        return (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 whitespace-nowrap shrink-0 shadow-2xs">
-                <Timer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>{mins} នាទី</span>
-            </div>
-        );
     };
 
     const totalActiveOrders = counts.pending + counts.cooking + counts.ready;
@@ -205,7 +191,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                 <div className="sticky top-0 z-30 -mx-4 -mt-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3.5 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 shadow-xs">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                                 <ChefHat className="w-5 h-5 stroke-[2.5]" />
                             </div>
                             <div>
@@ -215,7 +201,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                         ផ្ទាំងផ្ទះបាយ
                                     </span>
                                     {totalActiveOrders > 0 && (
-                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 animate-pulse">
+                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
                                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                                             {totalActiveOrders} Live
                                         </span>
@@ -270,20 +256,20 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </div>
                     </div>
 
-                    {/* KPI Metrics Summary Strip (Matches Floor & Tables) */}
+                    {/* KPI Metrics Summary Strip (Exact Floor & Tables Architecture) */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mt-4">
                         <div
                             onClick={() => handleFilterChange('active')}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
                                 filter === 'active'
-                                    ? 'bg-zinc-900 border-amber-500/50 ring-1 ring-amber-500/30 shadow-xs'
+                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
                                     : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
                             <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
-                                <ChefHat className="w-3.5 h-3.5" /> កំពុងដំណើរការ (Active)
+                                <ChefHat className="w-3.5 h-3.5 text-amber-400" /> កំពុងដំណើរការ (Active)
                             </span>
-                            <p className="text-xl font-bold text-amber-300 mt-1">
+                            <p className="text-lg font-bold text-amber-300 mt-1">
                                 {totalActiveOrders}{' '}
                                 <span className="text-xs text-zinc-500 font-normal">សំបុត្រ</span>
                             </p>
@@ -291,33 +277,33 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
 
                         <div
                             onClick={() => handleFilterChange('pending')}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
                                 filter === 'pending'
-                                    ? 'bg-zinc-900 border-rose-500/50 ring-1 ring-rose-500/30 shadow-xs'
+                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
                                     : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-rose-400 flex items-center gap-1.5 font-medium">
-                                <Flame className="w-3.5 h-3.5" /> រង់ចាំចម្អិន (Pending)
+                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
+                                <Clock className="w-3.5 h-3.5 text-amber-400" /> រង់ចាំចម្អិន (Pending)
                             </span>
-                            <p className="text-xl font-bold text-rose-400 mt-1">
+                            <p className="text-lg font-bold text-amber-300 mt-1">
                                 {counts.pending}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">បន្ទាន់</span>
+                                <span className="text-xs text-zinc-500 font-normal">សំបុត្រ</span>
                             </p>
                         </div>
 
                         <div
                             onClick={() => handleFilterChange('cooking')}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
                                 filter === 'cooking'
-                                    ? 'bg-zinc-900 border-amber-500/50 ring-1 ring-amber-500/30 shadow-xs'
+                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
                                     : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
                             <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
-                                <UtensilsCrossed className="w-3.5 h-3.5" /> កំពុងចម្អិន (Cooking)
+                                <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400" /> កំពុងចម្អិន (Cooking)
                             </span>
-                            <p className="text-xl font-bold text-amber-300 mt-1">
+                            <p className="text-lg font-bold text-amber-300 mt-1">
                                 {counts.cooking}{' '}
                                 <span className="text-xs text-zinc-500 font-normal">លើចង្ក្រាន</span>
                             </p>
@@ -325,16 +311,16 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
 
                         <div
                             onClick={() => handleFilterChange('ready')}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
                                 filter === 'ready'
-                                    ? 'bg-zinc-900 border-emerald-500/50 ring-1 ring-emerald-500/30 shadow-xs'
+                                    ? 'bg-zinc-900 border-emerald-500/60 ring-1 ring-emerald-500/20 shadow-xs'
                                     : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
                             <span className="text-[11px] text-emerald-400 flex items-center gap-1.5 font-medium">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> ឆ្អិនរួចរាល់ (Ready)
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> ឆ្អិនរួចរាល់ (Ready)
                             </span>
-                            <p className="text-xl font-bold text-emerald-300 mt-1">
+                            <p className="text-lg font-bold text-emerald-300 mt-1">
                                 {counts.ready}{' '}
                                 <span className="text-xs text-zinc-500 font-normal">រង់ចាំលើក</span>
                             </p>
@@ -342,27 +328,27 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
 
                         <div
                             onClick={() => handleFilterChange('served')}
-                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer col-span-2 sm:col-span-1 ${
+                            className={`p-3 rounded-xl border transition-all cursor-pointer col-span-2 sm:col-span-1 ${
                                 filter === 'served'
-                                    ? 'bg-zinc-900 border-blue-500/50 ring-1 ring-blue-500/30 shadow-xs'
+                                    ? 'bg-zinc-900 border-zinc-700 ring-1 ring-zinc-700/50 shadow-xs'
                                     : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-blue-400 flex items-center gap-1.5 font-medium">
-                                <Coffee className="w-3.5 h-3.5" /> លើកជូនថ្ងៃនេះ (Served)
+                            <span className="text-[11px] text-zinc-400 flex items-center gap-1.5 font-medium">
+                                <Coffee className="w-3.5 h-3.5 text-zinc-400" /> លើកជូនថ្ងៃនេះ (Served)
                             </span>
-                            <p className="text-xl font-bold text-blue-300 mt-1">
+                            <p className="text-lg font-bold text-zinc-300 mt-1">
                                 {counts.served_today}{' '}
                                 <span className="text-xs text-zinc-500 font-normal">សរុប</span>
                             </p>
                         </div>
                     </div>
 
-                    {/* Status Filter Pills (Exact Floor & Tables zone pills design) */}
+                    {/* Status Filter Pills (Matching Floor & Tables Zone Pills) */}
                     <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
                         <button
                             onClick={() => handleFilterChange('active')}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                                 filter === 'active'
                                     ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
@@ -372,7 +358,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </button>
                         <button
                             onClick={() => handleFilterChange('pending')}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                                 filter === 'pending'
                                     ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
@@ -382,7 +368,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </button>
                         <button
                             onClick={() => handleFilterChange('cooking')}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                                 filter === 'cooking'
                                     ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
@@ -392,7 +378,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </button>
                         <button
                             onClick={() => handleFilterChange('ready')}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                                 filter === 'ready'
                                     ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
@@ -402,7 +388,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         </button>
                         <button
                             onClick={() => handleFilterChange('served')}
-                            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
+                            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border cursor-pointer ${
                                 filter === 'served'
                                     ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
@@ -413,7 +399,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                     </div>
                 </div>
 
-                {/* Orders Ticket Grid (Matching Table Cards Visual Grid) */}
+                {/* Orders Ticket Grid */}
                 {orders.length === 0 ? (
                     <div className="py-24 text-center border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30">
                         <div className="w-16 h-16 rounded-2xl bg-zinc-800/80 border border-zinc-700 flex items-center justify-center mx-auto mb-4 text-zinc-500">
@@ -438,13 +424,12 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             return (
                                 <div
                                     key={order.id}
-                                    className={`rounded-2xl border p-4 flex flex-col justify-between transition-all duration-200 shadow-lg ${getUrgencyClass(
-                                        order.elapsed_minutes,
+                                    className={`rounded-2xl border p-4 flex flex-col justify-between transition-all duration-200 shadow-lg ${getCardStyle(
                                         order.kitchen_status
                                     )}`}
                                 >
                                     <div>
-                                        {/* Top Card Info (Table code, Doc #, Status badge) */}
+                                        {/* Top Card Info (Exact Floor & Tables Hierarchy) */}
                                         <div className="flex items-start justify-between gap-2 mb-2">
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -456,20 +441,25 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                         <span>#{order.document_number}</span>
                                                     </div>
                                                 </div>
-                                                <p className="text-xs font-semibold text-amber-400 mt-0.5 truncate">
-                                                    {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : `សំបុត្រម្ហូប #${order.document_number}`}
+                                                <p className="text-xs font-medium text-amber-400 mt-0.5 truncate">
+                                                    {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : (isTakeaway ? 'ការកុម្ម៉ង់ខ្ចប់' : 'ការកុម្ម៉ង់ក្នុងហាង')}
                                                 </p>
                                             </div>
                                             {getStatusBadge(order.kitchen_status)}
                                         </div>
 
-                                        {/* Creator & Timer row (like zone bullet in table card) */}
-                                        <div className="text-[11px] text-zinc-400 mb-3 flex items-center justify-between gap-1">
-                                            <span className="flex items-center gap-1.5 truncate">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-zinc-500 shrink-0" />
-                                                <span className="truncate">អ្នកកត់: <strong className="text-zinc-300 font-medium">{order.creator_name}</strong></span>
-                                            </span>
-                                            {getTimerBadge(order.elapsed_minutes)}
+                                        {/* Server & Elapsed Time Row */}
+                                        <div className="text-[11px] text-zinc-400 mb-3 flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-1.5 min-w-0">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 shrink-0" />
+                                                <span className="truncate">
+                                                    អ្នកកត់: <strong className="font-medium text-zinc-300">{order.creator_name || 'បុគ្គលិក'}</strong>
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1 shrink-0 font-medium text-[11px] text-zinc-400">
+                                                <Clock className="w-3 h-3 text-amber-400 shrink-0" />
+                                                <span>{formatElapsed(order.elapsed_minutes)}</span>
+                                            </div>
                                         </div>
 
                                         {/* Order Note if any */}
@@ -480,12 +470,15 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             </div>
                                         )}
 
-                                        {/* Items Details Container (Identical to active_order details in floor card) */}
-                                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3 text-xs space-y-2">
-                                            <div className="flex items-center justify-between text-amber-300 font-semibold border-b border-amber-500/20 pb-1.5">
-                                                <span>មុខម្ហូបត្រូវធ្វើ</span>
+                                        {/* Items Details Container (Identical to active_order details in Floor card) */}
+                                        <div className="p-2.5 rounded-xl bg-zinc-800/50 border border-zinc-800 mb-3 text-xs space-y-1.5">
+                                            <div className="flex items-center justify-between text-zinc-300 font-semibold border-b border-zinc-700/60 pb-1.5">
+                                                <span className="flex items-center gap-1 text-zinc-200">
+                                                    <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                                    <span>មុខម្ហូបត្រូវធ្វើ</span>
+                                                </span>
                                                 <span className="font-mono text-[10px] text-zinc-400">
-                                                    {order.items.reduce((sum, it) => sum + it.quantity, 0)} ចាន / មុខ
+                                                    {order.items.reduce((sum, it) => sum + it.quantity, 0)} ចាន ({order.items.length} មុខ)
                                                 </span>
                                             </div>
 
@@ -493,14 +486,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 {order.items.map((item) => (
                                                     <div
                                                         key={item.id}
-                                                        className="flex items-start justify-between gap-2 text-xs py-0.5"
+                                                        className="flex items-center justify-between gap-2 text-xs py-0.5"
                                                     >
-                                                        <div className="flex items-start gap-2 min-w-0">
-                                                            <span className="w-5 h-5 rounded bg-amber-500 text-zinc-950 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 shadow-xs">
+                                                        <div className="flex items-center gap-2 min-w-0">
+                                                            <span className="w-5 h-5 rounded bg-amber-500/20 text-amber-400 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 border border-amber-500/30">
                                                                 {item.quantity}
                                                             </span>
                                                             <div className="min-w-0">
-                                                                <p className="font-bold text-zinc-100 truncate leading-tight">
+                                                                <p className="font-semibold text-zinc-100 truncate leading-tight">
                                                                     {item.product_name}
                                                                 </p>
                                                                 {item.product_name_en && (
@@ -511,7 +504,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                             </div>
                                                         </div>
 
-                                                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-300 border border-zinc-700 font-mono shrink-0">
+                                                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700 font-mono shrink-0">
                                                             {item.unit}
                                                         </span>
                                                     </div>
@@ -532,7 +525,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 {updatingId === order.id ? (
                                                     <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-950" />
                                                 ) : (
-                                                    <Flame className="w-3.5 h-3.5 text-zinc-950" />
+                                                    <UtensilsCrossed className="w-3.5 h-3.5 text-zinc-950" />
                                                 )}
                                                 <span>ចាប់ផ្ដើមធ្វើ (Start Cooking)</span>
                                             </button>
@@ -557,31 +550,31 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             <button
                                                 disabled={updatingId === order.id}
                                                 onClick={() => handleUpdateStatus(order.id, 'served')}
-                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-blue-500 hover:bg-blue-400 text-white flex items-center justify-center gap-1.5 transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+                                                className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-zinc-700 hover:border-amber-500/40 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                                             >
                                                 {updatingId === order.id ? (
-                                                    <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                                 ) : (
-                                                    <Coffee className="w-3.5 h-3.5 text-white" />
+                                                    <Coffee className="w-3.5 h-3.5 text-amber-400" />
                                                 )}
-                                                <span>បានលើកជូនភ្ញៀវ (Mark Served)</span>
+                                                <span>បានលើកជូន (Mark Served)</span>
                                             </button>
                                         )}
 
                                         {isServed && (
                                             <div className="w-full py-2 px-3 rounded-xl text-xs font-medium bg-zinc-800/60 text-zinc-400 border border-zinc-700/50 flex items-center justify-center gap-1.5">
                                                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                                                <span>បានបញ្ចប់ការលើកម្ហូបជូន</span>
+                                                <span>បានលើកជូនរួចរាល់</span>
                                             </div>
                                         )}
 
-                                        {/* Quick Status Toggle like in Table cards */}
+                                        {/* Quick Status Toggle pills */}
                                         <div className="flex items-center justify-between gap-1 text-[10px]">
                                             <button
                                                 onClick={() => handleUpdateStatus(order.id, 'pending')}
                                                 className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
                                                     isPending
-                                                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 font-semibold'
+                                                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-semibold'
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
@@ -611,7 +604,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 onClick={() => handleUpdateStatus(order.id, 'served')}
                                                 className={`flex-1 py-1 rounded-lg border transition-all text-center cursor-pointer ${
                                                     isServed
-                                                        ? 'bg-blue-500/20 text-blue-300 border-blue-500/40 font-semibold'
+                                                        ? 'bg-zinc-800 text-zinc-300 border-zinc-700 font-semibold'
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
