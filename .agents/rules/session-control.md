@@ -24,3 +24,9 @@ When the user says **"on time coding"** (or tells to resume / ធ្វើកា
    (or start `php artisan serve --port=8000` and `npm run dev`)
 2. Verify that the server is live and responding at `http://127.0.0.1:8000`.
 3. Report to the user that the dev environment is up, running, and ready for work.
+
+## 3. Git Push Policy (ច្បាប់ Git Commit & Push)
+- **Do NOT push code automatically to GitHub (`git push`)**:
+  1. Local commits (`git commit`) are allowed and encouraged whenever needed to cleanly save progress.
+  2. **NEVER execute `git push` automatically** after making code edits or fixing issues.
+  3. **Wait until the user explicitly asks to push** (e.g., "push", "push code", "push to github", or during the "taking a break" workflow). Only push when requested.

@@ -57,3 +57,10 @@ Boost replaces these bootstrap instructions with guidelines tailored to the appl
   1. Start the project development environment immediately in the background using `php artisan dev` (or `composer run dev`).
   2. Verify that the local server is listening on `http://127.0.0.1:8000` and Vite is ready.
   3. Inform the user that the project is running and ready for coding.
+
+# Git Commit & Push Policy (ច្បាប់ Git Commit & Push)
+
+- **Do NOT push code automatically to GitHub (`git push`)**:
+  1. Local commits (`git commit`) are allowed and encouraged to cleanly save progress.
+  2. **NEVER execute `git push` automatically** after making code edits or fixing issues.
+  3. **Wait until the user explicitly asks to push** (e.g., "push", "push code", "push to github", or during the "taking a break" workflow). Only push when requested.
