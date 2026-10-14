@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { Printer, ArrowLeft, RefreshCw, FileText } from 'lucide-react';
+import { Printer, ArrowLeft, RefreshCw, FileText, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface DocumentPrintProps {
@@ -72,6 +72,12 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
     const showChange = printOpts.show_change ?? true;
     const showSignatureBlocks = printOpts.show_signature_blocks ?? true;
     const policyNote = printOpts.policy_note;
+    const showQrPayment = printOpts.show_qr_payment ?? true;
+    const qrPaymentText = printOpts.qr_payment_text || 'Scan to Pay / KHQR';
+    const qrCodeImage = printOpts.qr_code_image;
+    const qrBankName = printOpts.qr_bank_name || 'Bakong KHQR • Cambodia FastPay';
+    const qrAccountName = printOpts.qr_account_name;
+    const qrAccountNumber = printOpts.qr_account_number;
 
     const isReprint = (doc.print_logs && doc.print_logs.length > 0) || false;
 
@@ -305,6 +311,40 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                 {/* Totals Summary */}
                 <div className="flex justify-between items-start gap-8 pt-2">
                     <div className="flex-1 space-y-2 text-xs text-zinc-600">
+                        {showQrPayment && (
+                            <div className="flex items-center gap-3 p-2.5 bg-zinc-50 border border-zinc-200 rounded text-xs">
+                                {qrCodeImage ? (
+                                    <div className="w-20 h-20 bg-white p-1 border border-zinc-300 rounded shrink-0 flex items-center justify-center">
+                                        <img
+                                            src={qrCodeImage}
+                                            alt="Bank KHQR"
+                                            className="w-full h-full object-contain"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-16 h-16 bg-white p-1 border-2 border-dashed border-zinc-300 rounded shrink-0 flex flex-col items-center justify-center text-zinc-400">
+                                        <QrCode className="w-6 h-6 text-zinc-400 stroke-1" />
+                                        <span className="text-[7px] text-zinc-400 mt-0.5">KHQR</span>
+                                    </div>
+                                )}
+                                <div className="space-y-0.5">
+                                    <div className="font-bold text-zinc-800 uppercase flex items-center gap-1 text-[11px]">
+                                        <QrCode className="w-3.5 h-3.5 text-rose-600" />
+                                        <span>{qrPaymentText}</span>
+                                    </div>
+                                    <div className="text-[10px] text-zinc-500 font-sans">
+                                        {qrBankName}
+                                    </div>
+                                    {(qrAccountName || qrAccountNumber) && (
+                                        <div className="text-[10px] text-zinc-800 font-mono font-medium">
+                                            {qrAccountName && <span>{qrAccountName}</span>}
+                                            {qrAccountName && qrAccountNumber && <span> • </span>}
+                                            {qrAccountNumber && <span>{qrAccountNumber}</span>}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                         {policyNote && (
                             <div className="p-2 bg-zinc-50 border border-zinc-200 rounded font-khmer italic text-[11px]">
                                 {policyNote}

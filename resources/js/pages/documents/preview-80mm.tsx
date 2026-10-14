@@ -73,6 +73,10 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
     const showChange = printOpts.show_change ?? true;
     const showQrPayment = printOpts.show_qr_payment ?? true;
     const qrPaymentText = printOpts.qr_payment_text || 'Scan to Pay / KHQR';
+    const qrCodeImage = printOpts.qr_code_image;
+    const qrBankName = printOpts.qr_bank_name || 'Bakong KHQR • Scan to Pay';
+    const qrAccountName = printOpts.qr_account_name;
+    const qrAccountNumber = printOpts.qr_account_number;
     const showWifi = printOpts.show_wifi_info ?? true;
     const wifiSsid = printOpts.wifi_ssid || 'Leashal-Etum-Guest';
     const wifiPassword = printOpts.wifi_password || 'welcome2026';
@@ -337,12 +341,33 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 {showQrPayment && (
                     <div className="text-center p-2 rounded border border-zinc-300 bg-zinc-50 space-y-1">
                         <div className="text-[10px] font-bold text-zinc-800 uppercase flex items-center justify-center gap-1">
-                            <QrCode className="w-3 h-3 text-rose-600" />
+                            <QrCode className="w-3.5 h-3.5 text-rose-600" />
                             <span>{qrPaymentText}</span>
                         </div>
+                        {qrCodeImage ? (
+                            <div className="w-28 h-28 mx-auto bg-white p-1 border border-zinc-300 rounded flex items-center justify-center">
+                                <img
+                                    src={qrCodeImage}
+                                    alt="Payment KHQR"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                        ) : (
+                            <div className="w-20 h-20 mx-auto bg-white p-1 border-2 border-dashed border-zinc-300 rounded flex flex-col items-center justify-center text-zinc-400">
+                                <QrCode className="w-6 h-6 text-zinc-400 stroke-1" />
+                                <span className="text-[7px] text-zinc-400 mt-0.5">Bakong KHQR</span>
+                            </div>
+                        )}
                         <div className="text-[8px] text-zinc-500 font-sans">
-                            Bakong KHQR • Scan to Pay
+                            {qrBankName}
                         </div>
+                        {(qrAccountName || qrAccountNumber) && (
+                            <div className="text-[8px] text-zinc-700 font-mono">
+                                {qrAccountName && <span className="font-semibold">{qrAccountName}</span>}
+                                {qrAccountName && qrAccountNumber && <span> • </span>}
+                                {qrAccountNumber && <span>{qrAccountNumber}</span>}
+                            </div>
+                        )}
                     </div>
                 )}
 

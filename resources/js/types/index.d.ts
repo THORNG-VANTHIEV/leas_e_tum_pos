@@ -62,6 +62,10 @@ export interface BusinessSettings {
         policy_note?: string;
         show_qr_payment?: boolean;
         qr_payment_text?: string;
+        qr_code_image?: string;
+        qr_bank_name?: string;
+        qr_account_name?: string;
+        qr_account_number?: string;
         show_wifi_info?: boolean;
         wifi_ssid?: string;
         wifi_password?: string;

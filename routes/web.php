@@ -129,6 +129,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::patch('/business', [SettingsController::class, 'updateBusiness'])->name('business.update');
         Route::patch('/entry-controls', [SettingsController::class, 'updateEntryControls'])->name('entry-controls.update');
         Route::patch('/print', [SettingsController::class, 'updatePrintSettings'])->name('print.update');
+        Route::post('/upload-qr', [SettingsController::class, 'uploadQrCode'])->name('qr.upload');
 
         // Locations
         Route::post('/locations', [SettingsController::class, 'storeLocation'])->name('locations.store');

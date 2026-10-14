@@ -25,6 +25,9 @@ import {
     ZoomOut,
     CheckCircle2,
     UserCheck,
+    Upload,
+    Trash2,
+    Loader2,
 } from 'lucide-react';
 
 interface InvoiceDesignerProps {
@@ -82,11 +85,69 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
             'Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ',
         show_qr_payment: currentPrint.show_qr_payment ?? true,
         qr_payment_text: currentPrint.qr_payment_text || 'Scan to Pay / KHQR',
+        qr_code_image: currentPrint.qr_code_image || '',
+        qr_bank_name: currentPrint.qr_bank_name || 'Bakong KHQR • Cambodia FastPay',
+        qr_account_name: currentPrint.qr_account_name || '',
+        qr_account_number: currentPrint.qr_account_number || '',
         show_wifi_info: currentPrint.show_wifi_info ?? true,
         wifi_ssid: currentPrint.wifi_ssid || 'Leashal-Etum-Guest',
         wifi_password: currentPrint.wifi_password || 'welcome2026',
         show_signature_blocks: currentPrint.show_signature_blocks ?? true,
     });
+
+    // QR Code uploader state
+    const [isUploadingQr, setIsUploadingQr] = useState(false);
+    const [qrUploadError, setQrUploadError] = useState<string | null>(null);
+    const qrFileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleQrFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Instant local preview
+        const tempPreviewUrl = URL.createObjectURL(file);
+        form.setData('qr_code_image', tempPreviewUrl);
+
+        setIsUploadingQr(true);
+        setQrUploadError(null);
+
+        const formData = new FormData();
+        formData.append('qr_image', file);
+
+        try {
+            const token = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
+            const res = await fetch('/settings/upload-qr', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token || '',
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (res.ok && data.url) {
+                form.setData('qr_code_image', data.url);
+            } else {
+                setQrUploadError(data.message || data.error || 'Failed to upload QR code image.');
+            }
+        } catch (err: any) {
+            setQrUploadError(err.message || 'Network error while uploading QR code.');
+        } finally {
+            setIsUploadingQr(false);
+            if (qrFileInputRef.current) {
+                qrFileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const handleRemoveQrCode = () => {
+        form.setData('qr_code_image', '');
+        setQrUploadError(null);
+        if (qrFileInputRef.current) {
+            qrFileInputRef.current.value = '';
+        }
+    };
 
     // Reset to defaults
     const handleResetDefaults = () => {
@@ -125,6 +186,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
             policy_note: 'Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ',
             show_qr_payment: true,
             qr_payment_text: 'Scan to Pay / KHQR',
+            qr_code_image: '',
+            qr_bank_name: 'Bakong KHQR • Cambodia FastPay',
+            qr_account_name: '',
+            qr_account_number: '',
             show_wifi_info: true,
             wifi_ssid: 'Leashal-Etum-Guest',
             wifi_password: 'welcome2026',
@@ -791,13 +856,144 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             </div>
 
                             {form.data.show_qr_payment && (
-                                <Input
-                                    id="qr_payment_text"
-                                    label="QR Label Text"
-                                    value={form.data.qr_payment_text}
-                                    onChange={(e) => form.setData('qr_payment_text', e.target.value)}
-                                    placeholder="Scan to Pay / KHQR"
-                                />
+                                <div className="space-y-3.5 pt-2 border-t border-zinc-800/80">
+                                    {/* Bank QR Code Image Uploader */}
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-xs font-medium text-zinc-300">
+                                                Bank QR Code Image / រូបភាព KHQR (ABA, ACLEDA, Bakong...)
+                                            </label>
+                                            {form.data.qr_code_image && (
+                                                <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1 font-semibold">
+                                                    <CheckCircle2 className="w-3 h-3" /> Active QR
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <input
+                                            ref={qrFileInputRef}
+                                            type="file"
+                                            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                            onChange={handleQrFileSelect}
+                                            className="hidden"
+                                            id="qr-code-upload-input"
+                                        />
+
+                                        {form.data.qr_code_image ? (
+                                            <div className="flex items-center gap-3 p-2.5 rounded-xl bg-zinc-900 border border-zinc-700/70 shadow-inner">
+                                                <div className="w-16 h-16 bg-white rounded-lg p-1 border border-zinc-600 shrink-0 flex items-center justify-center overflow-hidden shadow-xs">
+                                                    <img
+                                                        src={form.data.qr_code_image}
+                                                        alt="Bank QR Preview"
+                                                        className="w-full h-full object-contain"
+                                                    />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="text-xs font-bold text-white truncate">
+                                                        Real Bank QR Loaded
+                                                    </div>
+                                                    <p className="text-[10px] text-zinc-400 truncate">
+                                                        Displayed on customer invoices & receipts
+                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            disabled={isUploadingQr}
+                                                            onClick={() => qrFileInputRef.current?.click()}
+                                                            className="h-7 text-xs px-2.5 gap-1 text-zinc-300 hover:text-white cursor-pointer"
+                                                        >
+                                                            {isUploadingQr ? (
+                                                                <Loader2 className="w-3 h-3 animate-spin" />
+                                                            ) : (
+                                                                <Upload className="w-3 h-3" />
+                                                            )}
+                                                            Change / ប្តូរ
+                                                        </Button>
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            disabled={isUploadingQr}
+                                                            onClick={handleRemoveQrCode}
+                                                            className="h-7 text-xs px-2.5 gap-1 text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 border-rose-900/40 cursor-pointer"
+                                                        >
+                                                            <Trash2 className="w-3 h-3" />
+                                                            Remove / យកចេញ
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                onClick={() => qrFileInputRef.current?.click()}
+                                                className="border-2 border-dashed border-zinc-700 hover:border-amber-500/70 bg-zinc-900/50 hover:bg-zinc-900/90 rounded-xl p-4 text-center cursor-pointer transition-all group"
+                                            >
+                                                {isUploadingQr ? (
+                                                    <div className="flex flex-col items-center justify-center py-1">
+                                                        <Loader2 className="w-6 h-6 text-amber-400 animate-spin mb-1.5" />
+                                                        <span className="text-xs text-zinc-300 font-medium">Uploading QR Code image...</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center py-1">
+                                                        <div className="w-9 h-9 rounded-full bg-zinc-800 group-hover:bg-amber-500/20 text-zinc-400 group-hover:text-amber-400 flex items-center justify-center mb-2 transition-all">
+                                                            <Upload className="w-4 h-4" />
+                                                        </div>
+                                                        <div className="text-xs font-semibold text-zinc-200 group-hover:text-white">
+                                                            Upload Bank QR Code / រូបភាព KHQR
+                                                        </div>
+                                                        <div className="text-[10px] text-zinc-400 mt-0.5">
+                                                            Click or drag screenshot from ABA, ACLEDA, or Bakong (PNG, JPG, WEBP)
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {qrUploadError && (
+                                            <p className="text-[11px] text-rose-400 font-medium pt-1">
+                                                {qrUploadError}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                        <Input
+                                            id="qr_payment_text"
+                                            label="QR Header Label"
+                                            value={form.data.qr_payment_text}
+                                            onChange={(e) => form.setData('qr_payment_text', e.target.value)}
+                                            placeholder="SCAN TO PAY / KHQR"
+                                        />
+
+                                        <Input
+                                            id="qr_bank_name"
+                                            label="Bank / Subtitle Note"
+                                            value={form.data.qr_bank_name}
+                                            onChange={(e) => form.setData('qr_bank_name', e.target.value)}
+                                            placeholder="Bakong KHQR • Cambodia FastPay"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <Input
+                                            id="qr_account_name"
+                                            label="Account Name (Optional)"
+                                            value={form.data.qr_account_name}
+                                            onChange={(e) => form.setData('qr_account_name', e.target.value)}
+                                            placeholder="LEASHAL ETUM"
+                                        />
+
+                                        <Input
+                                            id="qr_account_number"
+                                            label="Account Number (Optional)"
+                                            value={form.data.qr_account_number}
+                                            onChange={(e) => form.setData('qr_account_number', e.target.value)}
+                                            placeholder="000 123 456"
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
 
@@ -1198,26 +1394,35 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                                     {/* KHQR payment block */}
                                     {form.data.show_qr_payment && (
-                                        <div className="text-center p-2 rounded border border-zinc-300 bg-zinc-50 space-y-1">
+                                        <div className="text-center p-2 rounded-lg border border-zinc-300 bg-zinc-50 space-y-1">
                                             <div className="text-[10px] font-bold text-zinc-800 uppercase flex items-center justify-center gap-1">
                                                 <QrCode className="w-3.5 h-3.5 text-rose-600" />
                                                 <span>{form.data.qr_payment_text}</span>
                                             </div>
-                                            {/* Simulated QR Code SVG */}
-                                            <div className="w-20 h-20 mx-auto bg-white p-1 border border-zinc-300 rounded flex items-center justify-center">
-                                                <div className="w-full h-full grid grid-cols-5 gap-0.5 bg-zinc-950 p-1">
-                                                    <div className="bg-white col-span-2 row-span-2" />
-                                                    <div className="bg-zinc-950" />
-                                                    <div className="bg-white col-span-2 row-span-2" />
-                                                    <div className="bg-zinc-950 col-span-5" />
-                                                    <div className="bg-white col-span-2 row-span-2" />
-                                                    <div className="bg-zinc-950" />
-                                                    <div className="bg-white col-span-2 row-span-2" />
+                                            {form.data.qr_code_image ? (
+                                                <div className="w-24 h-24 mx-auto bg-white p-1 border border-zinc-300 rounded flex items-center justify-center shadow-xs">
+                                                    <img
+                                                        src={form.data.qr_code_image}
+                                                        alt="Real Bank KHQR Code"
+                                                        className="w-full h-full object-contain"
+                                                    />
                                                 </div>
+                                            ) : (
+                                                <div className="w-20 h-20 mx-auto bg-white p-1 border-2 border-dashed border-zinc-300 rounded flex flex-col items-center justify-center text-zinc-400">
+                                                    <QrCode className="w-6 h-6 stroke-1 text-zinc-400" />
+                                                    <span className="text-[7px] text-zinc-400 mt-0.5 font-medium">Upload Bank QR</span>
+                                                </div>
+                                            )}
+                                            <div className="text-[8px] text-zinc-600 font-sans font-medium">
+                                                {form.data.qr_bank_name || 'Bakong KHQR • Cambodia FastPay'}
                                             </div>
-                                            <span className="text-[8px] text-zinc-500 font-sans">
-                                                Bakong KHQR • Cambodia FastPay
-                                            </span>
+                                            {(form.data.qr_account_name || form.data.qr_account_number) && (
+                                                <div className="text-[8px] text-zinc-800 font-mono font-medium">
+                                                    {form.data.qr_account_name && <span>{form.data.qr_account_name}</span>}
+                                                    {form.data.qr_account_name && form.data.qr_account_number && <span> • </span>}
+                                                    {form.data.qr_account_number && <span>{form.data.qr_account_number}</span>}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
@@ -1445,6 +1650,41 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     {/* Totals Summary */}
                                     <div className="flex justify-between items-start gap-4 pt-1">
                                         <div className="flex-1 space-y-1.5 text-[10px] text-zinc-600">
+                                            {form.data.show_qr_payment && (
+                                                <div className="flex items-center gap-3 p-2 bg-zinc-50 border border-zinc-200 rounded text-[10px]">
+                                                    {form.data.qr_code_image ? (
+                                                        <div className="w-16 h-16 bg-white p-1 border border-zinc-300 rounded shrink-0 flex items-center justify-center">
+                                                            <img
+                                                                src={form.data.qr_code_image}
+                                                                alt="Bank KHQR"
+                                                                className="w-full h-full object-contain"
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-16 h-16 bg-white p-1 border-2 border-dashed border-zinc-300 rounded shrink-0 flex flex-col items-center justify-center text-zinc-400">
+                                                            <QrCode className="w-5 h-5 text-zinc-400" />
+                                                            <span className="text-[6px] text-zinc-400 mt-0.5">KHQR</span>
+                                                        </div>
+                                                    )}
+                                                    <div className="space-y-0.5">
+                                                        <div className="font-bold text-zinc-800 uppercase flex items-center gap-1">
+                                                            <QrCode className="w-3 h-3 text-rose-600" />
+                                                            <span>{form.data.qr_payment_text}</span>
+                                                        </div>
+                                                        <div className="text-[9px] text-zinc-500 font-sans">
+                                                            {form.data.qr_bank_name || 'Bakong KHQR • Cambodia FastPay'}
+                                                        </div>
+                                                        {(form.data.qr_account_name || form.data.qr_account_number) && (
+                                                            <div className="text-[9px] text-zinc-800 font-mono font-medium">
+                                                                {form.data.qr_account_name && <span>{form.data.qr_account_name}</span>}
+                                                                {form.data.qr_account_name && form.data.qr_account_number && <span> • </span>}
+                                                                {form.data.qr_account_number && <span>{form.data.qr_account_number}</span>}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {form.data.policy_note && (
                                                 <div className="p-2 bg-zinc-50 border border-zinc-200 rounded text-[9px] font-khmer italic">
                                                     {form.data.policy_note}

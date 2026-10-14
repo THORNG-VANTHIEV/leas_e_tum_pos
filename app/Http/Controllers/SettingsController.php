@@ -9,6 +9,7 @@ use App\Models\Location;
 use App\Models\User;
 use App\Support\Audit\AuditService;
 use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -148,6 +149,10 @@ class SettingsController extends Controller
             'policy_note' => ['nullable', 'string', 'max:500'],
             'show_qr_payment' => ['nullable', 'boolean'],
             'qr_payment_text' => ['nullable', 'string', 'max:100'],
+            'qr_code_image' => ['nullable', 'string'],
+            'qr_bank_name' => ['nullable', 'string', 'max:100'],
+            'qr_account_name' => ['nullable', 'string', 'max:100'],
+            'qr_account_number' => ['nullable', 'string', 'max:100'],
             'show_wifi_info' => ['nullable', 'boolean'],
             'wifi_ssid' => ['nullable', 'string', 'max:100'],
             'wifi_password' => ['nullable', 'string', 'max:100'],
@@ -180,6 +185,28 @@ class SettingsController extends Controller
         );
 
         return back()->with('success', 'Invoice & print layout settings updated successfully.');
+    }
+
+    /**
+     * Upload Bank KHQR code image for invoice printing.
+     */
+    public function uploadQrCode(Request $request): JsonResponse
+    {
+        $request->validate([
+            'qr_image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:5120'],
+        ]);
+
+        $file = $request->file('qr_image');
+        $fileName = 'khqr_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('qr_codes', $fileName, 'public');
+
+        $url = asset('storage/' . $path);
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'path' => $path,
+        ]);
     }
 
     /**
