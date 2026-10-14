@@ -550,9 +550,15 @@ export default function CatalogIndex({
                                                             </span>
                                                         </td>
                                                         <td className="px-4 py-3">
-                                                            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                                                {p.unit.name_primary} ({p.unit.code})
-                                                            </span>
+                                                            <div className="catalog-unit-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all bg-sky-50 text-sky-800 border border-sky-200/90 shadow-2xs dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-500/30">
+                                                                <Scale className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
+                                                                <span className="font-semibold tracking-tight">{p.unit.name_primary}</span>
+                                                                {p.unit.name_secondary && p.unit.name_secondary.toLowerCase() !== p.unit.name_primary.toLowerCase() && (
+                                                                    <span className="catalog-unit-sec text-[11px] font-khmer text-sky-600/90 dark:text-sky-300/80">
+                                                                        • {p.unit.name_secondary}
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         </td>
                                                         <td className="px-4 py-3 text-right font-mono">
                                                             <div className="font-bold text-amber-300">
@@ -635,17 +641,26 @@ export default function CatalogIndex({
                                     <tbody className="divide-y divide-zinc-800/60">
                                         {units.map((u) => (
                                             <tr key={u.id} className="hover:bg-zinc-800/40 transition-colors">
-                                                <td className="px-4 py-3 font-mono font-bold text-amber-300">
-                                                    {u.code}
+                                                <td className="px-4 py-3">
+                                                    <span className="px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                                                        {u.code}
+                                                    </span>
                                                 </td>
-                                                <td className="px-4 py-3 font-khmer text-sm font-semibold text-white">
-                                                    {u.name_primary}
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-6 h-6 rounded-md bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                                                            <Scale className="w-3.5 h-3.5" />
+                                                        </div>
+                                                        <span className="font-khmer text-sm font-bold text-zinc-900 dark:text-white">
+                                                            {u.name_primary}
+                                                        </span>
+                                                    </div>
                                                 </td>
-                                                <td className="px-4 py-3 text-zinc-400">
+                                                <td className="px-4 py-3 font-khmer text-xs font-medium text-zinc-600 dark:text-zinc-400">
                                                     {u.name_secondary || '—'}
                                                 </td>
                                                 <td className="px-4 py-3 text-center font-mono">
-                                                    <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 text-xs">
+                                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700">
                                                         {u.products_count || 0} items
                                                     </span>
                                                 </td>
@@ -826,7 +841,7 @@ export default function CatalogIndex({
                                     >
                                         {units.map((u) => (
                                             <option key={u.id} value={u.id}>
-                                                {u.name_primary} ({u.code})
+                                                {u.name_primary} {u.name_secondary && u.name_secondary.toLowerCase() !== u.name_primary.toLowerCase() ? `• ${u.name_secondary}` : ''}
                                             </option>
                                         ))}
                                     </select>

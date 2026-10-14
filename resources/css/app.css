@@ -909,3 +909,42 @@ html.light .kds-card-divider {
     border-color: #f1f5f9 !important;
 }
 
+/* Catalog Unit Badge Aesthetics */
+.catalog-unit-badge {
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.catalog-unit-badge:hover {
+    transform: translateY(-1px);
+}
+
+html.light .catalog-unit-badge {
+    background-color: #f0f9ff !important;
+    border-color: #bae6fd !important;
+    color: #0369a1 !important;
+    box-shadow: 0 1px 2px rgba(3, 105, 161, 0.05) !important;
+}
+
+html.light .catalog-unit-badge .catalog-unit-sec {
+    color: #0284c7 !important;
+}
+
+html.light .catalog-unit-badge svg {
+    color: #0284c7 !important;
+}
+
+html.dark .catalog-unit-badge {
+    background-color: rgba(14, 165, 233, 0.12) !important;
+    border-color: rgba(14, 165, 233, 0.28) !important;
+    color: #7dd3fc !important;
+}
+
+html.dark .catalog-unit-badge .catalog-unit-sec {
+    color: #38bdf8 !important;
+}
+
+html.dark .catalog-unit-badge svg {
+    color: #38bdf8 !important;
+}
+
+
