@@ -59,6 +59,7 @@ class HandleInertiaRequests extends Middleware
                     'business_name_secondary' => $setting->business_name_secondary,
                     'address_primary' => $setting->address_primary,
                     'phone' => $setting->phone,
+                    'tax_identifier' => $setting->tax_identifier,
                     'currency_code' => $setting->currency_code,
                     'currency_symbol' => $setting->currency_symbol,
                     'decimal_places' => $setting->decimal_places,

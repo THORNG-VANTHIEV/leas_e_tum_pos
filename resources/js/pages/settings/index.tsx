@@ -27,7 +27,10 @@ import {
     AlertTriangle,
     FileArchive,
     CheckCircle2,
+    Printer,
+    FileText,
 } from 'lucide-react';
+import { InvoiceDesigner } from './components/invoice-designer';
 
 interface SettingsPageProps {
     settings: {
@@ -80,11 +83,11 @@ export default function SettingsIndex({
     const currentUser = auth.user;
 
     const [activeTab, setActiveTab] = useState<
-        'business' | 'entry' | 'locations' | 'users' | 'audits' | 'backup'
+        'business' | 'entry' | 'invoice' | 'locations' | 'users' | 'audits' | 'backup'
     >(() => {
         if (typeof window !== 'undefined') {
             const tabParam = new URLSearchParams(window.location.search).get('tab');
-            if (tabParam && ['business', 'entry', 'locations', 'users', 'audits', 'backup'].includes(tabParam)) {
+            if (tabParam && ['business', 'entry', 'invoice', 'locations', 'users', 'audits', 'backup'].includes(tabParam)) {
                 return tabParam as any;
             }
         }
@@ -267,6 +270,7 @@ export default function SettingsIndex({
                         {[
                             { id: 'business', label: 'Business Profile', icon: Store },
                             { id: 'entry', label: 'Entry & Reconciliation Controls', icon: Sliders },
+                            { id: 'invoice', label: 'Invoice & Print Designer (80mm / A4)', icon: Printer },
                             { id: 'locations', label: `Locations (${locations.length})`, icon: MapPin },
                             { id: 'users', label: `Staff & Accounts (${users.length})`, icon: Users },
                             { id: 'audits', label: `Audit Trail (${audits.length})`, icon: Shield },
@@ -479,6 +483,11 @@ export default function SettingsIndex({
                             </div>
                         </form>
                     </Card>
+                )}
+
+                {/* TAB: Invoice & Print Designer (80mm / A4) */}
+                {activeTab === 'invoice' && (
+                    <InvoiceDesigner settings={settings} />
                 )}
 
                 {/* TAB 3: Locations */}

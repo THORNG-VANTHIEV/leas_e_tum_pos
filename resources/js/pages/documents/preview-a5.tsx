@@ -47,6 +47,32 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
     const { business } = usePage<PageProps>().props;
     const [isPrinting, setIsPrinting] = useState(false);
 
+    const printOpts = business.print_settings || {};
+    const showLogo = printOpts.show_logo ?? true;
+    const showBusinessName = printOpts.show_business_name ?? true;
+    const headerTitleEn = printOpts.header_title_en || 'COMMERCIAL INVOICE';
+    const headerTitleKm = printOpts.header_title_km || 'វិក្កយបត្រ';
+    const showAddress = printOpts.show_address ?? true;
+    const showPhone = printOpts.show_phone ?? true;
+    const showVatTin = printOpts.show_vat_tin ?? true;
+    const showCashier = printOpts.show_cashier ?? true;
+    const showTableRef = printOpts.show_table_ref ?? true;
+    const showGuestCount = printOpts.show_guest_count ?? true;
+    const showDateTime = printOpts.show_datetime ?? true;
+    const showCustomerInfo = printOpts.show_customer_info ?? true;
+    const showItemKhmerName = printOpts.show_item_khmer_name ?? true;
+    const showItemUnit = printOpts.show_item_unit ?? true;
+    const showItemQuantity = printOpts.show_item_quantity ?? true;
+    const showSubtotal = printOpts.show_subtotal ?? true;
+    const showDiscount = printOpts.show_discount ?? true;
+    const showTax = printOpts.show_tax ?? false;
+    const showDualCurrency = printOpts.show_dual_currency ?? true;
+    const exchangeRate = printOpts.exchange_rate_khr || 4100;
+    const showPaymentMethod = printOpts.show_payment_method ?? true;
+    const showChange = printOpts.show_change ?? true;
+    const showSignatureBlocks = printOpts.show_signature_blocks ?? true;
+    const policyNote = printOpts.policy_note;
+
     const isReprint = (doc.print_logs && doc.print_logs.length > 0) || false;
 
     const handlePrint = () => {
@@ -141,32 +167,47 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                                 *** DUPLICATE / REPRINT ***
                             </div>
                         )}
-                        <h1 className="text-xl font-bold tracking-tight text-zinc-950">
-                            {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
-                        </h1>
-                        {business.business_name_secondary && (
-                            <div className="text-sm font-khmer text-zinc-700">
-                                {business.business_name_secondary}
+                        {showLogo && (
+                            <div className="w-10 h-10 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs mb-1">
+                                LE
                             </div>
                         )}
-                        <div className="text-xs text-zinc-600 max-w-xs leading-relaxed">
-                            {business.address || business.address_primary}
-                        </div>
-                        <div className="text-xs text-zinc-600 font-mono">
-                            Tel: {business.phone}
-                        </div>
-                        {business.vat_number && (
+                        {showBusinessName && (
+                            <>
+                                <h1 className="text-xl font-bold tracking-tight text-zinc-950 uppercase">
+                                    {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
+                                </h1>
+                                {business.business_name_secondary && (
+                                    <div className="text-sm font-khmer text-zinc-700">
+                                        {business.business_name_secondary}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                        {showAddress && (business.address || business.address_primary) && (
+                            <div className="text-xs text-zinc-600 max-w-xs leading-relaxed">
+                                {business.address || business.address_primary}
+                            </div>
+                        )}
+                        {showPhone && business.phone && (
+                            <div className="text-xs text-zinc-600 font-mono">
+                                Tel: {business.phone}
+                            </div>
+                        )}
+                        {showVatTin && (business.vat_number || business.tax_identifier) && (
                             <div className="text-xs font-semibold text-zinc-800 font-mono">
-                                VAT/TIN: {business.vat_number}
+                                VAT/TIN: {business.vat_number || business.tax_identifier}
                             </div>
                         )}
                     </div>
 
                     <div className="text-right space-y-1">
                         <div className="inline-block px-3 py-1 bg-zinc-100 rounded text-base font-bold font-mono tracking-wider border border-zinc-300">
-                            COMMERCIAL INVOICE
+                            {headerTitleEn}
                         </div>
-                        <div className="text-xs font-khmer text-zinc-600">វិក្កយបត្រ</div>
+                        {headerTitleKm && (
+                            <div className="text-xs font-khmer text-zinc-600">{headerTitleKm}</div>
+                        )}
                         <div className="pt-2 text-xs space-y-0.5 font-mono">
                             <div>
                                 <span className="text-zinc-500">INVOICE NO: </span>
@@ -174,15 +215,17 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                                     {doc.document_number || `DRAFT-${String(doc.provisional_order).padStart(4, '0')}`}
                                 </span>
                             </div>
-                            <div>
-                                <span className="text-zinc-500">DATE: </span>
-                                <span>{doc.business_date} {doc.event_time.slice(0, 5)}</span>
-                            </div>
+                            {showDateTime && (
+                                <div>
+                                    <span className="text-zinc-500">DATE: </span>
+                                    <span>{doc.business_date} {doc.event_time.slice(0, 5)}</span>
+                                </div>
+                            )}
                             <div>
                                 <span className="text-zinc-500">PERIOD: </span>
                                 <span>{doc.period.code}</span>
                             </div>
-                            {doc.reference_identifier && (
+                            {showTableRef && doc.reference_identifier && (
                                 <div>
                                     <span className="text-zinc-500">TABLE / REF: </span>
                                     <span className="font-bold">{doc.reference_identifier}</span>
@@ -194,14 +237,18 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
 
                 {/* Sub-header meta bar */}
                 <div className="grid grid-cols-3 gap-4 p-3 bg-zinc-50 rounded border border-zinc-200 text-xs">
-                    <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase font-mono">Cashier / Operator</span>
-                        <span className="font-semibold text-zinc-900">{doc.creator.name}</span>
-                    </div>
-                    <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase font-mono">Guest Pax / Units</span>
-                        <span className="font-semibold text-zinc-900">{doc.unit_count} Pax</span>
-                    </div>
+                    {showCashier && (
+                        <div>
+                            <span className="text-zinc-500 block text-[10px] uppercase font-mono">Cashier / Operator</span>
+                            <span className="font-semibold text-zinc-900">{doc.creator.name}</span>
+                        </div>
+                    )}
+                    {showGuestCount && (
+                        <div>
+                            <span className="text-zinc-500 block text-[10px] uppercase font-mono">Guest Pax / Units</span>
+                            <span className="font-semibold text-zinc-900">{doc.unit_count} Pax</span>
+                        </div>
+                    )}
                     <div>
                         <span className="text-zinc-500 block text-[10px] uppercase font-mono">Payment Mode</span>
                         <span className="font-semibold text-zinc-900 uppercase font-mono">{doc.payment_method}</span>
@@ -258,6 +305,11 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                 {/* Totals Summary */}
                 <div className="flex justify-between items-start gap-8 pt-2">
                     <div className="flex-1 space-y-2 text-xs text-zinc-600">
+                        {policyNote && (
+                            <div className="p-2 bg-zinc-50 border border-zinc-200 rounded font-khmer italic text-[11px]">
+                                {policyNote}
+                            </div>
+                        )}
                         {doc.note && (
                             <div className="p-2 bg-zinc-50 border border-zinc-200 rounded">
                                 <span className="font-bold text-zinc-700 block">Note:</span>
@@ -270,17 +322,19 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                     </div>
 
                     <div className="w-64 space-y-1.5 border border-zinc-300 p-3 rounded bg-zinc-50/60 font-mono text-xs">
-                        <div className="flex justify-between text-zinc-600">
-                            <span>Subtotal:</span>
-                            <span>{business.currency_symbol}{doc.subtotal}</span>
-                        </div>
-                        {parseFloat(doc.tax_amount) > 0 && (
+                        {showSubtotal && (
+                            <div className="flex justify-between text-zinc-600">
+                                <span>Subtotal:</span>
+                                <span>{business.currency_symbol}{doc.subtotal}</span>
+                            </div>
+                        )}
+                        {showTax && parseFloat(doc.tax_amount) > 0 && (
                             <div className="flex justify-between text-zinc-600">
                                 <span>Tax:</span>
                                 <span>{business.currency_symbol}{doc.tax_amount}</span>
                             </div>
                         )}
-                        {parseFloat(doc.discount_amount) > 0 && (
+                        {showDiscount && parseFloat(doc.discount_amount) > 0 && (
                             <div className="flex justify-between text-zinc-600">
                                 <span>Discount:</span>
                                 <span>-{business.currency_symbol}{doc.discount_amount}</span>
@@ -290,51 +344,59 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                             <span>Grand Total / សរុប:</span>
                             <div className="text-right">
                                 <div>{business.currency_symbol}{doc.grand_total}</div>
-                                <div className="text-xs font-normal text-zinc-600 font-khmer">
-                                    ≈ {Math.round((parseFloat(doc.grand_total) || 0) * 4100).toLocaleString()} ៛
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex justify-between text-zinc-600 pt-1 border-t border-zinc-200">
-                            <span>Tendered ({doc.payment_method}):</span>
-                            <span>{business.currency_symbol}{doc.amount_received}</span>
-                        </div>
-                        <div className="flex justify-between font-bold text-zinc-900">
-                            <span>Change Given / ប្រាក់អាប់:</span>
-                            <div className="text-right">
-                                <span>{business.currency_symbol}{doc.change_amount}</span>
-                                {parseFloat(doc.change_amount) > 0 && (
-                                    <span className="block text-[11px] font-normal text-zinc-600 font-khmer">
-                                        ≈ {Math.round(parseFloat(doc.change_amount) * 4100).toLocaleString()} ៛
-                                    </span>
+                                {showDualCurrency && (
+                                    <div className="text-xs font-normal text-zinc-600 font-khmer">
+                                        ≈ {Math.round((parseFloat(doc.grand_total) || 0) * exchangeRate).toLocaleString()} ៛
+                                    </div>
                                 )}
                             </div>
                         </div>
+                        {showPaymentMethod && (
+                            <div className="flex justify-between text-zinc-600 pt-1 border-t border-zinc-200">
+                                <span>Tendered ({doc.payment_method}):</span>
+                                <span>{business.currency_symbol}{doc.amount_received}</span>
+                            </div>
+                        )}
+                        {showChange && (
+                            <div className="flex justify-between font-bold text-zinc-900">
+                                <span>Change Given / ប្រាក់អាប់:</span>
+                                <div className="text-right">
+                                    <span>{business.currency_symbol}{doc.change_amount}</span>
+                                    {showDualCurrency && parseFloat(doc.change_amount) > 0 && (
+                                        <span className="block text-[11px] font-normal text-zinc-600 font-khmer">
+                                            ≈ {Math.round(parseFloat(doc.change_amount) * exchangeRate).toLocaleString()} ៛
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Signature Blocks */}
-                <div className="grid grid-cols-2 gap-12 pt-8 border-t border-zinc-200 text-xs">
-                    <div className="text-center space-y-12">
-                        <div className="font-semibold text-zinc-800">
-                            Authorized Cashier / អ្នកគិតលុយ
+                {showSignatureBlocks && (
+                    <div className="grid grid-cols-2 gap-12 pt-8 border-t border-zinc-200 text-xs">
+                        <div className="text-center space-y-12">
+                            <div className="font-semibold text-zinc-800">
+                                Authorized Cashier / អ្នកគិតលុយ
+                            </div>
+                            <div className="border-b border-zinc-400 w-48 mx-auto"></div>
+                            <div className="text-[11px] text-zinc-500 font-mono">
+                                {doc.creator.name}
+                            </div>
                         </div>
-                        <div className="border-b border-zinc-400 w-48 mx-auto"></div>
-                        <div className="text-[11px] text-zinc-500 font-mono">
-                            {doc.creator.name}
-                        </div>
-                    </div>
 
-                    <div className="text-center space-y-12">
-                        <div className="font-semibold text-zinc-800">
-                            Customer / អ្នកទទួល
-                        </div>
-                        <div className="border-b border-zinc-400 w-48 mx-auto"></div>
-                        <div className="text-[11px] text-zinc-500 font-mono">
-                            Signature & Date
+                        <div className="text-center space-y-12">
+                            <div className="font-semibold text-zinc-800">
+                                Customer / អ្នកទទួល
+                            </div>
+                            <div className="border-b border-zinc-400 w-48 mx-auto"></div>
+                            <div className="text-[11px] text-zinc-500 font-mono">
+                                Signature & Date
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

@@ -112,6 +112,77 @@ class SettingsController extends Controller
     }
 
     /**
+     * Update invoice print template and layout designer settings.
+     */
+    public function updatePrintSettings(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'default_format' => ['required', 'string', 'in:80mm,a4'],
+            'show_logo' => ['nullable', 'boolean'],
+            'show_business_name' => ['nullable', 'boolean'],
+            'header_title_en' => ['nullable', 'string', 'max:120'],
+            'header_title_km' => ['nullable', 'string', 'max:120'],
+            'header_subtitle' => ['nullable', 'string', 'max:250'],
+            'show_address' => ['nullable', 'boolean'],
+            'show_phone' => ['nullable', 'boolean'],
+            'show_vat_tin' => ['nullable', 'boolean'],
+            'show_cashier' => ['nullable', 'boolean'],
+            'show_table_ref' => ['nullable', 'boolean'],
+            'show_guest_count' => ['nullable', 'boolean'],
+            'show_datetime' => ['nullable', 'boolean'],
+            'show_customer_info' => ['nullable', 'boolean'],
+            'show_barcode' => ['nullable', 'boolean'],
+            'show_item_khmer_name' => ['nullable', 'boolean'],
+            'show_item_unit' => ['nullable', 'boolean'],
+            'show_item_quantity' => ['nullable', 'boolean'],
+            'show_item_sku' => ['nullable', 'boolean'],
+            'item_density' => ['nullable', 'string', 'in:compact,normal,spacious'],
+            'show_subtotal' => ['nullable', 'boolean'],
+            'show_tax' => ['nullable', 'boolean'],
+            'show_discount' => ['nullable', 'boolean'],
+            'show_dual_currency' => ['nullable', 'boolean'],
+            'exchange_rate_khr' => ['nullable', 'numeric', 'min:0'],
+            'show_payment_method' => ['nullable', 'boolean'],
+            'show_change' => ['nullable', 'boolean'],
+            'footer_text' => ['nullable', 'string', 'max:500'],
+            'policy_note' => ['nullable', 'string', 'max:500'],
+            'show_qr_payment' => ['nullable', 'boolean'],
+            'qr_payment_text' => ['nullable', 'string', 'max:100'],
+            'show_wifi_info' => ['nullable', 'boolean'],
+            'wifi_ssid' => ['nullable', 'string', 'max:100'],
+            'wifi_password' => ['nullable', 'string', 'max:100'],
+            'show_signature_blocks' => ['nullable', 'boolean'],
+        ]);
+
+        $setting = BusinessSetting::current();
+        $oldSettings = $setting->print_settings ?? [];
+
+        $merged = array_merge($oldSettings, $validated);
+
+        $payload = [
+            'print_settings' => $merged,
+        ];
+
+        if (isset($validated['footer_text'])) {
+            $payload['document_footer'] = $validated['footer_text'];
+        }
+
+        $setting->update($payload);
+
+        $this->audit->record(
+            'settings.print_template_updated',
+            $setting,
+            $oldSettings,
+            $merged,
+            null,
+            $request->user()->id,
+            'Updated invoice print templates and layout designer'
+        );
+
+        return back()->with('success', 'Invoice & print layout settings updated successfully.');
+    }
+
+    /**
      * Create a new location.
      */
     public function storeLocation(Request $request): RedirectResponse

@@ -1,0 +1,1543 @@
+import React, { useState, useRef } from 'react';
+import { useForm, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import {
+    Printer,
+    FileText,
+    Save,
+    RotateCcw,
+    Eye,
+    QrCode,
+    Wifi,
+    Check,
+    DollarSign,
+    Sparkles,
+    Sliders,
+    Building2,
+    Calendar,
+    Receipt,
+    Maximize2,
+    ZoomIn,
+    ZoomOut,
+    CheckCircle2,
+    UserCheck,
+} from 'lucide-react';
+
+interface InvoiceDesignerProps {
+    settings: any;
+}
+
+export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) => {
+    const { auth } = usePage<PageProps>().props;
+    const currentPrint = settings.print_settings || {};
+
+    const [activePreviewFormat, setActivePreviewFormat] = useState<'80mm' | 'a4'>(
+        (currentPrint.default_format as '80mm' | 'a4') || '80mm'
+    );
+    const [previewZoom, setPreviewZoom] = useState<number>(100);
+    const [sampleScenario, setSampleScenario] = useState<'dine_in' | 'takeaway'>('dine_in');
+    const [saveSuccessNotice, setSaveSuccessNotice] = useState(false);
+    const previewContainerRef = useRef<HTMLDivElement>(null);
+
+    // Form state initialized with print_settings or clean defaults
+    const form = useForm({
+        default_format: (currentPrint.default_format as '80mm' | 'a4') || '80mm',
+        show_logo: currentPrint.show_logo ?? true,
+        show_business_name: currentPrint.show_business_name ?? true,
+        header_title_en: currentPrint.header_title_en || 'COMMERCIAL INVOICE',
+        header_title_km: currentPrint.header_title_km || 'វិក្កយបត្រ',
+        header_subtitle:
+            currentPrint.header_subtitle || 'Official Sales Receipt & Tax Invoice',
+        show_address: currentPrint.show_address ?? true,
+        show_phone: currentPrint.show_phone ?? true,
+        show_vat_tin: currentPrint.show_vat_tin ?? true,
+        show_cashier: currentPrint.show_cashier ?? true,
+        show_table_ref: currentPrint.show_table_ref ?? true,
+        show_guest_count: currentPrint.show_guest_count ?? true,
+        show_datetime: currentPrint.show_datetime ?? true,
+        show_customer_info: currentPrint.show_customer_info ?? true,
+        show_barcode: currentPrint.show_barcode ?? true,
+        show_item_khmer_name: currentPrint.show_item_khmer_name ?? true,
+        show_item_unit: currentPrint.show_item_unit ?? true,
+        show_item_quantity: currentPrint.show_item_quantity ?? true,
+        show_item_sku: currentPrint.show_item_sku ?? false,
+        item_density: (currentPrint.item_density as 'compact' | 'normal' | 'spacious') || 'normal',
+        show_subtotal: currentPrint.show_subtotal ?? true,
+        show_tax: currentPrint.show_tax ?? false,
+        show_discount: currentPrint.show_discount ?? true,
+        show_dual_currency: currentPrint.show_dual_currency ?? true,
+        exchange_rate_khr: currentPrint.exchange_rate_khr ?? 4100,
+        show_payment_method: currentPrint.show_payment_method ?? true,
+        show_change: currentPrint.show_change ?? true,
+        footer_text:
+            currentPrint.footer_text ||
+            settings.document_footer ||
+            'Thank you for dining with us! សូមអរគុណ!',
+        policy_note:
+            currentPrint.policy_note ||
+            'Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ',
+        show_qr_payment: currentPrint.show_qr_payment ?? true,
+        qr_payment_text: currentPrint.qr_payment_text || 'Scan to Pay / KHQR',
+        show_wifi_info: currentPrint.show_wifi_info ?? true,
+        wifi_ssid: currentPrint.wifi_ssid || 'Leashal-Etum-Guest',
+        wifi_password: currentPrint.wifi_password || 'welcome2026',
+        show_signature_blocks: currentPrint.show_signature_blocks ?? true,
+    });
+
+    // Reset to defaults
+    const handleResetDefaults = () => {
+        if (!confirm('Are you sure you want to restore default invoice template settings?')) {
+            return;
+        }
+        form.setData({
+            default_format: '80mm',
+            show_logo: true,
+            show_business_name: true,
+            header_title_en: 'COMMERCIAL INVOICE',
+            header_title_km: 'វិក្កយបត្រ',
+            header_subtitle: 'Official Sales Receipt & Tax Invoice',
+            show_address: true,
+            show_phone: true,
+            show_vat_tin: true,
+            show_cashier: true,
+            show_table_ref: true,
+            show_guest_count: true,
+            show_datetime: true,
+            show_customer_info: true,
+            show_barcode: true,
+            show_item_khmer_name: true,
+            show_item_unit: true,
+            show_item_quantity: true,
+            show_item_sku: false,
+            item_density: 'normal',
+            show_subtotal: true,
+            show_tax: false,
+            show_discount: true,
+            show_dual_currency: true,
+            exchange_rate_khr: 4100,
+            show_payment_method: true,
+            show_change: true,
+            footer_text: 'Thank you for dining with us! សូមអរគុណ!',
+            policy_note: 'Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ',
+            show_qr_payment: true,
+            qr_payment_text: 'Scan to Pay / KHQR',
+            show_wifi_info: true,
+            wifi_ssid: 'Leashal-Etum-Guest',
+            wifi_password: 'welcome2026',
+            show_signature_blocks: true,
+        });
+    };
+
+    // Submit handler
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        form.patch('/settings/print', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSaveSuccessNotice(true);
+                setTimeout(() => setSaveSuccessNotice(false), 4000);
+            },
+        });
+    };
+
+    // Print test preview
+    const handleTestPrint = () => {
+        window.print();
+    };
+
+    // Sample Invoice Data for Live Preview
+    const sampleItems = [
+        {
+            id: 1,
+            name_en: 'Buffet / Primary Package',
+            name_km: 'កញ្ចប់អាហារប៊ូហ្វេធម្មតា',
+            sku: 'BF-01',
+            unit: 'Pax',
+            qty: 4,
+            price: 5.0,
+            total: 20.0,
+        },
+        {
+            id: 2,
+            name_en: 'Coca Cola Can',
+            name_km: 'កូកាកូឡាកំប៉ុង',
+            sku: 'DR-02',
+            unit: 'Can',
+            qty: 3,
+            price: 1.0,
+            total: 3.0,
+        },
+        {
+            id: 3,
+            name_en: 'Fresh Fragrant Coconut',
+            name_km: 'ដូងក្រអូបធម្មជាតិ',
+            sku: 'DR-08',
+            unit: 'Fruit',
+            qty: 2,
+            price: 1.5,
+            total: 3.0,
+        },
+        {
+            id: 4,
+            name_en: 'Special Seafood Sauce',
+            name_km: 'ទឹកត្រីកោះកុងពិសេស',
+            sku: 'EX-01',
+            unit: 'Plate',
+            qty: 1,
+            price: 0.5,
+            total: 0.5,
+        },
+    ];
+
+    const subtotal = 26.5;
+    const discount = form.data.show_discount ? 1.5 : 0;
+    const tax = form.data.show_tax ? 2.5 : 0;
+    const grandTotal = subtotal - discount + tax;
+    const grandTotalKHR = Math.round(grandTotal * (form.data.exchange_rate_khr || 4100));
+    const amountReceived = 30.0;
+    const changeAmount = amountReceived - grandTotal;
+    const changeKHR = Math.round(changeAmount * (form.data.exchange_rate_khr || 4100));
+
+    return (
+        <div className="space-y-6">
+            {/* Scoped print styles for test print */}
+            <style>{`
+                @media print {
+                    body * {
+                        visibility: hidden !important;
+                    }
+                    #live-invoice-print-canvas,
+                    #live-invoice-print-canvas * {
+                        visibility: visible !important;
+                    }
+                    #live-invoice-print-canvas {
+                        position: absolute !important;
+                        left: 0 !important;
+                        top: 0 !important;
+                        margin: 0 !important;
+                        padding: ${activePreviewFormat === '80mm' ? '2mm' : '8mm'} !important;
+                        width: ${activePreviewFormat === '80mm' ? '78mm' : '100%'} !important;
+                        max-width: ${activePreviewFormat === '80mm' ? '78mm' : '100%'} !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                        background: #ffffff !important;
+                        color: #000000 !important;
+                    }
+                    @page {
+                        margin: 0;
+                        size: ${activePreviewFormat === '80mm' ? '80mm auto' : 'A4 portrait'};
+                    }
+                }
+            `}</style>
+
+            {/* Header description */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-zinc-800">
+                <div>
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Printer className="w-5 h-5 text-emerald-400" />
+                        <span>Invoice & Receipt Template Designer</span>
+                    </h2>
+                    <p className="text-xs text-zinc-400 mt-1">
+                        Customize visual fields, headers, currency display, KHQR, and policies for both 80mm thermal receipts and A4 invoices with real-time live preview.
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleResetDefaults}
+                        className="text-xs"
+                    >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Reset Defaults</span>
+                    </Button>
+                    <Button
+                        type="button"
+                        size="sm"
+                        onClick={handleSubmit}
+                        disabled={form.processing}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-md shadow-emerald-950 text-xs"
+                    >
+                        <Save className="w-3.5 h-3.5" />
+                        <span>{form.processing ? 'Saving...' : 'Save Template Settings'}</span>
+                    </Button>
+                </div>
+            </div>
+
+            {saveSuccessNotice && (
+                <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-2.5 text-xs text-emerald-400">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Invoice layout & print settings updated successfully! All future print requests will use this design.</span>
+                </div>
+            )}
+
+            {/* Split Grid: Left Editor (Col 7) & Right Live Preview (Col 5) */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* LEFT COLUMN: Controls & Settings (7 cols) */}
+                <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-5">
+                    {/* 1. Format & Layout Defaults */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <Receipt className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Paper Format & Row Spacing
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 1/6</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
+                                    Default POS Print Format
+                                </label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            form.setData('default_format', '80mm');
+                                            setActivePreviewFormat('80mm');
+                                        }}
+                                        className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                                            form.data.default_format === '80mm'
+                                                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 font-bold'
+                                                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                                        }`}
+                                    >
+                                        <Printer className="w-3.5 h-3.5" />
+                                        <span>80mm Thermal</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            form.setData('default_format', 'a4');
+                                            setActivePreviewFormat('a4');
+                                        }}
+                                        className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                                            form.data.default_format === 'a4'
+                                                ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 font-bold'
+                                                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                                        }`}
+                                    >
+                                        <FileText className="w-3.5 h-3.5" />
+                                        <span>A4 Invoice</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
+                                    Items Table Spacing / Row Density
+                                </label>
+                                <div className="grid grid-cols-3 gap-1.5">
+                                    {(['compact', 'normal', 'spacious'] as const).map((density) => (
+                                        <button
+                                            key={density}
+                                            type="button"
+                                            onClick={() => form.setData('item_density', density)}
+                                            className={`p-2 rounded-lg border text-[11px] font-medium capitalize text-center transition-all cursor-pointer ${
+                                                form.data.item_density === density
+                                                    ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 font-bold'
+                                                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                                            }`}
+                                        >
+                                            {density}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* 2. Header & Branding */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <Building2 className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Header & Letterhead
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 2/6</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <Input
+                                id="header_title_km"
+                                label="Khmer Title / ចំណងជើងភាសាខ្មែរ"
+                                value={form.data.header_title_km}
+                                onChange={(e) => form.setData('header_title_km', e.target.value)}
+                                placeholder="វិក្កយបត្រ"
+                            />
+                            <Input
+                                id="header_title_en"
+                                label="English Title / ចំណងជើងភាសាអង់គ្លេស"
+                                value={form.data.header_title_en}
+                                onChange={(e) => form.setData('header_title_en', e.target.value)}
+                                placeholder="COMMERCIAL INVOICE"
+                            />
+                        </div>
+
+                        <Input
+                            id="header_subtitle"
+                            label="Header Subtitle / Tagline"
+                            value={form.data.header_subtitle}
+                            onChange={(e) => form.setData('header_subtitle', e.target.value)}
+                            placeholder="Official Sales Receipt & Tax Invoice"
+                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Brand Logo</span>
+                                    <p className="text-[10px] text-zinc-400">Display circular store emblem</p>
+                                </div>
+                                <Switch
+                                    id="show_logo"
+                                    checked={form.data.show_logo}
+                                    onCheckedChange={(val) => form.setData('show_logo', val)}
+                                    ariaLabel="Show Logo"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Business Name</span>
+                                    <p className="text-[10px] text-zinc-400">Header primary & secondary titles</p>
+                                </div>
+                                <Switch
+                                    id="show_business_name"
+                                    checked={form.data.show_business_name}
+                                    onCheckedChange={(val) => form.setData('show_business_name', val)}
+                                    ariaLabel="Show Business Name"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Store Address</span>
+                                    <p className="text-[10px] text-zinc-400">Print branch / store physical address</p>
+                                </div>
+                                <Switch
+                                    id="show_address"
+                                    checked={form.data.show_address}
+                                    onCheckedChange={(val) => form.setData('show_address', val)}
+                                    ariaLabel="Show Address"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Phone Number</span>
+                                    <p className="text-[10px] text-zinc-400">Print store contact telephone</p>
+                                </div>
+                                <Switch
+                                    id="show_phone"
+                                    checked={form.data.show_phone}
+                                    onCheckedChange={(val) => form.setData('show_phone', val)}
+                                    ariaLabel="Show Phone"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show VAT / Tax Identifier</span>
+                                    <p className="text-[10px] text-zinc-400">Print official GDT / TIN number</p>
+                                </div>
+                                <Switch
+                                    id="show_vat_tin"
+                                    checked={form.data.show_vat_tin}
+                                    onCheckedChange={(val) => form.setData('show_vat_tin', val)}
+                                    ariaLabel="Show VAT / TIN"
+                                />
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* 3. Metadata & Customer */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Transaction & Customer Metadata
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 3/6</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Cashier Name</span>
+                                    <p className="text-[10px] text-zinc-400">Attributing cashier/operator</p>
+                                </div>
+                                <Switch
+                                    id="show_cashier"
+                                    checked={form.data.show_cashier}
+                                    onCheckedChange={(val) => form.setData('show_cashier', val)}
+                                    ariaLabel="Show Cashier"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Table / Ref ID</span>
+                                    <p className="text-[10px] text-zinc-400">Display table number or order tag</p>
+                                </div>
+                                <Switch
+                                    id="show_table_ref"
+                                    checked={form.data.show_table_ref}
+                                    onCheckedChange={(val) => form.setData('show_table_ref', val)}
+                                    ariaLabel="Show Table / Ref"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Guest Count (Pax)</span>
+                                    <p className="text-[10px] text-zinc-400">Total dining guests on slip</p>
+                                </div>
+                                <Switch
+                                    id="show_guest_count"
+                                    checked={form.data.show_guest_count}
+                                    onCheckedChange={(val) => form.setData('show_guest_count', val)}
+                                    ariaLabel="Show Guest Count"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Date & Timestamp</span>
+                                    <p className="text-[10px] text-zinc-400">Date and chronological event time</p>
+                                </div>
+                                <Switch
+                                    id="show_datetime"
+                                    checked={form.data.show_datetime}
+                                    onCheckedChange={(val) => form.setData('show_datetime', val)}
+                                    ariaLabel="Show Date & Time"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Customer Details</span>
+                                    <p className="text-[10px] text-zinc-400">Customer name & phone on A4</p>
+                                </div>
+                                <Switch
+                                    id="show_customer_info"
+                                    checked={form.data.show_customer_info}
+                                    onCheckedChange={(val) => form.setData('show_customer_info', val)}
+                                    ariaLabel="Show Customer Info"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Barcode / Order Code</span>
+                                    <p className="text-[10px] text-zinc-400">Scannable 1D barcode on slip</p>
+                                </div>
+                                <Switch
+                                    id="show_barcode"
+                                    checked={form.data.show_barcode}
+                                    onCheckedChange={(val) => form.setData('show_barcode', val)}
+                                    ariaLabel="Show Barcode"
+                                />
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* 4. Line Items Table Customization */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <Sliders className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Items & Column Display
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 4/6</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Khmer Item Name</span>
+                                    <p className="text-[10px] text-zinc-400">Secondary Khmer menu description</p>
+                                </div>
+                                <Switch
+                                    id="show_item_khmer_name"
+                                    checked={form.data.show_item_khmer_name}
+                                    onCheckedChange={(val) => form.setData('show_item_khmer_name', val)}
+                                    ariaLabel="Show Khmer Item Name"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Unit of Measure</span>
+                                    <p className="text-[10px] text-zinc-400">E.g., Can, Plate, Pax, Bottle</p>
+                                </div>
+                                <Switch
+                                    id="show_item_unit"
+                                    checked={form.data.show_item_unit}
+                                    onCheckedChange={(val) => form.setData('show_item_unit', val)}
+                                    ariaLabel="Show Item Unit"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show SKU / Item Code</span>
+                                    <p className="text-[10px] text-zinc-400">Inventory SKU identifier</p>
+                                </div>
+                                <Switch
+                                    id="show_item_sku"
+                                    checked={form.data.show_item_sku}
+                                    onCheckedChange={(val) => form.setData('show_item_sku', val)}
+                                    ariaLabel="Show Item SKU"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Quantity Column</span>
+                                    <p className="text-[10px] text-zinc-400">Numerical units purchased</p>
+                                </div>
+                                <Switch
+                                    id="show_item_quantity"
+                                    checked={form.data.show_item_quantity}
+                                    onCheckedChange={(val) => form.setData('show_item_quantity', val)}
+                                    ariaLabel="Show Quantity"
+                                />
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* 5. Totals, Tax & Dual Currency */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <DollarSign className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Totals, Tax & Dual Currency
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 5/6</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Subtotal</span>
+                                    <p className="text-[10px] text-zinc-400">Pre-discount item subtotal</p>
+                                </div>
+                                <Switch
+                                    id="show_subtotal"
+                                    checked={form.data.show_subtotal}
+                                    onCheckedChange={(val) => form.setData('show_subtotal', val)}
+                                    ariaLabel="Show Subtotal"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Tax (VAT) Breakdown</span>
+                                    <p className="text-[10px] text-zinc-400">Separate tax line item</p>
+                                </div>
+                                <Switch
+                                    id="show_tax"
+                                    checked={form.data.show_tax}
+                                    onCheckedChange={(val) => form.setData('show_tax', val)}
+                                    ariaLabel="Show Tax"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Discount Line</span>
+                                    <p className="text-[10px] text-zinc-400">Promotions or VIP discount deduction</p>
+                                </div>
+                                <Switch
+                                    id="show_discount"
+                                    checked={form.data.show_discount}
+                                    onCheckedChange={(val) => form.setData('show_discount', val)}
+                                    ariaLabel="Show Discount"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Dual Currency (KHR ៛)</span>
+                                    <p className="text-[10px] text-zinc-400">Riel equivalent on totals</p>
+                                </div>
+                                <Switch
+                                    id="show_dual_currency"
+                                    checked={form.data.show_dual_currency}
+                                    onCheckedChange={(val) => form.setData('show_dual_currency', val)}
+                                    ariaLabel="Show Dual Currency"
+                                />
+                            </div>
+                        </div>
+
+                        {form.data.show_dual_currency && (
+                            <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-2">
+                                <Input
+                                    id="exchange_rate_khr"
+                                    type="number"
+                                    label="Exchange Rate (1 USD = X KHR) / អត្រាប្តូរប្រាក់"
+                                    value={form.data.exchange_rate_khr}
+                                    onChange={(e) =>
+                                        form.setData('exchange_rate_khr', parseFloat(e.target.value) || 4100)
+                                    }
+                                    placeholder="4100"
+                                />
+                                <p className="text-[11px] text-zinc-400 font-khmer">
+                                    ឧទាហរណ៍៖ $25.00 គុណនឹង {form.data.exchange_rate_khr} = {(25 * form.data.exchange_rate_khr).toLocaleString()} ៛
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Payment Mode & Tendered</span>
+                                    <p className="text-[10px] text-zinc-400">E.g. CASH $30.00 / KHQR</p>
+                                </div>
+                                <Switch
+                                    id="show_payment_method"
+                                    checked={form.data.show_payment_method}
+                                    onCheckedChange={(val) => form.setData('show_payment_method', val)}
+                                    ariaLabel="Show Payment Method"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-semibold text-zinc-200">Show Change Amount</span>
+                                    <p className="text-[10px] text-zinc-400">Change returned in USD and KHR</p>
+                                </div>
+                                <Switch
+                                    id="show_change"
+                                    checked={form.data.show_change}
+                                    onCheckedChange={(val) => form.setData('show_change', val)}
+                                    ariaLabel="Show Change"
+                                />
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* 6. Footer, Policies, KHQR & Wi-Fi */}
+                    <Card className="p-4 sm:p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-emerald-400" />
+                                <h3 className="text-sm font-bold text-zinc-100">
+                                    Footer, Terms, KHQR & Wi-Fi
+                                </h3>
+                            </div>
+                            <span className="text-[11px] font-mono text-zinc-400">Section 6/6</span>
+                        </div>
+
+                        <div>
+                            <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
+                                Thank-You Message / សារអរគុណបាតវិក្កយបត្រ
+                            </label>
+                            <textarea
+                                rows={2}
+                                value={form.data.footer_text}
+                                onChange={(e) => form.setData('footer_text', e.target.value)}
+                                className="w-full text-xs rounded-lg bg-zinc-900 border border-zinc-700/80 px-3 py-2 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                placeholder="Thank you for dining with us! សូមអរគុណ!"
+                            />
+                        </div>
+
+                        <Input
+                            id="policy_note"
+                            label="Return / Exchange Policy Notice (សេចក្តីជូនដំណឹងគោលការណ៍)"
+                            value={form.data.policy_note}
+                            onChange={(e) => form.setData('policy_note', e.target.value)}
+                            placeholder="Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ"
+                        />
+
+                        {/* KHQR payment toggle */}
+                        <div className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 space-y-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2.5">
+                                    <QrCode className="w-4 h-4 text-rose-400" />
+                                    <div>
+                                        <span className="text-xs font-semibold text-zinc-200">
+                                            Show KHQR / Payment QR Code
+                                        </span>
+                                        <p className="text-[10px] text-zinc-400">
+                                            Prints scannable Bakong / KHQR code box on bottom of receipt
+                                        </p>
+                                    </div>
+                                </div>
+                                <Switch
+                                    id="show_qr_payment"
+                                    checked={form.data.show_qr_payment}
+                                    onCheckedChange={(val) => form.setData('show_qr_payment', val)}
+                                    ariaLabel="Show QR Payment"
+                                />
+                            </div>
+
+                            {form.data.show_qr_payment && (
+                                <Input
+                                    id="qr_payment_text"
+                                    label="QR Label Text"
+                                    value={form.data.qr_payment_text}
+                                    onChange={(e) => form.setData('qr_payment_text', e.target.value)}
+                                    placeholder="Scan to Pay / KHQR"
+                                />
+                            )}
+                        </div>
+
+                        {/* Wi-Fi Details toggle */}
+                        <div className="p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 space-y-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2.5">
+                                    <Wifi className="w-4 h-4 text-sky-400" />
+                                    <div>
+                                        <span className="text-xs font-semibold text-zinc-200">
+                                            Show Guest Wi-Fi Information
+                                        </span>
+                                        <p className="text-[10px] text-zinc-400">
+                                            Convenient Wi-Fi access credentials for guests
+                                        </p>
+                                    </div>
+                                </div>
+                                <Switch
+                                    id="show_wifi_info"
+                                    checked={form.data.show_wifi_info}
+                                    onCheckedChange={(val) => form.setData('show_wifi_info', val)}
+                                    ariaLabel="Show Wi-Fi Info"
+                                />
+                            </div>
+
+                            {form.data.show_wifi_info && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                    <Input
+                                        id="wifi_ssid"
+                                        label="Wi-Fi SSID (ឈ្មោះបណ្តាញ)"
+                                        value={form.data.wifi_ssid}
+                                        onChange={(e) => form.setData('wifi_ssid', e.target.value)}
+                                        placeholder="Leashal-Etum-Guest"
+                                    />
+                                    <Input
+                                        id="wifi_password"
+                                        label="Wi-Fi Password (លេខកូដសម្ងាត់)"
+                                        value={form.data.wifi_password}
+                                        onChange={(e) => form.setData('wifi_password', e.target.value)}
+                                        placeholder="welcome2026"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* A4 Signature Blocks */}
+                        <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
+                            <div className="flex items-center gap-2.5">
+                                <UserCheck className="w-4 h-4 text-emerald-400" />
+                                <div>
+                                    <span className="text-xs font-semibold text-zinc-200">
+                                        Show Signature & Stamp Blocks (A4)
+                                    </span>
+                                    <p className="text-[10px] text-zinc-400">
+                                        Official Cashier & Customer signature lines on A4
+                                    </p>
+                                </div>
+                            </div>
+                            <Switch
+                                id="show_signature_blocks"
+                                checked={form.data.show_signature_blocks}
+                                onCheckedChange={(val) => form.setData('show_signature_blocks', val)}
+                                ariaLabel="Show Signature Blocks"
+                            />
+                        </div>
+                    </Card>
+
+                    {/* Submit Bar at bottom */}
+                    <div className="flex justify-end gap-3 pt-2">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={handleResetDefaults}
+                        >
+                            <RotateCcw className="w-4 h-4" />
+                            <span>Reset</span>
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={form.processing}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-md shadow-emerald-950"
+                        >
+                            <Save className="w-4 h-4" />
+                            <span>{form.processing ? 'Saving...' : 'Save All Invoice Settings'}</span>
+                        </Button>
+                    </div>
+                </form>
+
+                {/* RIGHT COLUMN: Interactive Real-Time Live Preview (5 cols) */}
+                <div className="lg:col-span-5 sticky top-28 space-y-4">
+                    {/* Live Preview Control Toolbar */}
+                    <div className="bg-zinc-900/90 backdrop-blur-md p-3 rounded-xl border border-zinc-800 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+                        {/* Format Switcher */}
+                        <div className="inline-flex rounded-lg bg-zinc-950 p-0.5 border border-zinc-800">
+                            <button
+                                type="button"
+                                onClick={() => setActivePreviewFormat('80mm')}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+                                    activePreviewFormat === '80mm'
+                                        ? 'bg-emerald-500 text-zinc-950 shadow-xs'
+                                        : 'text-zinc-400 hover:text-white'
+                                }`}
+                            >
+                                <Printer className="w-3.5 h-3.5" />
+                                <span>80mm Thermal</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setActivePreviewFormat('a4')}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
+                                    activePreviewFormat === 'a4'
+                                        ? 'bg-emerald-500 text-zinc-950 shadow-xs'
+                                        : 'text-zinc-400 hover:text-white'
+                                }`}
+                            >
+                                <FileText className="w-3.5 h-3.5" />
+                                <span>A4 Invoice</span>
+                            </button>
+                        </div>
+
+                        {/* Action buttons: Zoom & Print */}
+                        <div className="flex items-center gap-1.5">
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPreviewZoom((prev) => (prev > 70 ? prev - 10 : prev))
+                                }
+                                title="Zoom Out"
+                                className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"
+                            >
+                                <ZoomOut className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="text-[11px] font-mono text-zinc-400 px-1">
+                                {previewZoom}%
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    setPreviewZoom((prev) => (prev < 120 ? prev + 10 : prev))
+                                }
+                                title="Zoom In"
+                                className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"
+                            >
+                                <ZoomIn className="w-3.5 h-3.5" />
+                            </button>
+                            <Button
+                                type="button"
+                                size="sm"
+                                onClick={handleTestPrint}
+                                className="bg-zinc-800 hover:bg-zinc-700 text-white font-medium border border-zinc-700 ml-1 text-xs"
+                                title="Trigger physical print test"
+                            >
+                                <Printer className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+                                <span>Test Print</span>
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Preview Scroll Canvas */}
+                    <div
+                        ref={previewContainerRef}
+                        className="p-4 sm:p-6 rounded-2xl bg-zinc-950 border border-zinc-800/80 shadow-2xl overflow-y-auto max-h-[calc(100vh-14rem)] flex justify-center items-start"
+                        style={{
+                            backgroundImage:
+                                'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)',
+                            backgroundSize: '24px 24px',
+                        }}
+                    >
+                        {/* Zoom transform container */}
+                        <div
+                            style={{
+                                transform: `scale(${previewZoom / 100})`,
+                                transformOrigin: 'top center',
+                                transition: 'transform 0.15s ease-out',
+                            }}
+                        >
+                            {/* =========================================================================
+                                80MM THERMAL RECEIPT PREVIEW CANVAS
+                                ========================================================================= */}
+                            {activePreviewFormat === '80mm' && (
+                                <div
+                                    id="live-invoice-print-canvas"
+                                    className="w-[320px] bg-white text-black p-4 rounded shadow-2xl font-mono text-[11px] leading-tight space-y-2.5 border border-zinc-300 relative select-none"
+                                >
+                                    {/* Brand / Header */}
+                                    <div className="text-center space-y-1 pb-2 border-b border-dashed border-zinc-400">
+                                        {form.data.show_logo && (
+                                            <div className="w-10 h-10 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs mb-1">
+                                                LE
+                                            </div>
+                                        )}
+
+                                        {form.data.show_business_name && (
+                                            <>
+                                                <h1 className="text-sm font-bold tracking-tight uppercase">
+                                                    {settings.business_name_primary || 'លៀសហាល អ៉ីទុម'}
+                                                </h1>
+                                                {settings.business_name_secondary && (
+                                                    <div className="text-[11px] font-sans font-bold">
+                                                        {settings.business_name_secondary}
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+
+                                        <div className="pt-0.5">
+                                            <span className="font-bold text-[12px] uppercase">
+                                                {form.data.header_title_en}
+                                            </span>
+                                            {form.data.header_title_km && (
+                                                <span className="block text-[11px] font-khmer text-zinc-700">
+                                                    {form.data.header_title_km}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {form.data.show_address && settings.address_primary && (
+                                            <div className="text-[10px] text-zinc-600 leading-snug">
+                                                {settings.address_primary}
+                                            </div>
+                                        )}
+
+                                        {form.data.show_phone && settings.phone && (
+                                            <div className="text-[10px] text-zinc-600">
+                                                TEL: {settings.phone}
+                                            </div>
+                                        )}
+
+                                        {form.data.show_vat_tin && (
+                                            <div className="text-[9px] text-zinc-500 font-mono">
+                                                VAT/TIN: {settings.tax_identifier || 'K001-902348512'}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Metadata Details */}
+                                    <div className="space-y-0.5 text-[10px] pb-2 border-b border-dashed border-zinc-400">
+                                        <div className="flex justify-between">
+                                            <span className="text-zinc-600">INVOICE NO:</span>
+                                            <span className="font-bold">INV-2026-0042</span>
+                                        </div>
+
+                                        {form.data.show_datetime && (
+                                            <div className="flex justify-between">
+                                                <span className="text-zinc-600">DATE & TIME:</span>
+                                                <span>2026-10-14 12:45 PM</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_table_ref && (
+                                            <div className="flex justify-between">
+                                                <span className="text-zinc-600">TABLE / REF:</span>
+                                                <span className="font-bold">Table VIP-02</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_cashier && (
+                                            <div className="flex justify-between">
+                                                <span className="text-zinc-600">CASHIER:</span>
+                                                <span>{auth.user?.name || 'Sok Dara'}</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_guest_count && (
+                                            <div className="flex justify-between">
+                                                <span className="text-zinc-600">GUEST PAX:</span>
+                                                <span>4 Guests</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_barcode && (
+                                            <div className="text-center pt-1.5 pb-0.5">
+                                                <div className="h-6 w-36 mx-auto flex items-end justify-center gap-0.5">
+                                                    {[2, 1, 3, 1, 2, 4, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 1, 3, 2, 4, 1, 2, 3, 1].map(
+                                                        (h, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="bg-black"
+                                                                style={{
+                                                                    width: `${h}px`,
+                                                                    height: '100%',
+                                                                }}
+                                                            />
+                                                        )
+                                                    )}
+                                                </div>
+                                                <span className="text-[8px] text-zinc-500 tracking-widest font-mono">
+                                                    *INV-2026-0042*
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Line Items Table */}
+                                    <div className="space-y-1.5 pb-2 border-b border-dashed border-zinc-400">
+                                        <div className="flex justify-between text-[10px] font-bold text-zinc-800 pb-0.5 border-b border-zinc-300">
+                                            <span>ITEM / DESCRIPTION</span>
+                                            <span>AMOUNT</span>
+                                        </div>
+
+                                        {sampleItems.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className={`space-y-0.5 ${
+                                                    form.data.item_density === 'compact'
+                                                        ? 'py-0'
+                                                        : form.data.item_density === 'spacious'
+                                                        ? 'py-1'
+                                                        : 'py-0.5'
+                                                }`}
+                                            >
+                                                <div className="flex justify-between font-sans text-[11px] font-semibold text-black">
+                                                    <span className="leading-tight">
+                                                        {item.name_en}
+                                                        {form.data.show_item_sku && (
+                                                            <span className="text-[9px] text-zinc-500 block font-mono">
+                                                                SKU: {item.sku}
+                                                            </span>
+                                                        )}
+                                                        {form.data.show_item_khmer_name && (
+                                                            <span className="block text-[10px] text-zinc-600 font-khmer">
+                                                                {item.name_km}
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                    <span className="font-mono text-[11px] font-bold shrink-0">
+                                                        ${item.total.toFixed(2)}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex justify-between text-[10px] text-zinc-600 font-mono">
+                                                    <span>
+                                                        {form.data.show_item_quantity && `${item.qty} `}
+                                                        {form.data.show_item_unit && `${item.unit} `}× $
+                                                        {item.price.toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Financial Totals */}
+                                    <div className="space-y-1 text-[11px] pb-2 border-b border-dashed border-zinc-400">
+                                        {form.data.show_subtotal && (
+                                            <div className="flex justify-between">
+                                                <span>SUBTOTAL:</span>
+                                                <span>${subtotal.toFixed(2)}</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_discount && discount > 0 && (
+                                            <div className="flex justify-between text-zinc-600 text-[10px]">
+                                                <span>DISCOUNT (VIP Promo):</span>
+                                                <span>-${discount.toFixed(2)}</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_tax && (
+                                            <div className="flex justify-between text-zinc-600 text-[10px]">
+                                                <span>VAT / TAX (10%):</span>
+                                                <span>${tax.toFixed(2)}</span>
+                                            </div>
+                                        )}
+
+                                        <div className="flex justify-between items-baseline text-[13px] font-bold pt-1 border-t border-zinc-300">
+                                            <span>TOTAL DUE / សរុប:</span>
+                                            <div className="text-right">
+                                                <div>${grandTotal.toFixed(2)}</div>
+                                                {form.data.show_dual_currency && (
+                                                    <div className="text-[11px] font-normal text-zinc-700 font-khmer">
+                                                        ≈ {grandTotalKHR.toLocaleString()} ៛
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {form.data.show_payment_method && (
+                                            <div className="flex justify-between text-[10px] text-zinc-600 pt-0.5">
+                                                <span>PAID (CASH):</span>
+                                                <span>${amountReceived.toFixed(2)}</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_change && (
+                                            <div className="flex justify-between font-bold text-[11px] pt-0.5">
+                                                <span>CHANGE / ប្រាក់អាប់:</span>
+                                                <div className="text-right">
+                                                    <span>${changeAmount.toFixed(2)}</span>
+                                                    {form.data.show_dual_currency && (
+                                                        <span className="block text-[10px] font-normal text-zinc-600 font-khmer">
+                                                            ≈ {changeKHR.toLocaleString()} ៛
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* KHQR payment block */}
+                                    {form.data.show_qr_payment && (
+                                        <div className="text-center p-2 rounded border border-zinc-300 bg-zinc-50 space-y-1">
+                                            <div className="text-[10px] font-bold text-zinc-800 uppercase flex items-center justify-center gap-1">
+                                                <QrCode className="w-3.5 h-3.5 text-rose-600" />
+                                                <span>{form.data.qr_payment_text}</span>
+                                            </div>
+                                            {/* Simulated QR Code SVG */}
+                                            <div className="w-20 h-20 mx-auto bg-white p-1 border border-zinc-300 rounded flex items-center justify-center">
+                                                <div className="w-full h-full grid grid-cols-5 gap-0.5 bg-zinc-950 p-1">
+                                                    <div className="bg-white col-span-2 row-span-2" />
+                                                    <div className="bg-zinc-950" />
+                                                    <div className="bg-white col-span-2 row-span-2" />
+                                                    <div className="bg-zinc-950 col-span-5" />
+                                                    <div className="bg-white col-span-2 row-span-2" />
+                                                    <div className="bg-zinc-950" />
+                                                    <div className="bg-white col-span-2 row-span-2" />
+                                                </div>
+                                            </div>
+                                            <span className="text-[8px] text-zinc-500 font-sans">
+                                                Bakong KHQR • Cambodia FastPay
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Guest Wi-Fi block */}
+                                    {form.data.show_wifi_info && (
+                                        <div className="p-1.5 rounded border border-dashed border-zinc-300 text-[10px] text-center space-y-0.5">
+                                            <div className="font-bold text-zinc-800 flex items-center justify-center gap-1">
+                                                <Wifi className="w-3 h-3 text-sky-600" />
+                                                <span>FREE GUEST WI-FI</span>
+                                            </div>
+                                            <div className="text-zinc-600">
+                                                Network: <span className="font-bold">{form.data.wifi_ssid}</span> | Pass:{' '}
+                                                <span className="font-mono">{form.data.wifi_password}</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Policy & Footer Text */}
+                                    <div className="text-center pt-1 space-y-1 text-[10px] text-zinc-600">
+                                        {form.data.policy_note && (
+                                            <div className="text-[9px] text-zinc-500 font-khmer italic">
+                                                {form.data.policy_note}
+                                            </div>
+                                        )}
+                                        <div className="font-khmer font-medium text-zinc-700">
+                                            {form.data.footer_text}
+                                        </div>
+                                        <div className="text-[8px] text-zinc-400 tracking-wider font-sans">
+                                            LEASHAL ETUM POS SYSTEM
+                                        </div>
+                                    </div>
+
+                                    {/* Serrated receipt tear edge visual effect */}
+                                    <div
+                                        className="absolute -bottom-2 left-0 right-0 h-2 bg-white"
+                                        style={{
+                                            clipPath:
+                                                'polygon(0% 0%, 5% 100%, 10% 0%, 15% 100%, 20% 0%, 25% 100%, 30% 0%, 35% 100%, 40% 0%, 45% 100%, 50% 0%, 55% 100%, 60% 0%, 65% 100%, 70% 0%, 75% 100%, 80% 0%, 85% 100%, 90% 0%, 95% 100%, 100% 0%)',
+                                        }}
+                                    />
+                                </div>
+                            )}
+
+                            {/* =========================================================================
+                                A4 FORMAL COMMERCIAL INVOICE PREVIEW CANVAS
+                                ========================================================================= */}
+                            {activePreviewFormat === 'a4' && (
+                                <div
+                                    id="live-invoice-print-canvas"
+                                    className="w-[480px] bg-white text-black p-6 rounded shadow-2xl font-sans text-xs space-y-5 border border-zinc-300 select-none relative"
+                                >
+                                    {/* Header Letterhead */}
+                                    <div className="flex items-start justify-between pb-3 border-b-2 border-zinc-900 gap-4">
+                                        <div className="space-y-1">
+                                            {form.data.show_logo && (
+                                                <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs mb-1">
+                                                    LE
+                                                </div>
+                                            )}
+
+                                            {form.data.show_business_name && (
+                                                <>
+                                                    <h1 className="text-base font-bold tracking-tight text-zinc-950 uppercase">
+                                                        {settings.business_name_primary || 'លៀសហាល អ៉ីទុម'}
+                                                    </h1>
+                                                    {settings.business_name_secondary && (
+                                                        <div className="text-xs font-khmer text-zinc-700">
+                                                            {settings.business_name_secondary}
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
+
+                                            {form.data.show_address && settings.address_primary && (
+                                                <div className="text-[11px] text-zinc-600 leading-snug">
+                                                    {settings.address_primary}
+                                                </div>
+                                            )}
+
+                                            {form.data.show_phone && settings.phone && (
+                                                <div className="text-[11px] text-zinc-600 font-mono">
+                                                    Tel: {settings.phone}
+                                                </div>
+                                            )}
+
+                                            {form.data.show_vat_tin && (
+                                                <div className="text-[10px] font-semibold text-zinc-800 font-mono">
+                                                    VAT/TIN: {settings.tax_identifier || 'K001-902348512'}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="text-right space-y-1 shrink-0">
+                                            <div className="inline-block px-3 py-1 bg-zinc-100 rounded text-xs font-bold font-mono tracking-wider border border-zinc-300">
+                                                {form.data.header_title_en}
+                                            </div>
+                                            {form.data.header_title_km && (
+                                                <div className="text-[11px] font-khmer text-zinc-600">
+                                                    {form.data.header_title_km}
+                                                </div>
+                                            )}
+                                            <div className="pt-1 text-[10px] space-y-0.5 font-mono">
+                                                <div>
+                                                    <span className="text-zinc-500">INVOICE: </span>
+                                                    <span className="font-bold text-zinc-950">INV-2026-0042</span>
+                                                </div>
+                                                {form.data.show_datetime && (
+                                                    <div>
+                                                        <span className="text-zinc-500">DATE: </span>
+                                                        <span>2026-10-14 12:45 PM</span>
+                                                    </div>
+                                                )}
+                                                {form.data.show_table_ref && (
+                                                    <div>
+                                                        <span className="text-zinc-500">TABLE/REF: </span>
+                                                        <span className="font-bold">Table VIP-02</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Metadata Bar */}
+                                    <div className="grid grid-cols-3 gap-3 p-2.5 bg-zinc-50 rounded border border-zinc-200 text-[11px]">
+                                        {form.data.show_cashier && (
+                                            <div>
+                                                <span className="text-zinc-500 block text-[9px] uppercase font-mono">
+                                                    Cashier
+                                                </span>
+                                                <span className="font-semibold text-zinc-900">
+                                                    {auth.user?.name || 'Sok Dara'}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_guest_count && (
+                                            <div>
+                                                <span className="text-zinc-500 block text-[9px] uppercase font-mono">
+                                                    Guest Pax
+                                                </span>
+                                                <span className="font-semibold text-zinc-900">4 Guests</span>
+                                            </div>
+                                        )}
+
+                                        {form.data.show_customer_info && (
+                                            <div>
+                                                <span className="text-zinc-500 block text-[9px] uppercase font-mono">
+                                                    Customer (VIP)
+                                                </span>
+                                                <span className="font-semibold text-zinc-900">ឯកឧត្តម សុខ ចាន់ដារ៉ា</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Formal Table */}
+                                    <div className="overflow-hidden border border-zinc-800 rounded">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="bg-zinc-100 text-zinc-900 text-[10px] font-bold border-b border-zinc-800 uppercase font-mono">
+                                                    <th className="p-1.5 border-r border-zinc-300 w-8 text-center">#</th>
+                                                    <th className="p-1.5 border-r border-zinc-300">Description / មុខទំនិញ</th>
+                                                    {form.data.show_item_unit && (
+                                                        <th className="p-1.5 border-r border-zinc-300 w-12 text-center">
+                                                            Unit
+                                                        </th>
+                                                    )}
+                                                    {form.data.show_item_quantity && (
+                                                        <th className="p-1.5 border-r border-zinc-300 w-12 text-center">
+                                                            Qty
+                                                        </th>
+                                                    )}
+                                                    <th className="p-1.5 border-r border-zinc-300 w-16 text-right">
+                                                        Price
+                                                    </th>
+                                                    <th className="p-1.5 w-16 text-right">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-zinc-200 text-[10px]">
+                                                {sampleItems.map((item, idx) => (
+                                                    <tr
+                                                        key={item.id}
+                                                        className={
+                                                            form.data.item_density === 'compact'
+                                                                ? 'h-6'
+                                                                : form.data.item_density === 'spacious'
+                                                                ? 'h-10'
+                                                                : 'h-8'
+                                                        }
+                                                    >
+                                                        <td className="p-1.5 border-r border-zinc-200 text-center font-mono text-zinc-500">
+                                                            {idx + 1}
+                                                        </td>
+                                                        <td className="p-1.5 border-r border-zinc-200">
+                                                            <div className="font-semibold text-zinc-900">
+                                                                {item.name_en}
+                                                            </div>
+                                                            {form.data.show_item_khmer_name && (
+                                                                <div className="text-[9px] text-zinc-600 font-khmer">
+                                                                    {item.name_km}
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                        {form.data.show_item_unit && (
+                                                            <td className="p-1.5 border-r border-zinc-200 text-center font-mono text-zinc-600">
+                                                                {item.unit}
+                                                            </td>
+                                                        )}
+                                                        {form.data.show_item_quantity && (
+                                                            <td className="p-1.5 border-r border-zinc-200 text-center font-mono font-semibold">
+                                                                {item.qty}
+                                                            </td>
+                                                        )}
+                                                        <td className="p-1.5 border-r border-zinc-200 text-right font-mono text-zinc-700">
+                                                            ${item.price.toFixed(2)}
+                                                        </td>
+                                                        <td className="p-1.5 text-right font-mono font-bold text-zinc-950">
+                                                            ${item.total.toFixed(2)}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* Totals Summary */}
+                                    <div className="flex justify-between items-start gap-4 pt-1">
+                                        <div className="flex-1 space-y-1.5 text-[10px] text-zinc-600">
+                                            {form.data.policy_note && (
+                                                <div className="p-2 bg-zinc-50 border border-zinc-200 rounded text-[9px] font-khmer italic">
+                                                    {form.data.policy_note}
+                                                </div>
+                                            )}
+
+                                            <div className="font-khmer text-zinc-700">
+                                                {form.data.footer_text}
+                                            </div>
+
+                                            {form.data.show_wifi_info && (
+                                                <div className="text-[9px] text-zinc-500">
+                                                    Wi-Fi SSID: <span className="font-semibold">{form.data.wifi_ssid}</span> | Pass:{' '}
+                                                    <span className="font-mono">{form.data.wifi_password}</span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="w-48 space-y-1 border border-zinc-300 p-2.5 rounded bg-zinc-50/70 font-mono text-[10px]">
+                                            {form.data.show_subtotal && (
+                                                <div className="flex justify-between text-zinc-600">
+                                                    <span>Subtotal:</span>
+                                                    <span>${subtotal.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {form.data.show_discount && (
+                                                <div className="flex justify-between text-zinc-600">
+                                                    <span>Discount:</span>
+                                                    <span>-${discount.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {form.data.show_tax && (
+                                                <div className="flex justify-between text-zinc-600">
+                                                    <span>Tax (10%):</span>
+                                                    <span>${tax.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            <div className="flex justify-between items-baseline text-xs font-bold text-zinc-950 pt-1 border-t border-zinc-300">
+                                                <span>Grand Total:</span>
+                                                <div className="text-right">
+                                                    <div>${grandTotal.toFixed(2)}</div>
+                                                    {form.data.show_dual_currency && (
+                                                        <div className="text-[10px] font-normal text-zinc-600 font-khmer">
+                                                            ≈ {grandTotalKHR.toLocaleString()} ៛
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            {form.data.show_payment_method && (
+                                                <div className="flex justify-between text-zinc-600 pt-0.5 border-t border-zinc-200">
+                                                    <span>Tendered:</span>
+                                                    <span>${amountReceived.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {form.data.show_change && (
+                                                <div className="flex justify-between font-bold text-zinc-900">
+                                                    <span>Change:</span>
+                                                    <span>${changeAmount.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Signatures */}
+                                    {form.data.show_signature_blocks && (
+                                        <div className="grid grid-cols-2 gap-8 pt-4 border-t border-zinc-200 text-[10px]">
+                                            <div className="text-center space-y-6">
+                                                <div className="font-semibold text-zinc-800">
+                                                    Authorized Cashier / អ្នកគិតលុយ
+                                                </div>
+                                                <div className="border-b border-zinc-400 w-32 mx-auto" />
+                                                <div className="text-[9px] text-zinc-500 font-mono">
+                                                    {auth.user?.name || 'Sok Dara'}
+                                                </div>
+                                            </div>
+
+                                            <div className="text-center space-y-6">
+                                                <div className="font-semibold text-zinc-800">
+                                                    Customer / អ្នកទទួល
+                                                </div>
+                                                <div className="border-b border-zinc-400 w-32 mx-auto" />
+                                                <div className="text-[9px] text-zinc-500 font-mono">
+                                                    Signature & Date
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

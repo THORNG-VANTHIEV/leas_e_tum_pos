@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, usePage, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { Printer, ArrowLeft, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Printer, ArrowLeft, RefreshCw, CheckCircle2, QrCode, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface DocumentPrintProps {
@@ -46,6 +46,37 @@ interface DocumentPrintProps {
 export default function Preview80mm({ document: doc }: DocumentPrintProps) {
     const { business } = usePage<PageProps>().props;
     const [isPrinting, setIsPrinting] = useState(false);
+
+    const printOpts = business.print_settings || {};
+    const showLogo = printOpts.show_logo ?? true;
+    const showBusinessName = printOpts.show_business_name ?? true;
+    const headerTitleEn = printOpts.header_title_en || 'RECEIPT';
+    const headerTitleKm = printOpts.header_title_km;
+    const showAddress = printOpts.show_address ?? true;
+    const showPhone = printOpts.show_phone ?? true;
+    const showVatTin = printOpts.show_vat_tin ?? true;
+    const showCashier = printOpts.show_cashier ?? true;
+    const showTableRef = printOpts.show_table_ref ?? true;
+    const showGuestCount = printOpts.show_guest_count ?? true;
+    const showDateTime = printOpts.show_datetime ?? true;
+    const showBarcode = printOpts.show_barcode ?? true;
+    const showItemKhmerName = printOpts.show_item_khmer_name ?? true;
+    const showItemUnit = printOpts.show_item_unit ?? true;
+    const showItemQuantity = printOpts.show_item_quantity ?? true;
+    const showItemSku = printOpts.show_item_sku ?? false;
+    const showSubtotal = printOpts.show_subtotal ?? true;
+    const showDiscount = printOpts.show_discount ?? true;
+    const showTax = printOpts.show_tax ?? false;
+    const showDualCurrency = printOpts.show_dual_currency ?? true;
+    const exchangeRate = printOpts.exchange_rate_khr || 4100;
+    const showPaymentMethod = printOpts.show_payment_method ?? true;
+    const showChange = printOpts.show_change ?? true;
+    const showQrPayment = printOpts.show_qr_payment ?? true;
+    const qrPaymentText = printOpts.qr_payment_text || 'Scan to Pay / KHQR';
+    const showWifi = printOpts.show_wifi_info ?? true;
+    const wifiSsid = printOpts.wifi_ssid || 'Leashal-Etum-Guest';
+    const wifiPassword = printOpts.wifi_password || 'welcome2026';
+    const policyNote = printOpts.policy_note;
 
     const isReprint = (doc.print_logs && doc.print_logs.length > 0) || false;
 
@@ -140,27 +171,42 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                             *** DUPLICATE / REPRINT ***
                         </div>
                     )}
-                    <h1 className="text-base font-bold tracking-tight uppercase">
-                        {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
-                    </h1>
-                    {business.business_name_secondary && (
-                        <div className="text-xs font-khmer font-bold">
-                            {business.business_name_secondary}
+                    {showLogo && (
+                        <div className="w-9 h-9 mx-auto rounded-full bg-black text-white flex items-center justify-center font-bold text-xs mb-1">
+                            LE
                         </div>
                     )}
-                    {(business.address || business.address_primary) && (
+                    {showBusinessName && (
+                        <>
+                            <h1 className="text-base font-bold tracking-tight uppercase">
+                                {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
+                            </h1>
+                            {business.business_name_secondary && (
+                                <div className="text-xs font-khmer font-bold">
+                                    {business.business_name_secondary}
+                                </div>
+                            )}
+                        </>
+                    )}
+                    <div className="pt-0.5">
+                        <span className="font-bold text-[12px] uppercase">{headerTitleEn}</span>
+                        {headerTitleKm && (
+                            <span className="block text-[11px] font-khmer">{headerTitleKm}</span>
+                        )}
+                    </div>
+                    {showAddress && (business.address || business.address_primary) && (
                         <div className="text-[11px] text-zinc-700 leading-snug">
                             {business.address || business.address_primary}
                         </div>
                     )}
-                    {business.phone && (
+                    {showPhone && business.phone && (
                         <div className="text-[11px] text-zinc-700">
                             TEL: {business.phone}
                         </div>
                     )}
-                    {business.vat_number && (
+                    {showVatTin && (business.vat_number || business.tax_identifier) && (
                         <div className="text-[10px] text-zinc-600">
-                            VAT/TIN: {business.vat_number}
+                            VAT/TIN: {business.vat_number || business.tax_identifier}
                         </div>
                     )}
                 </div>
@@ -173,24 +219,30 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                             {doc.document_number || `DRAFT-${String(doc.provisional_order).padStart(4, '0')}`}
                         </span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="text-zinc-600">DATE & TIME:</span>
-                        <span>{doc.business_date} {doc.event_time.slice(0, 5)}</span>
-                    </div>
-                    {doc.reference_identifier && (
+                    {showDateTime && (
+                        <div className="flex justify-between">
+                            <span className="text-zinc-600">DATE & TIME:</span>
+                            <span>{doc.business_date} {doc.event_time.slice(0, 5)}</span>
+                        </div>
+                    )}
+                    {showTableRef && doc.reference_identifier && (
                         <div className="flex justify-between">
                             <span className="text-zinc-600">TABLE / REF:</span>
                             <span className="font-bold">{doc.reference_identifier}</span>
                         </div>
                     )}
-                    <div className="flex justify-between">
-                        <span className="text-zinc-600">CASHIER:</span>
-                        <span>{doc.creator.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-zinc-600">GUEST PAX / UNITS:</span>
-                        <span>{doc.unit_count}</span>
-                    </div>
+                    {showCashier && (
+                        <div className="flex justify-between">
+                            <span className="text-zinc-600">CASHIER:</span>
+                            <span>{doc.creator.name}</span>
+                        </div>
+                    )}
+                    {showGuestCount && (
+                        <div className="flex justify-between">
+                            <span className="text-zinc-600">GUEST PAX / UNITS:</span>
+                            <span>{doc.unit_count}</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Line Items Table */}
@@ -226,19 +278,21 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
 
                 {/* Financial Totals */}
                 <div className="space-y-1 text-[12px] pb-3 border-b border-dashed border-zinc-400">
-                    <div className="flex justify-between">
-                        <span>SUBTOTAL:</span>
-                        <span>{business.currency_symbol}{doc.subtotal}</span>
-                    </div>
+                    {showSubtotal && (
+                        <div className="flex justify-between">
+                            <span>SUBTOTAL:</span>
+                            <span>{business.currency_symbol}{doc.subtotal}</span>
+                        </div>
+                    )}
 
-                    {parseFloat(doc.tax_amount) > 0 && (
+                    {showTax && parseFloat(doc.tax_amount) > 0 && (
                         <div className="flex justify-between text-[11px] text-zinc-600">
                             <span>TAX:</span>
                             <span>{business.currency_symbol}{doc.tax_amount}</span>
                         </div>
                     )}
 
-                    {parseFloat(doc.discount_amount) > 0 && (
+                    {showDiscount && parseFloat(doc.discount_amount) > 0 && (
                         <div className="flex justify-between text-[11px] text-zinc-600">
                             <span>DISCOUNT:</span>
                             <span>-{business.currency_symbol}{doc.discount_amount}</span>
@@ -249,32 +303,68 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                         <span>TOTAL DUE / សរុប:</span>
                         <div className="text-right">
                             <div>{business.currency_symbol}{doc.grand_total}</div>
-                            <div className="text-[12px] font-normal text-zinc-700 font-khmer">
-                                {Math.round((parseFloat(doc.grand_total) || 0) * 4100).toLocaleString()} ៛
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-between pt-1 text-[11px] text-zinc-600">
-                        <span>TENDERED ({doc.payment_method.toUpperCase()}):</span>
-                        <span>{business.currency_symbol}{doc.amount_received}</span>
-                    </div>
-
-                    <div className="flex justify-between font-bold text-[12px]">
-                        <span>CHANGE / ប្រាក់អាប់:</span>
-                        <div className="text-right">
-                            <span>{business.currency_symbol}{doc.change_amount}</span>
-                            {parseFloat(doc.change_amount) > 0 && (
-                                <span className="block text-[11px] font-normal text-zinc-600 font-khmer">
-                                    ≈ {Math.round(parseFloat(doc.change_amount) * 4100).toLocaleString()} ៛
-                                </span>
+                            {showDualCurrency && (
+                                <div className="text-[12px] font-normal text-zinc-700 font-khmer">
+                                    {Math.round((parseFloat(doc.grand_total) || 0) * exchangeRate).toLocaleString()} ៛
+                                </div>
                             )}
                         </div>
                     </div>
+
+                    {showPaymentMethod && (
+                        <div className="flex justify-between pt-1 text-[11px] text-zinc-600">
+                            <span>TENDERED ({doc.payment_method.toUpperCase()}):</span>
+                            <span>{business.currency_symbol}{doc.amount_received}</span>
+                        </div>
+                    )}
+
+                    {showChange && (
+                        <div className="flex justify-between font-bold text-[12px]">
+                            <span>CHANGE / ប្រាក់អាប់:</span>
+                            <div className="text-right">
+                                <span>{business.currency_symbol}{doc.change_amount}</span>
+                                {showDualCurrency && parseFloat(doc.change_amount) > 0 && (
+                                    <span className="block text-[11px] font-normal text-zinc-600 font-khmer">
+                                        ≈ {Math.round(parseFloat(doc.change_amount) * exchangeRate).toLocaleString()} ៛
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
+
+                {/* KHQR & Wi-Fi if enabled */}
+                {showQrPayment && (
+                    <div className="text-center p-2 rounded border border-zinc-300 bg-zinc-50 space-y-1">
+                        <div className="text-[10px] font-bold text-zinc-800 uppercase flex items-center justify-center gap-1">
+                            <QrCode className="w-3 h-3 text-rose-600" />
+                            <span>{qrPaymentText}</span>
+                        </div>
+                        <div className="text-[8px] text-zinc-500 font-sans">
+                            Bakong KHQR • Scan to Pay
+                        </div>
+                    </div>
+                )}
+
+                {showWifi && (
+                    <div className="p-1.5 rounded border border-dashed border-zinc-300 text-[10px] text-center space-y-0.5">
+                        <div className="font-bold text-zinc-800 flex items-center justify-center gap-1">
+                            <Wifi className="w-3 h-3 text-sky-600" />
+                            <span>FREE WI-FI</span>
+                        </div>
+                        <div className="text-zinc-600">
+                            SSID: <span className="font-bold">{wifiSsid}</span> | Pass: <span className="font-mono">{wifiPassword}</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* Footer Notes */}
                 <div className="text-center pt-2 space-y-1 text-[11px] text-zinc-600">
+                    {policyNote && (
+                        <div className="text-[9px] text-zinc-500 font-khmer italic">
+                            {policyNote}
+                        </div>
+                    )}
                     <div>{business.document_footer || 'Thank you for dining with us! សូមអរគុណ!'}</div>
                     <div className="text-[9px] text-zinc-500 tracking-wider font-sans font-medium">
                         លៀសហាល អ៉ីទុម POS • LEASHAL ETUM

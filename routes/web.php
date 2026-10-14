@@ -128,6 +128,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::patch('/business', [SettingsController::class, 'updateBusiness'])->name('business.update');
         Route::patch('/entry-controls', [SettingsController::class, 'updateEntryControls'])->name('entry-controls.update');
+        Route::patch('/print', [SettingsController::class, 'updatePrintSettings'])->name('print.update');
 
         // Locations
         Route::post('/locations', [SettingsController::class, 'storeLocation'])->name('locations.store');
