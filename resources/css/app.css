@@ -807,3 +807,105 @@ html.light .pos-discount-chip-inactive:hover {
     background-color: #e2e8f0 !important;
     color: #0f172a !important;
 }
+
+/* Kitchen Display System (KDS) Light Mode Aesthetics */
+html.light .kds-topbar {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border-color: #e2e8f0 !important;
+}
+
+html.light .kds-topbar-title {
+    color: #0f172a !important;
+}
+
+html.light .kds-topbar-sub {
+    color: #64748b !important;
+}
+
+html.light .kds-util-btn {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+html.light .kds-util-btn:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+html.light .kds-filter-tab:not(.active) {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+html.light .kds-filter-tab:not(.active):hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+html.light .kds-card-urgent {
+    background-color: #ffffff !important;
+    border-color: #fda4af !important; /* rose-300 */
+    box-shadow: 0 4px 16px -2px rgba(244, 63, 94, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .kds-card-warning {
+    background-color: #ffffff !important;
+    border-color: #fcd34d !important; /* amber-300 */
+    box-shadow: 0 4px 16px -2px rgba(245, 158, 11, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light .kds-card-normal {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 0 4px 14px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .kds-card-urgent:hover,
+html.light .kds-card-warning:hover,
+html.light .kds-card-normal:hover {
+    box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.03) !important;
+    transform: translateY(-1px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.light .kds-table-badge {
+    background-color: #fef3c7 !important;
+    border-color: #fde68a !important;
+    color: #92400e !important;
+}
+
+html.light .kds-doc-badge {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+html.light .kds-card-meta {
+    color: #64748b !important;
+}
+
+html.light .kds-qty-badge {
+    background-color: #f59e0b !important;
+    color: #09090b !important;
+}
+
+html.light .kds-item-name {
+    color: #0f172a !important;
+}
+
+html.light .kds-item-sub {
+    color: #64748b !important;
+}
+
+html.light .kds-unit-badge {
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #475569 !important;
+}
+
+html.light .kds-card-divider {
+    border-color: #f1f5f9 !important;
+}
+
