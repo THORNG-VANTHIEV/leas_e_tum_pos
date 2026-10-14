@@ -47,7 +47,7 @@ class KdsController extends Controller
                     'kitchen_served_at' => $doc->kitchen_served_at?->toIso8601String(),
                     'created_at' => $doc->created_at->toIso8601String(),
                     'time_ago' => $doc->created_at->diffForHumans(),
-                    'elapsed_minutes' => (int) round(now()->diffInMinutes($doc->created_at)),
+                    'elapsed_minutes' => (int) max(0, round(abs(now()->diffInMinutes($doc->created_at)))),
                     'unit_count' => $doc->unit_count,
                     'note' => $doc->note,
                     'creator_name' => $doc->creator?->name ?: 'Staff',

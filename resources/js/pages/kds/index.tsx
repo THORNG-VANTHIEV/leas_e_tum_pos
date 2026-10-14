@@ -126,26 +126,27 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
     };
 
     const getTimerBadge = (elapsedMinutes: number) => {
-        if (elapsedMinutes >= 20) {
+        const mins = Math.max(0, elapsedMinutes);
+        if (mins >= 20) {
             return (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">
-                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-                    <span>{elapsedMinutes} នាទី (យឺត)</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse whitespace-nowrap shrink-0">
+                    <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                    <span>{mins} នាទី (យឺត)</span>
                 </div>
             );
         }
-        if (elapsedMinutes >= 10) {
+        if (mins >= 10) {
             return (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{elapsedMinutes} នាទី</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap shrink-0">
+                    <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>{mins} នាទី</span>
                 </div>
             );
         }
         return (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                <Timer className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{elapsedMinutes} នាទី</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">
+                <Timer className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>{mins} នាទី</span>
             </div>
         );
     };
@@ -324,19 +325,19 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     <div>
                                         {/* Card Header: Table & Timer */}
                                         <div className="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-3 mb-3">
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-base font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                                                    <span className="text-base font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 whitespace-nowrap">
                                                         {order.reference_identifier}
                                                     </span>
-                                                    <span className="text-xs text-zinc-400 font-mono">
+                                                    <span className="text-xs text-zinc-400 font-mono whitespace-nowrap shrink-0">
                                                         #{order.document_number.slice(-6)}
                                                     </span>
                                                 </div>
-                                                <div className="text-[11px] text-zinc-400 mt-1 flex items-center gap-2">
-                                                    <span>បុគ្គលិក: {order.creator_name}</span>
+                                                <div className="text-[11px] text-zinc-400 mt-1 flex items-center gap-2 truncate">
+                                                    <span className="whitespace-nowrap">បុគ្គលិក: {order.creator_name}</span>
                                                     {order.customer_name && (
-                                                        <span className="text-amber-300 font-medium">
+                                                        <span className="text-amber-300 font-medium truncate">
                                                             • {order.customer_name}
                                                         </span>
                                                     )}

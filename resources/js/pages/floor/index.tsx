@@ -93,22 +93,22 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
         switch (status) {
             case 'occupied':
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
-                        <Users className="w-3 h-3 text-amber-400" />
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <Users className="w-3 h-3 text-amber-400 shrink-0" />
                         មានភ្ញៀវ
                     </span>
                 );
             case 'reserved':
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1">
-                        <CalendarCheck className="w-3 h-3 text-purple-400" />
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <CalendarCheck className="w-3 h-3 text-purple-400 shrink-0" />
                         កក់ទុក
                     </span>
                 );
             default:
                 return (
-                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
                         ទំនេរ
                     </span>
                 );
@@ -248,17 +248,17 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 <div>
                                     {/* Top Card Info */}
                                     <div className="flex items-start justify-between gap-2 mb-2">
-                                        <div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-lg font-bold text-zinc-100 font-mono">
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                                <span className="text-lg font-bold text-zinc-100 font-mono whitespace-nowrap">
                                                     {table.code}
                                                 </span>
-                                                <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700">
+                                                <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 whitespace-nowrap shrink-0">
                                                     {getShapeIcon(table.shape)}
-                                                    <span>{table.capacity} កៅអី</span>
+                                                    <span className="whitespace-nowrap">{table.capacity} កៅអី</span>
                                                 </div>
                                             </div>
-                                            <p className="text-xs font-medium text-amber-400 mt-0.5">
+                                            <p className="text-xs font-medium text-amber-400 mt-0.5 truncate">
                                                 {table.name}
                                             </p>
                                         </div>

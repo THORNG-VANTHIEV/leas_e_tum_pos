@@ -141,6 +141,7 @@ export default function DocumentCreate({
 
     // Modals
     const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+    const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
     const [isTablesModalOpen, setIsTablesModalOpen] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card'>('cash');
     const [amountReceived, setAmountReceived] = useState<string>('');
@@ -608,9 +609,9 @@ export default function DocumentCreate({
                 </div>
 
                 {/* Main POS Grid Layout */}
-                <div className="flex-1 min-h-0 grid grid-cols-12 gap-0 overflow-hidden">
-                    {/* Catalog Section (Left 8 Cols) */}
-                    <div className="col-span-8 flex flex-col h-full min-h-0 border-r border-slate-800 bg-slate-950/60 overflow-hidden">
+                <div className="flex-1 min-h-0 grid grid-cols-12 gap-0 overflow-hidden relative">
+                    {/* Catalog Section (Full width on mobile/tablet, 7-8 cols on desktop) */}
+                    <div className="col-span-12 lg:col-span-7 xl:col-span-8 flex flex-col h-full min-h-0 border-r border-slate-800 bg-slate-950/60 overflow-hidden pb-16 lg:pb-0">
                         {/* Category Navigation Tabs with Smooth Auto-Scroll & Edge Controls */}
                         <div className="relative border-b border-slate-800/80 bg-slate-900/40 select-none group/catbar overflow-hidden shrink-0">
                             {/* Left Scroll Navigation Button & Gradient Mask */}
@@ -778,8 +779,12 @@ export default function DocumentCreate({
                         </div>
                     </div>
 
-                    {/* Cart Tray & Settlement Sidebar (Right 4 Cols) */}
-                    <div className="col-span-4 flex flex-col h-full min-h-0 bg-gradient-to-b from-zinc-950 via-zinc-900/95 to-zinc-950 border-l border-zinc-800/80 shadow-2xl overflow-hidden select-none">
+                    {/* Cart Tray & Settlement Sidebar (Drawer on mobile/tablet, right 4-5 cols on desktop) */}
+                    <div className={`col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col h-full min-h-0 bg-gradient-to-b from-zinc-950 via-zinc-900/95 to-zinc-950 border-l border-zinc-800/80 shadow-2xl overflow-hidden select-none z-40 transition-all ${
+                        isMobileCartOpen
+                            ? 'fixed inset-0 lg:static lg:inset-auto flex'
+                            : 'hidden lg:flex'
+                    }`}>
                         {/* Cart Header */}
                         <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
                             <div className="flex items-center gap-2.5 min-w-0">
@@ -813,7 +818,7 @@ export default function DocumentCreate({
                                 </div>
                             </div>
 
-                            {/* Right Side: Currency Exchange Rate Badge & Clear Button */}
+                            {/* Right Side: Currency Exchange Rate Badge, Clear Button & Mobile Close Button */}
                             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-800/90 text-amber-300 font-mono text-[11px] sm:text-xs font-bold shadow-sm shadow-black/40">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
@@ -831,6 +836,15 @@ export default function DocumentCreate({
                                         <span className="font-khmer text-[11px] hidden sm:inline">{t('pos.clear_order')}</span>
                                     </button>
                                 )}
+
+                                <button
+                                    type="button"
+                                    onClick={() => setIsMobileCartOpen(false)}
+                                    title="បិទកន្ត្រក (Close)"
+                                    className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white bg-zinc-800 border border-zinc-700 transition cursor-pointer"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
                             </div>
                         </div>
 
@@ -945,12 +959,12 @@ export default function DocumentCreate({
                         {/* Bill Summary & Settlement Controls */}
                         <div className="p-3.5 sm:p-4 border-t border-zinc-800/90 bg-zinc-950/95 backdrop-blur-md shrink-0 space-y-3">
                             {/* Fast Discount Chips */}
-                            <div className="flex items-center justify-between text-xs">
-                                <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5">
+                            <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap sm:flex-nowrap">
+                                <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
                                     <span>{t('pos.discount_label')}</span>
                                     <span className="text-[10px] text-zinc-400 font-mono uppercase">Discount</span>
                                 </span>
-                                <div className="flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
+                                <div className="flex items-center gap-0.5 sm:gap-1 bg-zinc-900/90 p-0.5 sm:p-1 rounded-xl border border-zinc-800 shrink-0">
                                     {[
                                         { label: '0%', type: 'none', val: '0' },
                                         { label: '5%', type: 'percent', val: '5' },
@@ -969,7 +983,7 @@ export default function DocumentCreate({
                                                     setDiscountType(d.type as any);
                                                     setDiscountValue(d.val);
                                                 }}
-                                                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold font-mono transition-all cursor-pointer ${
+                                                className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-[10px] sm:text-[11px] font-bold font-mono transition-all cursor-pointer whitespace-nowrap ${
                                                     active
                                                         ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20 scale-105'
                                                         : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80'
@@ -1062,16 +1076,61 @@ export default function DocumentCreate({
                         </div>
                     </div>
                 </div>
+
+                {/* Mobile Floating Order Bar (Visible only on < lg screens) */}
+                <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 p-2.5 sm:p-3 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/90 flex items-center justify-between shadow-2xl">
+                    <div
+                        className="flex items-center gap-2.5 cursor-pointer min-w-0"
+                        onClick={() => setIsMobileCartOpen(true)}
+                    >
+                        <div className="relative w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                            <ShoppingBag className="w-5 h-5" />
+                            {lines.length > 0 && (
+                                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-500 text-zinc-950 font-black text-[10px] flex items-center justify-center border-2 border-zinc-950">
+                                    {lines.reduce((acc, l) => acc + l.quantity, 0)}
+                                </span>
+                            )}
+                        </div>
+                        <div className="min-w-0">
+                            <div className="text-[11px] text-zinc-400 font-khmer truncate">
+                                {lines.length} {language === 'km' ? 'មុខក្នុងកន្ត្រក' : 'items'}
+                            </div>
+                            <div className="text-sm font-black text-amber-400 font-mono flex items-center gap-1.5">
+                                <span>${totals.grandTotalUSD}</span>
+                                <span className="text-[11px] text-emerald-400 font-normal">({totals.grandTotalKHR.toLocaleString()} ៛)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => setIsMobileCartOpen(true)}
+                            className="h-9 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-medium text-xs font-khmer cursor-pointer"
+                        >
+                            {language === 'km' ? 'មើលកន្ត្រក' : 'View Cart'}
+                        </Button>
+                        <Button
+                            type="button"
+                            size="sm"
+                            onClick={openCheckoutModal}
+                            disabled={lines.length === 0}
+                            className="h-9 px-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-zinc-950 font-black text-xs font-khmer shadow-md shadow-amber-500/20 cursor-pointer disabled:opacity-50"
+                        >
+                            {language === 'km' ? 'ទូទាត់ប្រាក់' : 'Checkout'}
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             {/* Instant Checkout & Payment Modal */}
             {isCheckoutModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
-                    <div className="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-xl overflow-hidden shadow-2xl shadow-black/80 text-zinc-100 animate-in zoom-in-95 duration-150">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+                    <div className="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl shadow-black/80 text-zinc-100 animate-in zoom-in-95 duration-150">
                         {/* Modal Header */}
-                        <div className="p-5 sm:p-6 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60">
+                        <div className="p-4 sm:p-5 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60 shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                                     <Receipt className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -1096,7 +1155,7 @@ export default function DocumentCreate({
                         </div>
 
                         {/* Modal Body */}
-                        <div className="p-5 sm:p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+                        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 min-h-0 overflow-y-auto">
                             {/* Grand Total Display */}
                             <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/15 border border-amber-500/35 flex items-center justify-between shadow-inner">
                                 <div className="space-y-1">
@@ -1331,7 +1390,7 @@ export default function DocumentCreate({
                         </div>
 
                         {/* Modal Footer */}
-                        <div className="p-5 sm:p-6 border-t border-zinc-800 bg-zinc-950/60 flex items-center justify-end gap-3">
+                        <div className="p-4 sm:p-5 border-t border-zinc-800 bg-zinc-950/60 flex items-center justify-end gap-3 shrink-0">
                             <Button
                                 type="button"
                                 variant="outline"

@@ -266,34 +266,36 @@ export default function SettingsIndex({
                     </div>
 
                     {/* Tabs Navigation */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                        {[
-                            { id: 'business', label: 'Business Profile', icon: Store },
-                            { id: 'entry', label: 'Entry & Reconciliation Controls', icon: Sliders },
-                            { id: 'invoice', label: 'Invoice & Print Designer (80mm / A4)', icon: Printer },
-                            { id: 'locations', label: `Locations (${locations.length})`, icon: MapPin },
-                            { id: 'users', label: `Staff & Accounts (${users.length})`, icon: Users },
-                            { id: 'audits', label: `Audit Trail (${audits.length})`, icon: Shield },
-                            { id: 'backup', label: 'Backup & Disaster Recovery', icon: Database },
-                        ].map((tab) => {
-                            const Icon = tab.icon;
-                            const isActive = activeTab === tab.id;
-                            return (
-                                <button
-                                    key={tab.id}
-                                    id={`tab-${tab.id}`}
-                                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                                        isActive
-                                            ? 'bg-zinc-800 text-emerald-400 border border-zinc-700/80 shadow-sm'
-                                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-                                    }`}
-                                >
-                                    <Icon className="w-4 h-4" />
-                                    <span>{tab.label}</span>
-                                </button>
-                            );
-                        })}
+                    <div className="relative overflow-hidden">
+                        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
+                            {[
+                                { id: 'business', label: 'Business Profile', icon: Store },
+                                { id: 'entry', label: 'Entry Controls', icon: Sliders },
+                                { id: 'invoice', label: 'Invoice & Print Designer', icon: Printer },
+                                { id: 'locations', label: `Locations (${locations.length})`, icon: MapPin },
+                                { id: 'users', label: `Staff & Accounts (${users.length})`, icon: Users },
+                                { id: 'audits', label: `Audit Trail (${audits.length})`, icon: Shield },
+                                { id: 'backup', label: 'Backup & Restore', icon: Database },
+                            ].map((tab) => {
+                                const Icon = tab.icon;
+                                const isActive = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        id={`tab-${tab.id}`}
+                                        onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                                        className={`flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                                            isActive
+                                                ? 'bg-zinc-800 text-emerald-400 border border-zinc-700/80 shadow-sm'
+                                                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
+                                        }`}
+                                    >
+                                        <Icon className="w-4 h-4" />
+                                        <span>{tab.label}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 

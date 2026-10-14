@@ -146,26 +146,26 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                     </div>
 
                     {/* Metadata Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs font-mono">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl bg-zinc-100/90 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
                         <div>
-                            <span className="text-[10px] text-zinc-500 block uppercase">Period</span>
-                            <span className="text-zinc-200 font-bold">{doc.period.code}</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Period</span>
+                            <span className="text-zinc-900 dark:text-zinc-100 font-bold">{doc.period.code}</span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 block uppercase">Date & Time</span>
-                            <span className="text-zinc-200">
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Date & Time</span>
+                            <span className="text-zinc-800 dark:text-zinc-200 font-medium">
                                 {doc.business_date} {doc.event_time}
                             </span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 block uppercase">Table / Ref #</span>
-                            <span className="text-emerald-400 font-bold font-sans">
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Table / Ref #</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold font-sans">
                                 {doc.reference_identifier || '—'}
                             </span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 block uppercase">Cashier</span>
-                            <span className="text-zinc-200">{doc.creator.username}</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Cashier</span>
+                            <span className="text-zinc-800 dark:text-zinc-200 font-medium">{doc.creator.username}</span>
                         </div>
                     </div>
 
@@ -222,22 +222,22 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                             <span className="text-[10px] uppercase font-mono text-zinc-500 block">
                                 Invariant Reconciliation
                             </span>
-                            <div className="p-3 rounded-lg bg-zinc-950/80 border border-zinc-800 space-y-1">
+                            <div className="p-3 rounded-lg bg-zinc-100/90 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 space-y-1">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-zinc-400">Physical Source Total:</span>
-                                    <span className="font-mono font-bold text-white">
+                                    <span className="text-zinc-600 dark:text-zinc-400">Physical Source Total:</span>
+                                    <span className="font-mono font-bold text-zinc-900 dark:text-white">
                                         {business.currency_symbol}
                                         {doc.source_total}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 pt-1 text-[11px]">
                                     {doc.source_total_verified ? (
-                                        <span className="text-emerald-400 flex items-center gap-1 font-semibold">
-                                            <CheckCircle2 className="w-3.5 h-3.5" />
-                                            <span>Strictly Balanced ($0.00 Variance)</span>
+                                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                                             <CheckCircle2 className="w-3.5 h-3.5" />
+                                             <span>Strictly Balanced ($0.00 Variance)</span>
                                         </span>
                                     ) : (
-                                        <span className="text-zinc-400">Not independently verified</span>
+                                        <span className="text-zinc-500 dark:text-zinc-400">Not independently verified</span>
                                     )}
                                 </div>
                             </div>
