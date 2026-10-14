@@ -1,27 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import {
     ChefHat,
     Clock,
-    Flame,
     CheckCircle2,
     UtensilsCrossed,
     RefreshCw,
     Volume2,
     VolumeX,
     Maximize2,
-    Check,
-    Timer,
-    AlertTriangle,
     Coffee,
-    ShoppingBag,
     Loader2,
-    Scale,
-    Sparkles,
     Receipt,
 } from 'lucide-react';
 
@@ -96,7 +86,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
         }
     };
 
-    const handleUpdateStatus = (orderId: number, nextStatus: 'cooking' | 'ready' | 'served') => {
+    const handleUpdateStatus = (orderId: number, nextStatus: 'pending' | 'cooking' | 'ready' | 'served') => {
         setUpdatingId(orderId);
         playNotificationSound();
         router.post(
