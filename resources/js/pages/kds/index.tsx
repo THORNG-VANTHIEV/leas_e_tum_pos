@@ -429,23 +429,31 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     )}`}
                                 >
                                     <div>
-                                        {/* Top Card Info (Exact Floor & Tables Hierarchy) */}
-                                        <div className="flex items-start justify-between gap-2 mb-2">
-                                            <div className="min-w-0">
-                                                <div className="flex items-center gap-1.5 flex-wrap">
-                                                    <span className="text-lg font-bold text-zinc-100 font-mono whitespace-nowrap">
-                                                        {order.reference_identifier}
-                                                    </span>
-                                                    <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 whitespace-nowrap shrink-0 font-mono">
-                                                        <Receipt className="w-3 h-3 text-zinc-400" />
-                                                        <span>#{order.document_number}</span>
-                                                    </div>
-                                                </div>
-                                                <p className="text-xs font-medium text-amber-400 mt-0.5 truncate">
-                                                    {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : (isTakeaway ? 'ការកុម្ម៉ង់ខ្ចប់' : 'ការកុម្ម៉ង់ក្នុងហាង')}
-                                                </p>
+                                        {/* Top Card Info: Distinct Title row + Badge, No Overlap */}
+                                        <div className="flex items-center justify-between gap-2 mb-1.5">
+                                            <div className="min-w-0 flex-1">
+                                                <h3
+                                                    className="text-base font-bold text-zinc-100 font-mono tracking-tight truncate leading-tight"
+                                                    title={order.reference_identifier}
+                                                >
+                                                    {order.reference_identifier}
+                                                </h3>
                                             </div>
-                                            {getStatusBadge(order.kitchen_status)}
+                                            <div className="shrink-0">
+                                                {getStatusBadge(order.kitchen_status)}
+                                            </div>
+                                        </div>
+
+                                        {/* Row 2: Doc Number & Order Context */}
+                                        <div className="flex items-center gap-1.5 text-xs mb-2.5 min-w-0">
+                                            <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 font-mono shrink-0">
+                                                <Receipt className="w-3 h-3 text-zinc-400" />
+                                                <span>#{order.document_number}</span>
+                                            </div>
+                                            <span className="text-zinc-500 text-xs shrink-0">•</span>
+                                            <p className="text-xs font-medium text-amber-400 truncate min-w-0 flex-1">
+                                                {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : (isTakeaway ? 'ការកុម្ម៉ង់ខ្ចប់' : 'ការកុម្ម៉ង់ក្នុងហាង')}
+                                            </p>
                                         </div>
 
                                         {/* Server & Elapsed Time Row */}
