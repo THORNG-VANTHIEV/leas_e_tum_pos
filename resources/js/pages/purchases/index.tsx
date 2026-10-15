@@ -28,6 +28,7 @@ import {
     Eye,
     Filter,
     ShoppingBag,
+    Package,
     ArrowUpDown,
     Check,
 } from 'lucide-react';
@@ -530,13 +531,13 @@ export default function PurchasesIndex({
                             <table className="w-full text-left text-xs border-collapse">
                                 <thead>
                                     <tr className="border-b border-zinc-800/80 bg-zinc-950/60 text-zinc-400 font-mono text-[11px] uppercase">
-                                        <th className="py-3 px-4">Purchase #</th>
-                                        <th className="py-3 px-4">Supplier / អ្នកផ្គត់ផ្គង់</th>
-                                        <th className="py-3 px-4">Date / កាលបរិច្ឆេទ</th>
-                                        <th className="py-3 px-4">Items / ទំនិញ</th>
-                                        <th className="py-3 px-4 text-right">Total ($ / ៛)</th>
-                                        <th className="py-3 px-4 text-center">Status</th>
-                                        <th className="py-3 px-4 text-right">Actions</th>
+                                        <th className="py-3 px-4 whitespace-nowrap">Purchase #</th>
+                                        <th className="py-3 px-4 min-w-[170px]">Supplier / អ្នកផ្គត់ផ្គង់</th>
+                                        <th className="py-3 px-4 whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
+                                        <th className="py-3 px-4 min-w-[260px]">Items / ទំនិញ</th>
+                                        <th className="py-3 px-4 text-right whitespace-nowrap">Total ($ / ៛)</th>
+                                        <th className="py-3 px-4 text-center whitespace-nowrap">Status</th>
+                                        <th className="py-3 px-4 text-right whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/40 text-zinc-300">
@@ -590,17 +591,19 @@ export default function PurchasesIndex({
                                                         {formatDateOnly(purchase.purchase_date)}
                                                     </td>
 
-                                                    <td className="py-3 px-4 max-w-xs">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <span className="font-mono text-xs font-semibold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
-                                                                {purchase.items.length} មុខ
+                                                    <td className="py-3 px-4">
+                                                        <div className="flex items-center gap-2 min-w-0">
+                                                            <span className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-800/90 text-amber-300 border border-zinc-700/70 font-mono text-xs font-semibold shadow-xs">
+                                                                <Package className="w-3.5 h-3.5 text-amber-400" />
+                                                                <span>{purchase.items.length} មុខ</span>
                                                             </span>
-                                                            <span className="text-zinc-400 truncate text-[11px]">
-                                                                {purchase.items
-                                                                    .map((i) => i.item_name)
-                                                                    .slice(0, 2)
-                                                                    .join(', ')}
-                                                                {purchase.items.length > 2 ? '...' : ''}
+                                                            <span
+                                                                className="text-zinc-300 truncate text-xs font-khmer min-w-0"
+                                                                title={purchase.items
+                                                                    .map((i) => `${i.item_name} (x${i.quantity || 1} ${i.unit_name || ''})`)
+                                                                    .join('\n')}
+                                                            >
+                                                                {purchase.items.map((i) => i.item_name).join(', ')}
                                                             </span>
                                                         </div>
                                                     </td>
