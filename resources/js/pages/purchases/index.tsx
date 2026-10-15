@@ -528,16 +528,16 @@ export default function PurchasesIndex({
                 {activeTab === 'purchases' && (
                     <Card className="bg-zinc-900/60 border-zinc-800/80 rounded-2xl overflow-hidden shadow-xl">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left text-xs border-collapse">
+                            <table className="w-full table-fixed text-left text-xs border-collapse">
                                 <thead>
                                     <tr className="border-b border-zinc-800/80 bg-zinc-950/60 text-zinc-400 font-mono text-[11px] uppercase">
-                                        <th className="py-3 px-4 whitespace-nowrap">Purchase #</th>
-                                        <th className="py-3 px-4 min-w-[170px]">Supplier / អ្នកផ្គត់ផ្គង់</th>
-                                        <th className="py-3 px-4 whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
-                                        <th className="py-3 px-4 min-w-[260px]">Items / ទំនិញ</th>
-                                        <th className="py-3 px-4 text-right whitespace-nowrap">Total ($ / ៛)</th>
-                                        <th className="py-3 px-4 text-center whitespace-nowrap">Status</th>
-                                        <th className="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[14%] whitespace-nowrap">Purchase #</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[20%]">Supplier / អ្នកផ្គត់ផ្គង់</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[11%] whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[26%]">Items / ទំនិញ</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[11%] text-right whitespace-nowrap">Total ($ / ៛)</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[9%] text-center whitespace-nowrap">Status</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[9%] text-right whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/40 text-zinc-300">
@@ -561,19 +561,19 @@ export default function PurchasesIndex({
                                                     key={purchase.id}
                                                     className="hover:bg-zinc-800/30 transition-colors group"
                                                 >
-                                                    <td className="py-3 px-4">
-                                                        <div className="font-mono font-bold text-amber-400">
+                                                    <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
+                                                        <div className="font-mono font-bold text-amber-400 whitespace-nowrap">
                                                             {purchase.purchase_number}
                                                         </div>
                                                         {purchase.reference_note && (
-                                                            <div className="text-[10px] text-zinc-500 font-mono">
+                                                            <div className="text-[10px] text-zinc-500 font-mono truncate">
                                                                 Ref: {purchase.reference_note}
                                                             </div>
                                                         )}
                                                     </td>
 
-                                                    <td className="py-3 px-4">
-                                                        <div className="font-semibold text-white font-khmer">
+                                                    <td className="py-3 px-3 sm:px-4">
+                                                        <div className="font-semibold text-white font-khmer truncate" title={purchase.supplier?.name || ''}>
                                                             {purchase.supplier?.name || (
                                                                 <span className="text-zinc-500 font-sans italic">
                                                                     ទូទៅ (Walk-in / Cash)
@@ -581,17 +581,17 @@ export default function PurchasesIndex({
                                                             )}
                                                         </div>
                                                         {purchase.supplier?.phone && (
-                                                            <div className="text-[10px] text-zinc-500 font-mono">
+                                                            <div className="text-[10px] text-zinc-500 font-mono truncate">
                                                                 {purchase.supplier.phone}
                                                             </div>
                                                         )}
                                                     </td>
 
-                                                    <td className="py-3 px-4 font-mono text-zinc-300 text-xs">
+                                                    <td className="py-3 px-3 sm:px-4 font-mono text-zinc-300 text-xs whitespace-nowrap">
                                                         {formatDateOnly(purchase.purchase_date)}
                                                     </td>
 
-                                                    <td className="py-3 px-4">
+                                                    <td className="py-3 px-3 sm:px-4">
                                                         <div className="flex items-center gap-2 min-w-0">
                                                             <span className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-800/90 text-amber-300 border border-zinc-700/70 font-mono text-xs font-semibold shadow-xs">
                                                                 <Package className="w-3.5 h-3.5 text-amber-400" />
@@ -608,7 +608,7 @@ export default function PurchasesIndex({
                                                         </div>
                                                     </td>
 
-                                                    <td className="py-3 px-4 text-right">
+                                                    <td className="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
                                                         <div className="font-mono font-bold text-white text-sm">
                                                             {formatUsd(totalNum)}
                                                         </div>
@@ -617,7 +617,7 @@ export default function PurchasesIndex({
                                                         </div>
                                                     </td>
 
-                                                    <td className="py-3 px-4 text-center">
+                                                    <td className="py-3 px-3 sm:px-4 text-center whitespace-nowrap">
                                                         {purchase.status === 'received' && (
                                                             <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] uppercase font-mono">
                                                                 <CheckCircle2 className="w-3 h-3 mr-1" /> Received
@@ -635,7 +635,7 @@ export default function PurchasesIndex({
                                                         )}
                                                     </td>
 
-                                                    <td className="py-3 px-4 text-right">
+                                                    <td className="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
                                                         <div className="flex items-center justify-end gap-1.5">
                                                             <Button
                                                                 size="sm"
