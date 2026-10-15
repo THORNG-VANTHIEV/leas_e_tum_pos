@@ -231,31 +231,31 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     {/* KPI Metrics Summary Grid */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         {/* Card 1: Total Customers */}
-                        <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-700/60 dark:border-zinc-800/80 flex items-center justify-between shadow-2xs">
+                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
                             <div>
                                 <span className="text-[11px] font-mono font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block">
                                     អតិថិជនសរុប (Total)
                                 </span>
-                                <div className="flex items-baseline gap-1.5 mt-1">
-                                    <span className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">
+                                <div className="flex items-baseline gap-1.5 mt-0.5">
+                                    <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
                                         {metrics.total_customers}
                                     </span>
                                     <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">នាក់</span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
-                                <Users className="w-5 h-5" />
+                            <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                                <Users className="w-4 h-4" />
                             </div>
                         </div>
 
                         {/* Card 2: VIP & Gold Members */}
-                        <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-700/60 dark:border-zinc-800/80 flex items-center justify-between shadow-2xs">
+                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
                             <div>
                                 <span className="text-[11px] font-mono font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1">
                                     <Sparkles className="w-3 h-3" /> សមាជិក VIP & Gold
                                 </span>
-                                <div className="flex items-baseline gap-1.5 mt-1">
-                                    <span className="text-2xl font-black tracking-tight text-purple-700 dark:text-purple-300">
+                                <div className="flex items-baseline gap-1.5 mt-0.5">
+                                    <span className="text-xl font-bold tracking-tight text-purple-700 dark:text-purple-300">
                                         {metrics.vip_customers + metrics.gold_customers}
                                     </span>
                                     <span className="text-[11px] text-purple-600/80 dark:text-purple-400/80 font-mono">
@@ -263,51 +263,51 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     </span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
-                                <Sparkles className="w-5 h-5" />
+                            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+                                <Sparkles className="w-4 h-4" />
                             </div>
                         </div>
 
                         {/* Card 3: Total Points */}
-                        <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-700/60 dark:border-zinc-800/80 flex items-center justify-between shadow-2xs">
+                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
                             <div>
                                 <span className="text-[11px] font-mono font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1">
                                     <Coins className="w-3 h-3" /> ពិន្ទុសន្សំសរុប
                                 </span>
-                                <div className="flex items-baseline gap-1.5 mt-1">
-                                    <span className="text-2xl font-black tracking-tight text-amber-600 dark:text-amber-400">
+                                <div className="flex items-baseline gap-1.5 mt-0.5">
+                                    <span className="text-xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
                                         {metrics.total_points.toLocaleString()}
                                     </span>
                                     <span className="text-[11px] text-amber-600/80 dark:text-amber-400/80 font-mono">pts</span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                                <Coins className="w-5 h-5" />
+                            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                <Coins className="w-4 h-4" />
                             </div>
                         </div>
 
                         {/* Card 4: Total Spent */}
-                        <div className="p-3.5 rounded-2xl bg-zinc-900/80 border border-zinc-700/60 dark:border-zinc-800/80 flex items-center justify-between shadow-2xs">
+                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
                             <div>
                                 <span className="text-[11px] font-mono font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
                                     <TrendingUp className="w-3 h-3" /> ចំណូលសរុប (Revenue)
                                 </span>
-                                <div className="flex items-baseline gap-1.5 mt-1">
-                                    <span className="text-2xl font-black tracking-tight text-emerald-700 dark:text-emerald-400">
+                                <div className="flex items-baseline gap-1.5 mt-0.5">
+                                    <span className="text-xl font-bold tracking-tight text-emerald-700 dark:text-emerald-400">
                                         ${metrics.total_spent_usd.toFixed(2)}
                                     </span>
                                     <span className="text-[11px] text-emerald-600/80 dark:text-emerald-400/80 font-mono">USD</span>
                                 </div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                                <TrendingUp className="w-5 h-5" />
+                            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                                <TrendingUp className="w-4 h-4" />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Filter and Search Bar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-zinc-900/60 border border-zinc-700/60 dark:border-zinc-800/80 p-2.5 sm:p-3 rounded-2xl shadow-xs">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                     {/* Search Form */}
                     <form onSubmit={handleSearch} className="relative w-full sm:w-80 md:w-96">
                         <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -316,7 +316,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                             placeholder="ស្វែងរកតាមឈ្មោះ, លេខទូរស័ព្ទ, ឬអ៊ីមែល..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full h-9 pl-9 pr-8 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-khmer"
+                            className="w-full h-9 pl-9 pr-8 bg-zinc-900 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 transition-all font-khmer"
                         />
                         {searchTerm && (
                             <button
@@ -364,7 +364,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                 : t.id === 'silver'
                                                 ? 'bg-slate-700 text-white border-slate-600 shadow-xs'
                                                 : 'bg-amber-500 text-zinc-950 border-amber-400 shadow-xs'
-                                            : 'bg-zinc-950 border-zinc-700/60 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-800/50'
+                                            : 'bg-zinc-900 border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-850'
                                     }`}
                                 >
                                     {Icon && (
@@ -399,10 +399,10 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 </div>
 
                 {/* Customers Table */}
-                <div className="rounded-2xl border border-zinc-700/60 dark:border-zinc-800/80 bg-zinc-900/70 overflow-hidden shadow-xs">
+                <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/70 overflow-hidden shadow-xs">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs">
-                            <thead className="bg-zinc-900/80 border-b border-zinc-700/60 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
+                            <thead className="bg-zinc-950/60 border-b border-zinc-800 text-zinc-500 dark:text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                 <tr>
                                     <th className="py-3 px-4">Customer / ឈ្មោះអតិថិជន</th>
                                     <th className="py-3 px-4">Tier / កម្រិតសមាជិក</th>
@@ -481,7 +481,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                 </div>
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-700/60 shadow-2xs">
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-800 shadow-2xs">
                                                     {c.visits_count} ដង
                                                 </span>
                                             </td>
@@ -503,7 +503,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                 <div className="flex items-center justify-end gap-1.5">
                                                     <button
                                                         onClick={() => openEditModal(c)}
-                                                        className="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-700/60 transition-all cursor-pointer shadow-2xs active:scale-95"
+                                                        className="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-800 transition-all cursor-pointer shadow-2xs active:scale-95"
                                                         title="កែប្រែព័ត៌មាន (Edit)"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5" />
@@ -527,7 +527,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                             </tbody>
                         </table>
                     </div>
-                    <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-700/60 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+                    <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono">
                         <span>
                             បង្ហាញ {customers.data.length} ក្នុងចំណោម {customers.total || customers.data.length} អតិថិជន
                         </span>
@@ -538,7 +538,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 {/* Create Customer Modal */}
                 {showCreateModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-700/60 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
                                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
                                     <UserPlus className="w-5 h-5 text-amber-500" />
@@ -563,7 +563,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         value={createForm.name}
                                         onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                                         placeholder="ឧ. សុខ សុវណ្ណ"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-khmer"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
                                     />
                                 </div>
                                 <div>
@@ -575,7 +575,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         value={createForm.phone}
                                         onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
                                         placeholder="ឧ. 012 345 678"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
                                     />
                                 </div>
                                 <div>
@@ -587,7 +587,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         value={createForm.email}
                                         onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
                                         placeholder="customer@email.com"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
                                     />
                                 </div>
                                 <div>
@@ -597,7 +597,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     <select
                                         value={createForm.tier}
                                         onChange={(e) => setCreateForm({ ...createForm, tier: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all cursor-pointer font-khmer"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all cursor-pointer font-khmer"
                                     >
                                         <option value="standard">Standard (ធម្មតា)</option>
                                         <option value="silver">Silver (ប្រាក់)</option>
@@ -614,7 +614,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         value={createForm.notes}
                                         onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
                                         placeholder="ចំណង់ចំណូលចិត្ត ឬព័ត៌មានបន្ថែម..."
-                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-khmer"
+                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
                                     />
                                 </div>
 
@@ -641,7 +641,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 {/* Edit Customer Modal */}
                 {editingCustomer && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-700/60 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
                                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
                                     <Edit2 className="w-5 h-5 text-amber-500" />
@@ -665,7 +665,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         required
                                         value={editForm.name}
                                         onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-khmer"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
                                     />
                                 </div>
                                 <div>
@@ -676,7 +676,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         type="text"
                                         value={editForm.phone}
                                         onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-mono"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
                                     />
                                 </div>
                                 <div>
@@ -686,7 +686,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     <select
                                         value={editForm.tier}
                                         onChange={(e) => setEditForm({ ...editForm, tier: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all cursor-pointer font-khmer"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all cursor-pointer font-khmer"
                                     >
                                         <option value="standard">Standard (ធម្មតា)</option>
                                         <option value="silver">Silver (ប្រាក់)</option>
@@ -702,7 +702,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         rows={2}
                                         value={editForm.notes}
                                         onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
-                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-all font-khmer"
+                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
                                     />
                                 </div>
 
@@ -729,7 +729,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 {/* Adjust Loyalty Points Modal */}
                 {pointsCustomer && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-sm bg-zinc-900 border border-zinc-700/60 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl">
+                        <div className="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl">
                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
                                 <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
                                     <Coins className="w-5 h-5 text-amber-500" />
@@ -757,7 +757,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <button
                                             type="button"
                                             onClick={() => setPointsAdjustment((prev) => prev - 10)}
-                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-700/60 transition-colors cursor-pointer"
+                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
                                         >
                                             <Minus className="w-4 h-4" />
                                         </button>
@@ -765,12 +765,12 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             type="number"
                                             value={pointsAdjustment}
                                             onChange={(e) => setPointsAdjustment(Number(e.target.value))}
-                                            className="w-full h-10 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-center text-base font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:border-amber-500"
+                                            className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center text-base font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:border-amber-500"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setPointsAdjustment((prev) => prev + 10)}
-                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-700/60 transition-colors cursor-pointer"
+                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
                                         >
                                             <Plus className="w-4 h-4" />
                                         </button>
@@ -784,7 +784,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         type="text"
                                         value={pointsReason}
                                         onChange={(e) => setPointsReason(e.target.value)}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer"
+                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer"
                                     />
                                 </div>
 
