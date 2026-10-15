@@ -575,11 +575,11 @@ export default function CatalogIndex({
                                                                     )}
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-semibold text-white font-khmer text-sm">
+                                                                    <div className="font-semibold text-zinc-900 dark:text-white font-khmer text-sm">
                                                                         {p.name_primary}
                                                                     </div>
                                                                     {p.name_secondary && (
-                                                                        <div className="text-[11px] text-zinc-400">
+                                                                        <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
                                                                             {p.name_secondary}
                                                                         </div>
                                                                     )}
@@ -587,7 +587,7 @@ export default function CatalogIndex({
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-3">
-                                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                                                                 {p.category.name_primary}
                                                             </span>
                                                         </td>
@@ -603,20 +603,20 @@ export default function CatalogIndex({
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-3 text-right font-mono">
-                                                            <div className="font-bold text-amber-300">
+                                                            <div className="font-bold text-amber-600 dark:text-amber-300">
                                                                 ${priceUSD.toFixed(2)}
                                                             </div>
-                                                            <div className="text-[10px] text-zinc-400">
+                                                            <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
                                                                 {priceKHR.toLocaleString()} ៛
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-3 text-center">
                                                             {p.is_primary_package ? (
-                                                                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                                                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
                                                                     Buffet Pax
                                                                 </span>
                                                             ) : (
-                                                                <span className="text-zinc-600 font-mono">—</span>
+                                                                <span className="text-zinc-400 dark:text-zinc-600 font-mono">—</span>
                                                             )}
                                                         </td>
                                                         <td className="px-4 py-3 text-center">
@@ -626,12 +626,12 @@ export default function CatalogIndex({
                                                                 className="cursor-pointer"
                                                             >
                                                                 {p.is_active ? (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                                         Active
                                                                     </span>
                                                                 ) : (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700">
+                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
                                                                         Inactive
                                                                     </span>
@@ -702,7 +702,13 @@ export default function CatalogIndex({
                                                     {u.name_secondary || '—'}
                                                 </td>
                                                 <td className="px-4 py-3 text-center font-mono">
-                                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700">
+                                                    <span
+                                                        className={`catalog-count-pill ${
+                                                            (u.products_count || 0) > 0
+                                                                ? 'is-positive-sky'
+                                                                : 'is-zero'
+                                                        }`}
+                                                    >
                                                         {u.products_count || 0} items
                                                     </span>
                                                 </td>
@@ -712,12 +718,12 @@ export default function CatalogIndex({
                                                         className="cursor-pointer"
                                                     >
                                                         {u.is_active ? (
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                                 Active
                                                             </span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700">
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
                                                                 Inactive
                                                             </span>
@@ -768,22 +774,30 @@ export default function CatalogIndex({
                                     <tbody className="divide-y divide-zinc-800/60">
                                         {categories.map((c) => (
                                             <tr key={c.id} className="hover:bg-zinc-800/40 transition-colors">
-                                                <td className="px-4 py-3 font-mono font-bold text-amber-300">
-                                                    {c.code}
+                                                <td className="px-4 py-3">
+                                                    <span className="px-2 py-0.5 rounded-md font-mono text-[11px] font-bold bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+                                                        {c.code}
+                                                    </span>
                                                 </td>
-                                                <td className="px-4 py-3 font-khmer text-sm font-semibold text-white">
+                                                <td className="px-4 py-3 font-khmer text-sm font-semibold text-zinc-900 dark:text-white">
                                                     {c.name_primary}
                                                 </td>
-                                                <td className="px-4 py-3 text-zinc-400">
+                                                <td className="px-4 py-3 font-khmer text-xs font-medium text-zinc-600 dark:text-zinc-400">
                                                     {c.name_secondary || '—'}
                                                 </td>
                                                 <td className="px-4 py-3">
-                                                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                                                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
                                                         {c.category_type}
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center font-mono">
-                                                    <span className="px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 text-xs">
+                                                    <span
+                                                        className={`catalog-count-pill ${
+                                                            (c.products_count || 0) > 0
+                                                                ? 'is-positive-teal'
+                                                                : 'is-zero'
+                                                        }`}
+                                                    >
                                                         {c.products_count || 0} items
                                                     </span>
                                                 </td>
@@ -793,12 +807,12 @@ export default function CatalogIndex({
                                                         className="cursor-pointer"
                                                     >
                                                         {c.is_active ? (
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                                 Active
                                                             </span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700">
+                                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
                                                                 Inactive
                                                             </span>
