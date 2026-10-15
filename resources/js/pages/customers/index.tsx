@@ -199,7 +199,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
             <div className="space-y-6 pb-12">
                 {/* Header & Metrics Strip */}
                 <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-900/60 border border-zinc-700/60 dark:border-zinc-800/80 p-4 rounded-2xl shadow-xs">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
                                 <Users className="w-5 h-5" />
