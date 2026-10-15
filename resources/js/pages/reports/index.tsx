@@ -15,6 +15,7 @@ import {
     Filter,
     RotateCcw,
     Calendar,
+    Clock,
     ArrowUpRight,
     Ban,
     AlertTriangle,
@@ -162,78 +163,127 @@ export default function ReportsIndex({
                     </div>
 
                     {/* Filter Controls Card */}
-                    <Card className="p-4 bg-zinc-900/80 border-zinc-800 backdrop-blur-xl">
-                        <div className="flex flex-wrap items-end gap-3">
-                            <div className="w-48 space-y-1">
-                                <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-                                    Period
-                                </label>
-                                <select
-                                    value={periodId}
-                                    onChange={(e) => setPeriodId(e.target.value)}
-                                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-teal-500"
-                                >
-                                    <option value="">All Periods</option>
-                                    {periods.map((p) => (
-                                        <option key={p.id} value={p.id}>
-                                            {p.code} - {p.name} ({p.status})
-                                        </option>
-                                    ))}
-                                </select>
+                    <Card className="p-4 sm:p-5 bg-zinc-900/80 border-zinc-750/70 dark:border-zinc-800/80 rounded-2xl shadow-xs backdrop-blur-xl">
+                        {/* Header inside card */}
+                        <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-zinc-800/60">
+                            <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                                    <Filter className="w-3.5 h-3.5" />
+                                </div>
+                                <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
+                                    តម្រងស្វែងរកទិន្នន័យ
+                                </span>
+                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
+                                    / Filter Controls
+                                </span>
                             </div>
+                            {(periodId || startDate || endDate || cashierId) && (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+                                    Active Filter
+                                </span>
+                            )}
+                        </div>
 
-                            <div className="w-36 space-y-1">
-                                <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-                                    From Date
+                        {/* Form Controls Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+                            {/* Period */}
+                            <div className={`${isAdmin ? 'lg:col-span-3' : 'lg:col-span-4'} space-y-1.5`}>
+                                <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
+                                    <Clock className="w-3 h-3 text-teal-500" />
+                                    <span>Period / វគ្គ</span>
                                 </label>
-                                <Input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    className="text-xs bg-zinc-950 border-zinc-800 py-1.5"
-                                />
-                            </div>
-
-                            <div className="w-36 space-y-1">
-                                <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-                                    To Date
-                                </label>
-                                <Input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className="text-xs bg-zinc-950 border-zinc-800 py-1.5"
-                                />
-                            </div>
-
-                            {isAdmin && (
-                                <div className="w-44 space-y-1">
-                                    <label className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-                                        Cashier
-                                    </label>
+                                <div className="relative">
                                     <select
-                                        value={cashierId}
-                                        onChange={(e) => setCashierId(e.target.value)}
-                                        className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-teal-500"
+                                        value={periodId}
+                                        onChange={(e) => setPeriodId(e.target.value)}
+                                        className="w-full h-9.5 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl px-3 text-xs text-zinc-900 dark:text-zinc-200 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-all cursor-pointer font-khmer shadow-2xs"
                                     >
-                                        <option value="">All Cashiers</option>
-                                        {cashiers.map((c) => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.name} (@{c.username})
+                                        <option value="">គ្រប់វគ្គទាំងអស់ (All Periods)</option>
+                                        {periods.map((p) => (
+                                            <option key={p.id} value={p.id}>
+                                                {p.code} - {p.name} ({p.status})
                                             </option>
                                         ))}
                                     </select>
                                 </div>
+                            </div>
+
+                            {/* From Date */}
+                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
+                                <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
+                                    <Calendar className="w-3 h-3 text-teal-500" />
+                                    <span>From / ចាប់ពីថ្ងៃ</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="w-full h-9.5 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-200 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-all cursor-pointer font-mono shadow-2xs"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* To Date */}
+                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
+                                <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
+                                    <Calendar className="w-3 h-3 text-teal-500" />
+                                    <span>To / ដល់ថ្ងៃ</span>
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className="w-full h-9.5 px-3 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-200 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-all cursor-pointer font-mono shadow-2xs"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Cashier (Admin Only) */}
+                            {isAdmin && (
+                                <div className="lg:col-span-3 space-y-1.5">
+                                    <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
+                                        <Users className="w-3 h-3 text-teal-500" />
+                                        <span>Cashier / បេឡាករ</span>
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            value={cashierId}
+                                            onChange={(e) => setCashierId(e.target.value)}
+                                            className="w-full h-9.5 bg-zinc-950 border border-zinc-700/60 dark:border-zinc-800 rounded-xl px-3 text-xs text-zinc-900 dark:text-zinc-200 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500/30 transition-all cursor-pointer font-khmer shadow-2xs"
+                                        >
+                                            <option value="">គ្រប់បេឡាករទាំងអស់ (All Cashiers)</option>
+                                            {cashiers.map((c) => (
+                                                <option key={c.id} value={c.id}>
+                                                    {c.name} (@{c.username})
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
                             )}
 
-                            <div className="flex items-center gap-2 pt-2">
-                                <Button size="sm" onClick={handleApplyFilters} className="bg-teal-600 hover:bg-teal-500 text-white">
-                                    <Filter className="w-3.5 h-3.5 mr-1.5" />
+                            {/* Action Buttons */}
+                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-2'} flex items-center gap-2 pt-1 sm:pt-0`}>
+                                <Button
+                                    size="sm"
+                                    onClick={handleApplyFilters}
+                                    className="flex-1 h-9.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl shadow-xs font-medium cursor-pointer transition-all active:scale-[0.98] text-xs gap-1.5"
+                                >
+                                    <Filter className="w-3.5 h-3.5" />
                                     <span>Filter</span>
                                 </Button>
-                                <Button size="sm" variant="ghost" onClick={handleReset} className="text-zinc-400 hover:text-white">
-                                    <RotateCcw className="w-3.5 h-3.5 mr-1" />
-                                    <span>Reset</span>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={handleReset}
+                                    title="Reset Filters / សម្អាតតម្រង"
+                                    className="h-9.5 px-3 border-zinc-700/60 dark:border-zinc-800 bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white rounded-xl cursor-pointer transition-all text-xs gap-1.5 shadow-2xs"
+                                >
+                                    <RotateCcw className="w-3.5 h-3.5" />
+                                    <span className="hidden sm:inline">Reset</span>
                                 </Button>
                             </div>
                         </div>
