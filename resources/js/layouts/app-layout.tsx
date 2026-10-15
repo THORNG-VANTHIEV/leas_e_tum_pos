@@ -1371,9 +1371,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 {business.business_name_primary} • {business.phone}
                             </div>
                             <div className="text-[11px] font-mono text-zinc-500">
-                                Modular Business System Blueprint V2.0 • Integer Cents Financial Engine • Press{' '}
-                                <kbd className="px-1 py-0.5 rounded bg-zinc-800 text-zinc-300">F2</kbd>{' '}
-                                for New Order
+                                © {new Date().getFullYear()} THORNG VANTHIEV. All rights reserved.
                             </div>
                         </div>
                     </footer>
