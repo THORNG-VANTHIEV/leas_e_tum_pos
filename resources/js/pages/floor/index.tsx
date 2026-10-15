@@ -307,10 +307,13 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     ) : (
                                         <Link
                                             href={`/invoices/create?table_ref=${encodeURIComponent(table.name)}`}
-                                            className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-zinc-700 hover:border-amber-500/40 flex items-center justify-center gap-1.5 transition-all"
+                                            className="w-full py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-zinc-700 hover:border-amber-500/40 flex items-center justify-center gap-2.5 transition-all shadow-sm group"
                                         >
-                                            <ShoppingBag className="w-3.5 h-3.5" />
-                                            <span>បើកការបញ្ជាទិញ (POS Order)</span>
+                                            <ShoppingBag className="w-4 h-4 shrink-0 text-amber-400 group-hover:scale-110 transition-transform" />
+                                            <div className="flex flex-col items-center text-center">
+                                                <span className="text-xs font-semibold font-khmer leading-tight">បើកការបញ្ជាទិញ</span>
+                                                <span className="text-[10px] text-amber-400/80 font-mono font-medium tracking-tight leading-tight">(POS Order)</span>
+                                            </div>
                                         </Link>
                                     )}
 
