@@ -33,13 +33,18 @@ class LeashalEtumProductsSeeder extends Seeder
             ['name_primary' => 'ដប', 'name_secondary' => 'Bottle', 'sort_order' => 4, 'is_active' => true]
         );
 
-        // Deactivate previous dummy categories
-        ProductCategory::whereNotIn('code', ['STEAM_SPICE', 'STEAM_TAMARIND', 'BOILED_BLANCHED', 'FRIED_GRILL', 'BEVERAGES'])
-            ->update(['is_active' => false]);
-
-        // Deactivate all non-ETUM dummy products
+        // Remove previous dummy products and categories
         Product::where('sku', 'NOT LIKE', 'ETUM-%')
-            ->update(['is_active' => false]);
+            ->orWhereIn('sku', ['ETUM-01', 'ETUM-02', 'ETUM-03'])
+            ->delete();
+
+        ProductCategory::whereNotIn('code', [
+            'STEAM_SPICE',
+            'STEAM_TAMARIND',
+            'BOILED_BLANCHED',
+            'FRIED_GRILL',
+            'BEVERAGES',
+        ])->delete();
 
         // 2. Real Menu Categories
         $catSteamSpice = ProductCategory::updateOrCreate(
