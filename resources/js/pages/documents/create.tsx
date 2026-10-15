@@ -29,6 +29,8 @@ import {
     ArrowRight,
     Store,
     Receipt,
+    Maximize,
+    Minimize,
 } from 'lucide-react';
 
 interface ProductItem {
@@ -146,6 +148,25 @@ export default function DocumentCreate({
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card'>('cash');
     const [amountReceived, setAmountReceived] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Fullscreen state & toggle
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            document.exitFullscreen().catch(() => {});
+        }
+    };
 
     const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -605,6 +626,23 @@ export default function DocumentCreate({
                                 </button>
                             )}
                         </div>
+
+                        {/* Fullscreen Mode Button */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={toggleFullscreen}
+                            className={`border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white text-xs gap-1.5 cursor-pointer px-2.5 h-9 shrink-0 ${
+                                isFullscreen ? 'text-amber-400 border-amber-500/50 bg-amber-500/10' : ''
+                            }`}
+                            title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                        >
+                            {isFullscreen ? <Minimize className="w-4 h-4 text-amber-400" /> : <Maximize className="w-4 h-4" />}
+                            <span className="hidden xl:inline text-[11px] font-medium">
+                                {isFullscreen ? (language === 'km' ? 'បង្រួម' : 'Exit') : (language === 'km' ? 'ពេញអេក្រង់' : 'Fullscreen')}
+                            </span>
+                        </Button>
                     </div>
                 </div>
 

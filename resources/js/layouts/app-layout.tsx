@@ -28,6 +28,8 @@ import {
     Moon,
     HelpCircle,
     Sun,
+    Maximize,
+    Minimize,
     ChevronDown,
     ChevronRight,
 } from 'lucide-react';
@@ -135,6 +137,24 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
     const toggleTheme = () => {
         setIsDark((prev) => !prev);
+    };
+
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            document.exitFullscreen().catch(() => {});
+        }
     };
 
     const getInitials = (name?: string) => {
@@ -916,8 +936,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
                 {/* Row 2: Moon icon, Help icon, Language toggle switch */}
                 <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-zinc-800/70">
-                    {/* Left: Moon & Help */}
-                    <div className="flex items-center gap-2">
+                    {/* Left: Moon, Fullscreen & Help */}
+                    <div className="flex items-center gap-1.5">
                         <button
                             id="theme-toggle-btn"
                             type="button"
@@ -928,6 +948,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             title={isDark ? 'Dark Theme Active (ចុចដើម្បីប្តូរទៅ Light Mode)' : 'Light Theme Active (ចុចដើម្បីប្តូរទៅ Dark Mode)'}
                         >
                             {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                        </button>
+
+                        <button
+                            id="fullscreen-toggle-btn"
+                            type="button"
+                            onClick={toggleFullscreen}
+                            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                isFullscreen
+                                    ? 'text-amber-400 bg-amber-500/15 border border-amber-500/30'
+                                    : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80'
+                            }`}
+                            title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                        >
+                            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                         </button>
 
                         <button
@@ -999,7 +1033,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                     </Link>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                    <button
+                        type="button"
+                        onClick={toggleFullscreen}
+                        className={`p-1.5 rounded-lg border transition-colors cursor-pointer h-8 w-8 flex items-center justify-center ${
+                            isFullscreen
+                                ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                                : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white'
+                        }`}
+                        title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                    >
+                        {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                    </button>
                     <span className="text-[11px] font-mono text-emerald-400 bg-zinc-900 px-2 py-1 rounded border border-zinc-800">
                         {currentTime}
                     </span>
@@ -1236,6 +1282,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="w-8 h-8 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors"
                         >
                             {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                        </button>
+
+                        {/* Compact Fullscreen Toggle */}
+                        <button
+                            id="collapsed-fullscreen-toggle-btn"
+                            type="button"
+                            onClick={toggleFullscreen}
+                            title={isFullscreen ? "ចេញពីពេញអេក្រង់ (Exit Fullscreen)" : "ពង្រីកពេញអេក្រង់ (Fullscreen)"}
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
+                                isFullscreen
+                                    ? 'text-amber-400 bg-amber-500/15'
+                                    : 'text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/80'
+                            }`}
+                        >
+                            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                         </button>
 
                         {/* Compact Help Button */}
