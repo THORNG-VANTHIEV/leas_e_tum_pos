@@ -45,10 +45,10 @@ class BusinessSetting extends Model
         return static::firstOrCreate(
             ['id' => 1],
             [
-                'business_name_primary' => 'លៀសហាល អ៉ីទុម',
+                'business_name_primary' => 'អ៊ុតុំ លៀសអប់សៀមរាប',
                 'business_name_secondary' => 'LEASHAL ETUM POS',
-                'address_primary' => 'Phnom Penh, Cambodia',
-                'phone' => '+855 12 345 678',
+                'address_primary' => 'ក្រុងសៀមរាប, ខេត្តសៀមរាប',
+                'phone' => '087 70 70 89 / 096 33 55 088',
                 'currency_code' => 'USD',
                 'currency_symbol' => '$',
                 'decimal_places' => 2,
@@ -60,6 +60,7 @@ class BusinessSetting extends Model
                     'show_guest_count' => true,
                     'show_item_quantity' => true,
                     'show_tax' => false,
+                    'exchange_rate_khr' => 4000,
                 ],
                 'entry_settings' => [
                     'require_source_total' => true,

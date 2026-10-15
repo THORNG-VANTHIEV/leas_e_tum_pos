@@ -8,6 +8,7 @@ use App\Features\Documents\Actions\CheckoutOrderAction;
 use App\Features\Documents\Actions\CreateDraftDocument;
 use App\Features\Documents\Actions\HoldTableOrderAction;
 use App\Http\Controllers\Controller;
+use App\Models\BusinessSetting;
 use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
@@ -149,7 +150,7 @@ class DocumentController extends Controller
             'tables_list' => $tablesList,
             'customers' => $customers,
             'initial_table' => $request->query('table_ref', ''),
-            'exchange_rate' => 4100, // 1 USD = 4,100 KHR
+            'exchange_rate' => (float) (BusinessSetting::current()->print_settings['exchange_rate_khr'] ?? 4000),
         ]);
     }
 

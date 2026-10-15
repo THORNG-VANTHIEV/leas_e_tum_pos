@@ -42,7 +42,7 @@ class CatalogController extends Controller
             ->get();
 
         $business = BusinessSetting::current();
-        $exchangeRate = (float) ($business->invoice_settings['exchange_rate'] ?? 4100);
+        $exchangeRate = (float) ($business->print_settings['exchange_rate_khr'] ?? $business->invoice_settings['exchange_rate'] ?? 4000);
 
         return Inertia::render('catalog/index', [
             'products' => $products,

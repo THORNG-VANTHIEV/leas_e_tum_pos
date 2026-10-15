@@ -32,6 +32,7 @@
 /storage/framework/testing/*
 !/storage/framework/testing/.gitignore
 /vendor
+/leas_hal_e_tum_menu
 _ide_helper.php
 Homestead.json
 Homestead.yaml

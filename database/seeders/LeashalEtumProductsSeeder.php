@@ -15,167 +15,356 @@ class LeashalEtumProductsSeeder extends Seeder
         $admin = User::first();
         $adminId = $admin ? $admin->id : 1;
 
-        // Units
-        $uCan = Unit::firstOrCreate(['code' => 'CAN'], ['name_primary' => 'កំប៉ុង', 'name_secondary' => 'Can', 'is_active' => true]);
-        $uPlate = Unit::firstOrCreate(['code' => 'PLATE'], ['name_primary' => 'ចាន', 'name_secondary' => 'Plate', 'is_active' => true]);
-        $uSet = Unit::firstOrCreate(['code' => 'SET'], ['name_primary' => 'ឈុត', 'name_secondary' => 'Set', 'is_active' => true]);
-        $uGlass = Unit::firstOrCreate(['code' => 'GLASS'], ['name_primary' => 'កែវ', 'name_secondary' => 'Glass', 'is_active' => true]);
-        $uBottle = Unit::firstOrCreate(['code' => 'BTL'], ['name_primary' => 'ដប', 'name_secondary' => 'Bottle', 'is_active' => true]);
-
-        // Categories
-        $catClams = ProductCategory::firstOrCreate(
-            ['code' => 'CLAMS'],
-            ['name_primary' => 'លៀសហាល & ខ្ចៅ', 'name_secondary' => 'Sun-dried Clams & Snails', 'category_type' => 'food', 'sort_order' => 1]
+        // 1. Units
+        $uDish = Unit::updateOrCreate(
+            ['code' => 'DISH'],
+            ['name_primary' => 'ចាន', 'name_secondary' => 'Plate / Dish', 'sort_order' => 1, 'is_active' => true]
+        );
+        $uSkewer = Unit::updateOrCreate(
+            ['code' => 'SKEWER'],
+            ['name_primary' => 'ចង្កាក់', 'name_secondary' => 'Skewer', 'sort_order' => 2, 'is_active' => true]
+        );
+        $uCan = Unit::updateOrCreate(
+            ['code' => 'CAN'],
+            ['name_primary' => 'កំប៉ុង', 'name_secondary' => 'Can', 'sort_order' => 3, 'is_active' => true]
+        );
+        $uBottle = Unit::updateOrCreate(
+            ['code' => 'BTL'],
+            ['name_primary' => 'ដប', 'name_secondary' => 'Bottle', 'sort_order' => 4, 'is_active' => true]
         );
 
-        $catGrill = ProductCategory::firstOrCreate(
-            ['code' => 'GRILL'],
-            ['name_primary' => 'ពងទាកូន & សាច់អាំង', 'name_secondary' => 'Balut & BBQ Skewers', 'category_type' => 'food', 'sort_order' => 2]
-        );
+        // Deactivate previous dummy categories
+        ProductCategory::whereNotIn('code', ['STEAM_SPICE', 'STEAM_TAMARIND', 'BOILED_BLANCHED', 'FRIED_GRILL', 'BEVERAGES'])
+            ->update(['is_active' => false]);
 
-        $catSalad = ProductCategory::firstOrCreate(
-            ['code' => 'SALAD'],
-            ['name_primary' => 'បុកល្ហុង & ញាំ', 'name_secondary' => 'Papaya Salad & Yum', 'category_type' => 'food', 'sort_order' => 3]
-        );
+        // Deactivate all non-ETUM dummy products
+        Product::where('sku', 'NOT LIKE', 'ETUM-%')
+            ->update(['is_active' => false]);
 
-        $catDrinks = ProductCategory::firstOrCreate(
-            ['code' => 'DRINKS'],
-            ['name_primary' => 'ភេសជ្ជៈ & ទឹកផ្លែឈើ', 'name_secondary' => 'Beverages & Soft Drinks', 'category_type' => 'beverage', 'sort_order' => 4]
-        );
-
-        // Products for Leashal Etum
-        $items = [
-            // Clams
+        // 2. Real Menu Categories
+        $catSteamSpice = ProductCategory::updateOrCreate(
+            ['code' => 'STEAM_SPICE'],
             [
-                'sku' => 'ETUM-01',
-                'category_id' => $catClams->id,
-                'name_primary' => 'លៀសហាលរសជាតិដើម',
-                'name_secondary' => 'Sun-dried Clams (Original)',
-                'unit_id' => $uCan->id,
-                'unit_price' => '2.00',
+                'name_primary' => 'មុខម្ហូបអប់គ្រឿង',
+                'name_secondary' => 'Steamed with Khmer Herbs',
+                'category_type' => 'food',
+                'sort_order' => 1,
+                'is_active' => true,
+            ]
+        );
+
+        $catSteamTamarind = ProductCategory::updateOrCreate(
+            ['code' => 'STEAM_TAMARIND'],
+            [
+                'name_primary' => 'មុខម្ហូបអប់អំពិលម្ទេស',
+                'name_secondary' => 'Steamed Tamarind & Chili',
+                'category_type' => 'food',
+                'sort_order' => 2,
+                'is_active' => true,
+            ]
+        );
+
+        $catBoiled = ProductCategory::updateOrCreate(
+            ['code' => 'BOILED_BLANCHED'],
+            [
+                'name_primary' => 'មុខម្ហូបស្ងោរ និងស្រុះ',
+                'name_secondary' => 'Boiled & Blanched Dishes',
+                'category_type' => 'food',
+                'sort_order' => 3,
+                'is_active' => true,
+            ]
+        );
+
+        $catFriedGrill = ProductCategory::updateOrCreate(
+            ['code' => 'FRIED_GRILL'],
+            [
+                'name_primary' => 'មុខម្ហូបបំពង អាំង និងប្រហិត',
+                'name_secondary' => 'Fried, Grilled & Meatballs',
+                'category_type' => 'food',
+                'sort_order' => 4,
+                'is_active' => true,
+            ]
+        );
+
+        $catBeverages = ProductCategory::updateOrCreate(
+            ['code' => 'BEVERAGES'],
+            [
+                'name_primary' => 'ភេសជ្ជៈ',
+                'name_secondary' => 'Beverages & Soft Drinks',
+                'category_type' => 'beverage',
+                'sort_order' => 5,
+                'is_active' => true,
+            ]
+        );
+
+        // 3. Real Menu Products (All prices calibrated with exchange rate: 1 USD = 4,000 KHR)
+        $products = [
+            // --- ១. មុខម្ហូបអប់គ្រឿង ---
+            [
+                'sku' => 'ETUM-OP-01',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'លៀសអប់',
+                'name_secondary' => 'Steamed River Clams w/ Herbs',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.75', // 7,000៛
+                'image_url' => '/images/products/leas-op.png',
                 'is_primary_package' => true,
                 'sort_order' => 1,
             ],
             [
-                'sku' => 'ETUM-02',
-                'category_id' => $catClams->id,
-                'name_primary' => 'លៀសហាលម្ទេសហឹរពិសេស',
-                'name_secondary' => 'Spicy Sun-dried Clams (Special)',
-                'unit_id' => $uCan->id,
-                'unit_price' => '2.50',
-                'is_primary_package' => true,
+                'sku' => 'ETUM-OP-02',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'លៀសសអប់',
+                'name_secondary' => 'Steamed White Clams w/ Herbs',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/leas-sar-op.png',
+                'is_primary_package' => false,
                 'sort_order' => 2,
             ],
             [
-                'sku' => 'ETUM-03',
-                'category_id' => $catClams->id,
-                'name_primary' => 'ខ្ចៅស្ងោរជ្រក់អំពិលទុំ',
-                'name_secondary' => 'Boiled Snails w/ Tamarind Dip',
-                'unit_id' => $uPlate->id,
-                'unit_price' => '2.50',
+                'sku' => 'ETUM-OP-03',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'ខ្យងស្រែអប់គ្រឿង',
+                'name_secondary' => 'Steamed Field Snails w/ Herbs',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/khyong-sre-op.png',
                 'is_primary_package' => false,
                 'sort_order' => 3,
             ],
-
-            // Grill & Balut
             [
-                'sku' => 'GRILL-01',
-                'category_id' => $catGrill->id,
-                'name_primary' => 'ពងទាកូន (១ឈុត ២គ្រាប់)',
-                'name_secondary' => 'Balut Egg Set (2 Eggs)',
-                'unit_id' => $uSet->id,
-                'unit_price' => '1.50',
+                'sku' => 'ETUM-OP-04',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'ខ្យៅអប់គ្រឿង',
+                'name_secondary' => 'Steamed Small Snails w/ Herbs',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.75', // 7,000៛
+                'image_url' => '/images/products/khyav-op-kroeung.png',
+                'is_primary_package' => false,
+                'sort_order' => 4,
+            ],
+            [
+                'sku' => 'ETUM-OP-05',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'ប្រហិតសាច់គោអប់ (ធម្មតា)',
+                'name_secondary' => 'Steamed Beef Meatballs (Regular)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.25', // 5,000៛
+                'image_url' => '/images/products/prohet-sach-ko-op.png',
+                'is_primary_package' => false,
+                'sort_order' => 5,
+            ],
+            [
+                'sku' => 'ETUM-OP-06',
+                'category_id' => $catSteamSpice->id,
+                'name_primary' => 'ប្រហិតសាច់គោអប់ (ធំ)',
+                'name_secondary' => 'Steamed Beef Meatballs (Large)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/prohet-sach-ko-op.png',
+                'is_primary_package' => false,
+                'sort_order' => 6,
+            ],
+
+            // --- ២. មុខម្ហូបអប់អំពិលម្ទេស ---
+            [
+                'sku' => 'ETUM-AM-01',
+                'category_id' => $catSteamTamarind->id,
+                'name_primary' => 'ងាវអប់អំពិលម្ទេស',
+                'name_secondary' => 'Steamed Blood Cockles Tamarind Chili',
+                'unit_id' => $uDish->id,
+                'unit_price' => '3.75', // 15,000៛
+                'image_url' => '/images/products/ngeav-op-ampil-mtes.png',
                 'is_primary_package' => false,
                 'sort_order' => 10,
             ],
             [
-                'sku' => 'GRILL-02',
-                'category_id' => $catGrill->id,
-                'name_primary' => 'ប្រហិតសាច់គោអាំង (៥ចង្កាក់)',
-                'name_secondary' => 'Grilled Beef Meatballs (5 Skewers)',
-                'unit_id' => $uSet->id,
-                'unit_price' => '2.00',
+                'sku' => 'ETUM-AM-02',
+                'category_id' => $catSteamTamarind->id,
+                'name_primary' => 'បង្កងអប់អំពិលម្ទេស',
+                'name_secondary' => 'Steamed Prawns Tamarind Chili',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/bangkang-op-ampil-mtes.png',
                 'is_primary_package' => false,
                 'sort_order' => 11,
             ],
             [
-                'sku' => 'GRILL-03',
-                'category_id' => $catGrill->id,
-                'name_primary' => 'មឹកអាំងទឹកត្រីកោះកុង',
-                'name_secondary' => 'Grilled Squid Koh Kong Dip',
-                'unit_id' => $uPlate->id,
-                'unit_price' => '4.00',
+                'sku' => 'ETUM-AM-03',
+                'category_id' => $catSteamTamarind->id,
+                'name_primary' => 'ក្ដាមស្រែអប់អំពិលម្ទេស',
+                'name_secondary' => 'Steamed Field Crabs Tamarind Chili',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.75', // 7,000៛
+                'image_url' => '/images/products/kdam-sre-op-ampil-mtes.png',
                 'is_primary_package' => false,
                 'sort_order' => 12,
             ],
-
-            // Salads
             [
-                'sku' => 'SLD-01',
-                'category_id' => $catSalad->id,
-                'name_primary' => 'បុកល្ហុងក្តាមប្រៃហឹរស្រួយ',
-                'name_secondary' => 'Som Tum Crab Spicy Salad',
-                'unit_id' => $uPlate->id,
-                'unit_price' => '2.50',
+                'sku' => 'ETUM-AM-04',
+                'category_id' => $catSteamTamarind->id,
+                'name_primary' => 'ពងក្រួចកូន (ធម្មតា)',
+                'name_secondary' => 'Quail Balut Eggs (Regular)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.25', // 5,000៛
+                'image_url' => '/images/products/pong-krouch-koun.png',
+                'is_primary_package' => false,
+                'sort_order' => 13,
+            ],
+            [
+                'sku' => 'ETUM-AM-05',
+                'category_id' => $catSteamTamarind->id,
+                'name_primary' => 'ពងក្រួចកូន (ធំ)',
+                'name_secondary' => 'Quail Balut Eggs (Large)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/pong-krouch-koun.png',
+                'is_primary_package' => false,
+                'sort_order' => 14,
+            ],
+
+            // --- ៣. មុខម្ហូបស្ងោរ និងស្រុះ ---
+            [
+                'sku' => 'ETUM-SS-01',
+                'category_id' => $catBoiled->id,
+                'name_primary' => 'ខ្យៅស្ងោរ',
+                'name_secondary' => 'Boiled Small Snails w/ Dip',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.75', // 7,000៛
+                'image_url' => '/images/products/khyav-sngor.png',
                 'is_primary_package' => false,
                 'sort_order' => 20,
             ],
             [
-                'sku' => 'SLD-02',
-                'category_id' => $catSalad->id,
-                'name_primary' => 'បុកល្ហុងគ្រឿងសមុទ្រ',
-                'name_secondary' => 'Seafood Papaya Salad',
-                'unit_id' => $uPlate->id,
-                'unit_price' => '3.50',
+                'sku' => 'ETUM-SS-02',
+                'category_id' => $catBoiled->id,
+                'name_primary' => 'ក្ដាមស្ងោរ',
+                'name_secondary' => 'Boiled Field Crabs w/ Lime Leaves',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.75', // 7,000៛
+                'image_url' => '/images/products/kdam-sngor.png',
                 'is_primary_package' => false,
                 'sort_order' => 21,
             ],
-
-            // Drinks
             [
-                'sku' => 'DRK-01',
-                'category_id' => $catDrinks->id,
-                'name_primary' => 'តែបៃតងទឹកដោះគោទឹកកក',
-                'name_secondary' => 'Iced Green Tea Milk',
-                'unit_id' => $uGlass->id,
-                'unit_price' => '1.25',
+                'sku' => 'ETUM-SS-03',
+                'category_id' => $catBoiled->id,
+                'name_primary' => 'ខ្យងស្ងោរ',
+                'name_secondary' => 'Boiled Field Apple Snails',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/khyong-sngor.png',
+                'is_primary_package' => false,
+                'sort_order' => 22,
+            ],
+            [
+                'sku' => 'ETUM-SS-04',
+                'category_id' => $catBoiled->id,
+                'name_primary' => 'ងាវស្រុះ',
+                'name_secondary' => 'Blanched Fresh Blood Cockles',
+                'unit_id' => $uDish->id,
+                'unit_price' => '3.75', // 15,000៛
+                'image_url' => '/images/products/ngeav-sros.png',
+                'is_primary_package' => false,
+                'sort_order' => 23,
+            ],
+
+            // --- ៤. មុខម្ហូបបំពង អាំង និងប្រហិត ---
+            [
+                'sku' => 'ETUM-BG-01',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'ស្លាបមាន់បំពង',
+                'name_secondary' => 'Crispy Fried Chicken Wings',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/sleab-moan-bampong.png',
                 'is_primary_package' => false,
                 'sort_order' => 30,
             ],
             [
-                'sku' => 'DRK-02',
-                'category_id' => $catDrinks->id,
-                'name_primary' => 'កូកាកូឡាត្រជាក់',
-                'name_secondary' => 'Coca-Cola 330ml Can',
-                'unit_id' => $uCan->id,
-                'unit_price' => '0.75',
+                'sku' => 'ETUM-BG-02',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'ស្លាបមាន់បំពងផ្នែកកណ្ដាល',
+                'name_secondary' => 'Crispy Chicken Mid-Joint Wings',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/sleab-moan-kandal.png',
                 'is_primary_package' => false,
                 'sort_order' => 31,
             ],
             [
-                'sku' => 'DRK-03',
-                'category_id' => $catDrinks->id,
-                'name_primary' => 'ស្រាបៀរអង្គរត្រជាក់',
-                'name_secondary' => 'Angkor Beer Can',
-                'unit_id' => $uCan->id,
-                'unit_price' => '1.25',
+                'sku' => 'ETUM-BG-03',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'សាច់គោជ្រនួចអាំង',
+                'name_secondary' => 'Grilled Beef Skewer w/ Pickles',
+                'unit_id' => $uSkewer->id,
+                'unit_price' => '0.63', // 2,500៛ / ចង្កាក់
+                'image_url' => '/images/products/sach-ko-chranoch.png',
                 'is_primary_package' => false,
                 'sort_order' => 32,
             ],
             [
-                'sku' => 'DRK-04',
-                'category_id' => $catDrinks->id,
-                'name_primary' => 'ទឹកបរិសុទ្ធដប',
-                'name_secondary' => 'Mineral Bottled Water',
-                'unit_id' => $uBottle->id,
-                'unit_price' => '0.50',
+                'sku' => 'ETUM-BG-04',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'ប្រហិតសាច់គោ (ធម្មតា)',
+                'name_secondary' => 'Fried Beef Meatballs (Regular)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '1.25', // 5,000៛
+                'image_url' => '/images/products/prohet-sach-ko.png',
                 'is_primary_package' => false,
                 'sort_order' => 33,
             ],
+            [
+                'sku' => 'ETUM-BG-05',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'ប្រហិតសាច់គោ (ធំ)',
+                'name_secondary' => 'Fried Beef Meatballs (Large)',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/prohet-sach-ko.png',
+                'is_primary_package' => false,
+                'sort_order' => 34,
+            ],
+            [
+                'sku' => 'ETUM-BG-06',
+                'category_id' => $catFriedGrill->id,
+                'name_primary' => 'ប្រហិតបន្លែ',
+                'name_secondary' => 'Fried Vegetable Fish Rolls',
+                'unit_id' => $uDish->id,
+                'unit_price' => '2.50', // 10,000៛
+                'image_url' => '/images/products/prohet-banle.png',
+                'is_primary_package' => false,
+                'sort_order' => 35,
+            ],
+
+            // --- ៥. ភេសជ្ជៈ ---
+            [
+                'sku' => 'ETUM-DRK-01',
+                'category_id' => $catBeverages->id,
+                'name_primary' => 'ទឹកបរិសុទ្ធ',
+                'name_secondary' => 'Pure Drinking Bottled Water',
+                'unit_id' => $uBottle->id,
+                'unit_price' => '0.50', // 2,000៛
+                'image_url' => '/images/products/mineral-water.jpg',
+                'is_primary_package' => false,
+                'sort_order' => 40,
+            ],
+            [
+                'sku' => 'ETUM-DRK-02',
+                'category_id' => $catBeverages->id,
+                'name_primary' => 'កូកាកូឡា',
+                'name_secondary' => 'Coca-Cola 330ml Can',
+                'unit_id' => $uCan->id,
+                'unit_price' => '0.63', // 2,500៛
+                'image_url' => '/images/products/coca-cola.jpg',
+                'is_primary_package' => false,
+                'sort_order' => 41,
+            ],
         ];
 
-        foreach ($items as $item) {
-            Product::firstOrCreate(
+        foreach ($products as $item) {
+            Product::updateOrCreate(
                 ['sku' => $item['sku']],
                 [
                     ...$item,
