@@ -528,16 +528,16 @@ export default function CatalogIndex({
                         <Card className="bg-zinc-900/40 border-zinc-800/80 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-xs">
-                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px]">
+                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3">SKU</th>
-                                            <th className="px-4 py-3">Product Name / ឈ្មោះមុខទំនិញ</th>
-                                            <th className="px-4 py-3">Category / ប្រភេទ</th>
-                                            <th className="px-4 py-3">Unit / ឯកតា</th>
-                                            <th className="px-4 py-3 text-right">Unit Price / តម្លៃ</th>
-                                            <th className="px-4 py-3 text-center">Package / កញ្ចប់</th>
-                                            <th className="px-4 py-3 text-center">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right">Actions</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">SKU</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Product Name / ឈ្មោះមុខទំនិញ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Category / ប្រភេទ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Unit / ឯកតា</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">Unit Price / តម្លៃ</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Package / កញ្ចប់</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -670,14 +670,14 @@ export default function CatalogIndex({
                         <Card className="bg-zinc-900/40 border-zinc-800/80 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-xs">
-                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px]">
+                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3">Code / លេខកូដ</th>
-                                            <th className="px-4 py-3">Primary Name / ឈ្មោះខ្មែរ</th>
-                                            <th className="px-4 py-3">Secondary Name / ឈ្មោះអង់គ្លេស</th>
-                                            <th className="px-4 py-3 text-center">Items Count / មុខទំនិញ</th>
-                                            <th className="px-4 py-3 text-center">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right">Actions</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Code / លេខកូដ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Primary Name / ឈ្មោះខ្មែរ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Secondary Name / ឈ្មោះអង់គ្លេស</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -760,15 +760,15 @@ export default function CatalogIndex({
                         <Card className="bg-zinc-900/40 border-zinc-800/80 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-xs">
-                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px]">
+                                    <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3">Code / លេខកូដ</th>
-                                            <th className="px-4 py-3">Category Name / ឈ្មោះប្រភេទ</th>
-                                            <th className="px-4 py-3">Secondary Name / ឈ្មោះអង់គ្លេស</th>
-                                            <th className="px-4 py-3">Type / ប្រភេទ</th>
-                                            <th className="px-4 py-3 text-center">Items Count / មុខទំនិញ</th>
-                                            <th className="px-4 py-3 text-center">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right">Actions</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Code / លេខកូដ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Category Name / ឈ្មោះប្រភេទ</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Secondary Name / ឈ្មោះអង់គ្លេស</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">Type / ប្រភេទ</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
