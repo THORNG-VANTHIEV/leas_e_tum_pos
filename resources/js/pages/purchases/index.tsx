@@ -536,8 +536,8 @@ export default function PurchasesIndex({
                                         <th className="py-3 px-3 sm:px-4 w-[11%] whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
                                         <th className="py-3 px-3 sm:px-4 w-[26%]">Items / ទំនិញ</th>
                                         <th className="py-3 px-3 sm:px-4 w-[11%] text-right whitespace-nowrap">Total ($ / ៛)</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[9%] text-center whitespace-nowrap">Status</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[9%] text-right whitespace-nowrap">Actions</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[12%] text-center whitespace-nowrap">Status</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[6%] text-center whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/40 text-zinc-300">
@@ -635,17 +635,16 @@ export default function PurchasesIndex({
                                                         )}
                                                     </td>
 
-                                                    <td className="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
-                                                        <div className="flex items-center justify-end gap-1.5">
+                                                    <td className="py-3 px-3 sm:px-4 text-center whitespace-nowrap">
+                                                        <div className="flex items-center justify-center gap-1.5">
                                                             <Button
                                                                 size="sm"
                                                                 variant="outline"
                                                                 onClick={() => setViewPurchaseModal(purchase)}
-                                                                className="h-7 px-2.5 rounded-lg border-zinc-700 bg-zinc-800/90 text-zinc-300 hover:text-white hover:bg-zinc-700 text-xs gap-1.5 cursor-pointer shadow-sm transition"
-                                                                title="View Details"
+                                                                className="h-7 w-7 p-0 rounded-lg border-zinc-700 bg-zinc-800/90 text-zinc-300 hover:text-white hover:bg-zinc-700 hover:border-zinc-600 inline-flex items-center justify-center cursor-pointer shadow-sm transition"
+                                                                title="មើលប័ណ្ណលម្អិត / View Purchase Bill"
                                                             >
                                                                 <Eye className="w-3.5 h-3.5 text-amber-400" />
-                                                                <span>មើលប័ណ្ណ</span>
                                                             </Button>
 
                                                             {purchase.status === 'pending' && (
@@ -658,7 +657,7 @@ export default function PurchasesIndex({
                                                                             'received'
                                                                         )
                                                                     }
-                                                                    className="h-7 px-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 text-xs cursor-pointer"
+                                                                    className="h-7 w-7 p-0 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg inline-flex items-center justify-center cursor-pointer"
                                                                     title="Mark Received"
                                                                 >
                                                                     <Check className="w-3.5 h-3.5" />
