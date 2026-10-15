@@ -152,11 +152,11 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
             case 'vip':
                 return 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30';
             case 'gold':
-                return 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30';
+                return 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/30';
             case 'silver':
-                return 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700';
+                return 'bg-slate-500/15 text-slate-800 dark:text-slate-200 border-slate-400/40 dark:border-slate-500/40';
             default:
-                return 'bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-700/60';
+                return 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border-zinc-500/25';
         }
     };
 
@@ -165,27 +165,27 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
             case 'vip':
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 shadow-2xs">
-                        <Sparkles className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                        <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
                         <span>VIP</span>
                     </span>
                 );
             case 'gold':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
-                        <Award className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
+                        <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                         <span>Gold</span>
                     </span>
                 );
             case 'silver':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shadow-2xs">
-                        <Award className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-500/15 text-slate-800 dark:text-slate-200 border border-slate-400/40 dark:border-slate-500/40 shadow-2xs">
+                        <Award className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
                         <span>Silver</span>
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-700/60 shadow-2xs">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/25 shadow-2xs">
                         <span>Standard</span>
                     </span>
                 );
@@ -338,7 +338,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                             { id: 'all', label: 'ទាំងអស់ (All)', count: metrics.total_customers },
                             { id: 'vip', label: 'VIP', count: metrics.vip_customers, icon: Sparkles },
                             { id: 'gold', label: 'Gold', count: metrics.gold_customers, icon: Award },
-                            { id: 'silver', label: 'Silver', count: metrics.silver_customers },
+                            { id: 'silver', label: 'Silver', count: metrics.silver_customers, icon: Award },
                             {
                                 id: 'standard',
                                 label: 'Standard',
@@ -367,7 +367,21 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             : 'bg-zinc-950 border-zinc-700/60 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-800/50'
                                     }`}
                                 >
-                                    {Icon && <Icon className="w-3.5 h-3.5" />}
+                                    {Icon && (
+                                        <Icon
+                                            className={`w-3.5 h-3.5 ${
+                                                isActive
+                                                    ? 'text-current'
+                                                    : t.id === 'vip'
+                                                    ? 'text-purple-500'
+                                                    : t.id === 'gold'
+                                                    ? 'text-amber-500'
+                                                    : t.id === 'silver'
+                                                    ? 'text-slate-500'
+                                                    : 'text-zinc-400'
+                                            }`}
+                                        />
+                                    )}
                                     <span>{t.label}</span>
                                     <span
                                         className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
