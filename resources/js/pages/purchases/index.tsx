@@ -361,7 +361,7 @@ export default function PurchasesIndex({
                                 className="bg-zinc-900 border-zinc-700/80 hover:bg-zinc-800 text-zinc-200 text-xs gap-1.5 cursor-pointer shadow-sm"
                             >
                                 <Users className="w-4 h-4 text-emerald-400" />
-                                <span>+ អ្នកផ្គត់ផ្គង់ (Supplier)</span>
+                                <span>អ្នកផ្គត់ផ្គង់ (Supplier)</span>
                             </Button>
                             <Button
                                 onClick={() => {
@@ -371,7 +371,7 @@ export default function PurchasesIndex({
                                 className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
                             >
                                 <Plus className="w-4 h-4 stroke-[3]" />
-                                <span>+ កត់ត្រាទិញចូល (New Purchase)</span>
+                                <span>កត់ត្រាទិញចូល (New Purchase)</span>
                             </Button>
                         </div>
                     </div>
@@ -709,9 +709,10 @@ export default function PurchasesIndex({
                                 <Button
                                     onClick={() => openSupplierModal()}
                                     variant="outline"
-                                    className="mt-3 text-xs bg-zinc-900 border-zinc-700"
+                                    className="mt-3 text-xs bg-zinc-900 border-zinc-700 gap-1.5"
                                 >
-                                    + បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី
+                                    <Plus className="w-3.5 h-3.5" />
+                                    <span>បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី</span>
                                 </Button>
                             </div>
                         ) : (
@@ -935,7 +936,7 @@ export default function PurchasesIndex({
                                             className="h-7 px-2.5 text-xs bg-zinc-900 border-zinc-700 text-amber-400 hover:bg-zinc-800 gap-1 cursor-pointer"
                                         >
                                             <Plus className="w-3.5 h-3.5" />
-                                            <span>+ បន្ថែមជួរទំនិញ</span>
+                                            <span>បន្ថែមជួរទំនិញ</span>
                                         </Button>
                                     </div>
 

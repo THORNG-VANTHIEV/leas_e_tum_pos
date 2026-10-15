@@ -229,7 +229,7 @@ export default function ExpensesIndex({
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all"
                             >
                                 <PlusCircle className="w-4 h-4" />
-                                <span>+ កត់ត្រាចំណាយថ្មី</span>
+                                <span>កត់ត្រាចំណាយថ្មី</span>
                             </button>
 
                             <a

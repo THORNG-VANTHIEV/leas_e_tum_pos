@@ -805,8 +805,9 @@ export default function DocumentCreate({
                                                             {priceKHR.toLocaleString()} ៛
                                                         </div>
                                                     </div>
-                                                    <span className="text-[10px] px-2 py-0.5 rounded-lg bg-zinc-800 text-amber-300 font-semibold border border-zinc-700/60 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors">
-                                                        + {language === 'km' ? 'ថែម' : 'Add'}
+                                                    <span className="text-[10px] px-2 py-0.5 rounded-lg bg-zinc-800 text-amber-300 font-semibold border border-zinc-700/60 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors inline-flex items-center gap-1">
+                                                        <Plus className="w-2.5 h-2.5 stroke-[2.5]" />
+                                                        <span>{language === 'km' ? 'ថែម' : 'Add'}</span>
                                                     </span>
                                                 </div>
                                             </div>
