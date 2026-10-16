@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
+import { Card } from '@/components/ui/card';
 import {
     WalletCards,
     PlusCircle,
@@ -97,6 +98,11 @@ export default function ExpensesIndex({
     const [selectedCategory, setSelectedCategory] = useState(filters.category || 'all');
     const [dateFrom, setDateFrom] = useState(filters.date_from || '');
     const [dateTo, setDateTo] = useState(filters.date_to || '');
+
+    const formatUsd = (val: number | string | undefined | null) => {
+        const num = typeof val === 'string' ? parseFloat(val) || 0 : val || 0;
+        return `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
 
     // Expense Form
     const [expenseForm, setExpenseForm] = useState({
@@ -218,7 +224,7 @@ export default function ExpensesIndex({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setShowDrawerModal(true)}
-                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition-all"
+                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition-all cursor-pointer"
                             >
                                 <Lock className="w-4 h-4 text-amber-400" />
                                 <span>ចលនាថតបេឡា</span>
@@ -226,7 +232,7 @@ export default function ExpensesIndex({
 
                             <button
                                 onClick={() => setShowExpenseModal(true)}
-                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all"
+                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
                             >
                                 <PlusCircle className="w-4 h-4" />
                                 <span>កត់ត្រាចំណាយថ្មី</span>
@@ -241,74 +247,87 @@ export default function ExpensesIndex({
                             </a>
                         </div>
                     </div>
+                </div>
 
-                    {/* KPI Metrics Summary Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-zinc-400">ចំណាយថ្ងៃនេះ (USD)</span>
-                            <p className="text-lg font-bold text-rose-400 mt-0.5">
-                                ${metrics.today_usd.toFixed(2)}
-                            </p>
-                            <span className="text-[10px] text-zinc-500 font-mono">
-                                ៛{metrics.today_khr.toLocaleString()}
-                            </span>
+                {/* Top Metrics Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Today's Expenses / ចំណាយថ្ងៃនេះ</span>
+                            <DollarSign className="w-4 h-4 text-amber-400" />
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-zinc-400">ចំណាយសរុប (USD)</span>
-                            <p className="text-lg font-bold text-zinc-100 mt-0.5">
-                                ${metrics.total_usd.toFixed(2)}
-                            </p>
-                            <span className="text-[10px] text-zinc-500 font-mono">
-                                ៛{metrics.total_khr.toLocaleString()}
-                            </span>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {formatUsd(metrics.today_usd)}
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-amber-400 flex items-center gap-1">
-                                <ArrowDownRight className="w-3.5 h-3.5 text-amber-400" />
-                                ទម្លាក់ចូលទូដែក (Cash Drop)
-                            </span>
-                            <p className="text-lg font-bold text-amber-300 mt-0.5">
-                                ${metrics.today_drops_usd.toFixed(2)}
-                            </p>
-                            <span className="text-[10px] text-zinc-500 font-mono">ថ្ងៃនេះ</span>
+                        <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
+                            ≈ {(metrics.today_khr || 0).toLocaleString()} ៛
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
-                                ថែមប្រាក់ចូលបេឡា (Cash In)
-                            </span>
-                            <p className="text-lg font-bold text-emerald-300 mt-0.5">
-                                ${metrics.today_cash_in_usd.toFixed(2)}
-                            </p>
-                            <span className="text-[10px] text-zinc-500 font-mono">ថ្ងៃនេះ</span>
-                        </div>
-                    </div>
+                    </Card>
 
-                    {/* Tab Navigation */}
-                    <div className="flex items-center gap-2 mt-3 border-t border-zinc-800/80 pt-2.5">
-                        <button
-                            onClick={() => setActiveTab('expenses')}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all border ${
-                                activeTab === 'expenses'
-                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm'
-                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
-                            }`}
-                        >
-                            <Receipt className="w-3.5 h-3.5" />
-                            <span>បញ្ជីចំណាយប្រតិបត្តិការ ({expenses.total})</span>
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('drawer')}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all border ${
-                                activeTab === 'drawer'
-                                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm'
-                                    : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
-                            }`}
-                        >
-                            <Lock className="w-3.5 h-3.5" />
-                            <span>កំណត់ត្រាថតបេឡា ({drawerLogs.length})</span>
-                        </button>
-                    </div>
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Total Expenses / ចំណាយសរុប</span>
+                            <Calendar className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {formatUsd(metrics.total_usd)}
+                        </div>
+                        <div className="text-xs text-zinc-400 font-mono mt-1">
+                            ≈ {(metrics.total_khr || 0).toLocaleString()} ៛
+                        </div>
+                    </Card>
+
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Cash Drop / ទម្លាក់ចូលទូដែក</span>
+                            <ArrowDownRight className="w-4 h-4 text-teal-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {formatUsd(metrics.today_drops_usd)}
+                        </div>
+                        <div className="text-xs text-teal-400/90 font-khmer mt-1">
+                            ប្រតិបត្តិការថ្ងៃនេះ
+                        </div>
+                    </Card>
+
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Cash In / ថែមប្រាក់ចូលបេឡា</span>
+                            <ArrowUpRight className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {formatUsd(metrics.today_cash_in_usd)}
+                        </div>
+                        <div className="text-xs text-purple-400/90 font-khmer mt-1">
+                            ប្រតិបត្តិការថ្ងៃនេះ
+                        </div>
+                    </Card>
+                </div>
+
+                {/* Tab Navigation */}
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setActiveTab('expenses')}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all border cursor-pointer ${
+                            activeTab === 'expenses'
+                                ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                        }`}
+                    >
+                        <Receipt className="w-3.5 h-3.5" />
+                        <span>បញ្ជីចំណាយប្រតិបត្តិការ ({expenses.total})</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('drawer')}
+                        className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all border cursor-pointer ${
+                            activeTab === 'drawer'
+                                ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-sm font-bold'
+                                : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
+                        }`}
+                    >
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>កំណត់ត្រាថតបេឡា ({drawerLogs.length})</span>
+                    </button>
                 </div>
 
                 {/* Tab 1: Expenses Ledger */}
