@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Head, Link, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
@@ -60,6 +61,11 @@ interface FloorProps {
 }
 
 export default function FloorIndex({ tables, zones, currentZone, metrics }: FloorProps) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const [selectedZone, setSelectedZone] = useState<string>(currentZone);
     const [showAddModal, setShowAddModal] = useState(false);
     const [addForm, setAddForm] = useState({
@@ -381,9 +387,15 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                 </div>
 
                 {/* Add Table Modal */}
-                {showAddModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-                        <div className="w-full max-w-4xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 my-auto">
+                {showAddModal && mounted && createPortal(
+                    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                        <div
+                            className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center"
+                            onClick={(e) => {
+                                if (e.target === e.currentTarget) setShowAddModal(false);
+                            }}
+                        >
+                            <div className="w-full max-w-4xl text-left bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-2xl space-y-6 animate-in zoom-in-95 duration-200 mx-auto my-auto">
                             {/* Modal Header */}
                             <div className="flex items-start justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
                                 <div className="flex items-center gap-3">
@@ -728,8 +740,10 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     </div>
                                 </div>
                             </form>
+                            </div>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
         </AppLayout>
