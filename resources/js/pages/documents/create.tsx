@@ -31,6 +31,7 @@ import {
     Receipt,
     Maximize,
     Minimize,
+    ChevronDown,
 } from 'lucide-react';
 
 interface ProductItem {
@@ -512,99 +513,127 @@ export default function DocumentCreate({
         <AppLayout title="ប្រព័ន្ធ POS - លៀសហាល អ៉ីទុម">
             <div className="flex flex-col h-full w-full min-h-0 bg-slate-950 text-slate-100 overflow-hidden select-none">
                 {/* POS Top Operational Bar */}
-                <div className="bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 sm:px-6 py-2 flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-3">
+                <div className="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 sm:px-5 py-2 flex items-center justify-between shrink-0 gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
                         {/* Order Mode Switcher */}
-                        <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
+                        <div className="flex items-center bg-slate-800/90 p-0.5 rounded-xl border border-slate-700/70 h-9 shrink-0">
                             <button
                                 type="button"
                                 onClick={() => {
                                     setOrderMode('takeaway');
                                     setCurrentDraftId(null);
                                 }}
-                                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3 h-7.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                     orderMode === 'takeaway'
-                                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                                        ? 'bg-amber-500 text-slate-950 shadow-xs font-bold'
                                         : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                 }`}
                             >
                                 <ShoppingBag className="w-3.5 h-3.5" />
-                                {t('pos.order_type_takeaway')}
+                                <span>{t('pos.order_type_takeaway')}</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setOrderMode('dine_in')}
-                                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3 h-7.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                                     orderMode === 'dine_in'
-                                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                                        ? 'bg-amber-500 text-slate-950 shadow-xs font-bold'
                                         : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
                                 }`}
                             >
                                 <Utensils className="w-3.5 h-3.5" />
-                                {t('pos.order_type_dine_in')}
+                                <span>{t('pos.order_type_dine_in')}</span>
                             </button>
                         </div>
 
-                        {/* Dine-in Table Selector */}
+                        {/* Dine-in Unified Table Selector */}
                         {orderMode === 'dine_in' && (
-                            <div className="flex items-center gap-2">
-                                <select
-                                    value={selectedTable}
-                                    onChange={(e) => {
-                                        setSelectedTable(e.target.value);
-                                        // If selecting table that has active draft, associate it
-                                        const found = active_tables.find(
-                                            (t) => t.table_identifier === e.target.value
-                                        );
-                                        if (found) {
-                                            handleSelectActiveTable(found);
-                                        } else {
-                                            setCurrentDraftId(null);
-                                        }
-                                    }}
-                                    className="bg-slate-800 border border-amber-500/40 text-amber-300 rounded-lg px-3 py-1.5 text-xs font-bold focus:ring-1 focus:ring-amber-500"
-                                >
-                                    {tables_list.map((tbl) => (
-                                        <option key={tbl} value={tbl}>
-                                            {tbl} {active_tables.some((t) => t.table_identifier === tbl) ? '🔴 (មានភ្ញៀវ)' : '🟢'}
-                                        </option>
-                                    ))}
-                                </select>
+                            <div className="flex items-center h-9 rounded-xl border border-slate-700/80 bg-slate-800/90 text-xs shadow-xs divide-x divide-slate-700/70 shrink-0">
+                                {/* Quick Table Dropdown */}
+                                <div className="relative flex items-center h-full">
+                                    <div className="pl-2.5 pr-1 text-amber-400">
+                                        <Utensils className="w-3.5 h-3.5" />
+                                    </div>
+                                    <select
+                                        value={selectedTable}
+                                        onChange={(e) => {
+                                            setSelectedTable(e.target.value);
+                                            const found = active_tables.find(
+                                                (t) => t.table_identifier === e.target.value
+                                            );
+                                            if (found) {
+                                                handleSelectActiveTable(found);
+                                            } else {
+                                                setCurrentDraftId(null);
+                                            }
+                                        }}
+                                        className="h-full bg-transparent pl-1 pr-6 text-xs font-bold text-amber-300 border-none outline-none appearance-none cursor-pointer focus:ring-0"
+                                    >
+                                        {tables_list.map((tbl) => {
+                                            const isOccupied = active_tables.some((t) => t.table_identifier === tbl);
+                                            return (
+                                                <option key={tbl} value={tbl} className="bg-slate-900 text-slate-100">
+                                                    {tbl} {isOccupied ? '🔴 (មានភ្ញៀវ)' : '🟢 (ទំនេរ)'}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                    <ChevronDown className="w-3 h-3 text-amber-400/80 absolute right-1.5 pointer-events-none" />
+                                </div>
 
+                                {/* Active Draft Indicator if editing active table */}
                                 {currentDraftId && (
-                                    <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/40 text-xs">
-                                        កែប្រែតុ #{currentDraftId}
-                                    </Badge>
+                                    <div className="h-full flex items-center px-2.5 bg-amber-500/15 text-amber-300 text-[11px] font-mono font-bold whitespace-nowrap">
+                                        កែប្រែ #{currentDraftId}
+                                    </div>
                                 )}
+
+                                {/* Floor Plan Visual Modal Trigger */}
+                                <button
+                                    type="button"
+                                    onClick={() => setIsTablesModalOpen(true)}
+                                    title="មើលប្លង់តុទាំងអស់ (Floor Table Map)"
+                                    className="h-full px-2.5 flex items-center gap-1.5 bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap text-xs font-medium"
+                                >
+                                    <Users className="w-3.5 h-3.5 text-amber-400" />
+                                    <span className="hidden sm:inline">ប្លង់តុ ({tables_list.length})</span>
+                                    {activeTablesCount > 0 && (
+                                        <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white leading-none">
+                                            {activeTablesCount}
+                                        </span>
+                                    )}
+                                </button>
                             </div>
+                        )}
+
+                        {/* Takeaway Mode Table Map Quick Access */}
+                        {orderMode === 'takeaway' && (
+                            <button
+                                type="button"
+                                onClick={() => setIsTablesModalOpen(true)}
+                                className="h-9 px-3 rounded-xl border border-slate-700/80 bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-medium flex items-center gap-2 cursor-pointer shadow-xs transition shrink-0"
+                                title="មើលប្លង់តុ (Floor Table Map)"
+                            >
+                                <Users className="w-3.5 h-3.5 text-amber-400" />
+                                <span>{t('pos.select_table')} ({tables_list.length})</span>
+                                {activeTablesCount > 0 && (
+                                    <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-500 text-white leading-none">
+                                        {activeTablesCount} {language === 'km' ? 'កំពុងញ៉ាំ' : 'occupied'}
+                                    </span>
+                                )}
+                            </button>
                         )}
 
                         {/* Accounting Shift / Period Context */}
                         {period?.name && (
-                            <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-slate-800/60 border border-slate-700/50 text-[11px] text-slate-400 font-mono">
+                            <div className="hidden xl:flex items-center gap-2 px-3 h-9 rounded-xl bg-slate-800/60 border border-slate-700/50 text-[11px] text-slate-400 font-mono shrink-0">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                <span className="truncate max-w-[220px]">{period.name}</span>
+                                <span className="truncate max-w-[200px]">{period.name}</span>
                             </div>
                         )}
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        {/* Occupied Tables Counter */}
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIsTablesModalOpen(true)}
-                            className="relative border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white text-xs gap-2 cursor-pointer"
-                        >
-                            <Users className="w-3.5 h-3.5 text-amber-400" />
-                            {t('pos.select_table')} ({tables_list.length})
-                            {activeTablesCount > 0 && (
-                                <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-red-500 text-white">
-                                    {activeTablesCount} {language === 'km' ? 'កំពុងញ៉ាំ' : 'occupied'}
-                                </span>
-                            )}
-                        </Button>
+                    <div className="flex items-center gap-2.5 shrink-0">
 
                         {/* Search Bar */}
                         <div className="relative w-64">
