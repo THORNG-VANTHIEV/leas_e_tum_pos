@@ -136,6 +136,34 @@ export default function CatalogIndex({
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
 
+    // Lock background scrolling when any modal is open
+    useEffect(() => {
+        const isAnyModalOpen = productModalOpen || unitModalOpen || categoryModalOpen;
+        if (!isAnyModalOpen) return;
+
+        const originalBodyOverflow = document.body.style.overflow;
+        const originalHtmlOverflow = document.documentElement.style.overflow;
+        const originalBodyOverscroll = document.body.style.overscrollBehavior;
+
+        // Prevent layout shift from scrollbar disappearing
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        const originalBodyPaddingRight = document.body.style.paddingRight;
+        if (scrollbarWidth > 0) {
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+        }
+
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overscrollBehavior = 'none';
+
+        return () => {
+            document.body.style.overflow = originalBodyOverflow;
+            document.documentElement.style.overflow = originalHtmlOverflow;
+            document.body.style.overscrollBehavior = originalBodyOverscroll;
+            document.body.style.paddingRight = originalBodyPaddingRight;
+        };
+    }, [productModalOpen, unitModalOpen, categoryModalOpen]);
+
     // Product Form
     const productForm = useForm({
         category_id: categories[0]?.id || 1,
@@ -883,7 +911,10 @@ export default function CatalogIndex({
 
             {/* Product Modal */}
             {productModalOpen && mounted && createPortal(
-                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200">
+                <div
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain"
+                    onWheel={(e) => e.stopPropagation()}
+                >
                     <div className="relative w-full h-full bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col transition-all duration-200">
                         {/* Header */}
                         <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
@@ -1282,7 +1313,10 @@ export default function CatalogIndex({
 
             {/* Unit Modal */}
             {unitModalOpen && mounted && createPortal(
-                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+                <div
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain"
+                    onWheel={(e) => e.stopPropagation()}
+                >
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
@@ -1377,7 +1411,10 @@ export default function CatalogIndex({
 
             {/* Category Modal */}
             {categoryModalOpen && mounted && createPortal(
-                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+                <div
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain"
+                    onWheel={(e) => e.stopPropagation()}
+                >
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
