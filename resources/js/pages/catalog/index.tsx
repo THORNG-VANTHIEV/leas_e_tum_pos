@@ -28,8 +28,7 @@ import {
     ChevronDown,
     Hash,
     RefreshCw,
-    Maximize2,
-    Minimize2,
+    ArrowLeft,
 } from 'lucide-react';
 
 interface Unit {
@@ -130,7 +129,6 @@ export default function CatalogIndex({
 
     const [productModalOpen, setProductModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [isProductModalMaximized, setIsProductModalMaximized] = useState(true);
 
     const [unitModalOpen, setUnitModalOpen] = useState(false);
     const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
@@ -885,8 +883,8 @@ export default function CatalogIndex({
 
             {/* Product Modal */}
             {productModalOpen && mounted && createPortal(
-                <div className={`fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200 ${isProductModalMaximized ? 'p-0' : 'p-3 sm:p-5 items-center justify-center'}`}>
-                    <div className={`relative w-full ${isProductModalMaximized ? 'h-full max-w-none rounded-none' : 'max-w-5xl 2xl:max-w-6xl rounded-3xl max-h-[96vh] my-auto'} bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col transition-all duration-200`}>
+                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200">
+                    <div className="relative w-full h-full bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col transition-all duration-200">
                         {/* Header */}
                         <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
@@ -907,24 +905,15 @@ export default function CatalogIndex({
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsProductModalMaximized(!isProductModalMaximized)}
-                                    className="w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors cursor-pointer"
-                                    title={isProductModalMaximized ? 'បង្រួមកម្រិតធម្មតា (Restore)' : 'ពង្រីកពេញអេក្រង់ (Maximize)'}
-                                >
-                                    {isProductModalMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setProductModalOpen(false)}
-                                    className="w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors cursor-pointer"
-                                    title="បិទ (Esc)"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setProductModalOpen(false)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                title="ត្រឡប់ក្រោយ (Esc)"
+                            >
+                                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
                         </div>
 
                         {/* Form Body - 2 Columns (6 / 6) */}
