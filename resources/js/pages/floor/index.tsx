@@ -428,7 +428,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Modal Header */}
-                            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-zinc-100 dark:border-zinc-800/80 shrink-0">
+                            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
                                 <div className="flex items-center gap-3">
                                     <div className="w-11 h-11 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0 shadow-xs">
                                         <PlusCircle className="w-6 h-6" />
@@ -750,7 +750,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             </div>
 
                             {/* Modal Actions (Footer) */}
-                            <div className="flex items-center justify-between p-5 sm:p-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0">
+                            <div className="flex items-center justify-between p-5 sm:p-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0">
                                     <div className="text-xs text-zinc-400 hidden sm:flex items-center gap-1.5 font-khmer">
                                         <span className="w-2 h-2 rounded-full bg-amber-500" />
                                         តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត
