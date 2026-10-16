@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Head, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
@@ -18,6 +19,13 @@ import {
     ShieldAlert,
     Plus,
     Minus,
+    ArrowLeft,
+    Check,
+    MapPin,
+    CreditCard,
+    Crown,
+    Star,
+    ShieldCheck,
 } from 'lucide-react';
 
 interface Customer {
@@ -58,7 +66,50 @@ interface CustomersProps {
     };
 }
 
+const TIER_CONFIG: Record<
+    string,
+    { nameKh: string; color: string; badge: string; gradient: string; perk: string; discount: string }
+> = {
+    standard: {
+        nameKh: 'Standard (ធម្មតា)',
+        color: 'text-slate-500',
+        badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20',
+        gradient: 'from-slate-800 via-slate-900 to-zinc-950',
+        perk: 'សន្សំពិន្ទុ 1x មូលដ្ឋាន (1$ = 1 pt)',
+        discount: 'អត្រាតម្លៃទូទៅក្នុងហាង',
+    },
+    silver: {
+        nameKh: 'Silver (ប្រាក់)',
+        color: 'text-sky-500',
+        badge: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
+        gradient: 'from-slate-700 via-sky-950 to-zinc-950',
+        perk: 'សន្សំពិន្ទុ 1.2x (1$ = 1.2 pts)',
+        discount: 'បញ្ចុះតម្លៃ 3% លើមុខម្ហូប',
+    },
+    gold: {
+        nameKh: 'Gold (មាស)',
+        color: 'text-amber-500',
+        badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+        gradient: 'from-amber-900/60 via-zinc-900 to-amber-950/70',
+        perk: 'សន្សំពិន្ទុ 1.5x (1$ = 1.5 pts)',
+        discount: 'បញ្ចុះតម្លៃ 5% លើមុខម្ហូប & កាដូថ្ងៃកំណើត',
+    },
+    vip: {
+        nameKh: 'VIP (ពិសេស)',
+        color: 'text-purple-500',
+        badge: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+        gradient: 'from-purple-950 via-zinc-900 to-zinc-950',
+        perk: 'សន្សំពិន្ទុ 2x (1$ = 2 pts)',
+        discount: 'បញ្ចុះតម្លៃ 10% & អាទិភាពកក់តុមុនគេ',
+    },
+};
+
 export default function CustomersIndex({ customers, metrics, filters }: CustomersProps) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [selectedTier, setSelectedTier] = useState(filters.tier || 'all');
 
@@ -66,6 +117,27 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
     const [pointsCustomer, setPointsCustomer] = useState<Customer | null>(null);
+
+    // Scroll lock and Esc key listener
+    useEffect(() => {
+        if (!mounted || typeof document === 'undefined') return;
+        if (showCreateModal || editingCustomer || pointsCustomer) {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') {
+                    setShowCreateModal(false);
+                    setEditingCustomer(null);
+                    setPointsCustomer(null);
+                }
+            };
+            window.addEventListener('keydown', handleKeyDown);
+            return () => {
+                document.body.style.overflow = originalOverflow;
+                window.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    }, [showCreateModal, editingCustomer, pointsCustomer, mounted]);
 
     // Form states
     const [createForm, setCreateForm] = useState({
@@ -514,229 +586,671 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     </div>
                 </div>
 
-                {/* Create Customer Modal */}
-                {showCreateModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-                                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
-                                    <UserPlus className="w-5 h-5 text-amber-500" />
-                                    ចុះឈ្មោះអតិថិជនថ្មី
-                                </h3>
-                                <button
-                                    onClick={() => setShowCreateModal(false)}
-                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                {/* Create Customer Modal (Full-Workspace 2-Column Layout) */}
+                {mounted && showCreateModal && createPortal(
+                    <div
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                        onWheel={(e) => e.stopPropagation()}
+                    >
+                        {/* Top Header Bar */}
+                        <div className="shrink-0 h-16 px-4 sm:px-6 border-b border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md flex items-center justify-between z-10 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0">
+                                    <UserPlus className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                            ចុះឈ្មោះអតិថិជនថ្មី
+                                        </h2>
+                                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
+                                            New Customer CRM
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                        បញ្ចូលព័ត៌មានអតិថិជន និងរៀបចំកម្រិតសមាជិកភាព Loyalty
+                                    </p>
+                                </div>
                             </div>
 
-                            <form onSubmit={handleCreateSubmit} className="space-y-3.5">
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ឈ្មោះអតិថិជន *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={createForm.name}
-                                        onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                                        placeholder="ឧ. សុខ សុវណ្ណ"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
-                                    />
+                            <button
+                                type="button"
+                                onClick={() => setShowCreateModal(false)}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all shadow-xs cursor-pointer"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="font-khmer">ត្រឡប់ក្រោយ</span>
+                                <span className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] uppercase font-mono rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
+                                    Esc
+                                </span>
+                            </button>
+                        </div>
+
+                        {/* Form Workspace Content */}
+                        <form onSubmit={handleCreateSubmit} className="flex-1 min-h-0 flex flex-col">
+                            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+                                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
+                                    {/* Left Column: Personal Info & Tier (7 cols) */}
+                                    <div className="lg:col-span-7 space-y-4">
+                                        {/* Contact & Identity Details */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3.5">
+                                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                <Users className="w-4 h-4 text-amber-500" />
+                                                ព័ត៌មានអត្តសញ្ញាណអតិថិជន
+                                            </h3>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                                <div className="sm:col-span-2">
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        ឈ្មោះអតិថិជន *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        required
+                                                        placeholder="ឧ. សុខ សុវណ្ណ ឬ Mr. John"
+                                                        value={createForm.name}
+                                                        onChange={(e) =>
+                                                            setCreateForm({ ...createForm, name: e.target.value })
+                                                        }
+                                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        លេខទូរស័ព្ទ (Phone Number)
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="012 345 678"
+                                                            value={createForm.phone}
+                                                            onChange={(e) =>
+                                                                setCreateForm({ ...createForm, phone: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        អ៊ីមែល (Email)
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                        <input
+                                                            type="email"
+                                                            placeholder="customer@email.com"
+                                                            value={createForm.email}
+                                                            onChange={(e) =>
+                                                                setCreateForm({ ...createForm, email: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="sm:col-span-2">
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        អាសយដ្ឋាន / ទីតាំងដឹកជញ្ជូន
+                                                    </label>
+                                                    <div className="relative">
+                                                        <MapPin className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                                                        <input
+                                                            type="text"
+                                                            placeholder="ឧ. ផ្ទះលេខ ១២ ផ្លូវ ២០០ រាជធានីភ្នំពេញ..."
+                                                            value={createForm.address}
+                                                            onChange={(e) =>
+                                                                setCreateForm({ ...createForm, address: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Membership Tier Picker */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                    <Award className="w-4 h-4 text-amber-500" />
+                                                    កម្រិតសមាជិកភាព (Membership Tier) *
+                                                </label>
+                                                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
+                                                    {TIER_CONFIG[createForm.tier]?.nameKh}
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                                {Object.entries(TIER_CONFIG).map(([tierKey, config]) => {
+                                                    const isSelected = createForm.tier === tierKey;
+                                                    return (
+                                                        <button
+                                                            key={tierKey}
+                                                            type="button"
+                                                            onClick={() => setCreateForm({ ...createForm, tier: tierKey })}
+                                                            className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between min-h-[82px] cursor-pointer ${
+                                                                isSelected
+                                                                    ? 'bg-amber-500/10 border-amber-500 ring-1 ring-amber-500/30 shadow-xs'
+                                                                    : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 hover:bg-slate-100/70 dark:hover:bg-zinc-800/40'
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center justify-between w-full">
+                                                                <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
+                                                                    {tierKey}
+                                                                </span>
+                                                                {isSelected && (
+                                                                    <Check className="w-3.5 h-3.5 text-amber-500" />
+                                                                )}
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-bold font-khmer text-slate-900 dark:text-zinc-100">
+                                                                    {config.nameKh}
+                                                                </div>
+                                                                <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5 line-clamp-1">
+                                                                    {config.discount}
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Notes & Special Preferences */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-2">
+                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
+                                                ចំណាំពិសេស / ចំណង់ចំណូលចិត្ត (Preferences & Notes)
+                                            </label>
+                                            <textarea
+                                                rows={2}
+                                                placeholder="ឧ. ចូលចិត្តហឹរតិច, តុជិតកញ្ចក់, អាឡែកហ្ស៊ីអាហារសមុទ្រ..."
+                                                value={createForm.notes}
+                                                onChange={(e) =>
+                                                    setCreateForm({ ...createForm, notes: e.target.value })
+                                                }
+                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Right Column: Live Membership Loyalty Card Preview (5 cols) */}
+                                    <div className="lg:col-span-5 space-y-4">
+                                        {/* Loyalty Card Visual Display */}
+                                        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                    <CreditCard className="w-4 h-4 text-amber-500" />
+                                                    ប័ណ្ណសមាជិកភាពឌីជីថល (Live Preview)
+                                                </span>
+                                                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
+                                                    ACTIVE
+                                                </span>
+                                            </div>
+
+                                            {/* Stylized VIP Card */}
+                                            <div
+                                                className={`relative rounded-2xl p-5 text-white overflow-hidden shadow-xl border border-white/10 bg-linear-to-br ${
+                                                    TIER_CONFIG[createForm.tier]?.gradient || 'from-slate-800 to-zinc-950'
+                                                }`}
+                                            >
+                                                {/* Ambient Glow */}
+                                                <div className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
+
+                                                <div className="relative z-10 flex items-start justify-between mb-8">
+                                                    <div>
+                                                        <div className="text-[11px] uppercase tracking-widest text-amber-400 font-mono font-bold">
+                                                            LEASHAL ETUM POS
+                                                        </div>
+                                                        <div className="text-xs text-white/70 font-khmer">
+                                                            ប័ណ្ណសមាជិកភាពអតិថិជន
+                                                        </div>
+                                                    </div>
+                                                    <div className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-white/10 backdrop-blur-md border border-white/20 text-amber-300">
+                                                        {createForm.tier.toUpperCase()} TIER
+                                                    </div>
+                                                </div>
+
+                                                <div className="relative z-10 space-y-2">
+                                                    <div className="text-lg sm:text-xl font-bold tracking-wide truncate">
+                                                        {createForm.name || 'ឈ្មោះអតិថិជន'}
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-xs text-white/70 font-mono">
+                                                        <span>{createForm.phone || '012 XXX XXX'}</span>
+                                                        <span className="text-amber-400 font-bold">0 pts</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Tier Privileges Summary */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                <Sparkles className="w-4 h-4 text-amber-500" />
+                                                អត្ថប្រយោជន៍កម្រិត {TIER_CONFIG[createForm.tier]?.nameKh}
+                                            </h4>
+
+                                            <div className="space-y-2.5 text-xs">
+                                                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-start gap-2.5">
+                                                    <Coins className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">អត្រាសន្សំពិន្ទុ:</span>
+                                                        <p className="text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                                            {TIER_CONFIG[createForm.tier]?.perk}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-start gap-2.5">
+                                                    <Award className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">ការបញ្ចុះតម្លៃពិសេស:</span>
+                                                        <p className="text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                                            {TIER_CONFIG[createForm.tier]?.discount}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        លេខទូរស័ព្ទ
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={createForm.phone}
-                                        onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })}
-                                        placeholder="ឧ. 012 345 678"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        អ៊ីមែល (ប្រសិនបើមាន)
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={createForm.email}
-                                        onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
-                                        placeholder="customer@email.com"
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        កម្រិតសមាជិក (Tier)
-                                    </label>
-                                    <select
-                                        value={createForm.tier}
-                                        onChange={(e) => setCreateForm({ ...createForm, tier: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all cursor-pointer font-khmer"
-                                    >
-                                        <option value="standard">Standard (ធម្មតា)</option>
-                                        <option value="silver">Silver (ប្រាក់)</option>
-                                        <option value="gold">Gold (មាស)</option>
-                                        <option value="vip">VIP (ពិសេស)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ចំណាំពិសេស
-                                    </label>
-                                    <textarea
-                                        rows={2}
-                                        value={createForm.notes}
-                                        onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
-                                        placeholder="ចំណង់ចំណូលចិត្ត ឬព័ត៌មានបន្ថែម..."
-                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
-                                    />
+                            </div>
+
+                            {/* Bottom Fixed Action Footer */}
+                            <div className="shrink-0 p-4 sm:px-6 border-t border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg z-10">
+                                <div className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
+                                    <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    <span>
+                                        ទិន្នន័យអតិថិជននឹងត្រូវភ្ជាប់ជាមួយប្រព័ន្ធ POS ដើម្បីសន្សំពិន្ទុ និងផ្ដល់ការបញ្ចុះតម្លៃស្វ័យប្រវត្តិ
+                                    </span>
                                 </div>
 
-                                <div className="flex justify-end gap-2 pt-3 border-t border-zinc-800">
+                                <div className="flex items-center justify-end gap-2.5">
                                     <button
                                         type="button"
                                         onClick={() => setShowCreateModal(false)}
-                                        className="px-4 py-2 rounded-xl text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-800 transition-colors cursor-pointer font-khmer"
+                                        className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
                                         បោះបង់
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
+                                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                                     >
-                                        រក្សាទុក
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        <span>រក្សាទុកអតិថិជន</span>
                                     </button>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        </form>
+                    </div>,
+                    document.body
                 )}
 
-                {/* Edit Customer Modal */}
-                {editingCustomer && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-                                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
-                                    <Edit2 className="w-5 h-5 text-amber-500" />
-                                    កែប្រែព័ត៌មានអតិថិជន
-                                </h3>
-                                <button
-                                    onClick={() => setEditingCustomer(null)}
-                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                {/* Edit Customer Modal (Full-Workspace 2-Column Layout) */}
+                {mounted && editingCustomer && createPortal(
+                    <div
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                        onWheel={(e) => e.stopPropagation()}
+                    >
+                        {/* Top Header Bar */}
+                        <div className="shrink-0 h-16 px-4 sm:px-6 border-b border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md flex items-center justify-between z-10 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0">
+                                    <Edit2 className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                            កែប្រែព័ត៌មានអតិថិជន
+                                        </h2>
+                                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
+                                            ID #{editingCustomer.id}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                        ធ្វើបច្ចុប្បន្នភាពព័ត៌មានទំនាក់ទំនង និងកម្រិតសមាជិកភាព
+                                    </p>
+                                </div>
                             </div>
 
-                            <form onSubmit={handleEditSubmit} className="space-y-3.5">
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ឈ្មោះអតិថិជន *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={editForm.name}
-                                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
-                                    />
+                            <button
+                                type="button"
+                                onClick={() => setEditingCustomer(null)}
+                                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all shadow-xs cursor-pointer"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span className="font-khmer">ត្រឡប់ក្រោយ</span>
+                                <span className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] uppercase font-mono rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
+                                    Esc
+                                </span>
+                            </button>
+                        </div>
+
+                        {/* Form Workspace Content */}
+                        <form onSubmit={handleEditSubmit} className="flex-1 min-h-0 flex flex-col">
+                            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6">
+                                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
+                                    {/* Left Column: Editable Fields (7 cols) */}
+                                    <div className="lg:col-span-7 space-y-4">
+                                        {/* Contact & Identity Details */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3.5">
+                                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                <Users className="w-4 h-4 text-amber-500" />
+                                                ព័ត៌មានអត្តសញ្ញាណ
+                                            </h3>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                                <div className="sm:col-span-2">
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        ឈ្មោះអតិថិជន *
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        required
+                                                        value={editForm.name}
+                                                        onChange={(e) =>
+                                                            setEditForm({ ...editForm, name: e.target.value })
+                                                        }
+                                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        លេខទូរស័ព្ទ
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                        <input
+                                                            type="text"
+                                                            value={editForm.phone}
+                                                            onChange={(e) =>
+                                                                setEditForm({ ...editForm, phone: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        អ៊ីមែល
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                        <input
+                                                            type="email"
+                                                            value={editForm.email}
+                                                            onChange={(e) =>
+                                                                setEditForm({ ...editForm, email: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="sm:col-span-2">
+                                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                        អាសយដ្ឋាន
+                                                    </label>
+                                                    <div className="relative">
+                                                        <MapPin className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                                                        <input
+                                                            type="text"
+                                                            value={editForm.address}
+                                                            onChange={(e) =>
+                                                                setEditForm({ ...editForm, address: e.target.value })
+                                                            }
+                                                            className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Membership Tier Picker */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                    <Award className="w-4 h-4 text-amber-500" />
+                                                    កម្រិតសមាជិកភាព *
+                                                </label>
+                                                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
+                                                    {TIER_CONFIG[editForm.tier]?.nameKh}
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                                {Object.entries(TIER_CONFIG).map(([tierKey, config]) => {
+                                                    const isSelected = editForm.tier === tierKey;
+                                                    return (
+                                                        <button
+                                                            key={tierKey}
+                                                            type="button"
+                                                            onClick={() => setEditForm({ ...editForm, tier: tierKey })}
+                                                            className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between min-h-[82px] cursor-pointer ${
+                                                                isSelected
+                                                                    ? 'bg-amber-500/10 border-amber-500 ring-1 ring-amber-500/30 shadow-xs'
+                                                                    : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 hover:bg-slate-100/70 dark:hover:bg-zinc-800/40'
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center justify-between w-full">
+                                                                <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-slate-400 dark:text-zinc-500">
+                                                                    {tierKey}
+                                                                </span>
+                                                                {isSelected && (
+                                                                    <Check className="w-3.5 h-3.5 text-amber-500" />
+                                                                )}
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs font-bold font-khmer text-slate-900 dark:text-zinc-100">
+                                                                    {config.nameKh}
+                                                                </div>
+                                                                <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5 line-clamp-1">
+                                                                    {config.discount}
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Notes */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-2">
+                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
+                                                ចំណាំពិសេស / Preferences
+                                            </label>
+                                            <textarea
+                                                rows={2}
+                                                value={editForm.notes}
+                                                onChange={(e) =>
+                                                    setEditForm({ ...editForm, notes: e.target.value })
+                                                }
+                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Right Column: Customer Card & History Stats (5 cols) */}
+                                    <div className="lg:col-span-5 space-y-4">
+                                        {/* Membership Card Preview */}
+                                        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                    <CreditCard className="w-4 h-4 text-amber-500" />
+                                                    ប័ណ្ណសមាជិកភាពឌីជីថល
+                                                </span>
+                                                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+                                                    VERIFIED
+                                                </span>
+                                            </div>
+
+                                            <div
+                                                className={`relative rounded-2xl p-5 text-white overflow-hidden shadow-xl border border-white/10 bg-linear-to-br ${
+                                                    TIER_CONFIG[editForm.tier]?.gradient || 'from-slate-800 to-zinc-950'
+                                                }`}
+                                            >
+                                                <div className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
+
+                                                <div className="relative z-10 flex items-start justify-between mb-8">
+                                                    <div>
+                                                        <div className="text-[11px] uppercase tracking-widest text-amber-400 font-mono font-bold">
+                                                            LEASHAL ETUM POS
+                                                        </div>
+                                                        <div className="text-xs text-white/70 font-khmer">
+                                                            ប័ណ្ណសមាជិកភាពអតិថិជន
+                                                        </div>
+                                                    </div>
+                                                    <div className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-white/10 backdrop-blur-md border border-white/20 text-amber-300">
+                                                        {editForm.tier.toUpperCase()} TIER
+                                                    </div>
+                                                </div>
+
+                                                <div className="relative z-10 space-y-2">
+                                                    <div className="text-lg sm:text-xl font-bold tracking-wide truncate">
+                                                        {editForm.name || editingCustomer.name}
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-xs text-white/70 font-mono">
+                                                        <span>{editForm.phone || editingCustomer.phone || '-'}</span>
+                                                        <span className="text-amber-400 font-bold">
+                                                            {editingCustomer.loyalty_points} pts
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Customer Historical Stats */}
+                                        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
+                                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
+                                                <TrendingUp className="w-4 h-4 text-amber-500" />
+                                                ស្ថិតិការប្រើប្រាស់ & ប្រវត្តិទិញ
+                                            </h4>
+
+                                            <div className="grid grid-cols-3 gap-2 text-center">
+                                                <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                    <div className="text-lg font-bold font-mono text-amber-600 dark:text-amber-400">
+                                                        {editingCustomer.loyalty_points}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                                        ពិន្ទុសន្សំ
+                                                    </div>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                    <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                                                        ${Number(editingCustomer.total_spent_usd || 0).toFixed(2)}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                                        ចំណាយសរុប
+                                                    </div>
+                                                </div>
+                                                <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                    <div className="text-lg font-bold font-mono text-sky-600 dark:text-sky-400">
+                                                        {editingCustomer.visits_count || 0}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                                        ចំនួនលើកមកញ៉ាំ
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        លេខទូរស័ព្ទ
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={editForm.phone}
-                                        onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-mono"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        កម្រិតសមាជិក (Tier)
-                                    </label>
-                                    <select
-                                        value={editForm.tier}
-                                        onChange={(e) => setEditForm({ ...editForm, tier: e.target.value })}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all cursor-pointer font-khmer"
-                                    >
-                                        <option value="standard">Standard (ធម្មតា)</option>
-                                        <option value="silver">Silver (ប្រាក់)</option>
-                                        <option value="gold">Gold (មាស)</option>
-                                        <option value="vip">VIP (ពិសេស)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ចំណាំ
-                                    </label>
-                                    <textarea
-                                        rows={2}
-                                        value={editForm.notes}
-                                        onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
-                                        className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
-                                    />
+                            </div>
+
+                            {/* Bottom Fixed Action Footer */}
+                            <div className="shrink-0 p-4 sm:px-6 border-t border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg z-10">
+                                <div className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
+                                    <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    <span>
+                                        ការកែប្រែកម្រិតសមាជិកភាពនឹងចូលជាធរមានភ្លាមៗសម្រាប់ការបញ្ជាទិញបន្ទាប់
+                                    </span>
                                 </div>
 
-                                <div className="flex justify-end gap-2 pt-3 border-t border-zinc-800">
+                                <div className="flex items-center justify-end gap-2.5">
                                     <button
                                         type="button"
                                         onClick={() => setEditingCustomer(null)}
-                                        className="px-4 py-2 rounded-xl text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-800 transition-colors cursor-pointer font-khmer"
+                                        className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
                                         បោះបង់
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
+                                        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                                     >
-                                        កែប្រែទិន្នន័យ
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        <span>រក្សាទុកការកែប្រែ</span>
                                     </button>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        </form>
+                    </div>,
+                    document.body
                 )}
 
-                {/* Adjust Loyalty Points Modal */}
-                {pointsCustomer && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                        <div className="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
-                                <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 font-khmer">
-                                    <Coins className="w-5 h-5 text-amber-500" />
-                                    កែប្រែពិន្ទុសន្សំ
-                                </h3>
+                {/* Adjust Loyalty Points Modal (Protected with Sidebar constraint) */}
+                {mounted && pointsCustomer && createPortal(
+                    <div
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                        onWheel={(e) => e.stopPropagation()}
+                    >
+                        <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                                        <Coins className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                            កែប្រែពិន្ទុសន្សំ
+                                        </h3>
+                                        <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                            អតិថិជន: <strong className="text-slate-900 dark:text-zinc-100">{pointsCustomer.name}</strong>
+                                        </p>
+                                    </div>
+                                </div>
                                 <button
+                                    type="button"
                                     onClick={() => setPointsCustomer(null)}
-                                    className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
                                 >
-                                    <X className="w-4 h-4" />
+                                    <ArrowLeft className="w-3.5 h-3.5" />
+                                    <span>ត្រឡប់ក្រោយ</span>
                                 </button>
                             </div>
 
-                            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-3 font-khmer">
-                                អតិថិជន: <strong className="text-zinc-900 dark:text-zinc-100">{pointsCustomer.name}</strong> (បច្ចុប្បន្ន:{' '}
-                                <span className="text-amber-600 dark:text-amber-400 font-mono font-bold">{pointsCustomer.loyalty_points} pts</span>)
-                            </p>
+                            <form onSubmit={handlePointsSubmit} className="space-y-4">
+                                {/* Current vs Projected */}
+                                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-center justify-between text-xs">
+                                    <div>
+                                        <span className="text-slate-500 dark:text-zinc-400 font-khmer">ពិន្ទុបច្ចុប្បន្ន:</span>
+                                        <div className="text-base font-bold font-mono text-slate-800 dark:text-zinc-200">
+                                            {pointsCustomer.loyalty_points} pts
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="text-slate-500 dark:text-zinc-400 font-khmer">ពិន្ទុក្រោយកែប្រែ:</span>
+                                        <div className="text-base font-bold font-mono text-amber-600 dark:text-amber-400">
+                                            {Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment)} pts
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <form onSubmit={handlePointsSubmit} className="space-y-3.5">
                                 <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ចំនួនពិន្ទុ (+ បន្ថែម ឬ - ដកចេញ)
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                        ចំនួនពិន្ទុកែសម្រួល (+ បន្ថែម ឬ - ដក)
                                     </label>
                                     <div className="flex items-center gap-2">
                                         <button
                                             type="button"
                                             onClick={() => setPointsAdjustment((prev) => prev - 10)}
-                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
+                                            className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 transition-all cursor-pointer"
                                         >
                                             <Minus className="w-4 h-4" />
                                         </button>
@@ -744,47 +1258,68 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             type="number"
                                             value={pointsAdjustment}
                                             onChange={(e) => setPointsAdjustment(Number(e.target.value))}
-                                            className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-center text-base font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:border-amber-500"
+                                            className="w-full h-10 px-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-center text-lg font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:border-amber-500"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setPointsAdjustment((prev) => prev + 10)}
-                                            className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
+                                            className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 transition-all cursor-pointer"
                                         >
                                             <Plus className="w-4 h-4" />
                                         </button>
                                     </div>
+
+                                    {/* Quick Increment Pills */}
+                                    <div className="flex flex-wrap gap-1.5 mt-2">
+                                        {[-50, -10, 10, 25, 50, 100].map((val) => (
+                                            <button
+                                                key={val}
+                                                type="button"
+                                                onClick={() => setPointsAdjustment(val)}
+                                                className={`px-2 py-1 rounded-lg text-xs font-mono font-bold border transition-all cursor-pointer ${
+                                                    pointsAdjustment === val
+                                                        ? 'bg-amber-500 text-zinc-950 border-amber-500'
+                                                        : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:border-amber-500/50'
+                                                }`}
+                                            >
+                                                {val > 0 ? `+${val}` : val}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
+
                                 <div>
-                                    <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        មូលហេតុ
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                        មូលហេតុនៃការកែប្រែ *
                                     </label>
                                     <input
                                         type="text"
+                                        required
                                         value={pointsReason}
                                         onChange={(e) => setPointsReason(e.target.value)}
-                                        className="w-full h-9 px-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer"
+                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
                                     />
                                 </div>
 
-                                <div className="flex justify-end gap-2 pt-3 border-t border-zinc-800">
+                                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-zinc-800">
                                     <button
                                         type="button"
                                         onClick={() => setPointsCustomer(null)}
-                                        className="px-4 py-2 rounded-xl text-xs text-zinc-600 dark:text-zinc-300 hover:bg-zinc-800 transition-colors cursor-pointer font-khmer"
+                                        className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
                                     >
                                         បោះបង់
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
+                                        className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer"
                                     >
-                                        អនុវត្ត
+                                        អនុវត្តការកែប្រែ
                                     </button>
                                 </div>
                             </form>
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
         </AppLayout>
