@@ -7,10 +7,8 @@ use App\Enums\PeriodStatus;
 use App\Models\AuditLog;
 use App\Models\BusinessSetting;
 use App\Models\Document;
-use App\Models\Expense;
 use App\Models\Location;
 use App\Models\Period;
-use App\Models\Purchase;
 use App\Models\User;
 use App\Support\Money\Money;
 use Illuminate\Http\Request;
@@ -42,14 +40,6 @@ class DashboardController extends Controller
 
         $activePeriod = Period::where('status', PeriodStatus::Active)->first();
 
-        // Financial Overview: Income vs Expense & Net Profit
-        $operatingExpensesUsd = (float) Expense::sum('amount_usd');
-        $stockPurchasesUsd = (float) Purchase::where('status', '!=', 'cancelled')->sum('total_amount');
-        $totalExpensesUsd = $operatingExpensesUsd + $stockPurchasesUsd;
-        $grossRevenueUsd = $grossCents / 100;
-        $netProfitUsd = $grossRevenueUsd - $totalExpensesUsd;
-        $profitMarginPct = $grossRevenueUsd > 0 ? round(($netProfitUsd / $grossRevenueUsd) * 100, 1) : 0;
-
         $stats = [
             'gross_revenue' => Money::fromCents($grossCents),
             'documents_count' => $documentsCount,
@@ -63,14 +53,6 @@ class DashboardController extends Controller
                 'end_date' => $activePeriod->end_date->toDateString(),
             ] : null,
             'is_admin' => $isAdmin,
-            'financial_summary' => [
-                'gross_revenue' => $grossRevenueUsd,
-                'operating_expenses' => $operatingExpensesUsd,
-                'stock_purchases' => $stockPurchasesUsd,
-                'total_expenses' => $totalExpensesUsd,
-                'net_profit' => $netProfitUsd,
-                'profit_margin_pct' => $profitMarginPct,
-            ],
         ];
 
         // System overview metrics for Admin
