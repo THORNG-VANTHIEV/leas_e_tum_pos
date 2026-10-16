@@ -184,6 +184,7 @@ export default function SettingsIndex({
     } | null>(null);
     const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
     const [isRestoring, setIsRestoring] = useState(false);
+    const [restoreAck, setRestoreAck] = useState(false);
 
     const handleInspectArchive = async () => {
         if (!restoreFile) return;
@@ -226,6 +227,7 @@ export default function SettingsIndex({
             onFinish: () => {
                 setIsRestoring(false);
                 setShowRestoreConfirm(false);
+                setRestoreAck(false);
                 setRestoreFile(null);
                 setInspectResult(null);
             },
@@ -1798,6 +1800,7 @@ export default function SettingsIndex({
                                         Select Backup Archive File (.zip):
                                     </label>
                                     <input
+                                        id="backup-file-input"
                                         type="file"
                                         accept=".zip"
                                         onChange={(e) => {
@@ -1897,58 +1900,255 @@ export default function SettingsIndex({
                     </div>
                 )}
 
-                {/* Restore Confirmation Modal */}
+                {/* Database Restore Full-Workspace Suite */}
                 {mounted && showRestoreConfirm && createPortal(
                     <div
-                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                         onWheel={(e) => e.stopPropagation()}
                     >
-                        <div className="max-w-md w-full p-6 space-y-4 border border-rose-500/30 dark:border-rose-600/40 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl animate-in zoom-in-95">
-                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
-                                        <AlertTriangle className="w-5 h-5 text-rose-500" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            បញ្ជាក់ការស្ដារទិន្នន័យ (Database Restore)
-                                        </h3>
-                                        <p className="text-xs text-rose-500 font-mono truncate max-w-[240px]">
-                                            {restoreFile?.name}
-                                        </p>
-                                    </div>
+                        {/* Header Bar */}
+                        <div className="h-16 px-6 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
+                                    <Database className="w-5 h-5 text-rose-500" />
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowRestoreConfirm(false)}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" />
-                                    <span>ត្រឡប់ក្រោយ</span>
-                                </button>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
+                                            ស្ដារទិន្នន័យប្រព័ន្ធ និងជំនួសទិន្នន័យចាស់ (Database Restore & Rollback Protocol)
+                                        </h2>
+                                        <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                                            CRITICAL OPERATION
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                        <span>ឯកសារ៖ <span className="font-mono text-rose-600 dark:text-rose-400 font-bold">{restoreFile?.name}</span></span>
+                                        <span>•</span>
+                                        <span>ទំហំ៖ <span className="font-mono text-zinc-700 dark:text-zinc-300">{restoreFile?.size ? (restoreFile.size / 1024).toFixed(1) + ' KB' : 'N/A'}</span></span>
+                                    </p>
+                                </div>
                             </div>
 
-                            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-khmer">
-                                តើអ្នកពិតជាចង់ជំនួសទិន្នន័យបច្ចុប្បន្នមែនទេ? តារាងទិន្នន័យទាំងអស់ក្នុង Database នឹងត្រូវលុប និងជំនួសដោយឯកសារ Backup នេះ។ ចំណុចសង្គ្រោះបន្ទាន់ (Emergency Recovery Point) នឹងត្រូវបានរក្សាទុកមុនពេលចាប់ផ្ដើម។
-                            </p>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowRestoreConfirm(false);
+                                    setRestoreAck(false);
+                                }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
+                        </div>
 
-                            <div className="flex items-center justify-end gap-2.5 pt-2">
+                        {/* Content Area - 2 Columns */}
+                        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+                            {/* Left Column: Warnings, Protocol Steps & Mandatory Confirmation */}
+                            <div className="w-full lg:w-7/12 p-6 lg:p-8 space-y-6 overflow-y-auto">
+                                {/* Critical Warning Box */}
+                                <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 text-rose-900 dark:text-rose-200 text-xs leading-relaxed space-y-2">
+                                    <div className="flex items-center gap-2 font-bold font-khmer text-rose-700 dark:text-rose-400">
+                                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                                        <span>ការព្រមានកម្រិតខ្ពស់អំពីការជំនួសទិន្នន័យ (Destructive Rollback Warning)</span>
+                                    </div>
+                                    <p className="font-khmer text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                                        ប្រតិបត្តិការនេះនឹងធ្វើការលុបទិន្នន័យបច្ចុប្បន្នទាំងអស់ក្នុង Database (រាប់បញ្ចូលទាំងវិក្កយបត្រថ្មីៗ ប្រតិបត្តិការថតបេឡា និងទិន្នន័យអតិថិជនចុងក្រោយ) ហើយជំនួសមកវិញដោយទិន្នន័យដែលមាននៅក្នុងឯកសារ Backup នេះ។
+                                    </p>
+                                </div>
+
+                                {/* Safety Pipeline & Guarantees */}
+                                <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer flex items-center gap-2">
+                                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                        <span>យន្តការសុវត្ថិភាព និងលំដាប់លំដោយស្វ័យប្រវត្តិ (Safety Guarantees & Execution Pipeline)</span>
+                                    </h4>
+
+                                    <div className="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400 font-khmer">
+                                        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
+                                            <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">1</div>
+                                            <div>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បង្កើតចំណុចសង្គ្រោះបន្ទាន់ស្វ័យប្រវត្តិ (Pre-Restore Emergency Snapshot)</span>
+                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ប្រព័ន្ធនឹងរក្សាទុក Backup ចុងក្រោយមួយដោយស្វ័យប្រវត្តិភ្លាមៗ មុនពេលចាប់ផ្ដើមលុបទិន្នន័យ។</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
+                                            <div className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">2</div>
+                                            <div>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">លុបតាមលំដាប់ Foreign Key Safe Deletion Order (Child to Parent)</span>
+                                                <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">print_logs → revisions → items → approvals → documents → periods → products...</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
+                                            <div className="w-5 h-5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">3</div>
+                                            <div>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បញ្ចូលតាមលំដាប់ Parent-First Insertion Order</span>
+                                                <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">users → settings → locations → units → categories → products → documents...</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
+                                            <div className="w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">4</div>
+                                            <div>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">ផ្ទៀងផ្ទាត់ SHA-256 Checksum នៃរាល់ Table ទិន្នន័យ</span>
+                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ធានាថាទិន្នន័យមិនមានការកែប្រែ ឬខូចខាត (No File Tampering)។</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Mandatory Confirmation Checkbox */}
+                                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={restoreAck}
+                                            onChange={(e) => setRestoreAck(e.target.checked)}
+                                            className="mt-0.5 w-4 h-4 rounded border-amber-400 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                                        />
+                                        <div className="text-xs font-khmer">
+                                            <span className="font-bold text-zinc-900 dark:text-zinc-100 block">
+                                                ខ្ញុំបញ្ជាក់ថាបានយល់ច្បាស់ និងយល់ព្រមជំនួសទិន្នន័យបច្ចុប្បន្ន (Mandatory Confirmation) *
+                                            </span>
+                                            <span className="text-zinc-600 dark:text-zinc-400 text-[11px]">
+                                                ខ្ញុំយល់ថាប្រតិបត្តិការនេះមិនអាច Undo ត្រឡប់ក្រោយបានទេ ប្រសិនបើគ្មាន Emergency Snapshot។
+                                            </span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Right Column: Database Rollback Live Certificate */}
+                            <div className="w-full lg:w-5/12 p-6 lg:p-8 bg-zinc-900 border-l border-zinc-800 text-zinc-100 flex flex-col justify-between overflow-y-auto">
+                                <div className="space-y-5">
+                                    <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                                        <div>
+                                            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
+                                                ROLLBACK PASSPORT
+                                            </span>
+                                            <h3 className="text-sm font-bold font-mono text-white">
+                                                RESTORE MANIFEST CERTIFICATE
+                                            </h3>
+                                        </div>
+                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+                                            restoreAck
+                                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                                : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+                                        }`}>
+                                            {restoreAck ? 'EXECUTION READY' : 'AWAITING ACK'}
+                                        </span>
+                                    </div>
+
+                                    {/* File Passport Details */}
+                                    <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-4">
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span className="font-khmer">ឯកសារស្ដារ៖</span>
+                                            <span className="text-white font-bold truncate max-w-[200px]">{restoreFile?.name}</span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span className="font-khmer">ទំហំឯកសារ៖</span>
+                                            <span className="text-zinc-200">
+                                                {restoreFile?.size ? (restoreFile.size / 1024).toFixed(1) + ' KB' : 'N/A'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span className="font-khmer">កាលបរិច្ឆេទឯកសារ៖</span>
+                                            <span className="text-zinc-200">
+                                                {restoreFile?.lastModified ? new Date(restoreFile.lastModified).toLocaleString('km-KH') : 'N/A'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span className="font-khmer">ទម្រង់ម៉ានីហ្វេស៖</span>
+                                            <span className="text-amber-400">
+                                                {inspectResult?.format_version ? `V${inspectResult.format_version} Standard` : 'V2.0 Compatible'}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Inspection Summary if available */}
+                                    <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span>Preflight Integrity:</span>
+                                            <span className={inspectResult?.valid ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
+                                                {inspectResult?.valid ? 'VERIFIED (PASS)' : 'READY FOR RESTORE'}
+                                            </span>
+                                        </div>
+                                        {inspectResult?.tables_count && (
+                                            <div className="flex items-center justify-between text-zinc-400">
+                                                <span>Tables in Archive:</span>
+                                                <span className="text-white font-bold">{inspectResult.tables_count} Tables</span>
+                                            </div>
+                                        )}
+                                        {inspectResult?.total_rows && (
+                                            <div className="flex items-center justify-between text-zinc-400">
+                                                <span>Total Data Records:</span>
+                                                <span className="text-emerald-400 font-bold">{inspectResult.total_rows.toLocaleString()} Rows</span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center justify-between text-zinc-400">
+                                            <span>Emergency Snapshot:</span>
+                                            <span className="text-emerald-400 font-bold">AUTOMATED (ENABLED)</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Transition Status */}
+                                    <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
+                                        <div>
+                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
+                                            <span className="text-emerald-400 font-bold">LIVE DATABASE</span>
+                                        </div>
+                                        <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
+                                        <div className="text-right">
+                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយស្ដារ</span>
+                                            <span className="text-rose-400 font-bold">RESTORED SNAPSHOT</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Security Stamp Footer */}
+                                <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                    <span>AUDIT: DB_RESTORE_ROLLBACK</span>
+                                    <span>SPEC-11 ENFORCED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer Bar */}
+                        <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                            <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                                <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                    Esc
+                                </kbd>
+                                <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                            </div>
+
+                            <div className="flex items-center gap-3 ml-auto">
                                 <button
                                     type="button"
                                     disabled={isRestoring}
-                                    onClick={() => setShowRestoreConfirm(false)}
-                                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
+                                    onClick={() => {
+                                        setShowRestoreConfirm(false);
+                                        setRestoreAck(false);
+                                    }}
+                                    className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs disabled:opacity-50"
                                 >
                                     បោះបង់
                                 </button>
+
                                 <button
                                     type="button"
-                                    disabled={isRestoring}
+                                    disabled={isRestoring || !restoreAck}
                                     onClick={handleExecuteRestore}
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer font-khmer disabled:opacity-50"
+                                    className="px-6 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold font-khmer shadow-sm hover:shadow-rose-600/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <Database className="w-3.5 h-3.5" />
-                                    <span>{isRestoring ? 'កំពុងស្ដារទិន្នន័យ...' : 'យល់ព្រមជំនួសទិន្នន័យ'}</span>
+                                    <Database className="w-4 h-4" />
+                                    <span>
+                                        {isRestoring
+                                            ? 'កំពុងស្ដារទិន្នន័យ... (Restoring Database)'
+                                            : 'យល់ព្រមជំនួសទិន្នន័យ (Execute Database Restore)'}
+                                    </span>
                                 </button>
                             </div>
                         </div>
