@@ -105,10 +105,6 @@ body,
     height: 0 !important;
 }
 
-html {
-    overflow-y: auto;
-}
-
 html.pos-terminal-fixed,
 body.pos-terminal-fixed,
 html.modal-open,

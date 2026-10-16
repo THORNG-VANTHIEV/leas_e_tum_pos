@@ -1212,7 +1212,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 <nav
                     ref={sidebarNavRef}
                     onScroll={handleSidebarScroll}
-                    className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto'} space-y-3`}
+                    className={`flex-1 ${collapsed ? 'px-2 py-3 overflow-visible' : 'px-3 py-4 overflow-y-auto overscroll-contain'} space-y-3`}
                 >
                     {!collapsed && (
                         <div className="px-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold flex items-center justify-between">
