@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +28,8 @@ import {
     ChevronDown,
     Hash,
     RefreshCw,
+    Maximize2,
+    Minimize2,
 } from 'lucide-react';
 
 interface Unit {
@@ -120,8 +123,14 @@ export default function CatalogIndex({
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
     // Modals state
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const [productModalOpen, setProductModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [isProductModalMaximized, setIsProductModalMaximized] = useState(false);
 
     const [unitModalOpen, setUnitModalOpen] = useState(false);
     const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
@@ -875,9 +884,9 @@ export default function CatalogIndex({
             </div>
 
             {/* Product Modal */}
-            {productModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
-                    <div className="relative w-full max-w-5xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden my-auto flex flex-col">
+            {productModalOpen && mounted && createPortal(
+                <div className={`fixed inset-0 z-[100] flex items-center justify-center ${isProductModalMaximized ? 'p-0' : 'p-2 sm:p-4'} bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200`}>
+                    <div className={`relative w-full ${isProductModalMaximized ? 'h-full max-w-none rounded-none' : 'max-w-[96vw] 2xl:max-w-[1440px] rounded-3xl max-h-[96vh]'} bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden my-auto flex flex-col transition-all duration-200`}>
                         {/* Header */}
                         <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
@@ -898,21 +907,31 @@ export default function CatalogIndex({
                                     </p>
                                 </div>
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setProductModalOpen(false)}
-                                className="w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors cursor-pointer"
-                                title="បិទ (Esc)"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsProductModalMaximized(!isProductModalMaximized)}
+                                    className="w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors cursor-pointer"
+                                    title={isProductModalMaximized ? 'បង្រួមកម្រិតធម្មតា (Restore)' : 'ពង្រីកពេញអេក្រង់ (Maximize)'}
+                                >
+                                    {isProductModalMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setProductModalOpen(false)}
+                                    className="w-9 h-9 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-colors cursor-pointer"
+                                    title="បិទ (Esc)"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Form Body - 2 Columns */}
-                        <form onSubmit={handleProductSubmit} className="flex flex-col">
-                            <div className="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
-                                {/* LEFT COLUMN: Basic Info, Price/SKU, Settings (7 cols) */}
-                                <div className="lg:col-span-7 space-y-3.5">
+                        {/* Form Body - 2 Columns (6 / 6) */}
+                        <form onSubmit={handleProductSubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                            <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                                {/* LEFT COLUMN: Basic Info, Price/SKU, Settings (6 cols) */}
+                                <div className="lg:col-span-6 space-y-3.5">
                                     {/* Section 1: General Info */}
                                     <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
@@ -1135,8 +1154,8 @@ export default function CatalogIndex({
                                     </div>
                                 </div>
 
-                                {/* RIGHT COLUMN: Product Media & Presets (5 cols) */}
-                                <div className="lg:col-span-5 flex flex-col p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+                                {/* RIGHT COLUMN: Product Media & Presets (6 cols) */}
+                                <div className="lg:col-span-6 flex flex-col p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <ImageIcon className="w-3.5 h-3.5 text-amber-500" />
@@ -1195,7 +1214,7 @@ export default function CatalogIndex({
                                         <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 font-khmer block mb-2">
                                             ✨ រូបភាពគំរូក្នុងប្រព័ន្ធ (ចុចដើម្បីជ្រើសយកភ្លាមៗ):
                                         </span>
-                                        <div className="grid grid-cols-2 gap-1.5 overflow-y-auto max-h-[175px] pr-1">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-1.5 overflow-y-auto max-h-[220px] pr-1">
                                             {SYSTEM_IMAGE_PRESETS.map((preset) => {
                                                 const isSelected = productForm.data.image_url === preset.path;
                                                 return (
@@ -1268,12 +1287,13 @@ export default function CatalogIndex({
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Unit Modal */}
-            {unitModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+            {unitModalOpen && mounted && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
@@ -1362,12 +1382,13 @@ export default function CatalogIndex({
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             {/* Category Modal */}
-            {categoryModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+            {categoryModalOpen && mounted && createPortal(
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
@@ -1478,7 +1499,8 @@ export default function CatalogIndex({
                             </div>
                         </form>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </AppLayout>
     );
