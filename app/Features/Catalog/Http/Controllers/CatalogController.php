@@ -8,8 +8,11 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Unit;
 use App\Support\Audit\AuditService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -53,6 +56,30 @@ class CatalogController extends Controller
     }
 
     /**
+     * Upload product image from local machine.
+     */
+    public function uploadImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
+        ]);
+
+        $file = $request->file('image');
+        $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('products', $fileName, 'public');
+
+        $url = '/storage/' . $path;
+
+        return response()->json([
+            'success' => true,
+            'url' => $url,
+            'path' => $path,
+            'filename' => $file->getClientOriginalName(),
+            'size' => $file->getSize(),
+        ]);
+    }
+
+    /**
      * Store a newly created product.
      */
     public function storeProduct(Request $request): RedirectResponse
@@ -65,15 +92,24 @@ class CatalogController extends Controller
             'unit_id' => ['required', 'exists:units,id'],
             'unit_price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:500'],
+            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
             'is_primary_package' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
             'is_active' => ['boolean'],
         ]);
 
+        $imageUrl = $validated['image_url'] ?? null;
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('products', $fileName, 'public');
+            $imageUrl = '/storage/' . $path;
+        }
+
         $product = Product::create([
             ...$validated,
             'sku' => $validated['sku'] ?: null,
-            'image_url' => $validated['image_url'] ?? null,
+            'image_url' => $imageUrl,
             'is_primary_package' => $request->boolean('is_primary_package'),
             'is_active' => $request->boolean('is_active', true),
             'sort_order' => $validated['sort_order'] ?? 0,
@@ -107,6 +143,7 @@ class CatalogController extends Controller
             'unit_id' => ['required', 'exists:units,id'],
             'unit_price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:500'],
+            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
             'is_primary_package' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
             'is_active' => ['boolean'],
@@ -114,10 +151,18 @@ class CatalogController extends Controller
 
         $oldData = $product->toArray();
 
+        $imageUrl = $validated['image_url'] ?? null;
+        if ($request->hasFile('image_file')) {
+            $file = $request->file('image_file');
+            $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('products', $fileName, 'public');
+            $imageUrl = '/storage/' . $path;
+        }
+
         $product->update([
             ...$validated,
             'sku' => $validated['sku'] ?: null,
-            'image_url' => $validated['image_url'] ?? null,
+            'image_url' => $imageUrl,
             'is_primary_package' => $request->boolean('is_primary_package'),
             'is_active' => $request->boolean('is_active'),
             'sort_order' => $validated['sort_order'] ?? 0,

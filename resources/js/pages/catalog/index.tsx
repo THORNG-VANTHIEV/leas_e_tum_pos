@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
@@ -29,6 +29,12 @@ import {
     Hash,
     RefreshCw,
     ArrowLeft,
+    UploadCloud,
+    CheckCircle2,
+    AlertCircle,
+    Trash2,
+    Link2,
+    Loader2,
 } from 'lucide-react';
 
 interface Unit {
@@ -87,10 +93,15 @@ const SYSTEM_IMAGE_PRESETS = [
     { label: 'ក្តាមស្ងោរ', path: '/images/products/kdam-sngor.png' },
     { label: 'ក្តាមស្រែអប់', path: '/images/products/kdam-sre-op-ampil-mtes.png' },
     { label: 'ខ្យៅស្ងោរ', path: '/images/products/khyav-sngor.png' },
+    { label: 'ខ្យៅអប់គ្រឿង', path: '/images/products/khyav-op-kroeung.png' },
+    { label: 'បង្កងអប់អំពិល', path: '/images/products/bangkang-op-ampil-mtes.png' },
     { label: 'ពងក្រួចកូន', path: '/images/products/pong-krouch-koun.png' },
     { label: 'ស្លាបមាន់បំពង', path: '/images/products/sleab-moan-bampong.png' },
     { label: 'ស្លាបមាន់កណ្តាល', path: '/images/products/sleab-moan-kandal.png' },
     { label: 'សាច់គោច្រនួច', path: '/images/products/sach-ko-chranoch.png' },
+    { label: 'ប្រហិតសាច់គោអប់', path: '/images/products/prohet-sach-ko-op.png' },
+    { label: 'ប្រហិតសាច់គោ', path: '/images/products/prohet-sach-ko.png' },
+    { label: 'ប្រហិតបន្លែ', path: '/images/products/prohet-banle.png' },
     { label: 'កូកាកូឡា', path: '/images/products/coca-cola.jpg' },
     { label: 'ទឹកបរិសុទ្ធ', path: '/images/products/mineral-water.jpg' },
 ];
@@ -165,7 +176,18 @@ export default function CatalogIndex({
     }, [productModalOpen, unitModalOpen, categoryModalOpen]);
 
     // Product Form
-    const productForm = useForm({
+    const productForm = useForm<{
+        category_id: number;
+        unit_id: number;
+        sku: string;
+        name_primary: string;
+        name_secondary: string;
+        unit_price: string;
+        image_url: string;
+        is_primary_package: boolean;
+        sort_order: number;
+        is_active: boolean;
+    }>({
         category_id: categories[0]?.id || 1,
         unit_id: units[0]?.id || 1,
         sku: '',
@@ -177,6 +199,64 @@ export default function CatalogIndex({
         sort_order: 0,
         is_active: true,
     });
+
+    // Local Machine Image Upload States
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
+    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+    const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+    const handleFileSelect = async (file: File) => {
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            setUploadError('សូមជ្រើសរើសឯកសារជារូបភាព (PNG, JPG, WEBP, GIF)');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setUploadError('ទំហំរូបភាពធំបំផុតគឺ 5MB');
+            return;
+        }
+
+        setUploadError(null);
+        setIsUploadingImage(true);
+        setUploadedFileName(file.name);
+
+        // Instant snappy preview
+        const localPreviewUrl = URL.createObjectURL(file);
+        productForm.setData('image_url', localPreviewUrl);
+
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const token = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
+            const res = await fetch('/catalog/upload-image', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token || '',
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (res.ok && data.url) {
+                productForm.setData('image_url', data.url);
+            } else {
+                setUploadError(data.message || data.error || 'ការ Upload រូបភាពមិនបានជោគជ័យ');
+            }
+        } catch (err: any) {
+            setUploadError(err.message || 'មានបញ្ហាបណ្តាញពេល Upload រូបភាព');
+        } finally {
+            setIsUploadingImage(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
 
     // Unit Form
     const unitForm = useForm({
@@ -200,6 +280,8 @@ export default function CatalogIndex({
     // Handle Product Modal Open
     const openAddProductModal = () => {
         setEditingProduct(null);
+        setUploadedFileName(null);
+        setUploadError(null);
         productForm.reset();
         productForm.setData({
             category_id: categories[0]?.id || 1,
@@ -218,6 +300,8 @@ export default function CatalogIndex({
 
     const openEditProductModal = (product: Product) => {
         setEditingProduct(product);
+        setUploadedFileName(null);
+        setUploadError(null);
         productForm.setData({
             category_id: product.category_id,
             unit_id: product.unit_id,
@@ -1175,92 +1259,205 @@ export default function CatalogIndex({
                                 </div>
 
                                 {/* RIGHT COLUMN: Product Media & Presets (6 cols) */}
-                                <div className="lg:col-span-6 flex flex-col p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
-                                            <ImageIcon className="w-3.5 h-3.5 text-amber-500" />
-                                            <span>រូបភាពមុខម្ហូប / Product Media</span>
+                                <div className="lg:col-span-6 flex flex-col p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3.5">
+                                    {/* Section Header */}
+                                    <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70 dark:border-zinc-800/70">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                                                <ImageIcon className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer block">
+                                                    រូបភាពមុខម្ហូប / Product Media
+                                                </span>
+                                                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">
+                                                    Upload ពីម៉ាស៊ីនផ្ទាល់ ឬ ជ្រើសរើសរូបគំរូក្នុងប្រព័ន្ធ
+                                                </span>
+                                            </div>
                                         </div>
+
                                         {productForm.data.image_url && (
                                             <button
                                                 type="button"
-                                                onClick={() => productForm.setData('image_url', '')}
-                                                className="text-[11px] text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1 cursor-pointer"
+                                                onClick={() => {
+                                                    productForm.setData('image_url', '');
+                                                    setUploadedFileName(null);
+                                                    setUploadError(null);
+                                                }}
+                                                className="text-xs text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                                title="ដករូបភាពចេញ"
                                             >
-                                                <X className="w-3 h-3" /> លុបរូបភាព
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <span>ដករូបភាព</span>
                                             </button>
                                         )}
                                     </div>
 
-                                    {/* Top: Image Preview & URL input */}
-                                    <div className="flex items-center gap-3">
-                                        <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center overflow-hidden shrink-0 shadow-inner group">
+                                    {/* Top: Live Preview & Local Upload Dropzone */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-stretch">
+                                        {/* Left: Preview Card (4 cols) */}
+                                        <div className="sm:col-span-4 flex flex-col items-center justify-center relative min-h-[125px] rounded-2xl bg-white dark:bg-zinc-900 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-2 overflow-hidden shadow-inner group">
                                             {productForm.data.image_url ? (
-                                                <img
-                                                    src={productForm.data.image_url}
-                                                    alt="Preview"
-                                                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                                                    onError={(e) => {
-                                                        (e.target as HTMLElement).style.display = 'none';
-                                                    }}
-                                                />
+                                                <>
+                                                    <img
+                                                        src={productForm.data.image_url}
+                                                        alt="Product Preview"
+                                                        className="w-full h-full max-h-[115px] object-contain rounded-xl transition-transform group-hover:scale-105"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLElement).style.display = 'none';
+                                                        }}
+                                                    />
+                                                    <div className="absolute top-1.5 right-1.5 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
+                                                        <Check className="w-3 h-3 stroke-[3]" />
+                                                    </div>
+                                                </>
                                             ) : (
-                                                <div className="flex flex-col items-center justify-center text-zinc-400 text-center p-1">
-                                                    <Utensils className="w-6 h-6 stroke-[1.5]" />
-                                                    <span className="text-[9px] font-khmer mt-0.5">គ្មានរូបភាព</span>
+                                                <div className="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 text-center p-2">
+                                                    <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-1 text-zinc-400">
+                                                        <Utensils className="w-5 h-5 stroke-[1.5]" />
+                                                    </div>
+                                                    <span className="text-[11px] font-khmer font-medium">គ្មានរូបភាព</span>
+                                                    <span className="text-[9px] text-zinc-400 font-mono">No image set</span>
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="flex-1 space-y-1">
-                                            <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 font-khmer">
-                                                តំណភ្ជាប់រូបភាព (URL / Path)
-                                            </label>
+                                        {/* Right: Drag & Drop / Click to Upload Box (8 cols) */}
+                                        <div
+                                            onDragOver={(e) => {
+                                                e.preventDefault();
+                                                setIsDraggingOver(true);
+                                            }}
+                                            onDragLeave={() => setIsDraggingOver(false)}
+                                            onDrop={(e) => {
+                                                e.preventDefault();
+                                                setIsDraggingOver(false);
+                                                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                                    handleFileSelect(e.dataTransfer.files[0]);
+                                                }
+                                            }}
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className={`sm:col-span-8 flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center relative ${
+                                                isDraggingOver
+                                                    ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/30'
+                                                    : 'border-zinc-300 dark:border-zinc-700 hover:border-amber-500/70 hover:bg-zinc-100/60 dark:hover:bg-zinc-800/40 bg-white/70 dark:bg-zinc-900/60'
+                                            }`}
+                                        >
                                             <input
-                                                type="text"
-                                                value={productForm.data.image_url}
-                                                onChange={(e) => productForm.setData('image_url', e.target.value)}
-                                                placeholder="https://... ឬ /images/..."
-                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/png,image/jpeg,image/webp,image/gif"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    if (e.target.files && e.target.files[0]) {
+                                                        handleFileSelect(e.target.files[0]);
+                                                    }
+                                                }}
                                             />
-                                            <span className="text-[10px] text-zinc-400 font-khmer block">
-                                                បញ្ចូល URL ឬចុចជ្រើសរើសរូបគំរូខាងក្រោម
-                                            </span>
+
+                                            {isUploadingImage ? (
+                                                <div className="flex flex-col items-center gap-1.5 py-1.5">
+                                                    <Loader2 className="w-7 h-7 text-amber-500 animate-spin" />
+                                                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
+                                                        កំពុងផ្ទុកឡើងរូបភាព...
+                                                    </span>
+                                                    <span className="text-[10px] text-zinc-400 font-mono">Uploading image...</span>
+                                                </div>
+                                            ) : uploadedFileName ? (
+                                                <div className="flex flex-col items-center gap-1 py-1">
+                                                    <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
+                                                        <CheckCircle2 className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[200px]">
+                                                        {uploadedFileName}
+                                                    </span>
+                                                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-khmer">
+                                                        បានផ្ទុកឡើងជោគជ័យ (ចុចដើម្បីប្តូររូបថ្មី)
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-1 py-0.5">
+                                                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                                                        <UploadCloud className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer block">
+                                                            ចុច Upload ពីកុំព្យូទ័រ ឬ អូសទម្លាក់ទីនេះ
+                                                        </span>
+                                                        <span className="text-[10px] text-zinc-400 font-mono block mt-0.5">
+                                                            PNG, JPG, WEBP (រហូតដល់ 5MB)
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {uploadError && (
+                                                <div className="mt-1.5 text-[10px] text-rose-500 font-khmer flex items-center gap-1 bg-rose-500/10 px-2 py-0.5 rounded-md">
+                                                    <AlertCircle className="w-3 h-3 shrink-0" />
+                                                    <span>{uploadError}</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    {/* Bottom: Quick Preset Chips Grid */}
+                                    {/* Preset Dishe Gallery */}
                                     <div className="pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70 flex-1 flex flex-col min-h-0">
-                                        <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 font-khmer block mb-2">
-                                            ✨ រូបភាពគំរូក្នុងប្រព័ន្ធ (ចុចដើម្បីជ្រើសយកភ្លាមៗ):
-                                        </span>
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-1.5 overflow-y-auto max-h-[220px] pr-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 font-khmer flex items-center gap-1.5">
+                                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                                                <span>រូបភាពគំរូក្នុងប្រព័ន្ធ (ចុច ១ ដងដើម្បីយកភ្លាមៗ):</span>
+                                            </span>
+                                            <span className="text-[10px] text-zinc-400 font-mono">
+                                                {SYSTEM_IMAGE_PRESETS.length} presets
+                                            </span>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-1.5 overflow-y-auto max-h-[160px] pr-1">
                                             {SYSTEM_IMAGE_PRESETS.map((preset) => {
                                                 const isSelected = productForm.data.image_url === preset.path;
                                                 return (
                                                     <button
                                                         key={preset.path}
                                                         type="button"
-                                                        onClick={() => productForm.setData('image_url', preset.path)}
-                                                        className={`flex items-center gap-1.5 px-2 py-1.5 rounded-xl text-[11px] font-khmer border transition-all cursor-pointer text-left ${
+                                                        onClick={() => {
+                                                            productForm.setData('image_url', preset.path);
+                                                            setUploadedFileName(null);
+                                                            setUploadError(null);
+                                                        }}
+                                                        className={`flex items-center gap-2 p-1.5 rounded-xl text-[11px] font-khmer border transition-all cursor-pointer text-left ${
                                                             isSelected
-                                                                ? 'bg-amber-500 text-zinc-950 border-amber-600 font-bold shadow-xs'
-                                                                : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-zinc-200 dark:border-zinc-700'
+                                                                ? 'bg-amber-500 text-zinc-950 border-amber-600 font-bold shadow-xs ring-1 ring-amber-500/50'
+                                                                : 'bg-white hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300'
                                                         }`}
                                                     >
-                                                        <div className="w-5 h-5 rounded-md overflow-hidden shrink-0 border border-black/10">
+                                                        <div className="w-6 h-6 rounded-lg overflow-hidden shrink-0 border border-black/10 bg-white">
                                                             <img
                                                                 src={preset.path}
                                                                 alt=""
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         </div>
-                                                        <span className={`truncate ${isSelected ? 'text-zinc-950 font-bold' : 'text-zinc-800 dark:text-zinc-200 font-medium'}`}>
-                                                            {preset.label}
-                                                        </span>
+                                                        <span className="truncate flex-1">{preset.label}</span>
                                                     </button>
                                                 );
                                             })}
+                                        </div>
+                                    </div>
+
+                                    {/* Direct URL Input */}
+                                    <div className="pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70">
+                                        <div className="flex items-center gap-2">
+                                            <Link2 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                                            <input
+                                                type="text"
+                                                value={productForm.data.image_url}
+                                                onChange={(e) => {
+                                                    productForm.setData('image_url', e.target.value);
+                                                    setUploadedFileName(null);
+                                                }}
+                                                placeholder="ឬបញ្ចូល URL រូបភាពដោយផ្ទាល់ (e.g. https://...)"
+                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 font-mono"
+                                            />
                                         </div>
                                     </div>
                                 </div>

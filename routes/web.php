@@ -99,6 +99,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     // Items, Units & Categories Catalog Management
     Route::prefix('catalog')->name('catalog.')->group(function () {
         Route::get('/', [CatalogController::class, 'index'])->name('index');
+        Route::post('/upload-image', [CatalogController::class, 'uploadImage'])->name('upload-image');
         Route::post('/products', [CatalogController::class, 'storeProduct'])->name('products.store');
         Route::patch('/products/{product}', [CatalogController::class, 'updateProduct'])->name('products.update');
         Route::post('/products/{product}/toggle', [CatalogController::class, 'toggleProduct'])->name('products.toggle');
