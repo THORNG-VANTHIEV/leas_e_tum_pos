@@ -250,87 +250,102 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3 mt-4">
                         <div
                             onClick={() => handleFilterChange('active')}
-                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative overflow-hidden ${
                                 filter === 'active'
-                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
-                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
+                                    ? 'bg-zinc-900 border-amber-500/80 ring-2 ring-amber-500/30 shadow-md'
+                                    : 'bg-zinc-900/70 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
-                                <ChefHat className="w-3.5 h-3.5 text-amber-400" /> កំពុងដំណើរការ (Active)
-                            </span>
-                            <p className="text-lg font-bold text-amber-300 mt-1">
-                                {totalActiveOrders}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">សំបុត្រ</span>
-                            </p>
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Active / កំពុងដំណើរការ</span>
+                                <ChefHat className="w-4 h-4 text-amber-400" />
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {totalActiveOrders}
+                            </div>
+                            <div className="text-xs text-amber-400/90 font-khmer mt-1">
+                                សំបុត្រសរុបក្នុងផ្ទះបាយ
+                            </div>
                         </div>
 
                         <div
                             onClick={() => handleFilterChange('pending')}
-                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative overflow-hidden ${
                                 filter === 'pending'
-                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
-                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
+                                    ? 'bg-zinc-900 border-amber-500/80 ring-2 ring-amber-500/30 shadow-md'
+                                    : 'bg-zinc-900/70 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
-                                <Clock className="w-3.5 h-3.5 text-amber-400" /> រង់ចាំចម្អិន (Pending)
-                            </span>
-                            <p className="text-lg font-bold text-amber-300 mt-1">
-                                {counts.pending}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">សំបុត្រ</span>
-                            </p>
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Pending / រង់ចាំចម្អិន</span>
+                                <Clock className="w-4 h-4 text-amber-400" />
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {counts.pending}
+                            </div>
+                            <div className="text-xs text-zinc-400 font-khmer mt-1">
+                                សំបុត្រទើបកម្ម៉ង់ថ្មី
+                            </div>
                         </div>
 
                         <div
                             onClick={() => handleFilterChange('cooking')}
-                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative overflow-hidden ${
                                 filter === 'cooking'
-                                    ? 'bg-zinc-900 border-amber-500/60 ring-1 ring-amber-500/20 shadow-xs'
-                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
+                                    ? 'bg-zinc-900 border-amber-500/80 ring-2 ring-amber-500/30 shadow-md'
+                                    : 'bg-zinc-900/70 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-amber-400 flex items-center gap-1.5 font-medium">
-                                <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400" /> កំពុងចម្អិន (Cooking)
-                            </span>
-                            <p className="text-lg font-bold text-amber-300 mt-1">
-                                {counts.cooking}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">លើចង្ក្រាន</span>
-                            </p>
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Cooking / កំពុងចម្អិន</span>
+                                <UtensilsCrossed className="w-4 h-4 text-amber-400" />
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {counts.cooking}
+                            </div>
+                            <div className="text-xs text-amber-400/90 font-khmer mt-1">
+                                កំពុងធ្វើលើចង្ក្រាន
+                            </div>
                         </div>
 
                         <div
                             onClick={() => handleFilterChange('ready')}
-                            className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer relative overflow-hidden ${
                                 filter === 'ready'
-                                    ? 'bg-zinc-900 border-emerald-500/60 ring-1 ring-emerald-500/20 shadow-xs'
-                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
+                                    ? 'bg-zinc-900 border-emerald-500/80 ring-2 ring-emerald-500/30 shadow-md'
+                                    : 'bg-zinc-900/70 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-emerald-400 flex items-center gap-1.5 font-medium">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> ឆ្អិនរួចរាល់ (Ready)
-                            </span>
-                            <p className="text-lg font-bold text-emerald-300 mt-1">
-                                {counts.ready}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">រង់ចាំលើក</span>
-                            </p>
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Ready / ឆ្អិនរួចរាល់</span>
+                                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {counts.ready}
+                            </div>
+                            <div className="text-xs text-emerald-400/90 font-khmer mt-1">
+                                រង់ចាំបុគ្គលិកលើកជូន
+                            </div>
                         </div>
 
                         <div
                             onClick={() => handleFilterChange('served')}
-                            className={`p-3 rounded-xl border transition-all cursor-pointer col-span-2 sm:col-span-1 ${
+                            className={`p-3.5 rounded-2xl border transition-all cursor-pointer col-span-2 sm:col-span-1 relative overflow-hidden ${
                                 filter === 'served'
-                                    ? 'bg-zinc-900 border-zinc-700 ring-1 ring-zinc-700/50 shadow-xs'
-                                    : 'bg-zinc-900/80 border-zinc-800/80 hover:border-zinc-700'
+                                    ? 'bg-zinc-900 border-zinc-700 ring-2 ring-zinc-700/50 shadow-md'
+                                    : 'bg-zinc-900/70 border-zinc-800/80 hover:border-zinc-700'
                             }`}
                         >
-                            <span className="text-[11px] text-zinc-400 flex items-center gap-1.5 font-medium">
-                                <Coffee className="w-3.5 h-3.5 text-zinc-400" /> លើកជូនថ្ងៃនេះ (Served)
-                            </span>
-                            <p className="text-lg font-bold text-zinc-300 mt-1">
-                                {counts.served_today}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">សរុប</span>
-                            </p>
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Served / លើកជូនថ្ងៃនេះ</span>
+                                <Coffee className="w-4 h-4 text-purple-400" />
+                            </div>
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {counts.served_today}
+                            </div>
+                            <div className="text-xs text-purple-400/90 font-khmer mt-1">
+                                សំបុត្របានបញ្ចប់រួចរាល់
+                            </div>
                         </div>
                     </div>
 

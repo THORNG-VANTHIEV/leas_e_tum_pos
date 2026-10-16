@@ -293,77 +293,77 @@ export default function ReportsIndex({
                 {/* KPI Metrics Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Gross Sales */}
-                    <Card className="p-4 bg-zinc-900/80 border-zinc-800 flex flex-col justify-between">
-                        <div className="flex items-center justify-between text-zinc-400">
-                            <span className="text-xs font-semibold uppercase tracking-wider">Gross Sales</span>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Gross Sales / ចំណូលសរុប</span>
                             <DollarSign className="w-4 h-4 text-emerald-400" />
                         </div>
-                        <div className="mt-3">
-                            <div className="text-2xl font-bold font-mono text-emerald-400">
+                        <div className="mt-2">
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {business.currency_symbol}{metrics.gross_sales}
                             </div>
-                            <div className="text-[11px] text-zinc-400 font-khmer mt-0.5">
+                            <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
                                 ≈ {Math.round((parseFloat(metrics.gross_sales) || 0) * 4100).toLocaleString()} ៛
                             </div>
-                            <div className="text-[11px] text-zinc-500 mt-1">
-                                Discounts: -{business.currency_symbol}{metrics.discounts}
+                            <div className="text-[11px] text-zinc-400 font-khmer mt-1">
+                                បញ្ចុះតម្លៃ: -{business.currency_symbol}{metrics.discounts}
                             </div>
                         </div>
                     </Card>
 
                     {/* Net Sales */}
-                    <Card className="p-4 bg-zinc-900/80 border-zinc-800 flex flex-col justify-between">
-                        <div className="flex items-center justify-between text-zinc-400">
-                            <span className="text-xs font-semibold uppercase tracking-wider">Net Sales</span>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Net Sales / ចំណូលសុទ្ធ</span>
                             <ArrowUpRight className="w-4 h-4 text-teal-400" />
                         </div>
-                        <div className="mt-3">
-                            <div className="text-2xl font-bold font-mono text-teal-400">
+                        <div className="mt-2">
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {business.currency_symbol}{metrics.net_sales}
                             </div>
-                            <div className="text-[11px] text-zinc-400 font-khmer mt-0.5">
+                            <div className="text-xs text-teal-400 font-mono font-medium mt-1">
                                 ≈ {Math.round((parseFloat(metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
                             </div>
-                            <div className="text-[11px] text-zinc-500 mt-1">
-                                Tax recorded: {business.currency_symbol}{metrics.tax_collected}
+                            <div className="text-[11px] text-zinc-400 font-khmer mt-1">
+                                ពន្ធកត់ត្រា: {business.currency_symbol}{metrics.tax_collected}
                             </div>
                         </div>
                     </Card>
 
                     {/* Cash Collected & Change */}
-                    <Card className="p-4 bg-zinc-900/80 border-zinc-800 flex flex-col justify-between">
-                        <div className="flex items-center justify-between text-zinc-400">
-                            <span className="text-xs font-semibold uppercase tracking-wider">Net Cash in Drawer</span>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Net Cash / សាច់ប្រាក់ក្នុងបេឡា</span>
                             <Receipt className="w-4 h-4 text-amber-400" />
                         </div>
-                        <div className="mt-3">
-                            <div className="text-2xl font-bold font-mono text-amber-400">
+                        <div className="mt-2">
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {business.currency_symbol}{metrics.net_cash_received}
                             </div>
-                            <div className="text-[11px] text-zinc-400 font-khmer mt-0.5">
+                            <div className="text-xs text-amber-400 font-mono font-medium mt-1">
                                 ≈ {Math.round((parseFloat(metrics.net_cash_received) || 0) * 4100).toLocaleString()} ៛
                             </div>
-                            <div className="text-[11px] text-zinc-500 mt-1">
+                            <div className="text-[11px] text-zinc-400 font-mono mt-1">
                                 Tendered: {business.currency_symbol}{metrics.cash_tendered} • Change: {business.currency_symbol}{metrics.change_given}
                             </div>
                         </div>
                     </Card>
 
                     {/* Volume & Exceptions */}
-                    <Card className="p-4 bg-zinc-900/80 border-zinc-800 flex flex-col justify-between">
-                        <div className="flex items-center justify-between text-zinc-400">
-                            <span className="text-xs font-semibold uppercase tracking-wider">Orders & Guests</span>
-                            <Users className="w-4 h-4 text-sky-400" />
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Orders & Guests / វិក្កយបត្រ & ភ្ញៀវ</span>
+                            <Users className="w-4 h-4 text-purple-400" />
                         </div>
-                        <div className="mt-3">
-                            <div className="text-2xl font-bold font-mono text-zinc-100">
-                                {metrics.total_documents} <span className="text-sm font-normal text-zinc-400">docs</span>
+                        <div className="mt-2">
+                            <div className="text-xl sm:text-2xl font-bold font-mono text-white">
+                                {metrics.total_documents} <span className="text-xs font-normal text-zinc-400">docs</span>
                             </div>
-                            <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-1">
-                                <span>{metrics.total_units} total pax/units</span>
+                            <div className="flex items-center justify-between text-xs text-purple-400/90 font-khmer mt-1">
+                                <span>{metrics.total_units} ភ្ញៀវសរុប (Pax)</span>
                                 {metrics.void_count > 0 && (
-                                    <span className="text-rose-400 font-semibold">
-                                        {metrics.void_count} voids ({business.currency_symbol}{metrics.void_value})
+                                    <span className="text-rose-400 font-semibold font-mono">
+                                        {metrics.void_count} voids
                                     </span>
                                 )}
                             </div>

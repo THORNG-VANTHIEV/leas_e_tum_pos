@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
+import { Card } from '@/components/ui/card';
 import {
     LayoutGrid,
     PlusCircle,
@@ -154,50 +155,69 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setShowAddModal(true)}
-                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all"
+                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
                             >
                                 <PlusCircle className="w-4 h-4" />
                                 <span>បន្ថែមតុថ្មី</span>
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    {/* KPI Metrics Summary Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5" /> តុទំនេរ (Available)
-                            </span>
-                            <p className="text-lg font-bold text-emerald-300 mt-0.5">
-                                {metrics.available_tables}{' '}
-                                <span className="text-xs text-zinc-500 font-normal">/ {metrics.total_tables} តុ</span>
-                            </p>
+                {/* Top Metrics Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Available Tables / តុទំនេរ</span>
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-amber-400 flex items-center gap-1">
-                                <Users className="w-3.5 h-3.5" /> តុមានភ្ញៀវ (Occupied)
-                            </span>
-                            <p className="text-lg font-bold text-amber-300 mt-0.5">
-                                {metrics.occupied_tables} តុ
-                            </p>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {metrics.available_tables}
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-purple-400 flex items-center gap-1">
-                                <CalendarCheck className="w-3.5 h-3.5" /> តុកក់ទុក (Reserved)
-                            </span>
-                            <p className="text-lg font-bold text-purple-300 mt-0.5">
-                                {metrics.reserved_tables} តុ
-                            </p>
+                        <div className="text-xs text-emerald-400/90 font-khmer mt-1">
+                            {metrics.total_tables} តុសរុបក្នុងហាង
                         </div>
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80">
-                            <span className="text-[11px] text-zinc-400 flex items-center gap-1">
-                                <Armchair className="w-3.5 h-3.5 text-zinc-400" /> ចំណុះកៅអីសរុប
-                            </span>
-                            <p className="text-lg font-bold text-zinc-100 mt-0.5">
-                                {metrics.total_capacity} កៅអី
-                            </p>
+                    </Card>
+
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Occupied Tables / តុមានភ្ញៀវ</span>
+                            <Users className="w-4 h-4 text-amber-400" />
                         </div>
-                    </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {metrics.occupied_tables}
+                        </div>
+                        <div className="text-xs text-amber-400/90 font-khmer mt-1">
+                            កំពុងទទួលភ្ញៀវពិសារ
+                        </div>
+                    </Card>
+
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Reserved Tables / តុកក់ទុក</span>
+                            <CalendarCheck className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {metrics.reserved_tables}
+                        </div>
+                        <div className="text-xs text-purple-400/90 font-khmer mt-1">
+                            មានការកក់ទុកជាមុន
+                        </div>
+                    </Card>
+
+                    <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Total Capacity / ចំណុះកៅអីសរុប</span>
+                            <Armchair className="w-4 h-4 text-teal-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {metrics.total_capacity}
+                        </div>
+                        <div className="text-xs text-teal-400/90 font-khmer mt-1">
+                            កៅអីអង្គុយសរុបទាំងអស់
+                        </div>
+                    </Card>
+                </div>
 
                     {/* Zone Filter Pills */}
                     <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 scrollbar-none">
@@ -225,7 +245,6 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             </button>
                         ))}
                     </div>
-                </div>
 
                 {/* Table Cards Visual Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

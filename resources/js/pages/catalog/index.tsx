@@ -434,47 +434,55 @@ export default function CatalogIndex({
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Card className="p-4 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between">
-                        <div>
-                            <div className="text-[11px] font-mono text-zinc-400 uppercase">Total Items</div>
-                            <div className="text-xl font-bold text-white mt-1">
-                                {products.length} <span className="text-xs text-emerald-400 font-normal">({activeProductsCount} Active)</span>
-                            </div>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Total Items / មុខទំនិញសរុប</span>
+                            <Utensils className="w-4 h-4 text-amber-400" />
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                            <Utensils className="w-5 h-5" />
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {products.length}
                         </div>
-                    </Card>
-
-                    <Card className="p-4 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between">
-                        <div>
-                            <div className="text-[11px] font-mono text-zinc-400 uppercase">Categories</div>
-                            <div className="text-xl font-bold text-white mt-1">{categories.length}</div>
-                        </div>
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                            <Tags className="w-5 h-5" />
+                        <div className="text-xs text-emerald-400/90 font-khmer mt-1">
+                            {activeProductsCount} កំពុងដាក់លក់សកម្ម
                         </div>
                     </Card>
 
-                    <Card className="p-4 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between">
-                        <div>
-                            <div className="text-[11px] font-mono text-zinc-400 uppercase">Measurement Units</div>
-                            <div className="text-xl font-bold text-white mt-1">{units.length}</div>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Categories / ប្រភេទមុខទំនិញ</span>
+                            <Tags className="w-4 h-4 text-emerald-400" />
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
-                            <Scale className="w-5 h-5" />
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {categories.length}
+                        </div>
+                        <div className="text-xs text-zinc-400 font-khmer mt-1">
+                            ក្រុមមុខម្ហូប និងភេសជ្ជៈ
                         </div>
                     </Card>
 
-                    <Card className="p-4 bg-zinc-900/60 border-zinc-800/80 flex items-center justify-between">
-                        <div>
-                            <div className="text-[11px] font-mono text-zinc-400 uppercase">POS Exchange Rate</div>
-                            <div className="text-sm font-bold text-amber-300 font-mono mt-1">
-                                1 USD = {exchange_rate.toLocaleString()} ៛
-                            </div>
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Units / ខ្នាតរង្វាស់</span>
+                            <Scale className="w-4 h-4 text-teal-400" />
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                            <DollarSign className="w-5 h-5" />
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {units.length}
+                        </div>
+                        <div className="text-xs text-teal-400/90 font-khmer mt-1">
+                            ខ្នាតគិត កំប៉ុង/ចាន/គីឡូ
+                        </div>
+                    </Card>
+
+                    <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                            <span>Exchange Rate / អត្រាប្តូរប្រាក់</span>
+                            <DollarSign className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                            {exchange_rate.toLocaleString()} ៛
+                        </div>
+                        <div className="text-xs text-purple-400/90 font-khmer mt-1">
+                            អត្រាគិតលុយ 1 USD
                         </div>
                     </Card>
                 </div>
