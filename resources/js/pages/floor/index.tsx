@@ -66,6 +66,24 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
         setMounted(true);
     }, []);
 
+    // Prevent background page from scrolling when Add Table modal is active
+    useEffect(() => {
+        if (!mounted || typeof document === 'undefined') return;
+
+        if (showAddModal) {
+            const prevBodyOverflow = document.body.style.overflow;
+            const prevHtmlOverflow = document.documentElement.style.overflow;
+
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+
+            return () => {
+                document.body.style.overflow = prevBodyOverflow;
+                document.documentElement.style.overflow = prevHtmlOverflow;
+            };
+        }
+    }, [showAddModal, mounted]);
+
     const [selectedZone, setSelectedZone] = useState<string>(currentZone);
     const [showAddModal, setShowAddModal] = useState(false);
     const [addForm, setAddForm] = useState({
@@ -388,7 +406,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                 {/* Add Table Modal */}
                 {showAddModal && mounted && createPortal(
-                    <div className="fixed inset-0 z-50 overflow-y-auto bg-white dark:bg-zinc-950 animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-950 animate-in fade-in duration-200">
                         <div
                             className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center"
                             onClick={(e) => {
