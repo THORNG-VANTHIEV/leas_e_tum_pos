@@ -33,6 +33,10 @@ import {
     ArrowUpDown,
     Check,
     ArrowLeft,
+    Building2,
+    Sparkles,
+    ShieldCheck,
+    Tag,
 } from 'lucide-react';
 
 interface Supplier {
@@ -1365,152 +1369,345 @@ export default function PurchasesIndex({
                     document.body
                 )}
 
-                {/* MODAL 3: ADD / EDIT SUPPLIER */}
+                {/* MODAL 3: ADD / EDIT SUPPLIER (Full-Workspace 2-Column Layout) */}
                 {mounted && supplierModalOpen && createPortal(
-                    <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/75 backdrop-blur-sm overflow-y-auto">
-                        <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden my-auto">
-                            {/* Modal Header */}
-                            <div className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-900/60">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
-                                        <Users className="w-5 h-5" />
-                                    </div>
-                                    <div>
+                    <div
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                        onWheel={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400 shadow-xs shrink-0">
+                                    <Truck className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
                                             {editingSupplier
-                                                ? 'កែប្រែអ្នកផ្គត់ផ្គង់ (Edit Supplier)'
-                                                : 'បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី (New Supplier)'}
+                                                ? 'កែប្រែព័ត៌មានអ្នកផ្គត់ផ្គង់'
+                                                : 'បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី'}
                                         </h2>
-                                        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-                                            Vendor contact and supply profile
-                                        </p>
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
+                                            {editingSupplier ? 'Edit Supplier' : 'New Vendor Partner'}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                        {editingSupplier
+                                            ? editingSupplier.name
+                                            : 'បង្កើត និងកត់ត្រាប្រវត្តិដៃគូផ្គត់ផ្គង់ទំនិញ គ្រឿងទេស និងគ្រឿងសមុទ្រសម្រាប់ស្តុក'}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setSupplierModalOpen(false)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                title="ត្រឡប់ក្រោយ (Esc)"
+                            >
+                                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-teal-600 dark:text-teal-400" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
+                        </div>
+
+                        {/* Workspace Body - 2 Columns (7 / 5) */}
+                        <form onSubmit={handleSupplierSubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                            <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                                {/* LEFT COLUMN: Form Inputs (7 cols) */}
+                                <div className="lg:col-span-7 space-y-4">
+                                    {/* Section 1: Business Identity */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <Building2 className="w-4 h-4 text-teal-500" />
+                                            <span>ព័ត៌មានដេប៉ូ & អាជីវកម្មផ្គត់ផ្គង់ / Vendor Profile</span>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                ឈ្មោះដេប៉ូ / ក្រុមហ៊ុនផ្គត់ផ្គង់ (Supplier Name) <span className="text-rose-500">*</span>
+                                            </label>
+                                            <Input
+                                                value={supplierForm.data.name}
+                                                onChange={(e) => supplierForm.setData('name', e.target.value)}
+                                                placeholder="ឧ. ដេប៉ូលៀស & គ្រឿងសមុទ្រ កោះកុង"
+                                                className="h-10 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-sm font-semibold text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
+                                                required
+                                            />
+                                        </div>
+
+                                        {/* Supply Categories Quick Suggestion */}
+                                        <div>
+                                            <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                                ប្រភេទមុខទំនិញផ្គត់ផ្គង់ចម្បង (Supply Category)
+                                            </label>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {[
+                                                    'លៀសហាលស្រស់ & គ្រឿងសមុទ្រ',
+                                                    'ភេសជ្ជៈ & ទឹកក្រូច',
+                                                    'សាច់គោ & សាច់មាន់',
+                                                    'បន្លែស្រស់ & គ្រឿងទេស',
+                                                    'សម្ភារវេចខ្ចប់ & ថង់',
+                                                ].map((cat) => {
+                                                    const isSelected = supplierForm.data.notes.includes(cat);
+                                                    return (
+                                                        <button
+                                                            key={cat}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                if (isSelected) {
+                                                                    supplierForm.setData(
+                                                                        'notes',
+                                                                        supplierForm.data.notes
+                                                                            .replace(cat, '')
+                                                                            .replace(/,\s*,/g, ',')
+                                                                            .trim()
+                                                                    );
+                                                                } else {
+                                                                    supplierForm.setData(
+                                                                        'notes',
+                                                                        supplierForm.data.notes
+                                                                            ? `${supplierForm.data.notes}, ${cat}`
+                                                                            : cat
+                                                                    );
+                                                                }
+                                                            }}
+                                                            className={`px-2.5 py-1 rounded-lg text-[11px] font-khmer font-medium transition cursor-pointer border ${
+                                                                isSelected
+                                                                    ? 'bg-teal-500/15 border-teal-500/40 text-teal-700 dark:text-teal-300 font-bold'
+                                                                    : 'bg-zinc-50 dark:bg-zinc-800/60 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-teal-400/50'
+                                                            }`}
+                                                        >
+                                                            + {cat}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Section 2: Contact & Location */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <Users className="w-4 h-4 text-teal-500" />
+                                            <span>ព័ត៌មានទំនាក់ទំនង & ទីតាំង / Contact & Address</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    អ្នកទំនាក់ទំនង (Contact Person)
+                                                </label>
+                                                <div className="relative">
+                                                    <Input
+                                                        value={supplierForm.data.contact_person}
+                                                        onChange={(e) =>
+                                                            supplierForm.setData('contact_person', e.target.value)
+                                                        }
+                                                        placeholder="ឧ. អ្នកស្រី ចាន់ណា"
+                                                        className="h-9.5 pl-8.5 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
+                                                    />
+                                                    <Users className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    លេខទូរស័ព្ទ (Phone Number)
+                                                </label>
+                                                <div className="relative">
+                                                    <Input
+                                                        value={supplierForm.data.phone}
+                                                        onChange={(e) =>
+                                                            supplierForm.setData('phone', e.target.value)
+                                                        }
+                                                        placeholder="012 345 678"
+                                                        className="h-9.5 pl-8.5 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl font-mono focus:border-teal-500"
+                                                    />
+                                                    <Phone className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                អាសយដ្ឋាន / ទីតាំងដេប៉ូ (Depot Address)
+                                            </label>
+                                            <div className="relative">
+                                                <Input
+                                                    value={supplierForm.data.address}
+                                                    onChange={(e) =>
+                                                        supplierForm.setData('address', e.target.value)
+                                                    }
+                                                    placeholder="ឧ. ផ្សារអូរឫស្សី, រាជធានីភ្នំពេញ..."
+                                                    className="h-9.5 pl-8.5 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
+                                                />
+                                                <MapPin className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                កំណត់សម្គាល់បន្ថែម (Notes & Delivery Schedule)
+                                            </label>
+                                            <textarea
+                                                value={supplierForm.data.notes}
+                                                onChange={(e) =>
+                                                    supplierForm.setData('notes', e.target.value)
+                                                }
+                                                rows={2}
+                                                placeholder="ឧ. ដឹកជញ្ជូនរៀងរាល់ព្រឹកម៉ោង ៦:០០, លក្ខខណ្ឌទូទាត់ប្រចាំសប្តាហ៍..."
+                                                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl p-2.5 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none font-khmer"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Section 3: Status Toggle */}
+                                    <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between shadow-xs">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                                                supplierForm.data.is_active
+                                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
+                                            }`}>
+                                                <ShieldCheck className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    ស្ថានភាពដៃគូផ្គត់ផ្គង់ (Active Partner)
+                                                </h4>
+                                                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                    អនុញ្ញាតឱ្យជ្រើសរើសក្នុងបញ្ជីបញ្ជាទិញទំនិញចូលស្តុក (PO)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <label className="relative inline-flex items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                id="supplier_active_toggle_ws"
+                                                checked={supplierForm.data.is_active}
+                                                onChange={(e) =>
+                                                    supplierForm.setData('is_active', e.target.checked)
+                                                }
+                                                className="sr-only peer"
+                                            />
+                                            <div className="w-11 h-6 bg-zinc-200 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-zinc-600 peer-checked:bg-teal-500"></div>
+                                        </label>
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setSupplierModalOpen(false)}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-khmer font-medium transition-colors shadow-xs cursor-pointer"
-                                    title="ត្រឡប់ក្រោយ (Esc)"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" />
-                                    <span>ត្រឡប់ក្រោយ</span>
-                                </button>
+
+                                {/* RIGHT COLUMN: Live Supplier Passport Preview (5 cols) */}
+                                <div className="lg:col-span-5 space-y-4">
+                                    <div className="rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 shadow-lg space-y-4 relative overflow-hidden">
+                                        {/* Decorative top gradient */}
+                                        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600" />
+
+                                        <div className="flex items-center justify-between pt-1">
+                                            <div className="flex items-center gap-2">
+                                                <Sparkles className="w-4 h-4 text-teal-500" />
+                                                <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
+                                                    Vendor Credential Passport
+                                                </span>
+                                            </div>
+                                            <Badge
+                                                variant={supplierForm.data.is_active ? 'emerald' : 'zinc'}
+                                                className="font-khmer text-[10px]"
+                                            >
+                                                {supplierForm.data.is_active ? '● កំពុងសកម្ម' : '○ ផ្អាកដំណើរការ'}
+                                            </Badge>
+                                        </div>
+
+                                        {/* Supplier Card Header */}
+                                        <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400 font-bold text-lg shadow-xs shrink-0 font-mono">
+                                                    {supplierForm.data.name
+                                                        ? supplierForm.data.name.slice(0, 2).toUpperCase()
+                                                        : 'SP'}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <h3 className="text-sm font-bold text-zinc-900 dark:text-white font-khmer truncate">
+                                                        {supplierForm.data.name || 'ឈ្មោះអ្នកផ្គត់ផ្គង់ / ដេប៉ូ'}
+                                                    </h3>
+                                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer truncate">
+                                                        {supplierForm.data.contact_person
+                                                            ? `តំណាង: ${supplierForm.data.contact_person}`
+                                                            : 'មិនទាន់មានអ្នកទំនាក់ទំនង'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60 text-xs">
+                                                <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                                                    <div className="text-[10px] text-zinc-400 font-khmer">លេខទូរស័ព្ទ</div>
+                                                    <div className="font-mono font-bold text-zinc-900 dark:text-white truncate">
+                                                        {supplierForm.data.phone || '---'}
+                                                    </div>
+                                                </div>
+                                                <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                                                    <div className="text-[10px] text-zinc-400 font-khmer">ទីតាំងដេប៉ូ</div>
+                                                    <div className="text-zinc-900 dark:text-white font-khmer truncate text-[11px]">
+                                                        {supplierForm.data.address || '---'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Supply Categories & Notes Breakdown */}
+                                        <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800/80 space-y-2">
+                                            <div className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 font-khmer">
+                                                ទំនិញផ្គត់ផ្គង់ & កំណត់សម្គាល់ (Supply & Terms):
+                                            </div>
+                                            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-khmer leading-relaxed">
+                                                {supplierForm.data.notes || 'មិនទាន់មានកំណត់សម្គាល់បន្ថែម...'}
+                                            </p>
+                                        </div>
+
+                                        {/* System Integration Note */}
+                                        <div className="p-3.5 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-800 dark:text-teal-300 space-y-1.5">
+                                            <div className="font-bold flex items-center gap-1.5 font-khmer">
+                                                <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                                                <span>ការតភ្ជាប់ស្តុកស្វ័យប្រវត្តិ (Inventory Sync)</span>
+                                            </div>
+                                            <p className="text-[11px] text-teal-700/90 dark:text-teal-300/80 leading-relaxed font-khmer">
+                                                រាល់ពេលបង្កើតប័ណ្ណទិញចូលស្តុក (Purchase Orders) អ្នកអាចជ្រើសរើសដេប៉ូនេះដោយផ្ទាល់ដើម្បីកត់ត្រាតម្លៃដើមទំនិញ និងរបាយការណ៍សវនកម្ម។
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Modal Form */}
-                            <form onSubmit={handleSupplierSubmit} className="p-6 space-y-4">
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ឈ្មោះដេប៉ូ / ក្រុមហ៊ុនផ្គត់ផ្គង់ (Supplier Name) *
-                                    </label>
-                                    <Input
-                                        value={supplierForm.data.name}
-                                        onChange={(e) => supplierForm.setData('name', e.target.value)}
-                                        placeholder="ឧ. ដេប៉ូលៀស & គ្រឿងសមុទ្រ កោះកុង"
-                                        className="h-9 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl"
-                                        required
-                                    />
+                            {/* Workspace Footer */}
+                            <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                                    <span>{editingSupplier ? 'កំពុងកែសម្រួលព័ត៌មានអ្នកផ្គត់ផ្គង់' : 'កំពុងបង្កើតអ្នកផ្គត់ផ្គង់ថ្មី'}</span>
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                            អ្នកទំនាក់ទំនង (Contact Person)
-                                        </label>
-                                        <Input
-                                            value={supplierForm.data.contact_person}
-                                            onChange={(e) =>
-                                                supplierForm.setData('contact_person', e.target.value)
-                                            }
-                                            placeholder="ឧ. អ្នកស្រី ចាន់ណា"
-                                            className="h-9 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                            លេខទូរស័ព្ទ (Phone)
-                                        </label>
-                                        <Input
-                                            value={supplierForm.data.phone}
-                                            onChange={(e) =>
-                                                supplierForm.setData('phone', e.target.value)
-                                            }
-                                            placeholder="012 345 678"
-                                            className="h-9 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl font-mono"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        អាសយដ្ឋាន (Address)
-                                    </label>
-                                    <Input
-                                        value={supplierForm.data.address}
-                                        onChange={(e) =>
-                                            supplierForm.setData('address', e.target.value)
-                                        }
-                                        placeholder="ផ្សារអូរឫស្សី, ភ្នំពេញ..."
-                                        className="h-9 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        កំណត់សម្គាល់ (Notes)
-                                    </label>
-                                    <Input
-                                        value={supplierForm.data.notes}
-                                        onChange={(e) =>
-                                            supplierForm.setData('notes', e.target.value)
-                                        }
-                                        placeholder="ផ្គត់ផ្គង់លៀសហាលស្រស់, មឹក, បង្គា..."
-                                        className="h-9 bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl"
-                                    />
-                                </div>
-
-                                <div className="flex items-center gap-2 pt-1">
-                                    <input
-                                        type="checkbox"
-                                        id="supplier_active_toggle"
-                                        checked={supplierForm.data.is_active}
-                                        onChange={(e) =>
-                                            supplierForm.setData('is_active', e.target.checked)
-                                        }
-                                        className="rounded border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-amber-500 focus:ring-amber-500"
-                                    />
-                                    <label
-                                        htmlFor="supplier_active_toggle"
-                                        className="text-xs text-zinc-700 dark:text-zinc-300 font-khmer cursor-pointer"
-                                    >
-                                        បើកដំណើរការដៃគូផ្គត់ផ្គង់នេះ (Active Supplier)
-                                    </label>
-                                </div>
-
-                                <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                                <div className="flex items-center gap-2.5">
                                     <Button
                                         type="button"
                                         variant="outline"
                                         onClick={() => setSupplierModalOpen(false)}
-                                        className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-9 px-4 cursor-pointer"
+                                        className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                     >
                                         បោះបង់ (Cancel)
                                     </Button>
                                     <Button
                                         type="submit"
                                         disabled={supplierForm.processing}
-                                        className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer text-xs rounded-xl h-9 px-5 shadow-md shadow-amber-500/20 cursor-pointer"
+                                        className="bg-teal-600 hover:bg-teal-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-teal-600/20 cursor-pointer flex items-center gap-2"
                                     >
-                                        {supplierForm.processing
-                                            ? 'កំពុងរក្សាទុក...'
-                                            : editingSupplier
-                                            ? 'កែប្រែអ្នកផ្គត់ផ្គង់'
-                                            : 'បន្ថែមអ្នកផ្គត់ផ្គង់'}
+                                        {supplierForm.processing ? (
+                                            'កំពុងរក្សាទុក...'
+                                        ) : (
+                                            <>
+                                                <Check className="w-4 h-4" />
+                                                <span>{editingSupplier ? 'កែប្រែអ្នកផ្គត់ផ្គង់' : 'រក្សាទុកអ្នកផ្គត់ផ្គង់'}</span>
+                                            </>
+                                        )}
                                     </Button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>,
                     document.body
                 )}
