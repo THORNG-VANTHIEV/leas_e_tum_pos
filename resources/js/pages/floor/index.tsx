@@ -388,9 +388,9 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                 {/* Add Table Modal */}
                 {showAddModal && mounted && createPortal(
-                    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 dark:bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+                    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
                         <div
-                            className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center"
+                            className="flex min-h-full items-center justify-center p-4 sm:p-6 md:pl-64 text-center"
                             onClick={(e) => {
                                 if (e.target === e.currentTarget) setShowAddModal(false);
                             }}

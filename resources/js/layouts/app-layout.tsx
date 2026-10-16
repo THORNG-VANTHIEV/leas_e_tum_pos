@@ -1113,7 +1113,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
             <aside
                 className={`hidden md:flex flex-col justify-between ${
                     collapsed ? 'w-20' : 'w-64'
-                } shrink-0 bg-zinc-950 border-r border-zinc-800/80 h-screen sticky top-0 z-40 select-none transition-all duration-200 ease-in-out`}
+                } shrink-0 bg-zinc-950 border-r border-zinc-800/80 h-screen sticky top-0 z-[60] select-none transition-all duration-200 ease-in-out`}
             >
                 {/* Brand & Location Header / Collapse Controls */}
                 {collapsed ? (
