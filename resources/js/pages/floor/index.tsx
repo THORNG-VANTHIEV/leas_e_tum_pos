@@ -62,28 +62,6 @@ interface FloorProps {
 
 export default function FloorIndex({ tables, zones, currentZone, metrics }: FloorProps) {
     const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    // Prevent background page from scrolling when Add Table modal is active
-    useEffect(() => {
-        if (!mounted || typeof document === 'undefined') return;
-
-        if (showAddModal) {
-            const prevBodyOverflow = document.body.style.overflow;
-            const prevHtmlOverflow = document.documentElement.style.overflow;
-
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
-
-            return () => {
-                document.body.style.overflow = prevBodyOverflow;
-                document.documentElement.style.overflow = prevHtmlOverflow;
-            };
-        }
-    }, [showAddModal, mounted]);
-
     const [selectedZone, setSelectedZone] = useState<string>(currentZone);
     const [showAddModal, setShowAddModal] = useState(false);
     const [addForm, setAddForm] = useState({
@@ -93,6 +71,39 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
         capacity: 4,
         shape: 'square',
     });
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Prevent background page and backdrop from scrolling when Add Table modal is active
+    useEffect(() => {
+        if (!mounted || typeof document === 'undefined') return;
+
+        if (showAddModal) {
+            document.documentElement.classList.add('modal-open');
+            document.body.classList.add('modal-open');
+
+            // Strictly prevent wheel and touch gestures on backdrop from causing any page scrolling
+            const preventBackdropScroll = (e: WheelEvent | TouchEvent) => {
+                const target = e.target as HTMLElement | null;
+                if (target && target.closest('.modal-scrollable-content')) {
+                    return; // Allow scrolling inside the form container
+                }
+                e.preventDefault();
+            };
+
+            window.addEventListener('wheel', preventBackdropScroll, { passive: false });
+            window.addEventListener('touchmove', preventBackdropScroll, { passive: false });
+
+            return () => {
+                document.documentElement.classList.remove('modal-open');
+                document.body.classList.remove('modal-open');
+                window.removeEventListener('wheel', preventBackdropScroll);
+                window.removeEventListener('touchmove', preventBackdropScroll);
+            };
+        }
+    }, [showAddModal, mounted]);
 
     const handleZoneChange = (zone: string) => {
         setSelectedZone(zone);
@@ -406,16 +417,18 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                 {/* Add Table Modal */}
                 {showAddModal && mounted && createPortal(
-                    <div className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-white dark:bg-zinc-950 animate-in fade-in duration-200">
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-white dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150"
+                        onClick={(e) => {
+                            if (e.target === e.currentTarget) setShowAddModal(false);
+                        }}
+                    >
                         <div
-                            className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center"
-                            onClick={(e) => {
-                                if (e.target === e.currentTarget) setShowAddModal(false);
-                            }}
+                            className="w-full max-w-4xl max-h-[92vh] flex flex-col text-left bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl shadow-zinc-900/10 dark:shadow-black/60 ring-1 ring-zinc-900/5 dark:ring-white/10 animate-in zoom-in-95 duration-200 overflow-hidden mx-auto my-auto"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            <div className="w-full max-w-4xl text-left bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-2xl shadow-zinc-900/10 dark:shadow-black/60 ring-1 ring-zinc-900/5 dark:ring-white/10 space-y-6 animate-in zoom-in-95 duration-200 mx-auto my-auto">
                             {/* Modal Header */}
-                            <div className="flex items-start justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800/80">
+                            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-zinc-100 dark:border-zinc-800/80 shrink-0">
                                 <div className="flex items-center gap-3">
                                     <div className="w-11 h-11 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0 shadow-xs">
                                         <PlusCircle className="w-6 h-6" />
@@ -439,8 +452,9 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 </button>
                             </div>
 
-                            <form onSubmit={handleAddSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                            <form onSubmit={handleAddSubmit} className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                                <div className="modal-scrollable-content flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                                     {/* Left Column: Form Controls (7 cols) */}
                                     <div className="lg:col-span-7 space-y-4">
                                         {/* Row 1: Code and Name */}
@@ -733,9 +747,10 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Modal Actions (Footer) */}
-                                <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                            {/* Modal Actions (Footer) */}
+                            <div className="flex items-center justify-between p-5 sm:p-6 pt-4 border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0">
                                     <div className="text-xs text-zinc-400 hidden sm:flex items-center gap-1.5 font-khmer">
                                         <span className="w-2 h-2 rounded-full bg-amber-500" />
                                         តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត
@@ -758,7 +773,6 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     </div>
                                 </div>
                             </form>
-                            </div>
                         </div>
                     </div>,
                     document.body

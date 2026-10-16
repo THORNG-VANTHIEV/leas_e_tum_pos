@@ -109,11 +109,14 @@ html {
 }
 
 html.pos-terminal-fixed,
-body.pos-terminal-fixed {
+body.pos-terminal-fixed,
+html.modal-open,
+body.modal-open {
     overflow: hidden !important;
     height: 100% !important;
     max-height: 100vh !important;
-    touch-action: pan-x;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
 }
 
 /* Smooth Page Transitions without Layout Shifts */
