@@ -549,8 +549,8 @@ html.light .relative img ~ span,
 html.light .relative img ~ div,
 html.light .relative [class*="bg-black/"],
 html.light .relative [class*="bg-black/"] *,
-html.light .relative [class*="bg-zinc-950/80"],
-html.light .relative [class*="bg-zinc-950/80"] * {
+html.light .relative [class~="bg-zinc-950/80"],
+html.light .relative [class~="bg-zinc-950/80"] * {
     color: #ffffff !important;
 }
 
@@ -1031,6 +1031,10 @@ html.light .bg-slate-100 {
     background-color: #f1f5f9 !important;
 }
 html.light .border-zinc-200,
+html.light .border-zinc-200\/80,
+html.light .border-zinc-200\/70,
+html.light .border-zinc-200\/60,
+html.light .border-zinc-200\/50,
 html.light .border-zinc-100,
 html.light .border-slate-200,
 html.light .border-slate-100 {

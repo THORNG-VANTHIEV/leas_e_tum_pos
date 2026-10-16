@@ -904,7 +904,7 @@ export default function PurchasesIndex({
                                                     <select
                                                         value={purchaseForm.data.supplier_id}
                                                         onChange={(e) => purchaseForm.setData('supplier_id', e.target.value)}
-                                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 font-khmer transition-all cursor-pointer"
+                                                        className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 font-khmer transition-all cursor-pointer"
                                                     >
                                                         <option value="">ទូទៅ / គ្មាន (Walk-in Cash Purchase)</option>
                                                         {suppliers.map((s) => (
@@ -989,7 +989,7 @@ export default function PurchasesIndex({
                                                         min="0"
                                                         value={purchaseForm.data.discount_amount}
                                                         onChange={(e) => purchaseForm.setData('discount_amount', parseFloat(e.target.value) || 0)}
-                                                        className="w-full h-8 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-2.5 py-1 text-xs text-zinc-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
+                                                        className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
                                                     />
                                                 </div>
                                                 <div>
@@ -1002,7 +1002,7 @@ export default function PurchasesIndex({
                                                         min="0"
                                                         value={purchaseForm.data.tax_amount}
                                                         onChange={(e) => purchaseForm.setData('tax_amount', parseFloat(e.target.value) || 0)}
-                                                        className="w-full h-8 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-2.5 py-1 text-xs text-zinc-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
+                                                        className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
                                                     />
                                                 </div>
                                             </div>
@@ -1083,7 +1083,7 @@ export default function PurchasesIndex({
                                                                         <select
                                                                             value={item.product_id}
                                                                             onChange={(e) => updateLineItem(idx, 'product_id', e.target.value)}
-                                                                            className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 py-1 text-xs text-zinc-900 dark:text-zinc-300 focus:outline-none focus:border-amber-500 cursor-pointer truncate"
+                                                                            className="w-full h-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 text-xs text-zinc-900 dark:text-zinc-300 focus:outline-none focus:border-amber-500 cursor-pointer truncate"
                                                                         >
                                                                             <option value="">-- រើសមុខទំនិញ --</option>
                                                                             {products.map((p) => (
