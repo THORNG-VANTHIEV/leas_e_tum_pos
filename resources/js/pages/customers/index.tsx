@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
+import { Card } from '@/components/ui/card';
 import {
     Users,
     UserPlus,
@@ -228,81 +229,59 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                         </div>
                     </div>
 
-                    {/* KPI Metrics Summary Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                        {/* Card 1: Total Customers */}
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
-                            <div>
-                                <span className="text-[11px] font-mono font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block">
-                                    អតិថិជនសរុប (Total)
-                                </span>
-                                <div className="flex items-baseline gap-1.5 mt-0.5">
-                                    <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                                        {metrics.total_customers}
-                                    </span>
-                                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">នាក់</span>
-                                </div>
+                    {/* Metric Cards */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Total Customers / អតិថិជនសរុប</span>
+                                <Users className="w-4 h-4 text-sky-400" />
                             </div>
-                            <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
-                                <Users className="w-4 h-4" />
+                            <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                {metrics.total_customers}
                             </div>
-                        </div>
+                            <div className="text-xs text-sky-400/90 font-khmer mt-1">
+                                {metrics.total_customers} នាក់បានចុះឈ្មោះ
+                            </div>
+                        </Card>
 
-                        {/* Card 2: VIP & Gold Members */}
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
-                            <div>
-                                <span className="text-[11px] font-mono font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1">
-                                    <Sparkles className="w-3 h-3" /> សមាជិក VIP & Gold
-                                </span>
-                                <div className="flex items-baseline gap-1.5 mt-0.5">
-                                    <span className="text-xl font-bold tracking-tight text-purple-700 dark:text-purple-300">
-                                        {metrics.vip_customers + metrics.gold_customers}
-                                    </span>
-                                    <span className="text-[11px] text-purple-600/80 dark:text-purple-400/80 font-mono">
-                                        (V:{metrics.vip_customers} / G:{metrics.gold_customers})
-                                    </span>
-                                </div>
+                        <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>VIP & Gold / សមាជិកពិសេស</span>
+                                <Sparkles className="w-4 h-4 text-purple-400" />
                             </div>
-                            <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
-                                <Sparkles className="w-4 h-4" />
+                            <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                {metrics.vip_customers + metrics.gold_customers}
                             </div>
-                        </div>
+                            <div className="text-xs text-purple-400/90 font-khmer mt-1">
+                                VIP: {metrics.vip_customers} នាក់ • Gold: {metrics.gold_customers} នាក់
+                            </div>
+                        </Card>
 
-                        {/* Card 3: Total Points */}
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
-                            <div>
-                                <span className="text-[11px] font-mono font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1">
-                                    <Coins className="w-3 h-3" /> ពិន្ទុសន្សំសរុប
-                                </span>
-                                <div className="flex items-baseline gap-1.5 mt-0.5">
-                                    <span className="text-xl font-bold tracking-tight text-amber-600 dark:text-amber-400">
-                                        {metrics.total_points.toLocaleString()}
-                                    </span>
-                                    <span className="text-[11px] text-amber-600/80 dark:text-amber-400/80 font-mono">pts</span>
-                                </div>
+                        <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Total Points / ពិន្ទុសន្សំបច្ចុប្បន្ន</span>
+                                <Coins className="w-4 h-4 text-amber-400" />
                             </div>
-                            <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                                <Coins className="w-4 h-4" />
+                            <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                {metrics.total_points.toLocaleString()}
                             </div>
-                        </div>
+                            <div className="text-xs text-amber-400/90 font-khmer mt-1">
+                                ពិន្ទុអតិថិជនសរុប (Pts)
+                            </div>
+                        </Card>
 
-                        {/* Card 4: Total Spent */}
-                        <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 flex items-center justify-between">
-                            <div>
-                                <span className="text-[11px] font-mono font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                                    <TrendingUp className="w-3 h-3" /> ចំណូលសរុប (Revenue)
-                                </span>
-                                <div className="flex items-baseline gap-1.5 mt-0.5">
-                                    <span className="text-xl font-bold tracking-tight text-emerald-700 dark:text-emerald-400">
-                                        ${metrics.total_spent_usd.toFixed(2)}
-                                    </span>
-                                    <span className="text-[11px] text-emerald-600/80 dark:text-emerald-400/80 font-mono">USD</span>
-                                </div>
+                        <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                            <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                <span>Total Spent / ចំណូលសរុប</span>
+                                <TrendingUp className="w-4 h-4 text-emerald-400" />
                             </div>
-                            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                                <TrendingUp className="w-4 h-4" />
+                            <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                ${Number(metrics.total_spent_usd || 0).toFixed(2)}
                             </div>
-                        </div>
+                            <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
+                                ≈ {Math.round(Number(metrics.total_spent_usd || 0) * 4100).toLocaleString()} ៛
+                            </div>
+                        </Card>
                     </div>
                 </div>
 
