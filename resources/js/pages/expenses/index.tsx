@@ -1011,112 +1011,335 @@ export default function ExpensesIndex({
                     document.body
                 )}
 
-                {/* Modal: Cash Drawer Movement (Protected with Sidebar constraint) */}
+                {/* Modal: Cash Drawer Movement Full-Workspace Suite */}
                 {mounted && showDrawerModal && createPortal(
                     <div
-                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                         onWheel={(e) => e.stopPropagation()}
                     >
-                        <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
-                                        <Lock className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            ចលនាសាច់ប្រាក់ក្នុងថតបេឡា
+                        {/* Header */}
+                        <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-xs shrink-0">
+                                    <Lock className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                            កត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡា
                                         </h3>
-                                        <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                            Cash Drawer Drop, Cash In ឬ Float In
-                                        </p>
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
+                                            Cash Drawer Operation
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                        ទម្លាក់ចូលទូដែក (Cash Drop), បន្ថែមប្រាក់បម្រុង (Cash In), ឬដកសាច់ប្រាក់បន្ទាន់ (Pay Out)
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowDrawerModal(false)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                title="ត្រឡប់ក្រោយ (Esc)"
+                            >
+                                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-600 dark:text-amber-400" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
+                        </div>
+
+                        {/* Body - 2 Columns (7 / 5) */}
+                        <form onSubmit={handleDrawerSubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                            <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                                {/* LEFT COLUMN: Form Inputs (7 cols) */}
+                                <div className="lg:col-span-7 space-y-4">
+                                    {/* Operation Type Selector Cards */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <Layers className="w-4 h-4 text-amber-500" />
+                                            <span>ជ្រើសរើសប្រភេទប្រតិបត្តិការថតបេឡា / Drawer Movement Type</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            {[
+                                                {
+                                                    key: 'cash_drop',
+                                                    labelKh: 'ទម្លាក់ចូលទូដែក (Cash Drop)',
+                                                    desc: 'ផ្ទេរសាច់ប្រាក់លើសចូលទូដែកសុវត្ថិភាព',
+                                                    icon: ArrowDownRight,
+                                                    color: 'text-amber-500',
+                                                    activeBg: 'bg-amber-500/10 border-amber-500 ring-2 ring-amber-500/20',
+                                                },
+                                                {
+                                                    key: 'cash_in',
+                                                    labelKh: 'បន្ថែមប្រាក់បម្រុង (Cash In)',
+                                                    desc: 'បន្ថែមក្រដាសប្រាក់អាប់ចូលថតបេឡា',
+                                                    icon: ArrowUpRight,
+                                                    color: 'text-emerald-500',
+                                                    activeBg: 'bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/20',
+                                                },
+                                                {
+                                                    key: 'opening_float',
+                                                    labelKh: 'ប្រាក់បម្រុងដើមគ្រា (Opening Float)',
+                                                    desc: 'កំណត់ប្រាក់ដំបូងសម្រាប់បើកវេនលក់',
+                                                    icon: Sparkles,
+                                                    color: 'text-sky-500',
+                                                    activeBg: 'bg-sky-500/10 border-sky-500 ring-2 ring-sky-500/20',
+                                                },
+                                                {
+                                                    key: 'pay_out',
+                                                    labelKh: 'ដកសាច់ប្រាក់បន្ទាន់ (Pay Out)',
+                                                    desc: 'ទូទាត់ចំណាយបន្ទាន់ផ្ទាល់ពីថតបេឡា',
+                                                    icon: Banknote,
+                                                    color: 'text-rose-500',
+                                                    activeBg: 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-500/20',
+                                                },
+                                            ].map((opt) => {
+                                                const Icon = opt.icon;
+                                                const isSelected = drawerForm.type === opt.key;
+                                                return (
+                                                    <button
+                                                        key={opt.key}
+                                                        type="button"
+                                                        onClick={() => setDrawerForm({ ...drawerForm, type: opt.key })}
+                                                        className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
+                                                            isSelected
+                                                                ? opt.activeBg
+                                                                : 'bg-zinc-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-center justify-between w-full">
+                                                            <div className="flex items-center gap-2 font-bold font-khmer text-xs">
+                                                                <Icon className={`w-4 h-4 ${isSelected ? opt.color : 'text-zinc-400'}`} />
+                                                                <span className={isSelected ? 'text-zinc-900 dark:text-white' : ''}>
+                                                                    {opt.labelKh}
+                                                                </span>
+                                                            </div>
+                                                            {isSelected && <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />}
+                                                        </div>
+                                                        <p className="text-[11px] font-khmer text-zinc-500 dark:text-zinc-400">
+                                                            {opt.desc}
+                                                        </p>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Amount Card with Quick Amounts */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <DollarSign className="w-4 h-4 text-amber-500" />
+                                            <span>ចំនួនទឹកប្រាក់ទូទាត់ (Amount)</span>
+                                            <span className="text-rose-500">*</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ចំនួនទឹកប្រាក់ (USD)
+                                                </label>
+                                                <div className="relative">
+                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold font-mono text-zinc-400">
+                                                        $
+                                                    </span>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        required
+                                                        placeholder="0.00"
+                                                        value={drawerForm.amount_usd}
+                                                        onChange={(e) => handleDrawerUsdChange(e.target.value)}
+                                                        className="w-full pl-8 pr-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-xl text-sm font-bold font-mono text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ចំនួនទឹកប្រាក់ (KHR - ប្តូរស្វ័យប្រវត្ត)
+                                                </label>
+                                                <div className="relative">
+                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold font-mono text-zinc-400">
+                                                        ៛
+                                                    </span>
+                                                    <input
+                                                        type="number"
+                                                        readOnly
+                                                        value={drawerForm.amount_khr}
+                                                        className="w-full pl-8 pr-3.5 py-2.5 bg-zinc-100 dark:bg-zinc-900/60 border border-zinc-300 dark:border-zinc-700/60 rounded-xl text-sm font-bold font-mono text-zinc-500 dark:text-zinc-400 cursor-not-allowed"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Quick Amount Pills */}
+                                        <div className="space-y-1.5 pt-1">
+                                            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer block">
+                                                ចុចជ្រើសរើសចំនួនទឹកប្រាក់រហ័ស (Quick Presets)៖
+                                            </span>
+                                            <div className="flex flex-wrap gap-2">
+                                                {['10', '20', '50', '100', '200', '500'].map((amt) => (
+                                                    <button
+                                                        key={amt}
+                                                        type="button"
+                                                        onClick={() => handleDrawerUsdChange(amt)}
+                                                        className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer ${
+                                                            drawerForm.amount_usd === amt
+                                                                ? 'bg-amber-500 text-zinc-950 border-amber-500 shadow-xs'
+                                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-amber-500/50'
+                                                        }`}
+                                                    >
+                                                        ${amt} USD
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Reason Card with Quick Presets */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <FileText className="w-4 h-4 text-amber-500" />
+                                            <span>មូលហេតុ / កំណត់សម្គាល់ (Reason & Notes)</span>
+                                        </div>
+
+                                        <input
+                                            type="text"
+                                            placeholder="ឧ. ដកផ្ទេរចូលទូដែកពេលល្ងាច..."
+                                            value={drawerForm.reason}
+                                            onChange={(e) => setDrawerForm({ ...drawerForm, reason: e.target.value })}
+                                            className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 font-khmer transition-all"
+                                        />
+
+                                        {/* Reason Presets */}
+                                        <div className="space-y-1.5 pt-1">
+                                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                                                <span>គំរូកំណត់សម្គាល់រហ័ស (Quick Presets)៖</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {[
+                                                    'ដកផ្ទេរចូលទូដែកពេលល្ងាច (Drop to safe)',
+                                                    'បន្ថែមក្រដាសប្រាក់រាយសម្រាប់អាប់ (Small bills)',
+                                                    'ប្រាក់បម្រុងសម្រាប់បើកវេនលក់ (Opening float)',
+                                                    'ដកសាច់ប្រាក់បន្ទាន់ទិញសម្ភារហាង (Emergency payout)',
+                                                ].map((preset, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        onClick={() => setDrawerForm({ ...drawerForm, reason: preset })}
+                                                        className="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 hover:border-amber-500/40 hover:bg-amber-500/5 text-zinc-700 dark:text-zinc-300 text-[11px] font-khmer transition-all cursor-pointer text-left"
+                                                    >
+                                                        {preset}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowDrawerModal(false)}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" />
-                                    <span>ត្រឡប់ក្រោយ</span>
-                                </button>
+
+                                {/* RIGHT COLUMN: Digital Voucher Preview (5 cols) */}
+                                <div className="lg:col-span-5 space-y-4">
+                                    <div className="sticky top-4 space-y-4">
+                                        {/* Cash Voucher Card */}
+                                        <div className="rounded-2xl border p-5 space-y-4 shadow-sm relative overflow-hidden bg-gradient-to-br from-amber-950/40 via-zinc-900 to-zinc-950 border-amber-500/30 text-white">
+                                            {/* Watermark */}
+                                            <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                                                <Lock className="w-40 h-40 text-amber-400" />
+                                            </div>
+
+                                            {/* Top Banner */}
+                                            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                                                <div className="space-y-0.5">
+                                                    <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
+                                                        CASH DRAWER VOUCHER
+                                                    </span>
+                                                    <h4 className="text-sm font-bold text-white font-mono">
+                                                        LOG-DRAWER
+                                                    </h4>
+                                                </div>
+                                                <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-xs">
+                                                    {drawerForm.type.replace('_', ' ')}
+                                                </span>
+                                            </div>
+
+                                            {/* Primary Amount Display */}
+                                            <div className="p-4 rounded-xl bg-black/40 border border-zinc-800 text-center space-y-1">
+                                                <span className="text-[10px] text-zinc-400 font-khmer block uppercase tracking-wider">
+                                                    ទឹកប្រាក់ប្រតិបត្តិការសរុប
+                                                </span>
+                                                <div className="text-2xl font-bold font-mono text-amber-400">
+                                                    ${parseFloat(drawerForm.amount_usd || '0').toFixed(2)} USD
+                                                </div>
+                                                <div className="text-xs font-mono text-zinc-400">
+                                                    ≈ {(parseFloat(drawerForm.amount_khr || '0')).toLocaleString()} KHR
+                                                </div>
+                                            </div>
+
+                                            {/* Voucher Details */}
+                                            <div className="space-y-2.5 text-xs font-mono border-t border-zinc-800/80 pt-3">
+                                                <div className="flex items-center justify-between text-zinc-400">
+                                                    <span className="font-khmer">ការិយបរិច្ឆេទ / វេនលក់៖</span>
+                                                    <span className="text-white font-semibold">
+                                                        {activePeriod ? `Period #${activePeriod.period_number}` : 'វេនលក់បច្ចុប្បន្ន'}
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-zinc-400">
+                                                    <span className="font-khmer">អត្រាប្តូរប្រាក់យោង៖</span>
+                                                    <span className="text-zinc-200">
+                                                        1$ = {exchangeRate.toLocaleString()} ៛
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-zinc-400">
+                                                    <span className="font-khmer">កំណត់សម្គាល់៖</span>
+                                                    <span className="text-zinc-300 truncate max-w-[180px] font-sans">
+                                                        {drawerForm.reason || '—'}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Voucher Footer */}
+                                            <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                                <span>AUDIT: DRAWER_TRANSACTION</span>
+                                                <span>STATUS: READY</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <form onSubmit={handleDrawerSubmit} className="space-y-4">
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                        ប្រភេទប្រតិបត្តិការ *
-                                    </label>
-                                    <select
-                                        value={drawerForm.type}
-                                        onChange={(e) => setDrawerForm({ ...drawerForm, type: e.target.value })}
-                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
-                                    >
-                                        <option value="cash_drop">ទម្លាក់ចូលទូដែក (Cash Drop to Safe)</option>
-                                        <option value="cash_in">បន្ថែមប្រាក់ចូលបេឡា (Cash In / Float In)</option>
-                                        <option value="opening_float">ប្រាក់បម្រុងដើមគ្រា (Opening Float)</option>
-                                        <option value="pay_out">ដកសាច់ប្រាក់បន្ទាន់ (Pay Out)</option>
-                                    </select>
+                            {/* Footer Bar */}
+                            <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                                <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                                    <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                        Esc
+                                    </kbd>
+                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
-                                    <div>
-                                        <label className="block text-xs font-semibold text-amber-600 dark:text-amber-400 mb-1">
-                                            ចំនួនទឹកប្រាក់ (USD) *
-                                        </label>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            required
-                                            placeholder="0.00"
-                                            value={drawerForm.amount_usd}
-                                            onChange={(e) => handleDrawerUsdChange(e.target.value)}
-                                            className="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 rounded-lg text-sm font-bold font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-semibold text-amber-600 dark:text-amber-400 mb-1">
-                                            ចំនួនទឹកប្រាក់ (KHR)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            readOnly
-                                            value={drawerForm.amount_khr}
-                                            className="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-slate-300 dark:border-zinc-700 rounded-lg text-sm font-bold font-mono text-slate-400 dark:text-zinc-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                        មូលហេតុ / កំណត់សម្គាល់
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="ឧ. ដកផ្ទេរចូលទូដែកពេលល្ងាច..."
-                                        value={drawerForm.reason}
-                                        onChange={(e) => setDrawerForm({ ...drawerForm, reason: e.target.value })}
-                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-zinc-800">
+                                <div className="flex items-center gap-3 ml-auto">
                                     <button
                                         type="button"
                                         onClick={() => setShowDrawerModal(false)}
-                                        className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
+                                        className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
                                         បោះបង់
                                     </button>
+
                                     <button
                                         type="submit"
-                                        className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                                        disabled={!drawerForm.amount_usd || parseFloat(drawerForm.amount_usd) <= 0}
+                                        className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        កត់ត្រាចលនា
+                                        <Lock className="w-4 h-4" />
+                                        <span>កត់ត្រាចលនាសាច់ប្រាក់ (Confirm Movement)</span>
                                     </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>,
                     document.body
                 )}
