@@ -23,6 +23,7 @@ import {
     Minus,
     Plus,
     Eye,
+    ArrowLeft,
 } from 'lucide-react';
 
 interface ActiveOrder {
@@ -76,34 +77,40 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
         setMounted(true);
     }, []);
 
-    // Prevent background page and backdrop from scrolling when Add Table modal is active
+    // Prevent background page scrolling and listen to Escape key when Add Table modal is active
     useEffect(() => {
         if (!mounted || typeof document === 'undefined') return;
 
         if (showAddModal) {
-            document.documentElement.classList.add('modal-open');
-            document.body.classList.add('modal-open');
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
 
-            // Strictly prevent wheel and touch gestures on backdrop from causing any page scrolling
-            const preventBackdropScroll = (e: WheelEvent | TouchEvent) => {
-                const target = e.target as HTMLElement | null;
-                if (target && target.closest('.modal-scrollable-content')) {
-                    return; // Allow scrolling inside the form container
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') {
+                    setShowAddModal(false);
                 }
-                e.preventDefault();
             };
 
-            window.addEventListener('wheel', preventBackdropScroll, { passive: false });
-            window.addEventListener('touchmove', preventBackdropScroll, { passive: false });
+            window.addEventListener('keydown', handleKeyDown);
 
             return () => {
-                document.documentElement.classList.remove('modal-open');
-                document.body.classList.remove('modal-open');
-                window.removeEventListener('wheel', preventBackdropScroll);
-                window.removeEventListener('touchmove', preventBackdropScroll);
+                document.body.style.overflow = originalOverflow;
+                window.removeEventListener('keydown', handleKeyDown);
             };
         }
     }, [showAddModal, mounted]);
+
+    const handleOpenAddModal = () => {
+        const nextNum = (tables.length + 1).toString().padStart(2, '0');
+        setAddForm({
+            code: `T-${nextNum}`,
+            name: `តុ ${nextNum}`,
+            zone: selectedZone === 'all' || !selectedZone ? (zones[0] || 'Main Dining') : selectedZone,
+            capacity: 4,
+            shape: 'square',
+        });
+        setShowAddModal(true);
+    };
 
     const handleZoneChange = (zone: string) => {
         setSelectedZone(zone);
@@ -194,8 +201,8 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => setShowAddModal(true)}
-                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                                onClick={handleOpenAddModal}
+                                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer font-bold"
                             >
                                 <PlusCircle className="w-4 h-4" />
                                 <span>បន្ថែមតុថ្មី</span>
@@ -415,223 +422,250 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                     })}
                 </div>
 
-                {/* Add Table Modal */}
+                {/* Full-Workspace Add Table Modal */}
                 {showAddModal && mounted && createPortal(
                     <div
-                        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-white dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150"
-                        onClick={(e) => {
-                            if (e.target === e.currentTarget) setShowAddModal(false);
-                        }}
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                        onWheel={(e) => e.stopPropagation()}
                     >
-                        <div
-                            className="w-full max-w-4xl max-h-[92vh] flex flex-col text-left bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl shadow-zinc-900/10 dark:shadow-black/60 ring-1 ring-zinc-900/5 dark:ring-white/10 animate-in zoom-in-95 duration-200 overflow-hidden mx-auto my-auto"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {/* Modal Header */}
-                            <div className="flex items-start justify-between p-5 sm:p-6 pb-4 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-11 h-11 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0 shadow-xs">
-                                        <PlusCircle className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                                            បន្ថែមតុថ្មីក្នុងប្លង់ (New Floor Table)
-                                        </h3>
-                                        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                            កំណត់កូដ ឈ្មោះ ចំនួនកៅអី រូបរាង និងទីតាំងសម្រាប់តុថ្មី
-                                        </p>
-                                    </div>
+                        {/* Header */}
+                        <div className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 flex items-center justify-between shrink-0 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0 shadow-xs">
+                                    <PlusCircle className="w-5 h-5" />
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowAddModal(false)}
-                                    className="p-2 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
-                                    aria-label="Close"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h2 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                            បន្ថែមតុថ្មីក្នុងប្លង់
+                                        </h2>
+                                        <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                            NEW FLOOR TABLE
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                        កំណត់កូដ ឈ្មោះ ចំនួនកៅអី រូបរាង និងទីតាំងសម្រាប់តុថ្មីក្នុងភោជនីយដ្ឋាន
+                                    </p>
+                                </div>
                             </div>
 
-                            <form onSubmit={handleAddSubmit} className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                                <div className="modal-scrollable-content flex-1 min-h-0 overflow-y-auto p-5 sm:p-6 space-y-6">
-                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                            {/* Back button */}
+                            <button
+                                type="button"
+                                onClick={() => setShowAddModal(false)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                title="ត្រឡប់ក្រោយ (Esc)"
+                            >
+                                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
+                        </div>
+
+                        {/* Form Workspace Body */}
+                        <form onSubmit={handleAddSubmit} className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden">
+                            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                                <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                                     {/* Left Column: Form Controls (7 cols) */}
-                                    <div className="lg:col-span-7 space-y-4">
-                                        {/* Row 1: Code and Name */}
-                                        <div className="grid grid-cols-2 gap-3.5">
-                                            <div className="space-y-1.5">
-                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    កូដតុ * <span className="font-normal text-zinc-400 font-mono">(Code)</span>
-                                                </label>
-                                                <div className="relative">
-                                                    <Hash className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
-                                                    <input
-                                                        type="text"
-                                                        required
-                                                        placeholder="T-15"
-                                                        value={addForm.code}
-                                                        onChange={(e) => setAddForm({ ...addForm, code: e.target.value.toUpperCase() })}
-                                                        className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
-                                                    />
+                                    <div className="lg:col-span-7 space-y-5">
+                                        {/* Card 1: Identity & Zone */}
+                                        <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-5 shadow-xs space-y-4">
+                                            <div className="flex items-center gap-2 pb-2 border-b border-zinc-100 dark:border-zinc-800/60">
+                                                <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                                    <Utensils className="w-3.5 h-3.5" />
+                                                </div>
+                                                <h3 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    ព័ត៌មានអត្តសញ្ញាណតុ & ទីតាំង (Table Identity & Zone)
+                                                </h3>
+                                            </div>
+
+                                            {/* Row 1: Code and Name */}
+                                            <div className="grid grid-cols-2 gap-3.5">
+                                                <div className="space-y-1.5">
+                                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                                        កូដតុ * <span className="font-normal text-zinc-400 font-mono">(Code)</span>
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Hash className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+                                                        <input
+                                                            type="text"
+                                                            required
+                                                            placeholder="T-15"
+                                                            value={addForm.code}
+                                                            onChange={(e) => setAddForm({ ...addForm, code: e.target.value.toUpperCase() })}
+                                                            className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                                        ឈ្មោះតុ * <span className="font-normal text-zinc-400">(Name)</span>
+                                                    </label>
+                                                    <div className="relative">
+                                                        <Utensils className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+                                                        <input
+                                                            type="text"
+                                                            required
+                                                            placeholder="ឧ. តុ ១៥"
+                                                            value={addForm.name}
+                                                            onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                                                            className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            {/* Row 2: Zone with quick select pills */}
                                             <div className="space-y-1.5">
-                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    ឈ្មោះតុ * <span className="font-normal text-zinc-400">(Name)</span>
-                                                </label>
+                                                <div className="flex items-center justify-between">
+                                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                                        តំបន់ / ផ្នែក * <span className="font-normal text-zinc-400 font-mono">(Zone)</span>
+                                                    </label>
+                                                    <span className="text-[11px] text-zinc-400 font-khmer">ជ្រើសរើស ឬវាយបញ្ចូលថ្មី</span>
+                                                </div>
                                                 <div className="relative">
-                                                    <Utensils className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+                                                    <MapPin className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
                                                     <input
                                                         type="text"
                                                         required
-                                                        placeholder="ឧ. តុ ១៥"
-                                                        value={addForm.name}
-                                                        onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                                                        className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
+                                                        list="zone-list"
+                                                        placeholder="Main Dining / VIP Room / Outdoor"
+                                                        value={addForm.zone}
+                                                        onChange={(e) => setAddForm({ ...addForm, zone: e.target.value })}
+                                                        className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
                                                     />
+                                                    <datalist id="zone-list">
+                                                        {zones.map((z) => (
+                                                            <option key={z} value={z} />
+                                                        ))}
+                                                    </datalist>
                                                 </div>
+                                                {zones.length > 0 && (
+                                                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                                        {zones.map((z) => {
+                                                            const isActive = addForm.zone === z;
+                                                            return (
+                                                                <button
+                                                                    key={z}
+                                                                    type="button"
+                                                                    onClick={() => setAddForm({ ...addForm, zone: z })}
+                                                                    className={`px-3 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                                                                        isActive
+                                                                            ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+                                                                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                                                                    }`}
+                                                                >
+                                                                    {z}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 
-                                        {/* Row 2: Zone with quick select pills */}
-                                        <div className="space-y-1.5">
-                                            <div className="flex items-center justify-between">
+                                        {/* Card 2: Form & Capacity */}
+                                        <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-5 shadow-xs space-y-4">
+                                            <div className="flex items-center gap-2 pb-2 border-b border-zinc-100 dark:border-zinc-800/60">
+                                                <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                                                    <Armchair className="w-3.5 h-3.5" />
+                                                </div>
+                                                <h3 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    ទម្រង់ & ចំនួនកៅអី (Table Shape & Seating Capacity)
+                                                </h3>
+                                            </div>
+
+                                            {/* Shape Selector */}
+                                            <div className="space-y-1.5">
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    តំបន់ / ផ្នែក * <span className="font-normal text-zinc-400 font-mono">(Zone)</span>
+                                                    រាងតុ <span className="font-normal text-zinc-400 font-mono">(Table Shape)</span>
                                                 </label>
-                                                <span className="text-[11px] text-zinc-400 font-khmer">ជ្រើសរើស ឬវាយបញ្ចូលថ្មី</span>
-                                            </div>
-                                            <div className="relative">
-                                                <MapPin className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    list="zone-list"
-                                                    placeholder="Main Dining / VIP Room / Outdoor"
-                                                    value={addForm.zone}
-                                                    onChange={(e) => setAddForm({ ...addForm, zone: e.target.value })}
-                                                    className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
-                                                />
-                                                <datalist id="zone-list">
-                                                    {zones.map((z) => (
-                                                        <option key={z} value={z} />
-                                                    ))}
-                                                </datalist>
-                                            </div>
-                                            {zones.length > 0 && (
-                                                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                                                    {zones.map((z) => {
-                                                        const isActive = addForm.zone === z;
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    {[
+                                                        { id: 'square', label: 'ការ៉េ', sub: 'Square', icon: Square },
+                                                        { id: 'rectangle', label: 'ចតុកោណ', sub: 'Rectangle', icon: RectangleHorizontal },
+                                                        { id: 'round', label: 'រង្វង់មូល', sub: 'Round', icon: Circle },
+                                                    ].map((s) => {
+                                                        const Icon = s.icon;
+                                                        const isSelected = addForm.shape === s.id;
                                                         return (
                                                             <button
-                                                                key={z}
+                                                                key={s.id}
                                                                 type="button"
-                                                                onClick={() => setAddForm({ ...addForm, zone: z })}
-                                                                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
-                                                                    isActive
-                                                                        ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
-                                                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                                                                onClick={() => setAddForm({ ...addForm, shape: s.id as 'square' | 'rectangle' | 'round' })}
+                                                                className={`p-3 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition cursor-pointer select-none ${
+                                                                    isSelected
+                                                                        ? 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold shadow-xs ring-1 ring-amber-500/30'
+                                                                        : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
                                                                 }`}
                                                             >
-                                                                {z}
+                                                                <Icon className="w-5 h-5" />
+                                                                <span className="text-xs font-khmer">{s.label}</span>
+                                                                <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">{s.sub}</span>
                                                             </button>
                                                         );
                                                     })}
                                                 </div>
-                                            )}
-                                        </div>
-
-                                        {/* Row 3: Shape Selector (Visual Cards) */}
-                                        <div className="space-y-1.5">
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                រាងតុ <span className="font-normal text-zinc-400 font-mono">(Table Shape)</span>
-                                            </label>
-                                            <div className="grid grid-cols-3 gap-2.5">
-                                                {[
-                                                    { id: 'square', label: 'ការ៉េ', sub: 'Square', icon: Square },
-                                                    { id: 'rectangle', label: 'ចតុកោណ', sub: 'Rectangle', icon: RectangleHorizontal },
-                                                    { id: 'round', label: 'រង្វង់មូល', sub: 'Round', icon: Circle },
-                                                ].map((s) => {
-                                                    const Icon = s.icon;
-                                                    const isSelected = addForm.shape === s.id;
-                                                    return (
-                                                        <button
-                                                            key={s.id}
-                                                            type="button"
-                                                            onClick={() => setAddForm({ ...addForm, shape: s.id as 'square' | 'rectangle' | 'round' })}
-                                                            className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer select-none ${
-                                                                isSelected
-                                                                    ? 'border-amber-500 bg-amber-500/10 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold shadow-xs ring-1 ring-amber-500/30'
-                                                                    : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                                            }`}
-                                                        >
-                                                            <Icon className="w-4 h-4" />
-                                                            <span className="text-xs">{s.label}</span>
-                                                            <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">{s.sub}</span>
-                                                        </button>
-                                                    );
-                                                })}
                                             </div>
-                                        </div>
 
-                                        {/* Row 4: Capacity (Seating Stepper & Preset Pills) */}
-                                        <div className="space-y-1.5">
-                                            <div className="flex items-center justify-between">
-                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    ចំនួនកៅអី <span className="font-normal text-zinc-400 font-mono">(Seating Capacity)</span>
-                                                </label>
-                                                <span className="text-[11px] text-zinc-400 font-mono">{addForm.capacity} Pax</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                {/* Stepper */}
-                                                <div className="flex items-center h-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/80 overflow-hidden shadow-2xs shrink-0">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setAddForm({ ...addForm, capacity: Math.max(1, addForm.capacity - 1) })}
-                                                        className="w-9 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
-                                                        title="បន្ថយ ១"
-                                                    >
-                                                        <Minus className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <div className="w-14 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white flex items-center justify-center gap-1">
-                                                        <span>{addForm.capacity}</span>
-                                                        <span className="text-[10px] font-normal text-zinc-400 font-khmer">កៅអី</span>
-                                                    </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setAddForm({ ...addForm, capacity: Math.min(50, addForm.capacity + 1) })}
-                                                        className="w-9 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
-                                                        title="បន្ថែម ១"
-                                                    >
-                                                        <Plus className="w-3.5 h-3.5" />
-                                                    </button>
+                                            {/* Seating Stepper & Preset Pills */}
+                                            <div className="space-y-1.5">
+                                                <div className="flex items-center justify-between">
+                                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                                        ចំនួនកៅអី <span className="font-normal text-zinc-400 font-mono">(Seating Capacity)</span>
+                                                    </label>
+                                                    <span className="text-[11px] text-zinc-400 font-mono">{addForm.capacity} Pax</span>
                                                 </div>
-
-                                                {/* Quick presets */}
-                                                <div className="grid grid-cols-5 gap-1.5 flex-1">
-                                                    {[2, 4, 6, 8, 12].map((num) => (
+                                                <div className="flex items-center gap-2">
+                                                    {/* Stepper */}
+                                                    <div className="flex items-center h-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/80 overflow-hidden shadow-2xs shrink-0">
                                                         <button
-                                                            key={num}
                                                             type="button"
-                                                            onClick={() => setAddForm({ ...addForm, capacity: num })}
-                                                            className={`h-10 rounded-xl text-xs font-semibold font-mono transition cursor-pointer border ${
-                                                                addForm.capacity === num
-                                                                    ? 'bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-xs'
-                                                                    : 'bg-zinc-50 dark:bg-zinc-950/60 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                                            }`}
+                                                            onClick={() => setAddForm({ ...addForm, capacity: Math.max(1, addForm.capacity - 1) })}
+                                                            className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
+                                                            title="បន្ថយ ១"
                                                         >
-                                                            {num}
+                                                            <Minus className="w-3.5 h-3.5" />
                                                         </button>
-                                                    ))}
+                                                        <div className="w-16 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white flex items-center justify-center gap-1">
+                                                            <span>{addForm.capacity}</span>
+                                                            <span className="text-[10px] font-normal text-zinc-400 font-khmer">កៅអី</span>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setAddForm({ ...addForm, capacity: Math.min(50, addForm.capacity + 1) })}
+                                                            className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
+                                                            title="បន្ថែម ១"
+                                                        >
+                                                            <Plus className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </div>
+
+                                                    {/* Quick presets */}
+                                                    <div className="grid grid-cols-6 gap-1.5 flex-1">
+                                                        {[2, 4, 6, 8, 10, 12].map((num) => (
+                                                            <button
+                                                                key={num}
+                                                                type="button"
+                                                                onClick={() => setAddForm({ ...addForm, capacity: num })}
+                                                                className={`h-10 rounded-xl text-xs font-semibold font-mono transition cursor-pointer border ${
+                                                                    addForm.capacity === num
+                                                                        ? 'bg-amber-500 border-amber-500 text-slate-950 font-bold shadow-xs'
+                                                                        : 'bg-zinc-50 dark:bg-zinc-950/60 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                                                }`}
+                                                            >
+                                                                {num}
+                                                            </button>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Right Column: Live Interactive Floor Simulation (5 cols) */}
-                                    <div className="lg:col-span-5 flex flex-col justify-between bg-zinc-50 dark:bg-zinc-950/70 border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-4.5 sm:p-5 relative overflow-hidden">
+                                    <div className="lg:col-span-5 flex flex-col justify-between bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/90 rounded-2xl p-5 shadow-xs relative overflow-hidden">
                                         {/* Top Header of Preview */}
-                                        <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-zinc-200 dark:border-zinc-800">
+                                        <div className="flex items-center justify-between mb-3 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-6 h-6 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-500 flex items-center justify-center">
                                                     <Eye className="w-3.5 h-3.5" />
@@ -640,38 +674,38 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     ទិដ្ឋភាពប្លង់ជាក់ស្តែង (Floor Preview)
                                                 </span>
                                             </div>
-                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-khmer">
+                                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-khmer">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                តុទំនេរ (New)
+                                                តុទំនេរ (New Table)
                                             </span>
                                         </div>
 
                                         {/* Interactive Visual Floor Simulator */}
-                                        <div className="my-auto py-6 sm:py-8 flex flex-col items-center justify-center relative rounded-xl bg-white dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/70 shadow-inner overflow-hidden min-h-[220px]">
+                                        <div className="my-auto py-8 sm:py-10 flex flex-col items-center justify-center relative rounded-xl bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200/80 dark:border-zinc-800/70 shadow-inner overflow-hidden min-h-[260px]">
                                             {/* Floor dot grid background */}
-                                            <div className="absolute inset-0 opacity-40 dark:opacity-20 pointer-events-none bg-[radial-gradient(#9ca3af_1px,transparent_1px)] dark:bg-[radial-gradient(#52525b_1px,transparent_1px)] [background-size:14px_14px]" />
+                                            <div className="absolute inset-0 opacity-40 dark:opacity-20 pointer-events-none bg-[radial-gradient(#9ca3af_1px,transparent_1px)] dark:bg-[radial-gradient(#52525b_1px,transparent_1px)] [background-size:16px_16px]" />
 
                                             {/* Table Element with Shape and Animated Surroundings */}
                                             <div className="relative z-10 flex items-center justify-center">
-                                                <div className="relative flex items-center justify-center p-6">
+                                                <div className="relative flex items-center justify-center p-8">
                                                     {/* Table Center Body */}
                                                     <div
-                                                        className={`transition-all duration-300 flex flex-col items-center justify-center shadow-lg border-2 border-amber-500/80 bg-amber-500/15 text-center relative z-10 ${
+                                                        className={`transition-all duration-300 flex flex-col items-center justify-center shadow-lg border-2 border-amber-500/80 bg-amber-500/20 dark:bg-amber-500/15 text-center relative z-10 ${
                                                             addForm.shape === 'round'
-                                                                ? 'w-28 h-28 rounded-full'
+                                                                ? 'w-32 h-32 rounded-full'
                                                                 : addForm.shape === 'rectangle'
-                                                                ? 'w-36 h-22 rounded-2xl'
-                                                                : 'w-26 h-26 rounded-2xl'
+                                                                ? 'w-40 h-24 rounded-2xl'
+                                                                : 'w-28 h-28 rounded-2xl'
                                                         }`}
                                                     >
-                                                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-extrabold bg-zinc-900 text-amber-400 border border-amber-500/40 shadow-xs mb-1 uppercase tracking-wider">
-                                                            {addForm.code || 'CODE'}
+                                                        <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-extrabold bg-slate-900 text-amber-400 border border-amber-500/40 shadow-xs mb-1 uppercase tracking-wider">
+                                                            {addForm.code || 'T-15'}
                                                         </span>
-                                                        <span className="font-bold text-xs text-zinc-900 dark:text-white px-2 truncate max-w-[120px]">
-                                                            {addForm.name || 'ឈ្មោះតុ'}
+                                                        <span className="font-bold text-xs text-slate-900 dark:text-white px-2 truncate max-w-[130px] font-khmer">
+                                                            {addForm.name || 'តុ ១៥'}
                                                         </span>
-                                                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1 font-mono mt-0.5">
-                                                            <Users className="w-3 h-3 text-amber-500" />
+                                                        <span className="text-[10px] text-zinc-700 dark:text-zinc-300 flex items-center gap-1 font-mono font-medium mt-0.5">
+                                                            <Users className="w-3 h-3 text-amber-600 dark:text-amber-500" />
                                                             {addForm.capacity} Seats
                                                         </span>
                                                     </div>
@@ -681,13 +715,13 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                         <div className="absolute inset-0 pointer-events-none">
                                                             {Array.from({ length: Math.min(addForm.capacity, 12) }).map((_, i, arr) => {
                                                                 const angle = (i / arr.length) * 2 * Math.PI - Math.PI / 2;
-                                                                const r = 68;
-                                                                const cx = 86 + r * Math.cos(angle);
-                                                                const cy = 86 + r * Math.sin(angle);
+                                                                const r = 78;
+                                                                const cx = 96 + r * Math.cos(angle);
+                                                                const cy = 96 + r * Math.sin(angle);
                                                                 return (
                                                                     <div
                                                                         key={i}
-                                                                        className="absolute w-3 h-3 rounded-full bg-amber-500/40 border border-amber-500/80 shadow-xs transition-all duration-300"
+                                                                        className="absolute w-3.5 h-3.5 rounded-full bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-xs transition-all duration-300"
                                                                         style={{
                                                                             left: `${cx}px`,
                                                                             top: `${cy}px`,
@@ -701,17 +735,17 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                                                     {/* Chairs around Square/Rectangle Table */}
                                                     {addForm.shape !== 'round' && (
-                                                        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between items-center py-1.5 px-3">
+                                                        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between items-center py-2 px-3">
                                                             {/* Top Chairs */}
-                                                            <div className="flex gap-2">
+                                                            <div className="flex gap-2.5">
                                                                 {Array.from({ length: Math.ceil(Math.min(addForm.capacity, 10) / 2) }).map((_, i) => (
-                                                                    <div key={`top-${i}`} className="w-3.5 h-2 rounded-t-md bg-amber-500/40 border border-amber-500/80 shadow-2xs" />
+                                                                    <div key={`top-${i}`} className="w-4 h-2.5 rounded-t-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs" />
                                                                 ))}
                                                             </div>
                                                             {/* Bottom Chairs */}
-                                                            <div className="flex gap-2">
+                                                            <div className="flex gap-2.5">
                                                                 {Array.from({ length: Math.floor(Math.min(addForm.capacity, 10) / 2) }).map((_, i) => (
-                                                                    <div key={`bot-${i}`} className="w-3.5 h-2 rounded-b-md bg-amber-500/40 border border-amber-500/80 shadow-2xs" />
+                                                                    <div key={`bot-${i}`} className="w-4 h-2.5 rounded-b-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs" />
                                                                 ))}
                                                             </div>
                                                         </div>
@@ -719,27 +753,27 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 </div>
                                             </div>
 
-                                            <div className="text-[11px] text-zinc-400 mt-2 font-khmer">
+                                            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2 font-khmer">
                                                 {addForm.zone || 'គ្រប់តំបន់ទាំងអស់'}
                                             </div>
                                         </div>
 
                                         {/* Bottom Metadata Summary in Right Column */}
-                                        <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 grid grid-cols-3 gap-2 text-center">
-                                            <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-400 font-khmer">តំបន់</div>
+                                        <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-3 gap-2.5 text-center">
+                                            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">តំបន់</div>
                                                 <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate mt-0.5">
                                                     {addForm.zone || 'N/A'}
                                                 </div>
                                             </div>
-                                            <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-400 font-khmer">រូបរាង</div>
+                                            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">រូបរាង</div>
                                                 <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mt-0.5 font-khmer">
                                                     {addForm.shape === 'round' ? 'រង្វង់' : addForm.shape === 'rectangle' ? 'ចតុកោណ' : 'ការ៉េ'}
                                                 </div>
                                             </div>
-                                            <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-400 font-khmer">កៅអី</div>
+                                            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">កៅអី</div>
                                                 <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
                                                     {addForm.capacity} Pax
                                                 </div>
@@ -749,31 +783,30 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 </div>
                             </div>
 
-                            {/* Modal Actions (Footer) */}
-                            <div className="flex items-center justify-between p-5 sm:p-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shrink-0">
-                                    <div className="text-xs text-zinc-400 hidden sm:flex items-center gap-1.5 font-khmer">
-                                        <span className="w-2 h-2 rounded-full bg-amber-500" />
-                                        តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត
-                                    </div>
-                                    <div className="flex items-center gap-2.5 ml-auto">
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowAddModal(false)}
-                                            className="px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer"
-                                        >
-                                            បោះបង់
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-1.5 active:scale-[0.98]"
-                                        >
-                                            <PlusCircle className="w-4 h-4" />
-                                            <span>បង្កើតតុថ្មី</span>
-                                        </button>
-                                    </div>
+                            {/* Modal Actions Footer */}
+                            <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 flex items-center justify-between shrink-0 shadow-xs">
+                                <div className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:flex items-center gap-2 font-khmer">
+                                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                                    * តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត និងអាចចាប់ផ្តើមទទួលភ្ញៀវបាន
                                 </div>
-                            </form>
-                        </div>
+                                <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowAddModal(false)}
+                                        className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
+                                    >
+                                        បោះបង់ (Cancel)
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 transition cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-1.5 active:scale-[0.98] font-khmer"
+                                    >
+                                        <PlusCircle className="w-4 h-4" />
+                                        <span>បង្កើតតុថ្មី (Create Table)</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>,
                     document.body
                 )}
