@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,14 @@ import {
     CheckCircle2,
     Printer,
     FileText,
+    ArrowLeft,
+    Eye,
+    EyeOff,
+    KeyRound,
+    UserPlus,
+    Building2,
+    Sparkles,
+    X,
 } from 'lucide-react';
 import { InvoiceDesigner } from './components/invoice-designer';
 
@@ -73,12 +82,78 @@ interface SettingsPageProps {
     }[];
 }
 
+const ROLE_CONFIG: Record<
+    string,
+    {
+        nameKh: string;
+        color: string;
+        badge: string;
+        gradient: string;
+        description: string;
+        permissions: string[];
+    }
+> = {
+    cashier: {
+        nameKh: 'បេឡាករ (Cashier)',
+        color: 'text-amber-500',
+        badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+        gradient: 'from-amber-900/60 via-zinc-900 to-zinc-950',
+        description: 'ដំណើរការបញ្ជាទិញ បោះពុម្ពវិក្កយបត្រ និងទូទាត់ប្រាក់ក្នុងវេន',
+        permissions: [
+            'កត់ត្រាការលក់ & បោះពុម្ពវិក្កយបត្រ POS',
+            'បើក / បិទវេន និងកត់ត្រាប្រាក់ក្នុងថតបេឡា',
+            'ស្កេន KHQR & ទទួលសាច់ប្រាក់',
+            'មើលមុខម្ហូប & បញ្ជីតម្លៃបច្ចុប្បន្ន',
+        ],
+    },
+    supervisor: {
+        nameKh: 'ប្រធានផ្នែក (Supervisor)',
+        color: 'text-sky-500',
+        badge: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
+        gradient: 'from-sky-950 via-zinc-900 to-zinc-950',
+        description: 'ត្រួតពិនិត្យការលក់ អនុម័តការបញ្ចុះតម្លៃ និងគ្រប់គ្រងតុ',
+        permissions: [
+            'សិទ្ធិទាំងអស់របស់ Cashier',
+            'អនុម័តការបញ្ចុះតម្លៃ & Void / លុបមុខម្ហូប',
+            'ផ្ទេរតុ បញ្ចូលតុ និងបំបែកវិក្កយបត្រ',
+            'មើលរបាយការណ៍លក់ប្រចាំថ្ងៃ & បិទវេន',
+        ],
+    },
+    admin: {
+        nameKh: 'អ្នកគ្រប់គ្រងប្រព័ន្ធ (Administrator)',
+        color: 'text-purple-500',
+        badge: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+        gradient: 'from-purple-950 via-zinc-900 to-zinc-950',
+        description: 'សិទ្ធិពេញលេញលើគ្រប់ផ្នែកនៃប្រព័ន្ធ POS និងការកំណត់',
+        permissions: [
+            'សិទ្ធិគ្រប់គ្រងពេញលេញ (Full System Access)',
+            'បង្កើត & កែប្រែមុខម្ហូប និងស្តុកទំនិញ',
+            'បង្កើតគណនីបុគ្គលិក & កំណត់សិទ្ធិ',
+            'គ្រប់គ្រងវគ្គគណនេយ្យ & Backup / Restore',
+        ],
+    },
+};
+
+const getStaffInitials = (name: string) => {
+    if (!name) return 'ST';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+};
+
 export default function SettingsIndex({
     settings,
     users,
     locations,
     audits,
 }: SettingsPageProps) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const [showPassword, setShowPassword] = useState(false);
+
     const { auth } = usePage<PageProps>().props;
     const currentUser = auth.user;
 
@@ -246,6 +321,28 @@ export default function SettingsIndex({
     const restoreUser = (userId: number) => {
         router.post(`/settings/users/${userId}/restore`);
     };
+
+    // Scroll lock and Esc key listener
+    useEffect(() => {
+        if (!mounted || typeof document === 'undefined') return;
+        if (showUserModal || showLocModal || archiveTarget || showRestoreConfirm) {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            const handleKeyDown = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') {
+                    setShowUserModal(false);
+                    setShowLocModal(false);
+                    setArchiveTarget(null);
+                    setShowRestoreConfirm(false);
+                }
+            };
+            window.addEventListener('keydown', handleKeyDown);
+            return () => {
+                document.body.style.overflow = originalOverflow;
+                window.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+    }, [showUserModal, showLocModal, archiveTarget, showRestoreConfirm, mounted]);
 
     return (
         <AppLayout title="Master Settings Hub">
@@ -540,60 +637,115 @@ export default function SettingsIndex({
                         </div>
 
                         {/* Modal: Add Location */}
-                        {showLocModal && (
-                            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                                <Card className="w-full max-w-md p-6 space-y-4 bg-zinc-900 border-zinc-800">
-                                    <h3 className="text-base font-bold text-white">Create New Branch Location</h3>
-                                    <form onSubmit={submitLocation} className="space-y-3">
-                                        <Input
-                                            id="loc_code"
-                                            label="Location Code (e.g. LOC-02)"
-                                            value={locForm.data.code}
-                                            onChange={(e) => locForm.setData('code', e.target.value)}
-                                            error={locForm.errors.code}
-                                            required
-                                        />
-                                        <Input
-                                            id="loc_name_primary"
-                                            label="Name (Primary / English)"
-                                            value={locForm.data.name_primary}
-                                            onChange={(e) =>
-                                                locForm.setData('name_primary', e.target.value)
-                                            }
-                                            error={locForm.errors.name_primary}
-                                            required
-                                        />
-                                        <Input
-                                            id="loc_name_secondary"
-                                            label="Name (Secondary / Khmer)"
-                                            value={locForm.data.name_secondary}
-                                            onChange={(e) =>
-                                                locForm.setData('name_secondary', e.target.value)
-                                            }
-                                            error={locForm.errors.name_secondary}
-                                        />
-                                        <Input
-                                            id="loc_address"
-                                            label="Address / Floor"
-                                            value={locForm.data.address}
-                                            onChange={(e) => locForm.setData('address', e.target.value)}
-                                            error={locForm.errors.address}
-                                        />
-                                        <div className="flex justify-end gap-2 pt-2">
-                                            <Button
+                        {mounted && showLocModal && createPortal(
+                            <div
+                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                                onWheel={(e) => e.stopPropagation()}
+                            >
+                                <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                                                <Building2 className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                                    បង្កើតសាខាហាងថ្មី
+                                                </h3>
+                                                <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                                    Create New Branch Location
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowLocModal(false)}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
+                                        >
+                                            <ArrowLeft className="w-3.5 h-3.5" />
+                                            <span>ត្រឡប់ក្រោយ</span>
+                                        </button>
+                                    </div>
+
+                                    <form onSubmit={submitLocation} className="space-y-3.5">
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                កូដសម្គាល់សាខា (Location Code) *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="ឧ. LOC-02"
+                                                value={locForm.data.code}
+                                                onChange={(e) => locForm.setData('code', e.target.value)}
+                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                            />
+                                            {locForm.errors.code && (
+                                                <p className="text-[11px] text-rose-500 mt-1">{locForm.errors.code}</p>
+                                            )}
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ឈ្មោះអង់គ្លេស (English) *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    placeholder="e.g. Riverside Branch"
+                                                    value={locForm.data.name_primary}
+                                                    onChange={(e) => locForm.setData('name_primary', e.target.value)}
+                                                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ឈ្មោះខ្មែរ (Khmer)
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    placeholder="ឧ. សាខាមាត់ទន្លេ"
+                                                    value={locForm.data.name_secondary}
+                                                    onChange={(e) => locForm.setData('name_secondary', e.target.value)}
+                                                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
+                                                អាសយដ្ឋាន / ទីតាំងជាក់ស្ដែង
+                                            </label>
+                                            <input
+                                                type="text"
+                                                placeholder="ឧ. ផ្លូវព្រះស៊ីសុវត្ថិ រាជធានីភ្នំពេញ..."
+                                                value={locForm.data.address}
+                                                onChange={(e) => locForm.setData('address', e.target.value)}
+                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-zinc-800">
+                                            <button
                                                 type="button"
-                                                variant="ghost"
                                                 onClick={() => setShowLocModal(false)}
+                                                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
                                             >
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" disabled={locForm.processing}>
-                                                Create Location
-                                            </Button>
+                                                បោះបង់
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={locForm.processing}
+                                                className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                                            >
+                                                បង្កើតសាខា
+                                            </button>
                                         </div>
                                     </form>
-                                </Card>
-                            </div>
+                                </div>
+                            </div>,
+                            document.body
                         )}
                     </div>
                 )}
@@ -704,127 +856,462 @@ export default function SettingsIndex({
                             </div>
                         </Card>
 
-                        {/* Modal: Create User */}
-                        {showUserModal && (
-                            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                                <Card className="w-full max-w-md p-6 space-y-4 bg-zinc-900 border-zinc-800">
-                                    <h3 className="text-base font-bold text-white">Create Staff Account</h3>
-                                    <form onSubmit={submitUser} className="space-y-3">
-                                        <Input
-                                            id="staff_name"
-                                            label="Full Name"
-                                            value={userForm.data.name}
-                                            onChange={(e) => userForm.setData('name', e.target.value)}
-                                            error={userForm.errors.name}
-                                            required
-                                        />
-                                        <Input
-                                            id="staff_username"
-                                            label="Username"
-                                            value={userForm.data.username}
-                                            onChange={(e) =>
-                                                userForm.setData('username', e.target.value)
-                                            }
-                                            error={userForm.errors.username}
-                                            required
-                                        />
-                                        <Input
-                                            id="staff_password"
-                                            label="Initial Password"
-                                            type="password"
-                                            value={userForm.data.password}
-                                            onChange={(e) =>
-                                                userForm.setData('password', e.target.value)
-                                            }
-                                            error={userForm.errors.password}
-                                            required
-                                        />
-                                        <div className="space-y-1.5">
-                                            <label className="block text-xs font-medium text-zinc-400">
-                                                Role
-                                            </label>
-                                            <select
-                                                value={userForm.data.role}
-                                                onChange={(e) => userForm.setData('role', e.target.value)}
-                                                className="w-full px-3.5 py-2 text-sm text-zinc-100 bg-zinc-950 border border-zinc-800 rounded-lg outline-none focus:border-emerald-500"
-                                            >
-                                                <option value="cashier">Cashier / Operator</option>
-                                                <option value="supervisor">Supervisor</option>
-                                                <option value="admin">Administrator</option>
-                                            </select>
+                        {/* Modal: Create User (Full-Workspace 2-Column Layout) */}
+                        {mounted && showUserModal && createPortal(
+                            <div
+                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                                onWheel={(e) => e.stopPropagation()}
+                            >
+                                {/* Top Header */}
+                                <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
+                                            <UserPlus className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                                    បង្កើតគណនីបុគ្គលិកថ្មី
+                                                </h2>
+                                                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                                    INV-07 COMPLIANT
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                                Create Staff Member & Access Role — លៀសហាល អ៉ីទុម POS
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowUserModal(false);
+                                            userForm.reset();
+                                        }}
+                                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm"
+                                    >
+                                        <ArrowLeft className="w-4 h-4" />
+                                        <span>ត្រឡប់ក្រោយ</span>
+                                        <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
+                                            (Esc)
+                                        </span>
+                                    </button>
+                                </div>
+
+                                {/* Form Body - 2 Columns */}
+                                <form onSubmit={submitUser} className="flex-1 min-h-0 flex flex-col">
+                                    <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-8">
+                                        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                            {/* Left Column: Form Fields (7 Cols) */}
+                                            <div className="lg:col-span-7 space-y-6">
+                                                {/* Section 1: Staff Identity */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
+                                                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <Users className="w-4 h-4 text-amber-500" />
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                            ព័ត៌មានអត្តសញ្ញាណបុគ្គលិក (Staff Identity)
+                                                        </h3>
+                                                    </div>
+
+                                                    <div className="space-y-4">
+                                                        <div>
+                                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
+                                                                ឈ្មោះពេញ (Full Name) *
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                required
+                                                                placeholder="ឧ. សុខ ចិន្តា ឬ Sok Chenda"
+                                                                value={userForm.data.name}
+                                                                onChange={(e) => userForm.setData('name', e.target.value)}
+                                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
+                                                            />
+                                                            {userForm.errors.name && (
+                                                                <p className="text-[11px] text-rose-500 mt-1">{userForm.errors.name}</p>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
+                                                                    ឈ្មោះគណនីចូលប្រព័ន្ធ (Username) *
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    required
+                                                                    placeholder="e.g. chenda.s"
+                                                                    value={userForm.data.username}
+                                                                    onChange={(e) =>
+                                                                        userForm.setData('username', e.target.value.toLowerCase().trim())
+                                                                    }
+                                                                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                                />
+                                                                {userForm.errors.username && (
+                                                                    <p className="text-[11px] text-rose-500 mt-1">{userForm.errors.username}</p>
+                                                                )}
+                                                            </div>
+
+                                                            <div>
+                                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
+                                                                    ពាក្យសម្ងាត់ដំបូង (Initial Password) *
+                                                                </label>
+                                                                <div className="relative">
+                                                                    <input
+                                                                        type={showPassword ? 'text' : 'password'}
+                                                                        required
+                                                                        placeholder="យ៉ាងតិច ៦ តួអក្សរ"
+                                                                        value={userForm.data.password}
+                                                                        onChange={(e) =>
+                                                                            userForm.setData('password', e.target.value)
+                                                                        }
+                                                                        className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setShowPassword(!showPassword)}
+                                                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+                                                                    >
+                                                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                                                    </button>
+                                                                </div>
+                                                                {userForm.errors.password && (
+                                                                    <p className="text-[11px] text-rose-500 mt-1">{userForm.errors.password}</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Section 2: Role Selection Cards */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
+                                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <div className="flex items-center gap-2">
+                                                            <Shield className="w-4 h-4 text-amber-500" />
+                                                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                                ជ្រើសរើសតួនាទី និងសិទ្ធិអនុញ្ញាត (Role & Permissions) *
+                                                            </h3>
+                                                        </div>
+                                                        <span className="text-xs text-slate-400 dark:text-zinc-500 font-khmer hidden sm:inline">
+                                                            ចុចលើកាតដើម្បីជ្រើសរើស
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                        {(['cashier', 'supervisor', 'admin'] as const).map((rKey) => {
+                                                            const cfg = ROLE_CONFIG[rKey];
+                                                            const isSelected = userForm.data.role === rKey;
+                                                            return (
+                                                                <button
+                                                                    key={rKey}
+                                                                    type="button"
+                                                                    onClick={() => userForm.setData('role', rKey)}
+                                                                    className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
+                                                                        isSelected
+                                                                            ? 'bg-amber-500/10 border-amber-500 text-slate-900 dark:text-zinc-100 ring-2 ring-amber-500/20 shadow-md'
+                                                                            : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
+                                                                    }`}
+                                                                >
+                                                                    <div className="flex items-center justify-between mb-2">
+                                                                        <span className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-md border ${cfg.badge}`}>
+                                                                            {rKey}
+                                                                        </span>
+                                                                        {isSelected && (
+                                                                            <span className="w-4 h-4 rounded-full bg-amber-500 text-zinc-950 flex items-center justify-center">
+                                                                                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="text-xs font-bold text-slate-900 dark:text-zinc-100 font-khmer mb-1">
+                                                                        {cfg.nameKh}
+                                                                    </div>
+                                                                    <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-khmer line-clamp-2">
+                                                                        {cfg.description}
+                                                                    </p>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+
+                                                {/* Section 3: Branch Location Assignment */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
+                                                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <Building2 className="w-4 h-4 text-amber-500" />
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                            សាខាអនុញ្ញាតសម្រាប់គណនីនេះ (Branch Location Assignment)
+                                                        </h3>
+                                                    </div>
+
+                                                    <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                                        ជ្រើសរើសសាខាដែលបុគ្គលិកនេះមានសិទ្ធិចូលលក់ និងគ្រប់គ្រងវេន៖
+                                                    </p>
+
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                        {locations.map((loc) => {
+                                                            const isAssigned = userForm.data.location_ids?.includes(loc.id);
+                                                            return (
+                                                                <label
+                                                                    key={loc.id}
+                                                                    className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
+                                                                        isAssigned
+                                                                            ? 'bg-amber-500/10 border-amber-500 text-slate-900 dark:text-zinc-100'
+                                                                            : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300'
+                                                                    }`}
+                                                                >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={isAssigned}
+                                                                        onChange={(e) => {
+                                                                            const cur = userForm.data.location_ids || [];
+                                                                            if (e.target.checked) {
+                                                                                userForm.setData('location_ids', [...cur, loc.id]);
+                                                                            } else {
+                                                                                userForm.setData('location_ids', cur.filter((id) => id !== loc.id));
+                                                                            }
+                                                                        }}
+                                                                        className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 border-slate-300 dark:border-zinc-700"
+                                                                    />
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center gap-1.5">
+                                                                            <span className="text-xs font-bold text-slate-900 dark:text-zinc-100 truncate">
+                                                                                {loc.name_primary}
+                                                                            </span>
+                                                                            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400">
+                                                                                {loc.code}
+                                                                            </span>
+                                                                        </div>
+                                                                        {loc.name_secondary && (
+                                                                            <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-khmer truncate">
+                                                                                {loc.name_secondary}
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Right Column: Live Digital Staff ID Badge + Role Permissions Breakdown (5 Cols) */}
+                                            <div className="lg:col-span-5 space-y-6">
+                                                {/* Live Staff Badge */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
+                                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <div className="flex items-center gap-2">
+                                                            <Sparkles className="w-4 h-4 text-amber-500" />
+                                                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                                ប័ណ្ណសម្គាល់បុគ្គលិកឌីជីថល (Digital Staff Badge)
+                                                            </h3>
+                                                        </div>
+                                                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                                            LIVE PREVIEW
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Badge Card Container */}
+                                                    <div className={`p-5 rounded-2xl bg-gradient-to-br ${ROLE_CONFIG[userForm.data.role]?.gradient || 'from-zinc-900 to-zinc-950'} border border-slate-200/50 dark:border-zinc-700/60 shadow-xl text-white relative overflow-hidden`}>
+                                                        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+
+                                                        <div className="flex items-center justify-between mb-6">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                                                                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">
+                                                                    LEASHAL ETUM POS
+                                                                </span>
+                                                            </div>
+                                                            <span className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-md border ${ROLE_CONFIG[userForm.data.role]?.badge}`}>
+                                                                {userForm.data.role}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-4 mb-5">
+                                                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 text-zinc-950 font-black text-xl flex items-center justify-center shadow-lg border-2 border-white/20 shrink-0">
+                                                                {getStaffInitials(userForm.data.name)}
+                                                            </div>
+                                                            <div className="min-w-0 flex-1">
+                                                                <h4 className="text-base font-bold text-white truncate font-khmer">
+                                                                    {userForm.data.name || 'ឈ្មោះបុគ្គលិក'}
+                                                                </h4>
+                                                                <p className="text-xs font-mono text-zinc-400 truncate">
+                                                                    @{userForm.data.username || 'username'}
+                                                                </p>
+                                                                <p className="text-[11px] text-amber-400 font-khmer mt-0.5">
+                                                                    {ROLE_CONFIG[userForm.data.role]?.nameKh}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-400">
+                                                            <div>
+                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">សាខាទទួលខុសត្រូវ</span>
+                                                                <span className="font-semibold text-zinc-200 font-khmer">
+                                                                    {userForm.data.location_ids?.length
+                                                                        ? locations
+                                                                              .filter((l) => userForm.data.location_ids.includes(l.id))
+                                                                              .map((l) => l.code)
+                                                                              .join(', ')
+                                                                        : 'គ្រប់សាខាទាំងអស់'}
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">ស្ថានភាពគណនី</span>
+                                                                <span className="font-mono text-emerald-400 font-semibold">Active & Audited</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Role Permissions Breakdown */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
+                                                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <KeyRound className="w-4 h-4 text-amber-500" />
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                            សិទ្ធិប្រតិបត្តិការក្នុងប្រព័ន្ធ (Permission Scope)
+                                                        </h3>
+                                                    </div>
+
+                                                    <ul className="space-y-2">
+                                                        {ROLE_CONFIG[userForm.data.role]?.permissions.map((perm, idx) => (
+                                                            <li key={idx} className="flex items-start gap-2 text-xs text-slate-700 dark:text-zinc-300 font-khmer">
+                                                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                                                                <span>{perm}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+
+                                                    <div className="pt-3 border-t border-slate-100 dark:border-zinc-800/80">
+                                                        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300 font-khmer flex items-start gap-2">
+                                                            <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                                                            <span>
+                                                                <strong>Invariant INV-07:</strong> រាល់សកម្មភាពរបស់បុគ្គលិក (លក់, កែប្រែ, បោះពុម្ព, បិទវេន) នឹងត្រូវកត់ត្រាស្វ័យប្រវត្តិក្នង Audit Trail ដោយមិនអាចលុបបានឡើយ។
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Fixed Action Footer */}
+                                    <div className="shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                                        <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                            <span>គណនីបុគ្គលិកថ្មីនឹងដំណើរការភ្លាមៗក្រោយបង្កើត</span>
                                         </div>
 
-                                        <div className="flex justify-end gap-2 pt-2">
-                                            <Button
+                                        <div className="flex items-center gap-2.5 ml-auto">
+                                            <button
                                                 type="button"
-                                                variant="ghost"
-                                                onClick={() => setShowUserModal(false)}
+                                                onClick={() => {
+                                                    setShowUserModal(false);
+                                                    userForm.reset();
+                                                }}
+                                                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                                             >
-                                                Cancel
-                                            </Button>
-                                            <Button type="submit" disabled={userForm.processing}>
-                                                Create Account
-                                            </Button>
+                                                បោះបង់
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={userForm.processing}
+                                                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all cursor-pointer font-khmer disabled:opacity-50"
+                                            >
+                                                <UserPlus className="w-4 h-4" />
+                                                <span>{userForm.processing ? 'កំពុងបង្កើត...' : 'បង្កើតគណនីបុគ្គលិក'}</span>
+                                            </button>
                                         </div>
-                                    </form>
-                                </Card>
-                            </div>
+                                    </div>
+                                </form>
+                            </div>,
+                            document.body
                         )}
 
                         {/* Modal: Archive User Confirmation */}
-                        {archiveTarget && (
-                            <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                                <Card className="w-full max-w-md p-6 space-y-4 bg-zinc-900 border-zinc-800">
-                                    <div className="flex items-center gap-2 text-rose-400">
-                                        <AlertCircle className="w-5 h-5" />
-                                        <h3 className="text-base font-bold">
-                                            Archive Staff Member: {archiveTarget.username}
-                                        </h3>
+                        {mounted && archiveTarget && createPortal(
+                            <div
+                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                                onWheel={(e) => e.stopPropagation()}
+                            >
+                                <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-500">
+                                                <Archive className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                                    ផ្អាក / ទុកជាឯកសារបុគ្គលិក
+                                                </h3>
+                                                <p className="text-xs text-rose-500 font-mono">
+                                                    Archive Staff: {archiveTarget.name} (@{archiveTarget.username})
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setArchiveTarget(null);
+                                                archiveForm.reset();
+                                            }}
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
+                                        >
+                                            <ArrowLeft className="w-3.5 h-3.5" />
+                                            <span>ត្រឡប់ក្រោយ</span>
+                                        </button>
                                     </div>
-                                    <p className="text-xs text-zinc-400">
-                                        Per invariant INV-07, historical operators are never deleted. Archiving deactivates account login while preserving full audit history.
-                                    </p>
-                                    <form onSubmit={submitArchive} className="space-y-3">
-                                        <div className="space-y-1.5">
-                                            <label className="block text-xs font-medium text-zinc-300">
-                                                Mandatory Archive Reason / មូលហេតុ
+
+                                    <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-khmer mb-4">
+                                        <div className="flex items-start gap-2">
+                                            <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                                            <div>
+                                                <strong>លក្ខខណ្ឌ INV-07 (Append-Only Invariant):</strong> គណនីបុគ្គលិកមិនត្រូវបានលុបចេញពី Database ឡើយ។ ការ Archive នឹងបិទសិទ្ធិចូលប្រើប្រព័ន្ធរបស់គណនីនេះ ខណៈប្រវត្តិប្រតិបត្តិការទាំងអស់ត្រូវបានរក្សាទុកដដែល។
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form onSubmit={submitArchive} className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
+                                                មូលហេតុច្បាស់លាស់នៃការផ្អាក (Mandatory Archive Reason) *
                                             </label>
                                             <textarea
                                                 required
                                                 value={archiveForm.data.reason}
-                                                onChange={(e) =>
-                                                    archiveForm.setData('reason', e.target.value)
-                                                }
-                                                placeholder="e.g. Resigned on 2026-10-13, completed clearance."
-                                                className="w-full px-3 py-2 text-xs text-zinc-100 bg-zinc-950 border border-zinc-800 rounded-lg outline-none focus:border-rose-500"
+                                                onChange={(e) => archiveForm.setData('reason', e.target.value)}
+                                                placeholder="ឧ. បុគ្គលិកឈប់ពីការងារនៅថ្ងៃទី... បានផ្ទេរការងារ និងទូទាត់ប្រាក់បំណាច់ចប់សព្វគ្រប់។"
                                                 rows={3}
+                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-rose-500 font-khmer transition-all"
                                             />
                                             {archiveForm.errors.reason && (
-                                                <p className="text-xs text-rose-400">
-                                                    {archiveForm.errors.reason}
-                                                </p>
+                                                <p className="text-[11px] text-rose-500 mt-1">{archiveForm.errors.reason}</p>
                                             )}
                                         </div>
 
-                                        <div className="flex justify-end gap-2 pt-2">
-                                            <Button
+                                        <div className="flex items-center justify-end gap-2.5 pt-2">
+                                            <button
                                                 type="button"
-                                                variant="ghost"
-                                                onClick={() => setArchiveTarget(null)}
+                                                onClick={() => {
+                                                    setArchiveTarget(null);
+                                                    archiveForm.reset();
+                                                }}
+                                                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                                             >
-                                                Cancel
-                                            </Button>
-                                            <Button
+                                                បោះបង់
+                                            </button>
+                                            <button
                                                 type="submit"
-                                                variant="danger"
                                                 disabled={archiveForm.processing}
+                                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer font-khmer disabled:opacity-50"
                                             >
-                                                Confirm Archive
-                                            </Button>
+                                                <Archive className="w-3.5 h-3.5" />
+                                                <span>{archiveForm.processing ? 'កំពុងផ្អាក...' : 'បញ្ជាក់ការផ្អាកគណនី'}</span>
+                                            </button>
                                         </div>
                                     </form>
-                                </Card>
-                            </div>
+                                </div>
+                            </div>,
+                            document.body
                         )}
                     </div>
                 )}
@@ -1086,50 +1573,62 @@ export default function SettingsIndex({
                 )}
 
                 {/* Restore Confirmation Modal */}
-                {showRestoreConfirm && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                        <Card className="max-w-md w-full p-6 space-y-4 border border-rose-500/30 dark:border-rose-600/40 bg-zinc-900 shadow-2xl animate-in fade-in zoom-in-95">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
-                                    <AlertTriangle className="w-5 h-5 text-rose-500 dark:text-rose-400" />
+                {mounted && showRestoreConfirm && createPortal(
+                    <div
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
+                        onWheel={(e) => e.stopPropagation()}
+                    >
+                        <div className="max-w-md w-full p-6 space-y-4 border border-rose-500/30 dark:border-rose-600/40 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl animate-in zoom-in-95">
+                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center shrink-0">
+                                        <AlertTriangle className="w-5 h-5 text-rose-500" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                            បញ្ជាក់ការស្ដារទិន្នន័យ (Database Restore)
+                                        </h3>
+                                        <p className="text-xs text-rose-500 font-mono truncate max-w-[240px]">
+                                            {restoreFile?.name}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-base font-bold text-white">
-                                        Confirm Destructive Database Restore
-                                    </h3>
-                                    <p className="text-xs text-zinc-400 truncate max-w-[280px]">
-                                        Archive: {restoreFile?.name}
-                                    </p>
-                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowRestoreConfirm(false)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
+                                >
+                                    <ArrowLeft className="w-3.5 h-3.5" />
+                                    <span>ត្រឡប់ក្រោយ</span>
+                                </button>
                             </div>
 
-                            <p className="text-xs text-zinc-300 leading-relaxed font-normal">
-                                Are you sure you want to replace live data? All existing database tables will be cleared and replaced with the contents of this archive. An emergency recovery point will be saved first to disk.
+                            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-khmer">
+                                តើអ្នកពិតជាចង់ជំនួសទិន្នន័យបច្ចុប្បន្នមែនទេ? តារាងទិន្នន័យទាំងអស់ក្នុង Database នឹងត្រូវលុប និងជំនួសដោយឯកសារ Backup នេះ។ ចំណុចសង្គ្រោះបន្ទាន់ (Emergency Recovery Point) នឹងត្រូវបានរក្សាទុកមុនពេលចាប់ផ្ដើម។
                             </p>
 
-                            <div className="flex items-center justify-end gap-3 pt-3">
-                                <Button
+                            <div className="flex items-center justify-end gap-2.5 pt-2">
+                                <button
                                     type="button"
-                                    variant="outline"
-                                    size="sm"
                                     disabled={isRestoring}
                                     onClick={() => setShowRestoreConfirm(false)}
-                                    className="border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700 font-semibold"
+                                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
+                                    បោះបង់
+                                </button>
+                                <button
                                     type="button"
-                                    size="sm"
                                     disabled={isRestoring}
                                     onClick={handleExecuteRestore}
-                                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold shadow-md shadow-rose-600/20"
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer font-khmer disabled:opacity-50"
                                 >
-                                    {isRestoring ? 'Restoring Database...' : 'Yes, Replace Database Now'}
-                                </Button>
+                                    <Database className="w-3.5 h-3.5" />
+                                    <span>{isRestoring ? 'កំពុងស្ដារទិន្នន័យ...' : 'យល់ព្រមជំនួសទិន្នន័យ'}</span>
+                                </button>
                             </div>
-                        </Card>
-                    </div>
+                        </div>
+                    </div>,
+                    document.body
                 )}
             </div>
         </AppLayout>
