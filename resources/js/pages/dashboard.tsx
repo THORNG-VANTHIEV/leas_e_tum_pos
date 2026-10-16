@@ -12,6 +12,11 @@ import {
     AlertTriangle,
     Calendar,
     ArrowUpRight,
+    ArrowDownRight,
+    TrendingUp,
+    TrendingDown,
+    WalletCards,
+    Truck,
     Shield,
     Activity,
     Settings,
@@ -31,6 +36,14 @@ interface DashboardProps {
             end_date: string;
         } | null;
         is_admin: boolean;
+        financial_summary?: {
+            gross_revenue: number;
+            operating_expenses: number;
+            stock_purchases: number;
+            total_expenses: number;
+            net_profit: number;
+            profit_margin_pct: number;
+        };
     };
     system_metrics?: {
         total_users: number;
@@ -189,6 +202,122 @@ export default function Dashboard({ stats, system_metrics }: DashboardProps) {
                         <p className="text-[11px] text-zinc-500 mt-1">Retained sequence numbers</p>
                     </Card>
                 </div>
+
+                {/* Financial Summary: Income vs Expense & Net Profit */}
+                {stats.financial_summary && (
+                    <div className="space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <h2 className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                                    <WalletCards className="w-4 h-4 text-emerald-500" />
+                                    Financial Overview / សង្ខេបចំណូល-ចំណាយ & ចំណេញសុទ្ធ
+                                </h2>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                    ទិន្នន័យប្រៀបធៀបចំណូលពីការលក់ ដកចំណាយប្រតិបត្តិការ និងការទិញទំនិញចូលស្តុក
+                                </p>
+                            </div>
+                            <Link
+                                href="/reports"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-800/80 hover:bg-zinc-700/80 text-zinc-200 border border-zinc-700/60 transition-all font-khmer cursor-pointer shadow-2xs w-fit"
+                            >
+                                <span>របាយការណ៍ហិរញ្ញវត្ថុពេញលេញ</span>
+                                <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Card 1: Gross Revenue */}
+                            <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span>Total Revenue / ចំណូលសរុប</span>
+                                    <TrendingUp className="w-4 h-4 text-emerald-400" />
+                                </div>
+                                <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                    ${stats.financial_summary.gross_revenue.toFixed(2)}
+                                </div>
+                                <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
+                                    ≈ {Math.round(stats.financial_summary.gross_revenue * 4100).toLocaleString()} ៛
+                                </div>
+                                <div className="text-[11px] text-zinc-400 font-khmer mt-2 pt-2 border-t border-zinc-800/60 flex items-center justify-between">
+                                    <span>ចំណូលលក់ទំនិញ</span>
+                                    <Link href="/reports" className="text-emerald-400 hover:underline">របាយការណ៍</Link>
+                                </div>
+                            </Card>
+
+                            {/* Card 2: Operating Expenses */}
+                            <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span>Operating Expenses / ចំណាយ</span>
+                                    <WalletCards className="w-4 h-4 text-rose-400" />
+                                </div>
+                                <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                    ${stats.financial_summary.operating_expenses.toFixed(2)}
+                                </div>
+                                <div className="text-xs text-rose-400/90 font-mono font-medium mt-1">
+                                    ≈ {Math.round(stats.financial_summary.operating_expenses * 4100).toLocaleString()} ៛
+                                </div>
+                                <div className="text-[11px] text-zinc-400 font-khmer mt-2 pt-2 border-t border-zinc-800/60 flex items-center justify-between">
+                                    <span>ទឹកភ្លើង សម្ភារៈ ប្រតិបត្តិការ</span>
+                                    <Link href="/expenses" className="text-rose-400 hover:underline">កត់ត្រាចំណាយ</Link>
+                                </div>
+                            </Card>
+
+                            {/* Card 3: Stock Purchases */}
+                            <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span>Purchases / ទិញទំនិញស្តុក</span>
+                                    <Truck className="w-4 h-4 text-amber-400" />
+                                </div>
+                                <div className="text-xl sm:text-2xl font-bold text-white font-mono">
+                                    ${stats.financial_summary.stock_purchases.toFixed(2)}
+                                </div>
+                                <div className="text-xs text-amber-400/90 font-mono font-medium mt-1">
+                                    ≈ {Math.round(stats.financial_summary.stock_purchases * 4100).toLocaleString()} ៛
+                                </div>
+                                <div className="text-[11px] text-zinc-400 font-khmer mt-2 pt-2 border-t border-zinc-800/60 flex items-center justify-between">
+                                    <span>ទិញចូលពីអ្នកផ្គត់ផ្គង់</span>
+                                    <Link href="/purchases" className="text-amber-400 hover:underline">បញ្ជីទិញចូល</Link>
+                                </div>
+                            </Card>
+
+                            {/* Card 4: Net Operating Profit */}
+                            <Card className={`p-4 rounded-2xl relative overflow-hidden border ${
+                                stats.financial_summary.net_profit >= 0
+                                    ? 'bg-emerald-950/20 border-emerald-500/30'
+                                    : 'bg-rose-950/20 border-rose-500/30'
+                            }`}>
+                                <div className="flex items-center justify-between text-xs mb-1">
+                                    <span className={stats.financial_summary.net_profit >= 0 ? 'text-emerald-400 font-medium' : 'text-rose-400 font-medium'}>
+                                        Net Profit / {stats.financial_summary.net_profit >= 0 ? 'ចំណេញសុទ្ធ' : 'ខាតបង់'}
+                                    </span>
+                                    {stats.financial_summary.net_profit >= 0 ? (
+                                        <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+                                    ) : (
+                                        <ArrowDownRight className="w-4 h-4 text-rose-400" />
+                                    )}
+                                </div>
+                                <div className={`text-xl sm:text-2xl font-bold font-mono ${
+                                    stats.financial_summary.net_profit >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                                }`}>
+                                    ${stats.financial_summary.net_profit.toFixed(2)}
+                                </div>
+                                <div className="text-xs font-mono font-medium mt-1 text-zinc-300">
+                                    ≈ {Math.round(stats.financial_summary.net_profit * 4100).toLocaleString()} ៛
+                                </div>
+                                <div className="text-[11px] font-mono mt-2 pt-2 border-t border-zinc-800/60 flex items-center justify-between">
+                                    <span className="text-zinc-400 font-khmer">Margin %:</span>
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                        stats.financial_summary.net_profit >= 0
+                                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                            : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                    }`}>
+                                        {stats.financial_summary.profit_margin_pct}%
+                                    </span>
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
+                )}
 
                 {/* System & Audit Section (Admin View) */}
                 {user?.role === 'admin' && system_metrics && (

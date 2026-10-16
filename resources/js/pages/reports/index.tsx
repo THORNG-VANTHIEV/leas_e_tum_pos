@@ -17,10 +17,31 @@ import {
     Calendar,
     Clock,
     ArrowUpRight,
+    ArrowDownRight,
+    TrendingUp,
+    TrendingDown,
+    WalletCards,
+    Truck,
     Ban,
     AlertTriangle,
     Eye,
+    Scale,
+    FileSpreadsheet,
+    PieChart,
+    Layers,
 } from 'lucide-react';
+
+const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
+    utilities: { nameKh: 'ថ្លៃទឹក-ភ្លើង-សំរាម', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
+    supplies: { nameKh: 'សម្ភារៈប្រើប្រាស់ក្នុងហាង', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' },
+    marketing: { nameKh: 'ផ្សព្វផ្សាយ & ទីផ្សារ', color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
+    maintenance: { nameKh: 'ជួសជុល & ថែទាំ', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
+    salaries: { nameKh: 'ប្រាក់បៀវត្សរ៍ & ឧបត្ថម្ភ', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+    petty_cash: { nameKh: 'ចំណាយរាយកំប៉ិកកំប៉ុក', color: 'text-zinc-400 bg-zinc-500/10 border-zinc-500/30' },
+    inventory: { nameKh: 'ទំនិញ & គ្រឿងផ្សំបន្ទាន់', color: 'text-teal-400 bg-teal-500/10 border-teal-500/30' },
+    transport: { nameKh: 'ដឹកជញ្ជូន & ធ្វើដំណើរ', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' },
+    other: { nameKh: 'ចំណាយផ្សេងៗ', color: 'text-zinc-400 bg-zinc-800 border-zinc-700' },
+};
 
 interface ReportsPageProps {
     metrics: {
@@ -37,6 +58,25 @@ interface ReportsPageProps {
         void_count: number;
         void_value: string;
         unverified_count: number;
+    };
+    financialSummary?: {
+        gross_sales: string;
+        discounts: string;
+        net_sales: string;
+        operating_expenses: number;
+        operating_expenses_khr: number;
+        stock_purchases: number;
+        total_outgoing: number;
+        net_profit: number;
+        profit_margin_pct: number;
+        expense_categories: {
+            category: string;
+            count: number;
+            total_usd: number;
+            total_khr: number;
+        }[];
+        expenses_count: number;
+        purchases_count: number;
     };
     cashierBreakdown: {
         cashier_id: number;
@@ -77,6 +117,7 @@ interface ReportsPageProps {
 
 export default function ReportsIndex({
     metrics,
+    financialSummary,
     cashierBreakdown,
     documents,
     periods,
@@ -86,10 +127,13 @@ export default function ReportsIndex({
     const { auth, business } = usePage<PageProps>().props;
     const isAdmin = auth.user?.role === 'admin';
 
+    const [activeTab, setActiveTab] = useState<'sales' | 'pnl'>('sales');
     const [periodId, setPeriodId] = useState(filters.period_id || '');
     const [startDate, setStartDate] = useState(filters.start_date || '');
     const [endDate, setEndDate] = useState(filters.end_date || '');
     const [cashierId, setCashierId] = useState(filters.cashier_id || '');
+
+    const isProfitable = (financialSummary?.net_profit ?? 0) >= 0;
 
     const handleApplyFilters = () => {
         router.get(
@@ -290,8 +334,52 @@ export default function ReportsIndex({
                     </Card>
                 </div>
 
-                {/* KPI Metrics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* View Mode Switcher: Sales Register vs Profit & Loss */}
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+                    <div className="flex items-center gap-2 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('sales')}
+                            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                activeTab === 'sales'
+                                    ? 'bg-white dark:bg-zinc-800 text-teal-600 dark:text-teal-400 shadow-xs'
+                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                        >
+                            <Receipt className="w-3.5 h-3.5" />
+                            <span>របាយការណ៍លក់ & វិក្កយបត្រ (Sales Register)</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('pnl')}
+                            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                activeTab === 'pnl'
+                                    ? 'bg-white dark:bg-zinc-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                            }`}
+                        >
+                            <Scale className="w-3.5 h-3.5" />
+                            <span>សង្ខេបចំណូល-ចំណាយ & ចំណេញសុទ្ធ (Profit & Loss / P&L)</span>
+                        </button>
+                    </div>
+
+                    {financialSummary && (
+                        <div className="flex items-center gap-2 text-xs">
+                            <span className="text-zinc-500 font-khmer">ស្ថានភាពទូទៅ:</span>
+                            <Badge
+                                variant={isProfitable ? 'emerald' : 'rose'}
+                                className="font-mono text-[11px] px-2.5 py-0.5"
+                            >
+                                {isProfitable ? '+' : ''}{financialSummary.profit_margin_pct}% Margin
+                            </Badge>
+                        </div>
+                    )}
+                </div>
+
+                {activeTab === 'sales' ? (
+                    <>
+                        {/* KPI Metrics Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Gross Sales */}
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
@@ -498,6 +586,387 @@ export default function ReportsIndex({
                         </table>
                     </Card>
                 </div>
+                    </>
+                ) : (
+                    <div className="space-y-6">
+                        {/* P&L KPI Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Card 1: Net Revenue */}
+                            <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span className="font-medium">1. Net Revenue / ចំណូលលក់សុទ្ធ</span>
+                                    <TrendingUp className="w-4 h-4 text-emerald-400" />
+                                </div>
+                                <div className="mt-2">
+                                    <div className="text-2xl font-bold font-mono text-emerald-400">
+                                        {business.currency_symbol}{financialSummary?.net_sales ?? metrics.net_sales}
+                                    </div>
+                                    <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
+                                        ≈ {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
+                                    </div>
+                                    <div className="text-[11px] text-zinc-500 font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                                        <span>លក់ដុល: {business.currency_symbol}{financialSummary?.gross_sales ?? metrics.gross_sales}</span>
+                                        <span className="text-rose-400">បញ្ចុះតម្លៃ: -{business.currency_symbol}{financialSummary?.discounts ?? metrics.discounts}</span>
+                                    </div>
+                                </div>
+                            </Card>
+
+                            {/* Card 2: Operating Expenses */}
+                            <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span className="font-medium">2. Operating Expenses / ចំណាយប្រតិបត្តិការ</span>
+                                    <WalletCards className="w-4 h-4 text-amber-400" />
+                                </div>
+                                <div className="mt-2">
+                                    <div className="text-2xl font-bold font-mono text-amber-400">
+                                        {business.currency_symbol}{(financialSummary?.operating_expenses ?? 0).toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
+                                        ≈ {(financialSummary?.operating_expenses_khr ?? 0).toLocaleString()} ៛
+                                    </div>
+                                    <div className="text-[11px] text-zinc-500 font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                                        <span>{financialSummary?.expenses_count ?? 0} ប័ណ្ណចំណាយកត់ត្រា</span>
+                                        <Link href="/expenses" className="text-amber-400 hover:underline">
+                                            មើលបញ្ជី &rarr;
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Card>
+
+                            {/* Card 3: Stock Purchases */}
+                            <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span className="font-medium">3. Stock Purchases / ទិញចូលស្តុក</span>
+                                    <Truck className="w-4 h-4 text-sky-400" />
+                                </div>
+                                <div className="mt-2">
+                                    <div className="text-2xl font-bold font-mono text-sky-400">
+                                        {business.currency_symbol}{(financialSummary?.stock_purchases ?? 0).toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
+                                        ≈ {Math.round((financialSummary?.stock_purchases ?? 0) * 4100).toLocaleString()} ៛
+                                    </div>
+                                    <div className="text-[11px] text-zinc-500 font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                                        <span>{financialSummary?.purchases_count ?? 0} វិក្កយបត្រទិញ</span>
+                                        <Link href="/purchases" className="text-sky-400 hover:underline">
+                                            មើលស្តុក &rarr;
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Card>
+
+                            {/* Card 4: Net Operating Profit */}
+                            <Card className={`p-4 rounded-2xl flex flex-col justify-between relative overflow-hidden border ${
+                                isProfitable
+                                    ? 'bg-emerald-950/20 border-emerald-500/30'
+                                    : 'bg-rose-950/20 border-rose-500/30'
+                            }`}>
+                                <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
+                                    <span className="font-medium">4. Net Profit / ចំណេញសុទ្ធ</span>
+                                    {isProfitable ? (
+                                        <TrendingUp className="w-4 h-4 text-emerald-400" />
+                                    ) : (
+                                        <TrendingDown className="w-4 h-4 text-rose-400" />
+                                    )}
+                                </div>
+                                <div className="mt-2">
+                                    <div className={`text-2xl font-bold font-mono ${
+                                        isProfitable ? 'text-emerald-400' : 'text-rose-400'
+                                    }`}>
+                                        {isProfitable ? '+' : ''}{business.currency_symbol}{(financialSummary?.net_profit ?? 0).toFixed(2)}
+                                    </div>
+                                    <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
+                                        ≈ {Math.round((financialSummary?.net_profit ?? 0) * 4100).toLocaleString()} ៛
+                                    </div>
+                                    <div className="text-[11px] font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                                        <span className={isProfitable ? 'text-emerald-400 font-medium' : 'text-rose-400 font-medium'}>
+                                            {isProfitable ? 'ចំណេញ (Profitable)' : 'ខាត (Operating Loss)'}
+                                        </span>
+                                        <span className="font-mono font-bold text-zinc-300">
+                                            {financialSummary?.profit_margin_pct ?? 0}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+
+                        {/* Financial Statement & Breakdown Layout */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* P&L Comparative Statement (2 Cols) */}
+                            <div className="lg:col-span-2 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <FileSpreadsheet className="w-4 h-4 text-teal-400" />
+                                        <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
+                                            Profit & Loss Statement / តារាងរបាយការណ៍ចំណេញ-ខាតផ្លូវការ
+                                        </h2>
+                                    </div>
+                                    <span className="text-[11px] text-zinc-400 font-mono">
+                                        Period: {periods.find(p => String(p.id) === String(periodId))?.name || 'All Periods'}
+                                    </span>
+                                </div>
+
+                                <Card className="overflow-hidden bg-zinc-900/80 border-zinc-800">
+                                    <table className="w-full text-left border-collapse text-xs">
+                                        <thead>
+                                            <tr className="bg-zinc-950/80 text-zinc-400 border-b border-zinc-800 font-mono">
+                                                <th className="p-3">Financial Line Item / មុខទំនិញ-ប្រតិបត្តិការ</th>
+                                                <th className="p-3 text-right">USD ($)</th>
+                                                <th className="p-3 text-right">KHR (៛)</th>
+                                                <th className="p-3 text-right">% of Net Revenue</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-zinc-800/60 font-sans">
+                                            {/* Section 1: Revenue */}
+                                            <tr className="bg-zinc-800/20 font-semibold text-zinc-300">
+                                                <td colSpan={4} className="p-2.5 px-3 text-[11px] uppercase tracking-wider text-teal-400">
+                                                    1. Operating Revenues / ចំណូលពីអាជីវកម្ម
+                                                </td>
+                                            </tr>
+                                            <tr className="hover:bg-zinc-800/30">
+                                                <td className="p-3 pl-6 text-zinc-300">
+                                                    Gross Sales / ចំណូលលក់ដុលសរុប ({metrics.total_documents} វិក្កយបត្រ)
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-zinc-200">
+                                                    {business.currency_symbol}{financialSummary?.gross_sales ?? metrics.gross_sales}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-zinc-400">
+                                                    {Math.round((parseFloat(financialSummary?.gross_sales ?? metrics.gross_sales) || 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-zinc-400">
+                                                    —
+                                                </td>
+                                            </tr>
+                                            <tr className="hover:bg-zinc-800/30">
+                                                <td className="p-3 pl-6 text-rose-400">
+                                                    (-) Customer Discounts & Vouchers / បញ្ចុះតម្លៃ
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400">
+                                                    -{business.currency_symbol}{financialSummary?.discounts ?? metrics.discounts}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400/80">
+                                                    -{Math.round((parseFloat(financialSummary?.discounts ?? metrics.discounts) || 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400/80">
+                                                    {((parseFloat(financialSummary?.discounts ?? metrics.discounts) || 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
+                                                </td>
+                                            </tr>
+                                            <tr className="bg-teal-950/20 font-semibold border-b border-zinc-800">
+                                                <td className="p-3 pl-6 text-teal-300">
+                                                    = Net Sales Revenue / ចំណូលលក់សុទ្ធ
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-teal-300 font-bold">
+                                                    {business.currency_symbol}{financialSummary?.net_sales ?? metrics.net_sales}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-teal-300">
+                                                    {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-teal-300 font-bold">
+                                                    100.0%
+                                                </td>
+                                            </tr>
+
+                                            {/* Section 2: Stock Purchases */}
+                                            <tr className="bg-zinc-800/20 font-semibold text-zinc-300">
+                                                <td colSpan={4} className="p-2.5 px-3 text-[11px] uppercase tracking-wider text-sky-400">
+                                                    2. Stock & Inventory Purchases / ថ្លៃដើមទិញស្តុក & គ្រឿងផ្សំ
+                                                </td>
+                                            </tr>
+                                            <tr className="hover:bg-zinc-800/30">
+                                                <td className="p-3 pl-6 text-zinc-300">
+                                                    Stock Restocking & Purchases / វិក្កយបត្រទិញចូលស្តុក ({financialSummary?.purchases_count ?? 0} លើក)
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-sky-400">
+                                                    {business.currency_symbol}{(financialSummary?.stock_purchases ?? 0).toFixed(2)}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-zinc-400">
+                                                    {Math.round((financialSummary?.stock_purchases ?? 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-zinc-400">
+                                                    {((financialSummary?.stock_purchases ?? 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
+                                                </td>
+                                            </tr>
+
+                                            {/* Section 3: Operating Expenses */}
+                                            <tr className="bg-zinc-800/20 font-semibold text-zinc-300">
+                                                <td colSpan={4} className="p-2.5 px-3 text-[11px] uppercase tracking-wider text-amber-400">
+                                                    3. Operating Expenses / ចំណាយប្រតិបត្តិការទូទៅ
+                                                </td>
+                                            </tr>
+                                            {financialSummary?.expense_categories && financialSummary.expense_categories.length > 0 ? (
+                                                financialSummary.expense_categories.map((cat) => {
+                                                    const info = CATEGORY_MAP[cat.category] || { nameKh: cat.category, color: 'text-zinc-400' };
+                                                    return (
+                                                        <tr key={cat.category} className="hover:bg-zinc-800/30">
+                                                            <td className="p-3 pl-6 text-zinc-300">
+                                                                <span className="font-khmer">{info.nameKh}</span>
+                                                                <span className="text-[11px] text-zinc-500 font-mono ml-2">({cat.category} • {cat.count} លើក)</span>
+                                                            </td>
+                                                            <td className="p-3 text-right font-mono text-amber-300">
+                                                                {business.currency_symbol}{cat.total_usd.toFixed(2)}
+                                                            </td>
+                                                            <td className="p-3 text-right font-mono text-zinc-400">
+                                                                {cat.total_khr.toLocaleString()} ៛
+                                                            </td>
+                                                            <td className="p-3 text-right font-mono text-zinc-400">
+                                                                {(cat.total_usd / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={4} className="p-3 pl-6 text-zinc-500 italic">
+                                                        គ្មានចំណាយប្រតិបត្តិការកត់ត្រាក្នុងកំឡុងពេលនេះឡើយ
+                                                    </td>
+                                                </tr>
+                                            )}
+                                            <tr className="bg-amber-950/20 font-semibold border-b border-zinc-800">
+                                                <td className="p-3 pl-6 text-amber-300">
+                                                    = Total Operating Expenses / សរុបចំណាយប្រតិបត្តិការ
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-amber-300 font-bold">
+                                                    {business.currency_symbol}{(financialSummary?.operating_expenses ?? 0).toFixed(2)}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-amber-300">
+                                                    {(financialSummary?.operating_expenses_khr ?? 0).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-amber-300 font-bold">
+                                                    {((financialSummary?.operating_expenses ?? 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
+                                                </td>
+                                            </tr>
+
+                                            {/* Section 4: Total Outgoing */}
+                                            <tr className="bg-zinc-950/60 font-semibold">
+                                                <td className="p-3 text-zinc-300">
+                                                    4. Total Outgoing / ចំណាយ & ថ្លៃដើមសរុប (Purchases + Expenses)
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400 font-bold text-sm">
+                                                    {business.currency_symbol}{(financialSummary?.total_outgoing ?? 0).toFixed(2)}
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400">
+                                                    {Math.round((financialSummary?.total_outgoing ?? 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-3 text-right font-mono text-rose-400 font-bold">
+                                                    {((financialSummary?.total_outgoing ?? 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
+                                                </td>
+                                            </tr>
+
+                                            {/* Section 5: Net Operating Profit */}
+                                            <tr className={`font-bold text-sm ${
+                                                isProfitable
+                                                    ? 'bg-emerald-950/50 text-emerald-300 border-t-2 border-emerald-500/50'
+                                                    : 'bg-rose-950/50 text-rose-300 border-t-2 border-rose-500/50'
+                                            }`}>
+                                                <td className="p-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <Scale className="w-5 h-5 shrink-0" />
+                                                        <div>
+                                                            <div>5. NET OPERATING PROFIT / ចំណេញប្រតិបត្តិការសុទ្ធ</div>
+                                                            <div className="text-[11px] font-normal opacity-80 font-khmer mt-0.5">
+                                                                (ចំណូលលក់សុទ្ធ - ចំណាយទិញស្តុក - ចំណាយប្រតិបត្តិការ)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-right font-mono text-base font-black">
+                                                    {isProfitable ? '+' : ''}{business.currency_symbol}{(financialSummary?.net_profit ?? 0).toFixed(2)}
+                                                </td>
+                                                <td className="p-4 text-right font-mono">
+                                                    {Math.round((financialSummary?.net_profit ?? 0) * 4100).toLocaleString()} ៛
+                                                </td>
+                                                <td className="p-4 text-right font-mono text-base font-black">
+                                                    {financialSummary?.profit_margin_pct ?? 0}%
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </Card>
+                            </div>
+
+                            {/* Expense Category Distribution & Quick Links (1 Col) */}
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2">
+                                    <PieChart className="w-4 h-4 text-amber-400" />
+                                    <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
+                                        Expense Category Breakdown
+                                    </h2>
+                                </div>
+
+                                <Card className="p-4 bg-zinc-900/80 border-zinc-800 space-y-4">
+                                    {financialSummary?.expense_categories && financialSummary.expense_categories.length > 0 ? (
+                                        financialSummary.expense_categories.map((cat) => {
+                                            const info = CATEGORY_MAP[cat.category] || { nameKh: cat.category, color: 'text-zinc-400 bg-zinc-800 border-zinc-700' };
+                                            const totalExpense = financialSummary.operating_expenses || 1;
+                                            const pct = Math.round((cat.total_usd / totalExpense) * 100);
+
+                                            return (
+                                                <div key={cat.category} className="space-y-1.5">
+                                                    <div className="flex items-center justify-between text-xs">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <span className="font-khmer font-medium text-zinc-200">
+                                                                {info.nameKh}
+                                                            </span>
+                                                            <span className="text-[10px] text-zinc-500 font-mono">
+                                                                ({cat.count})
+                                                            </span>
+                                                        </div>
+                                                        <div className="text-right font-mono">
+                                                            <span className="font-bold text-zinc-200">
+                                                                {business.currency_symbol}{cat.total_usd.toFixed(2)}
+                                                            </span>
+                                                            <span className="text-zinc-500 text-[10px] ml-1.5">
+                                                                ({pct}%)
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-amber-400 rounded-full transition-all"
+                                                            style={{ width: `${Math.min(pct, 100)}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-center py-6 text-xs text-zinc-500 font-khmer">
+                                            មិនមានការបែងចែកប្រភេទចំណាយទេ
+                                        </div>
+                                    )}
+
+                                    <div className="pt-3 border-t border-zinc-800 space-y-2">
+                                        <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
+                                            Quick Navigation
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Link href="/expenses">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="w-full h-8 text-xs border-zinc-700/60 bg-zinc-800/60 hover:bg-zinc-700 text-zinc-300 gap-1.5 justify-start cursor-pointer"
+                                                >
+                                                    <WalletCards className="w-3.5 h-3.5 text-amber-400" />
+                                                    <span>គ្រប់គ្រងចំណាយ</span>
+                                                </Button>
+                                            </Link>
+                                            <Link href="/purchases">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="w-full h-8 text-xs border-zinc-700/60 bg-zinc-800/60 hover:bg-zinc-700 text-zinc-300 gap-1.5 justify-start cursor-pointer"
+                                                >
+                                                    <Truck className="w-3.5 h-3.5 text-sky-400" />
+                                                    <span>ទិញចូលស្តុក</span>
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </Card>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

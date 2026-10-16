@@ -4,7 +4,9 @@ namespace App\Features\Reports\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\Expense;
 use App\Models\Period;
+use App\Models\Purchase;
 use App\Models\User;
 use App\Support\Money\Money;
 use Illuminate\Http\Request;
@@ -122,6 +124,65 @@ class ReportController extends Controller
             ];
         }
 
+        // Financial P&L: Expenses Query
+        $expenseQuery = Expense::query()->with('creator');
+        if ($selectedPeriodId) {
+            $expenseQuery->where('period_id', $selectedPeriodId);
+        }
+        if ($startDate) {
+            $expenseQuery->whereDate('expense_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $expenseQuery->whereDate('expense_date', '<=', $endDate);
+        }
+        $expenses = $expenseQuery->get();
+        $totalExpensesUsd = (float) $expenses->sum('amount_usd');
+        $totalExpensesKhr = (int) $expenses->sum('amount_khr');
+
+        // Expense category breakdown
+        $expenseCategoryBreakdown = $expenses->groupBy('category')->map(function ($items, $category) {
+            return [
+                'category' => $category,
+                'count' => $items->count(),
+                'total_usd' => (float) $items->sum('amount_usd'),
+                'total_khr' => (int) $items->sum('amount_khr'),
+            ];
+        })->values();
+
+        // Financial P&L: Purchases Query
+        $purchaseQuery = Purchase::query()->with('supplier')->where('status', '!=', 'cancelled');
+        if ($selectedPeriodId) {
+            $purchaseQuery->where('period_id', $selectedPeriodId);
+        }
+        if ($startDate) {
+            $purchaseQuery->whereDate('purchase_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $purchaseQuery->whereDate('purchase_date', '<=', $endDate);
+        }
+        $purchases = $purchaseQuery->get();
+        $totalPurchasesUsd = (float) $purchases->sum('total_amount');
+
+        $netSalesUsd = $netSalesCents / 100;
+        $totalOutgoingUsd = $totalExpensesUsd + $totalPurchasesUsd;
+        $netProfitUsd = $netSalesUsd - $totalOutgoingUsd;
+        $profitMarginPct = $netSalesUsd > 0 ? round(($netProfitUsd / $netSalesUsd) * 100, 1) : 0;
+
+        $financialSummary = [
+            'gross_sales' => Money::fromCents($grossSalesCents),
+            'discounts' => Money::fromCents($discountCents),
+            'net_sales' => Money::fromCents($netSalesCents),
+            'operating_expenses' => round($totalExpensesUsd, 2),
+            'operating_expenses_khr' => $totalExpensesKhr,
+            'stock_purchases' => round($totalPurchasesUsd, 2),
+            'total_outgoing' => round($totalOutgoingUsd, 2),
+            'net_profit' => round($netProfitUsd, 2),
+            'profit_margin_pct' => $profitMarginPct,
+            'expense_categories' => $expenseCategoryBreakdown,
+            'expenses_count' => $expenses->count(),
+            'purchases_count' => $purchases->count(),
+        ];
+
         $periods = Period::orderByDesc('id')->get(['id', 'code', 'name', 'status']);
         $cashiers = $user->isAdmin()
             ? User::where('role', '!=', 'super_admin')->get(['id', 'name', 'username'])
@@ -146,6 +207,7 @@ class ReportController extends Controller
                 'void_value' => Money::fromCents($voidValueCents),
                 'unverified_count' => $unverifiedCount,
             ],
+            'financialSummary' => $financialSummary,
             'cashierBreakdown' => $cashierBreakdown,
             'documents' => $documents,
             'periods' => $periods,
