@@ -61,6 +61,43 @@ interface FloorProps {
     };
 }
 
+interface ChairLayout {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+    round: number;
+    hidden: number;
+}
+
+// Distribute preview chairs around the table; seats beyond what fits are counted as hidden
+function getChairLayout(shape: string, capacity: number): ChairLayout {
+    const layout: ChairLayout = { top: 0, right: 0, bottom: 0, left: 0, round: 0, hidden: 0 };
+
+    if (shape === 'round') {
+        layout.round = Math.min(capacity, 12);
+    } else if (shape === 'rectangle') {
+        // Long sides first (max 5 each), ends get 1 chair from 6 seats and 2 from 12 seats
+        const drawn = Math.min(capacity, 14);
+        const perEnd = drawn >= 12 ? 2 : drawn >= 6 ? 1 : 0;
+        const longSides = drawn - perEnd * 2;
+        layout.top = Math.ceil(longSides / 2);
+        layout.bottom = Math.floor(longSides / 2);
+        layout.left = perEnd;
+        layout.right = perEnd;
+    } else {
+        // Square: fill all four sides evenly (max 3 per side)
+        const order = ['top', 'bottom', 'right', 'left'] as const;
+        for (let i = 0; i < Math.min(capacity, 12); i++) {
+            layout[order[i % 4]]++;
+        }
+    }
+
+    layout.hidden = capacity - (layout.top + layout.right + layout.bottom + layout.left + layout.round);
+
+    return layout;
+}
+
 export default function FloorIndex({ tables, zones, currentZone, metrics }: FloorProps) {
     const [mounted, setMounted] = useState(false);
     const [selectedZone, setSelectedZone] = useState<string>(currentZone);
@@ -173,6 +210,8 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                 return <Square className="w-3.5 h-3.5 text-zinc-400" />;
         }
     };
+
+    const chairLayout = getChairLayout(addForm.shape, addForm.capacity);
 
     return (
         <AppLayout title="Floor & Tables">
@@ -482,7 +521,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             <div className="grid grid-cols-2 gap-3.5">
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        កូដតុ * <span className="font-normal text-zinc-400 font-mono">(Code)</span>
+                                                        កូដតុ <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Code)</span>
                                                     </label>
                                                     <div className="relative">
                                                         <Hash className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
@@ -498,7 +537,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        ឈ្មោះតុ * <span className="font-normal text-zinc-400">(Name)</span>
+                                                        ឈ្មោះតុ <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Name)</span>
                                                     </label>
                                                     <div className="relative">
                                                         <Utensils className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
@@ -518,7 +557,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             <div className="space-y-1.5">
                                                 <div className="flex items-center justify-between">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        តំបន់ / ផ្នែក * <span className="font-normal text-zinc-400 font-mono">(Zone)</span>
+                                                        តំបន់ / ផ្នែក <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Zone)</span>
                                                     </label>
                                                     <span className="text-[11px] text-zinc-400 font-khmer">ជ្រើសរើស ឬវាយបញ្ចូលថ្មី</span>
                                                 </div>
@@ -577,7 +616,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             {/* Shape Selector */}
                                             <div className="space-y-1.5">
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    រាងតុ <span className="font-normal text-zinc-400 font-mono">(Table Shape)</span>
+                                                    រាងតុ <span className="font-normal text-zinc-400">(Table Shape)</span>
                                                 </label>
                                                 <div className="grid grid-cols-3 gap-3">
                                                     {[
@@ -609,12 +648,9 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                                             {/* Seating Stepper & Preset Pills */}
                                             <div className="space-y-1.5">
-                                                <div className="flex items-center justify-between">
-                                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        ចំនួនកៅអី <span className="font-normal text-zinc-400 font-mono">(Seating Capacity)</span>
-                                                    </label>
-                                                    <span className="text-[11px] text-zinc-400 font-mono">{addForm.capacity} Pax</span>
-                                                </div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                                                    ចំនួនកៅអី <span className="font-normal text-zinc-400">(Seating Capacity)</span>
+                                                </label>
                                                 <div className="flex items-center gap-2">
                                                     {/* Stepper */}
                                                     <div className="flex items-center h-10 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/80 overflow-hidden shadow-2xs shrink-0">
@@ -676,7 +712,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             </div>
                                             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-khmer">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                តុទំនេរ (New Table)
+                                                តុថ្មី (New Table)
                                             </span>
                                         </div>
 
@@ -713,7 +749,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     {/* Chairs around Round Table */}
                                                     {addForm.shape === 'round' && (
                                                         <div className="absolute inset-0 pointer-events-none">
-                                                            {Array.from({ length: Math.min(addForm.capacity, 12) }).map((_, i, arr) => {
+                                                            {Array.from({ length: chairLayout.round }).map((_, i, arr) => {
                                                                 const angle = (i / arr.length) * 2 * Math.PI - Math.PI / 2;
                                                                 const r = 78;
                                                                 const cx = 96 + r * Math.cos(angle);
@@ -735,23 +771,41 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                                                     {/* Chairs around Square/Rectangle Table */}
                                                     {addForm.shape !== 'round' && (
-                                                        <div className="absolute inset-0 pointer-events-none flex flex-col justify-between items-center py-2 px-3">
-                                                            {/* Top Chairs */}
-                                                            <div className="flex gap-2.5">
-                                                                {Array.from({ length: Math.ceil(Math.min(addForm.capacity, 10) / 2) }).map((_, i) => (
-                                                                    <div key={`top-${i}`} className="w-4 h-2.5 rounded-t-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs" />
+                                                        <div className="absolute inset-0 pointer-events-none">
+                                                            {/* Top Chairs (6px from table edge) */}
+                                                            <div className="absolute top-4 inset-x-0 flex justify-center gap-2.5">
+                                                                {Array.from({ length: chairLayout.top }).map((_, i) => (
+                                                                    <div key={`top-${i}`} className="w-4 h-2.5 rounded-t-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs transition-all duration-300" />
                                                                 ))}
                                                             </div>
                                                             {/* Bottom Chairs */}
-                                                            <div className="flex gap-2.5">
-                                                                {Array.from({ length: Math.floor(Math.min(addForm.capacity, 10) / 2) }).map((_, i) => (
-                                                                    <div key={`bot-${i}`} className="w-4 h-2.5 rounded-b-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs" />
+                                                            <div className="absolute bottom-4 inset-x-0 flex justify-center gap-2.5">
+                                                                {Array.from({ length: chairLayout.bottom }).map((_, i) => (
+                                                                    <div key={`bot-${i}`} className="w-4 h-2.5 rounded-b-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs transition-all duration-300" />
+                                                                ))}
+                                                            </div>
+                                                            {/* Left Chairs */}
+                                                            <div className="absolute left-4 inset-y-0 flex flex-col justify-center gap-2.5">
+                                                                {Array.from({ length: chairLayout.left }).map((_, i) => (
+                                                                    <div key={`left-${i}`} className="w-2.5 h-4 rounded-l-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs transition-all duration-300" />
+                                                                ))}
+                                                            </div>
+                                                            {/* Right Chairs */}
+                                                            <div className="absolute right-4 inset-y-0 flex flex-col justify-center gap-2.5">
+                                                                {Array.from({ length: chairLayout.right }).map((_, i) => (
+                                                                    <div key={`right-${i}`} className="w-2.5 h-4 rounded-r-md bg-amber-500 border border-amber-600 dark:border-amber-400 shadow-2xs transition-all duration-300" />
                                                                 ))}
                                                             </div>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
+
+                                            {chairLayout.hidden > 0 && (
+                                                <span className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-khmer">
+                                                    +{chairLayout.hidden} កៅអីមិនបានបង្ហាញ
+                                                </span>
+                                            )}
 
                                             <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2 font-khmer">
                                                 {addForm.zone || 'គ្រប់តំបន់ទាំងអស់'}
@@ -774,7 +828,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             </div>
                                             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
                                                 <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">កៅអី</div>
-                                                <div className="text-xs font-bold text-amber-500 font-mono mt-0.5">
+                                                <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">
                                                     {addForm.capacity} Pax
                                                 </div>
                                             </div>
@@ -787,7 +841,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 flex items-center justify-between shrink-0 shadow-xs">
                                 <div className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:flex items-center gap-2 font-khmer">
                                     <span className="w-2 h-2 rounded-full bg-amber-500" />
-                                    * តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត និងអាចចាប់ផ្តើមទទួលភ្ញៀវបាន
+                                    តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត និងអាចចាប់ផ្តើមទទួលភ្ញៀវបាន
                                 </div>
                                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                                     <button
