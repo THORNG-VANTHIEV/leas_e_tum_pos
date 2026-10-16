@@ -1409,89 +1409,232 @@ export default function SettingsIndex({
                             document.body
                         )}
 
-                        {/* Modal: Archive User Confirmation */}
+                        {/* Modal: Archive User Full-Workspace Suite */}
                         {mounted && archiveTarget && createPortal(
                             <div
-                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                                 onWheel={(e) => e.stopPropagation()}
                             >
-                                <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-500">
-                                                <Archive className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    ផ្អាក / ទុកជាឯកសារបុគ្គលិក
+                                {/* Header */}
+                                <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-xs shrink-0">
+                                            <Archive className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    ផ្អាក និងទុកជាឯកសារគណនីបុគ្គលិក
                                                 </h3>
-                                                <p className="text-xs text-rose-500 font-mono">
-                                                    Archive Staff: {archiveTarget.name} (@{archiveTarget.username})
+                                                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-mono">
+                                                    Deactivation Protocol
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                បុគ្គលិក៖ <strong className="text-zinc-900 dark:text-white">{archiveTarget.name}</strong> (@{archiveTarget.username}) • តួនាទី៖ <span className="font-mono uppercase font-semibold text-rose-500">{archiveTarget.role}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setArchiveTarget(null);
+                                            archiveForm.reset();
+                                        }}
+                                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                        title="ត្រឡប់ក្រោយ (Esc)"
+                                    >
+                                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-rose-600 dark:text-rose-400" />
+                                        <span>ត្រឡប់ក្រោយ</span>
+                                    </button>
+                                </div>
+
+                                {/* Body - 2 Columns (7 / 5) */}
+                                <form onSubmit={submitArchive} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                                    <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                                        {/* LEFT COLUMN: Inputs & Reasons (7 cols) */}
+                                        <div className="lg:col-span-7 space-y-4">
+                                            {/* Security Policy Card */}
+                                            <div className="p-4 sm:p-5 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3">
+                                                <div className="flex items-center gap-2 text-xs font-bold text-rose-800 dark:text-rose-300 font-khmer pb-1 border-b border-rose-500/20">
+                                                    <AlertTriangle className="w-4 h-4 text-rose-500" />
+                                                    <span>គោលការណ៍សុវត្ថិភាព INV-07 (Append-Only Invariant)</span>
+                                                </div>
+                                                <p className="text-xs text-rose-700 dark:text-rose-300/90 font-khmer leading-relaxed">
+                                                    គណនីបុគ្គលិកមិនត្រូវបានលុបចេញពី Database ឡើយ (Permanent Record Retention)។ ការផ្អាកនេះនឹងដកហូតសិទ្ធិចូលប្រើប្រាស់ប្រព័ន្ធ POS ភ្លាមៗ ចំណែកប្រវត្តិវិក្កយបត្រ, ការលក់, និងសវនកម្មពីមុនទាំងអស់ ត្រូវបានរក្សាទុកដដែល 100%។
+                                                </p>
+                                            </div>
+
+                                            {/* Reason Textarea Card */}
+                                            <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                                <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                                        <FileText className="w-4 h-4 text-rose-500" />
+                                                        <span>មូលហេតុច្បាស់លាស់នៃការផ្អាក (Mandatory Archive Reason)</span>
+                                                        <span className="text-rose-500">*</span>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <textarea
+                                                        required
+                                                        rows={4}
+                                                        value={archiveForm.data.reason}
+                                                        onChange={(e) => archiveForm.setData('reason', e.target.value)}
+                                                        placeholder="ឧទាហរណ៍៖ បុគ្គលិកឈប់ពីការងារនៅថ្ងៃទី... បានផ្ទេរការងារ និងទូទាត់ប្រាក់បំណាច់ចប់សព្វគ្រប់។"
+                                                        className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 font-khmer transition-all"
+                                                    />
+                                                    {archiveForm.errors.reason && (
+                                                        <p className="text-xs text-rose-500 mt-1 font-khmer">{archiveForm.errors.reason}</p>
+                                                    )}
+                                                </div>
+
+                                                {/* Quick Presets */}
+                                                <div className="space-y-1.5 pt-1">
+                                                    <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                        <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                                                        <span>ជ្រើសរើសមូលហេតុគំរូរហ័ស (Quick Presets)៖</span>
+                                                    </div>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {[
+                                                            'បុគ្គលិកឈប់ពីការងារ បានផ្ទេរភារកិច្ច និងទូទាត់ប្រាក់បំណាច់រួចរាល់',
+                                                            'បញ្ចប់កិច្ចសន្យាការងារស្របតាមគោលការណ៍ហាង',
+                                                            'ផ្អាកបណ្តោះអាសន្នតាមការស្នើសុំផ្ទាល់ខ្លួនរបស់បុគ្គលិក',
+                                                            'ផ្អាកសិទ្ធិដោយសារការផ្ទេរភារកិច្ច ឬផ្លាស់ប្តូរផ្នែកការងារ',
+                                                        ].map((preset, idx) => (
+                                                            <button
+                                                                key={idx}
+                                                                type="button"
+                                                                onClick={() => archiveForm.setData('reason', preset)}
+                                                                className="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 hover:border-rose-500/40 hover:bg-rose-500/5 text-zinc-700 dark:text-zinc-300 text-[11px] font-khmer transition-all cursor-pointer text-left"
+                                                            >
+                                                                {preset}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Restoration Notice */}
+                                            <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-1.5 text-xs">
+                                                <div className="flex items-center gap-2 font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                                    <span>លទ្ធភាពស្ដារឡើងវិញ (Account Restoration Option)</span>
+                                                </div>
+                                                <p className="text-zinc-600 dark:text-zinc-400 text-[11px] font-khmer leading-relaxed">
+                                                    អ្នកគ្រប់គ្រងប្រព័ន្ធ (Admin) អាចស្ដារគណនីនេះឱ្យដំណើរការឡើងវិញបានគ្រប់ពេលវេលាពីក្នុងបញ្ជីបុគ្គលិកដែលបានផ្អាក (Archived Staff Tab)។
                                                 </p>
                                             </div>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setArchiveTarget(null);
-                                                archiveForm.reset();
-                                            }}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
-                                        >
-                                            <ArrowLeft className="w-3.5 h-3.5" />
-                                            <span>ត្រឡប់ក្រោយ</span>
-                                        </button>
-                                    </div>
 
-                                    <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300 font-khmer mb-4">
-                                        <div className="flex items-start gap-2">
-                                            <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
-                                            <div>
-                                                <strong>លក្ខខណ្ឌ INV-07 (Append-Only Invariant):</strong> គណនីបុគ្គលិកមិនត្រូវបានលុបចេញពី Database ឡើយ។ ការ Archive នឹងបិទសិទ្ធិចូលប្រើប្រព័ន្ធរបស់គណនីនេះ ខណៈប្រវត្តិប្រតិបត្តិការទាំងអស់ត្រូវបានរក្សាទុកដដែល។
+                                        {/* RIGHT COLUMN: Staff Dossier & Deactivation Passport (5 cols) */}
+                                        <div className="lg:col-span-5 space-y-4">
+                                            <div className="sticky top-4 space-y-4">
+                                                {/* Deactivation Passport Card */}
+                                                <div className="rounded-2xl border p-5 space-y-4 shadow-sm relative overflow-hidden bg-gradient-to-br from-rose-950/40 via-zinc-900 to-zinc-950 border-rose-500/30 text-white">
+                                                    {/* Watermark Seal */}
+                                                    <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                                                        <Archive className="w-40 h-40 text-rose-400" />
+                                                    </div>
+
+                                                    {/* Top Banner */}
+                                                    <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                                                        <div className="space-y-0.5">
+                                                            <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
+                                                                DEACTIVATION DOSSIER
+                                                            </span>
+                                                            <h4 className="text-sm font-bold text-white font-mono">
+                                                                STAFF-{archiveTarget.id.toString().padStart(4, '0')}
+                                                            </h4>
+                                                        </div>
+                                                        <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-xs">
+                                                            ACTION PENDING
+                                                        </span>
+                                                    </div>
+
+                                                    {/* User Details */}
+                                                    <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-3">
+                                                        <div className="flex items-center justify-between text-zinc-400">
+                                                            <span className="font-khmer">ឈ្មោះបុគ្គលិក៖</span>
+                                                            <span className="text-white font-bold font-khmer">{archiveTarget.name}</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-zinc-400">
+                                                            <span className="font-khmer">ឈ្មោះគណនី (Username)៖</span>
+                                                            <span className="text-rose-400 font-bold">@{archiveTarget.username}</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-zinc-400">
+                                                            <span className="font-khmer">តួនាទីបច្ចុប្បន្ន៖</span>
+                                                            <span className="text-zinc-200 uppercase">{archiveTarget.role}</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-zinc-400">
+                                                            <span className="font-khmer">សាខាឈរជើង៖</span>
+                                                            <span className="text-emerald-400 font-khmer">
+                                                                {archiveTarget.locations && archiveTarget.locations.length > 0
+                                                                    ? archiveTarget.locations.map(l => l.name_primary).join(', ')
+                                                                    : 'គ្រប់សាខា (All Locations)'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Transition Status */}
+                                                    <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
+                                                        <div>
+                                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
+                                                            <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                                        </div>
+                                                        <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
+                                                        <div className="text-right">
+                                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយផ្អាក</span>
+                                                            <span className="text-rose-400 font-bold">ARCHIVED</span>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Security Stamp Footer */}
+                                                    <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                                        <span>AUDIT: USER_DEACTIVATION</span>
+                                                        <span>PERMANENT LOGGING</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <form onSubmit={submitArchive} className="space-y-4">
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                មូលហេតុច្បាស់លាស់នៃការផ្អាក (Mandatory Archive Reason) *
-                                            </label>
-                                            <textarea
-                                                required
-                                                value={archiveForm.data.reason}
-                                                onChange={(e) => archiveForm.setData('reason', e.target.value)}
-                                                placeholder="ឧ. បុគ្គលិកឈប់ពីការងារនៅថ្ងៃទី... បានផ្ទេរការងារ និងទូទាត់ប្រាក់បំណាច់ចប់សព្វគ្រប់។"
-                                                rows={3}
-                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-rose-500 font-khmer transition-all"
-                                            />
-                                            {archiveForm.errors.reason && (
-                                                <p className="text-[11px] text-rose-500 mt-1">{archiveForm.errors.reason}</p>
-                                            )}
+                                    {/* Footer Bar */}
+                                    <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                                        <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                                            <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                                Esc
+                                            </kbd>
+                                            <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
                                         </div>
 
-                                        <div className="flex items-center justify-end gap-2.5 pt-2">
+                                        <div className="flex items-center gap-3 ml-auto">
                                             <button
                                                 type="button"
                                                 onClick={() => {
                                                     setArchiveTarget(null);
                                                     archiveForm.reset();
                                                 }}
-                                                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
+                                                className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                             >
                                                 បោះបង់
                                             </button>
+
                                             <button
                                                 type="submit"
-                                                disabled={archiveForm.processing}
-                                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer font-khmer disabled:opacity-50"
+                                                disabled={archiveForm.processing || !archiveForm.data.reason.trim()}
+                                                className="px-6 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold font-khmer shadow-sm hover:shadow-rose-600/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
-                                                <Archive className="w-3.5 h-3.5" />
-                                                <span>{archiveForm.processing ? 'កំពុងផ្អាក...' : 'បញ្ជាក់ការផ្អាកគណនី'}</span>
+                                                <Archive className="w-4 h-4" />
+                                                <span>
+                                                    {archiveForm.processing
+                                                        ? 'កំពុងផ្អាកគណនី...'
+                                                        : 'បញ្ជាក់ការផ្អាកគណនីបុគ្គលិក (Execute Deactivation)'}
+                                                </span>
                                             </button>
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                </form>
                             </div>,
                             document.body
                         )}
