@@ -876,11 +876,11 @@ export default function CatalogIndex({
 
             {/* Product Modal */}
             {productModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
-                    <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden my-auto flex flex-col max-h-[92vh]">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+                    <div className="relative w-full max-w-5xl bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden my-auto flex flex-col">
                         {/* Header */}
-                        <div className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-3.5">
+                        <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
+                            <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-xs shrink-0">
                                     <Package className="w-5 h-5" />
                                 </div>
@@ -893,7 +893,7 @@ export default function CatalogIndex({
                                             {editingProduct ? 'Edit Product' : 'New Product'}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
                                         {editingProduct ? editingProduct.name_primary : 'បំពេញព័ត៌មានមុខម្ហូប ភេសជ្ជៈ រូបភាព និងតម្លៃលក់សម្រាប់ប្រព័ន្ធ POS'}
                                     </p>
                                 </div>
@@ -908,179 +908,253 @@ export default function CatalogIndex({
                             </button>
                         </div>
 
-                        {/* Form */}
-                        <form onSubmit={handleProductSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
-                            {/* Scrollable Body */}
-                            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 min-h-0">
-                                {/* Group 1: General Info */}
-                                <div className="space-y-3.5 p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80">
-                                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
-                                        <Utensils className="w-3.5 h-3.5 text-amber-500" />
-                                        <span>ព័ត៌មានទូទៅនៃមុខទំនិញ / General Information</span>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះមុខទំនិញជាភាសាខ្មែរ <span className="text-rose-500">*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={productForm.data.name_primary}
-                                                onChange={(e) => productForm.setData('name_primary', e.target.value)}
-                                                placeholder="ឧ. លៀសហាលរសជាតិដើម"
-                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                                                required
-                                            />
-                                            {productForm.errors.name_primary && (
-                                                <p className="text-[11px] text-rose-500 font-khmer mt-1">{productForm.errors.name_primary}</p>
-                                            )}
+                        {/* Form Body - 2 Columns */}
+                        <form onSubmit={handleProductSubmit} className="flex flex-col">
+                            <div className="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+                                {/* LEFT COLUMN: Basic Info, Price/SKU, Settings (7 cols) */}
+                                <div className="lg:col-span-7 space-y-3.5">
+                                    {/* Section 1: General Info */}
+                                    <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                            <Utensils className="w-3.5 h-3.5 text-amber-500" />
+                                            <span>ព័ត៌មានទូទៅនៃមុខទំនិញ / General Information</span>
                                         </div>
 
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះជាភាសាអង់គ្លេស (Optional)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={productForm.data.name_secondary}
-                                                onChange={(e) => productForm.setData('name_secondary', e.target.value)}
-                                                placeholder="e.g. Sun-dried Clams Original"
-                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ប្រភេទមុខទំនិញ (Category) <span className="text-rose-500">*</span>
-                                            </label>
-                                            <div className="relative">
-                                                <select
-                                                    value={productForm.data.category_id}
-                                                    onChange={(e) => productForm.setData('category_id', parseInt(e.target.value))}
-                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 appearance-none cursor-pointer pr-9"
-                                                    required
-                                                >
-                                                    {categories.map((c) => (
-                                                        <option key={c.id} value={c.id}>
-                                                            {c.name_primary} {c.name_secondary ? `(${c.name_secondary})` : ''}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-2.5 pointer-events-none" />
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឯកតាគិត (Unit) <span className="text-rose-500">*</span>
-                                            </label>
-                                            <div className="relative">
-                                                <select
-                                                    value={productForm.data.unit_id}
-                                                    onChange={(e) => productForm.setData('unit_id', parseInt(e.target.value))}
-                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 appearance-none cursor-pointer pr-9"
-                                                    required
-                                                >
-                                                    {units.map((u) => (
-                                                        <option key={u.id} value={u.id}>
-                                                            {u.name_primary} {u.name_secondary && u.name_secondary.toLowerCase() !== u.name_primary.toLowerCase() ? `• ${u.name_secondary}` : ''}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                                <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-2.5 pointer-events-none" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Group 2: Price & SKU */}
-                                <div className="space-y-3.5 p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80">
-                                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
-                                        <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
-                                        <span>តម្លៃលក់ និងលេខកូដទំនិញ / Pricing & Identification</span>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                តម្លៃលក់ឯកតា (Unit Price USD) <span className="text-rose-500">*</span>
-                                            </label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                    <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">$</span>
-                                                </div>
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
-                                                    value={productForm.data.unit_price}
-                                                    onChange={(e) => productForm.setData('unit_price', e.target.value)}
-                                                    placeholder="0.00"
-                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-8 pr-3 py-2 text-sm font-mono font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
-                                                    required
-                                                />
-                                            </div>
-                                            {/* Live KHR Preview Badge */}
-                                            <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono font-semibold text-xs">
-                                                    ≈ {Math.round((parseFloat(productForm.data.unit_price) || 0) * exchange_rate).toLocaleString()} ៛
-                                                </span>
-                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                    (អត្រា $1 = {exchange_rate.toLocaleString()}៛)
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                លេខកូដសម្គាល់ (SKU / Barcode)
-                                            </label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <Hash className="w-3.5 h-3.5 text-zinc-400" />
-                                                </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ឈ្មោះមុខទំនិញជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                                </label>
                                                 <input
                                                     type="text"
-                                                    value={productForm.data.sku}
-                                                    onChange={(e) => productForm.setData('sku', e.target.value)}
-                                                    placeholder="ឧ. ETUM-20"
-                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-8 pr-3 py-2 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                                    value={productForm.data.name_primary}
+                                                    onChange={(e) => productForm.setData('name_primary', e.target.value)}
+                                                    placeholder="ឧ. លៀសហាលរសជាតិដើម"
+                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
+                                                    required
+                                                />
+                                                {productForm.errors.name_primary && (
+                                                    <p className="text-[11px] text-rose-500 font-khmer mt-0.5">{productForm.errors.name_primary}</p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ឈ្មោះជាភាសាអង់គ្លេស (Optional)
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={productForm.data.name_secondary}
+                                                    onChange={(e) => productForm.setData('name_secondary', e.target.value)}
+                                                    placeholder="e.g. Sun-dried Clams Original"
+                                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                 />
                                             </div>
-                                            {productForm.errors.sku ? (
-                                                <p className="text-[11px] text-rose-500 font-khmer mt-1">{productForm.errors.sku}</p>
-                                            ) : (
-                                                <p className="text-[11px] text-zinc-400 font-khmer mt-1">
-                                                    ស្រេចចិត្ត សម្រាប់ស្កេន ឬកត់ត្រាកូដសម្គាល់
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ប្រភេទមុខទំនិញ (Category) <span className="text-rose-500">*</span>
+                                                </label>
+                                                <div className="relative">
+                                                    <select
+                                                        value={productForm.data.category_id}
+                                                        onChange={(e) => productForm.setData('category_id', parseInt(e.target.value))}
+                                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 appearance-none cursor-pointer pr-9"
+                                                        required
+                                                    >
+                                                        {categories.map((c) => (
+                                                            <option key={c.id} value={c.id}>
+                                                                {c.name_primary} {c.name_secondary ? `(${c.name_secondary})` : ''}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-2.5 pointer-events-none" />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    ឯកតាគិត (Unit) <span className="text-rose-500">*</span>
+                                                </label>
+                                                <div className="relative">
+                                                    <select
+                                                        value={productForm.data.unit_id}
+                                                        onChange={(e) => productForm.setData('unit_id', parseInt(e.target.value))}
+                                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 appearance-none cursor-pointer pr-9"
+                                                        required
+                                                    >
+                                                        {units.map((u) => (
+                                                            <option key={u.id} value={u.id}>
+                                                                {u.name_primary} {u.name_secondary && u.name_secondary.toLowerCase() !== u.name_primary.toLowerCase() ? `• ${u.name_secondary}` : ''}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-3 top-2.5 pointer-events-none" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Section 2: Pricing & SKU */}
+                                    <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                            <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
+                                            <span>តម្លៃលក់ និងលេខកូដទំនិញ / Pricing & Identification</span>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    តម្លៃលក់ឯកតា (USD) <span className="text-rose-500">*</span>
+                                                </label>
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono">$</span>
+                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        min="0"
+                                                        value={productForm.data.unit_price}
+                                                        onChange={(e) => productForm.setData('unit_price', e.target.value)}
+                                                        placeholder="0.00"
+                                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-7 pr-3 py-2 text-sm font-mono font-bold text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="mt-1 flex items-center gap-1.5 flex-wrap">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono font-semibold text-xs">
+                                                        ≈ {Math.round((parseFloat(productForm.data.unit_price) || 0) * exchange_rate).toLocaleString()} ៛
+                                                    </span>
+                                                    <span className="text-[10px] text-zinc-400 font-khmer">
+                                                        ($1 = {exchange_rate.toLocaleString()}៛)
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                    លេខកូដសម្គាល់ (SKU / Barcode)
+                                                </label>
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                        <Hash className="w-3.5 h-3.5 text-zinc-400" />
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        value={productForm.data.sku}
+                                                        onChange={(e) => productForm.setData('sku', e.target.value)}
+                                                        placeholder="ឧ. ETUM-20"
+                                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-8 pr-3 py-2 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                                    />
+                                                </div>
+                                                <p className="text-[10px] text-zinc-400 font-khmer mt-1">
+                                                    {productForm.errors.sku ? (
+                                                        <span className="text-rose-500">{productForm.errors.sku}</span>
+                                                    ) : (
+                                                        'ស្រេចចិត្ត សម្រាប់ស្កេន ឬកត់ត្រា'
+                                                    )}
                                                 </p>
-                                            )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Section 3: Settings Toggles */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {/* Buffet Switch Card */}
+                                        <div
+                                            onClick={() => productForm.setData('is_primary_package', !productForm.data.is_primary_package)}
+                                            className={`p-3 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
+                                                productForm.data.is_primary_package
+                                                    ? 'bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/20'
+                                                    : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-2.5">
+                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                                                    productForm.data.is_primary_package
+                                                        ? 'bg-amber-500 text-zinc-950 shadow-xs'
+                                                        : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                                                }`}>
+                                                    <Sparkles className="w-4 h-4" />
+                                                </div>
+                                                <div>
+                                                    <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                        កញ្ចប់ប៊ូហ្វេ (Buffet)
+                                                    </span>
+                                                    <span className="block text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                        មុខម្ហូបក្នុងកញ្ចប់ប៊ូហ្វេ
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 ${
+                                                productForm.data.is_primary_package ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                                            }`}>
+                                                <div className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
+                                                    productForm.data.is_primary_package ? 'translate-x-4.5' : 'translate-x-0'
+                                                }`} />
+                                            </div>
+                                        </div>
+
+                                        {/* Active Switch Card */}
+                                        <div
+                                            onClick={() => productForm.setData('is_active', !productForm.data.is_active)}
+                                            className={`p-3 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
+                                                productForm.data.is_active
+                                                    ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20'
+                                                    : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-2.5">
+                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                                                    productForm.data.is_active
+                                                        ? 'bg-emerald-500 text-white shadow-xs'
+                                                        : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                                                }`}>
+                                                    <Check className="w-4 h-4" />
+                                                </div>
+                                                <div>
+                                                    <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                        ស្ថានភាព (Active)
+                                                    </span>
+                                                    <span className="block text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                        {productForm.data.is_active ? 'បើកលក់លើ POS' : 'ផ្អាកលក់បណ្តោះអាសន្ន'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 ${
+                                                productForm.data.is_active ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                                            }`}>
+                                                <div className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
+                                                    productForm.data.is_active ? 'translate-x-4.5' : 'translate-x-0'
+                                                }`} />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Group 3: Product Image */}
-                                <div className="space-y-3 p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80">
+                                {/* RIGHT COLUMN: Product Media & Presets (5 cols) */}
+                                <div className="lg:col-span-5 flex flex-col p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <ImageIcon className="w-3.5 h-3.5 text-amber-500" />
-                                            <span>រូបភាពមុខម្ហូប / Product Image</span>
+                                            <span>រូបភាពមុខម្ហូប / Product Media</span>
                                         </div>
                                         {productForm.data.image_url && (
                                             <button
                                                 type="button"
                                                 onClick={() => productForm.setData('image_url', '')}
-                                                className="text-[11px] text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 font-khmer flex items-center gap-1 cursor-pointer transition-colors"
+                                                className="text-[11px] text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1 cursor-pointer"
                                             >
-                                                <X className="w-3 h-3" /> លុបរូបភាពចេញ
+                                                <X className="w-3 h-3" /> លុបរូបភាព
                                             </button>
                                         )}
                                     </div>
 
-                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                                        {/* Image Preview Box */}
+                                    {/* Top: Image Preview & URL input */}
+                                    <div className="flex items-center gap-3">
                                         <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-dashed border-zinc-300 dark:border-zinc-700 flex items-center justify-center overflow-hidden shrink-0 shadow-inner group">
                                             {productForm.data.image_url ? (
                                                 <img
@@ -1099,30 +1173,29 @@ export default function CatalogIndex({
                                             )}
                                         </div>
 
-                                        {/* Input & Helper */}
-                                        <div className="flex-1 w-full space-y-1.5">
+                                        <div className="flex-1 space-y-1">
                                             <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 font-khmer">
-                                                តំណភ្ជាប់រូបភាព (Image URL / Path)
+                                                តំណភ្ជាប់រូបភាព (URL / Path)
                                             </label>
                                             <input
                                                 type="text"
                                                 value={productForm.data.image_url}
                                                 onChange={(e) => productForm.setData('image_url', e.target.value)}
-                                                placeholder="https://... ឬ /images/products/leas-op.png"
-                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
+                                                placeholder="https://... ឬ /images/..."
+                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                                             />
-                                            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                បញ្ចូលតំណភ្ជាប់រូបភាព HTTPS ឬជ្រើសរើសរូបភាពគំរូខាងក្រោម
-                                            </p>
+                                            <span className="text-[10px] text-zinc-400 font-khmer block">
+                                                បញ្ចូល URL ឬចុចជ្រើសរើសរូបគំរូខាងក្រោម
+                                            </span>
                                         </div>
                                     </div>
 
-                                    {/* Quick Presets from System Images */}
-                                    <div className="pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
+                                    {/* Bottom: Quick Preset Chips Grid */}
+                                    <div className="pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70 flex-1 flex flex-col min-h-0">
                                         <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 font-khmer block mb-2">
                                             ✨ រូបភាពគំរូក្នុងប្រព័ន្ធ (ចុចដើម្បីជ្រើសយកភ្លាមៗ):
                                         </span>
-                                        <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                                        <div className="grid grid-cols-2 gap-1.5 overflow-y-auto max-h-[175px] pr-1">
                                             {SYSTEM_IMAGE_PRESETS.map((preset) => {
                                                 const isSelected = productForm.data.image_url === preset.path;
                                                 return (
@@ -1130,100 +1203,25 @@ export default function CatalogIndex({
                                                         key={preset.path}
                                                         type="button"
                                                         onClick={() => productForm.setData('image_url', preset.path)}
-                                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-khmer border transition-all cursor-pointer ${
+                                                        className={`flex items-center gap-1.5 px-2 py-1.5 rounded-xl text-[11px] font-khmer border transition-all cursor-pointer text-left ${
                                                             isSelected
                                                                 ? 'bg-amber-500 text-zinc-950 border-amber-600 font-bold shadow-xs'
                                                                 : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-zinc-200 dark:border-zinc-700'
                                                         }`}
                                                     >
-                                                        <div className="w-4 h-4 rounded-md overflow-hidden shrink-0">
+                                                        <div className="w-5 h-5 rounded-md overflow-hidden shrink-0 border border-black/10">
                                                             <img
                                                                 src={preset.path}
                                                                 alt=""
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         </div>
-                                                        <span className={isSelected ? 'text-zinc-950 font-bold' : 'text-zinc-800 dark:text-zinc-200 font-medium'}>
+                                                        <span className={`truncate ${isSelected ? 'text-zinc-950 font-bold' : 'text-zinc-800 dark:text-zinc-200 font-medium'}`}>
                                                             {preset.label}
                                                         </span>
                                                     </button>
                                                 );
                                             })}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Group 4: Settings & Visibility */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                                    {/* Buffet Package Toggle Card */}
-                                    <div
-                                        onClick={() => productForm.setData('is_primary_package', !productForm.data.is_primary_package)}
-                                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
-                                            productForm.data.is_primary_package
-                                                ? 'bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/20'
-                                                : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
-                                                productForm.data.is_primary_package
-                                                    ? 'bg-amber-500 text-zinc-950 shadow-xs'
-                                                    : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
-                                            }`}>
-                                                <Sparkles className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    កញ្ចប់អាហារប៊ូហ្វេ (Buffet)
-                                                </span>
-                                                <span className="block text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                    មុខម្ហូបក្នុងកញ្ចប់អាហារប៊ូហ្វេ
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {/* Switch */}
-                                        <div className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                                            productForm.data.is_primary_package ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
-                                        }`}>
-                                            <div className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
-                                                productForm.data.is_primary_package ? 'translate-x-5' : 'translate-x-0'
-                                            }`} />
-                                        </div>
-                                    </div>
-
-                                    {/* Active Status Toggle Card */}
-                                    <div
-                                        onClick={() => productForm.setData('is_active', !productForm.data.is_active)}
-                                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
-                                            productForm.data.is_active
-                                                ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20'
-                                                : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${
-                                                productForm.data.is_active
-                                                    ? 'bg-emerald-500 text-white shadow-xs'
-                                                    : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
-                                            }`}>
-                                                <Check className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ស្ថានភាពមុខទំនិញ (Active)
-                                                </span>
-                                                <span className="block text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                    {productForm.data.is_active ? 'បើកលក់លើម៉ឺនុយ POS' : 'ផ្អាកលក់បណ្តោះអាសន្ន'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {/* Switch */}
-                                        <div className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
-                                            productForm.data.is_active ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-700'
-                                        }`}>
-                                            <div className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
-                                                productForm.data.is_active ? 'translate-x-5' : 'translate-x-0'
-                                            }`} />
                                         </div>
                                     </div>
                                 </div>
