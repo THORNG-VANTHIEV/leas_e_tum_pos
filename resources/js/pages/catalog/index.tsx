@@ -1353,7 +1353,7 @@ export default function CatalogIndex({
                                                 className={`flex-1 min-h-[280px] sm:min-h-[320px] flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center relative group ${
                                                     isDraggingOver
                                                         ? 'border-amber-500 bg-amber-500/10 ring-4 ring-amber-500/20 scale-[0.99]'
-                                                        : 'border-zinc-300 dark:border-zinc-700 hover:border-amber-500/70 hover:bg-amber-500/5 bg-white/60 dark:bg-zinc-900/40'
+                                                        : 'border-zinc-200 dark:border-zinc-800 hover:border-amber-500/60 hover:bg-amber-500/5 bg-white/60 dark:bg-zinc-900/40'
                                                 }`}
                                             >
                                                 {isUploadingImage ? (
