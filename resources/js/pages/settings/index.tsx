@@ -636,114 +636,296 @@ export default function SettingsIndex({
                             ))}
                         </div>
 
-                        {/* Modal: Add Location */}
+                        {/* Modal: Add Location (Full-Workspace 2-Column Suite) */}
                         {mounted && showLocModal && createPortal(
                             <div
-                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                                className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                                 onWheel={(e) => e.stopPropagation()}
                             >
-                                <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
-                                                <Building2 className="w-4 h-4" />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    បង្កើតសាខាហាងថ្មី
-                                                </h3>
-                                                <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                    Create New Branch Location
-                                                </p>
-                                            </div>
+                                {/* Top Header */}
+                                <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
+                                            <Building2 className="w-5 h-5" />
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowLocModal(false)}
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
-                                        >
-                                            <ArrowLeft className="w-3.5 h-3.5" />
-                                            <span>ត្រឡប់ក្រោយ</span>
-                                        </button>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
+                                                    បង្កើតសាខាហាងថ្មី
+                                                </h2>
+                                                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase">
+                                                    MULTI-BRANCH ENGINE
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                                កំណត់ទីតាំងសាខា កូដសម្គាល់ និងអាសយដ្ឋានសម្រាប់បែងចែកប្រតិបត្តិការ POS និងបុគ្គលិក
+                                            </p>
+                                        </div>
                                     </div>
 
-                                    <form onSubmit={submitLocation} className="space-y-3.5">
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                កូដសម្គាល់សាខា (Location Code) *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                required
-                                                placeholder="ឧ. LOC-02"
-                                                value={locForm.data.code}
-                                                onChange={(e) => locForm.setData('code', e.target.value)}
-                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
-                                            />
-                                            {locForm.errors.code && (
-                                                <p className="text-[11px] text-rose-500 mt-1">{locForm.errors.code}</p>
-                                            )}
-                                        </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowLocModal(false);
+                                            locForm.reset();
+                                        }}
+                                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm group"
+                                        title="ត្រឡប់ក្រោយ (Esc)"
+                                    >
+                                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
+                                        <span>ត្រឡប់ក្រោយ</span>
+                                        <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
+                                            (Esc)
+                                        </span>
+                                    </button>
+                                </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ឈ្មោះអង់គ្លេស (English) *
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    placeholder="e.g. Riverside Branch"
-                                                    value={locForm.data.name_primary}
-                                                    onChange={(e) => locForm.setData('name_primary', e.target.value)}
-                                                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
-                                                />
+                                {/* Form Body - 2 Columns */}
+                                <form onSubmit={submitLocation} className="flex-1 min-h-0 flex flex-col">
+                                    <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-8">
+                                        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                            {/* Left Column: Form Fields (7 Cols) */}
+                                            <div className="lg:col-span-7 space-y-6">
+                                                {/* Section 1: Branch Identification */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
+                                                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <Store className="w-4 h-4 text-amber-500" />
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-zinc-200 font-khmer">
+                                                            អត្តសញ្ញាណសាខា & កូដសម្គាល់ / Branch Identity
+                                                        </h3>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                            កូដសម្គាល់សាខា (Location Code) <span className="text-rose-500">*</span>
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            required
+                                                            placeholder="ឧ. LOC-02"
+                                                            value={locForm.data.code}
+                                                            onChange={(e) => locForm.setData('code', e.target.value)}
+                                                            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold uppercase text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+                                                        />
+                                                        {locForm.errors.code && (
+                                                            <p className="text-[11px] text-rose-500 mt-1 font-khmer">{locForm.errors.code}</p>
+                                                        )}
+                                                        <div className="flex items-center gap-1.5 mt-2">
+                                                            <span className="text-[11px] text-slate-400 font-khmer">កូដគំរូ:</span>
+                                                            {['LOC-02', 'LOC-03', 'BRANCH-BTK', 'BRANCH-TTP'].map((sample) => (
+                                                                <button
+                                                                    key={sample}
+                                                                    type="button"
+                                                                    onClick={() => locForm.setData('code', sample)}
+                                                                    className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:text-amber-500 transition cursor-pointer"
+                                                                >
+                                                                    {sample}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                                ឈ្មោះសាខាជាភាសាអង់គ្លេស (English) <span className="text-rose-500">*</span>
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                required
+                                                                placeholder="e.g. Riverside Branch"
+                                                                value={locForm.data.name_primary}
+                                                                onChange={(e) => locForm.setData('name_primary', e.target.value)}
+                                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
+                                                            />
+                                                            {locForm.errors.name_primary && (
+                                                                <p className="text-[11px] text-rose-500 mt-1 font-khmer">{locForm.errors.name_primary}</p>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                                ឈ្មោះសាខាជាភាសាខ្មែរ (Khmer)
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="ឧ. សាខាមាត់ទន្លេ"
+                                                                value={locForm.data.name_secondary}
+                                                                onChange={(e) => locForm.setData('name_secondary', e.target.value)}
+                                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-khmer transition-all"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Section 2: Address & Location */}
+                                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
+                                                    <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                                        <MapPin className="w-4 h-4 text-amber-500" />
+                                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-zinc-200 font-khmer">
+                                                            អាសយដ្ឋាន & ទីតាំងប្រតិបត្តិការ / Location Address
+                                                        </h3>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                            អាសយដ្ឋានជាក់ស្ដែង (Physical Address)
+                                                        </label>
+                                                        <div className="relative">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="ឧ. ផ្លូវព្រះស៊ីសុវត្ថិ សង្កាត់ជ័យជំនះ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ..."
+                                                                value={locForm.data.address}
+                                                                onChange={(e) => locForm.setData('address', e.target.value)}
+                                                                className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-khmer transition-all"
+                                                            />
+                                                            <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Quick Presets */}
+                                                    <div>
+                                                        <label className="block text-[11px] font-semibold text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                                            គំរូទីតាំងពេញនិយម (Quick Presets)
+                                                        </label>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {[
+                                                                { code: 'LOC-TK', en: 'Toul Kork Branch', kh: 'សាខាទួលគោក', addr: 'ផ្លូវ ៣១៥ សង្កាត់បឹងកក់១ ខណ្ឌទួលគោក ភ្នំពេញ' },
+                                                                { code: 'LOC-BKK', en: 'Boeung Keng Kang Branch', kh: 'សាខាបឹងកេងកង', addr: 'ផ្លូវ ៥១ កែងផ្លូវ ៣០២ បឹងកេងកង១ ភ្នំពេញ' },
+                                                                { code: 'LOC-RIV', en: 'Riverside Waterfront', kh: 'សាខាមាត់ទន្លេ', addr: 'ផ្លូវព្រះស៊ីសុវត្ថិ ដូនពេញ ភ្នំពេញ' },
+                                                            ].map((preset) => (
+                                                                <button
+                                                                    key={preset.code}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        locForm.setData({
+                                                                            code: preset.code,
+                                                                            name_primary: preset.en,
+                                                                            name_secondary: preset.kh,
+                                                                            address: preset.addr,
+                                                                        });
+                                                                    }}
+                                                                    className="px-2.5 py-1.5 rounded-lg text-xs bg-slate-100 dark:bg-zinc-800 hover:bg-amber-500/10 hover:border-amber-500/30 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 font-khmer transition cursor-pointer"
+                                                                >
+                                                                    📍 {preset.kh}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Section 3: Operational Engine Note */}
+                                                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
+                                                    <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                                                    <div className="space-y-1">
+                                                        <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 font-khmer">
+                                                            ប្រព័ន្ធបែងចែកទិន្នន័យសាខាដាច់ដោយឡែក (Branch Partitioning)
+                                                        </h4>
+                                                        <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80 font-khmer leading-relaxed">
+                                                            សាខានីមួយៗនឹងមានវេនគិតលុយ (Cash Shifts) ថតលុយ និងរបាយការណ៍លក់ដាច់ដោយឡែក ប៉ុន្តែទិន្នន័យបញ្ជីមុខម្ហូប និងអតិថិជនសមាជិក (Loyalty) នឹងត្រូវបានចែករំលែករួមគ្នាក្នុងប្រព័ន្ធកណ្តាល។
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ឈ្មោះខ្មែរ (Khmer)
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="ឧ. សាខាមាត់ទន្លេ"
-                                                    value={locForm.data.name_secondary}
-                                                    onChange={(e) => locForm.setData('name_secondary', e.target.value)}
-                                                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
-                                                />
+
+                                            {/* Right Column: Live Branch Passport Preview (5 Cols) */}
+                                            <div className="lg:col-span-5 space-y-6">
+                                                <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 shadow-xl space-y-5 sticky top-6">
+                                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800">
+                                                        <div className="flex items-center gap-2">
+                                                            <Sparkles className="w-4 h-4 text-amber-500" />
+                                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 font-mono">
+                                                                Branch Terminal Passport
+                                                            </span>
+                                                        </div>
+                                                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                                            ● READY
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Branch Card Preview */}
+                                                    <div className="p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 space-y-4">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
+                                                                <Building2 className="w-6 h-6" />
+                                                            </div>
+                                                            <span className="text-xs font-mono font-bold px-3 py-1 rounded-xl bg-white dark:bg-zinc-900 border border-amber-500/30 text-amber-600 dark:text-amber-400 shadow-xs">
+                                                                {locForm.data.code || 'LOC-XX'}
+                                                            </span>
+                                                        </div>
+
+                                                        <div>
+                                                            <h3 className="text-base font-bold text-slate-900 dark:text-white font-khmer">
+                                                                {locForm.data.name_secondary || locForm.data.name_primary || 'ឈ្មោះសាខាហាង'}
+                                                            </h3>
+                                                            <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
+                                                                {locForm.data.name_primary || 'Branch English Name'}
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="p-3 rounded-xl bg-white/70 dark:bg-zinc-950/70 border border-slate-200/60 dark:border-zinc-800/60 text-xs space-y-1 font-khmer">
+                                                            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+                                                                អាសយដ្ឋានសាខា:
+                                                            </div>
+                                                            <p className="text-slate-700 dark:text-zinc-300 text-[11px] leading-relaxed">
+                                                                {locForm.data.address || 'មិនទាន់បានកំណត់អាសយដ្ឋានជាក់ស្តែង...'}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Terminal Readiness Specs */}
+                                                    <div className="space-y-2 text-xs">
+                                                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">បុគ្គលិកដំបូង (Staff Assignment)</span>
+                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">0 Users</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">ម៉ាស៊ីន POS & ថតលុយ</span>
+                                                            <span className="font-khmer font-bold text-emerald-600 dark:text-emerald-400">ស្វ័យប្រវត្ត (Auto-linked)</span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">រូបិយប័ណ្ណប្រតិបត្តិការ</span>
+                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">USD ($) + KHR (៛)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                អាសយដ្ឋាន / ទីតាំងជាក់ស្ដែង
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder="ឧ. ផ្លូវព្រះស៊ីសុវត្ថិ រាជធានីភ្នំពេញ..."
-                                                value={locForm.data.address}
-                                                onChange={(e) => locForm.setData('address', e.target.value)}
-                                                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
-                                            />
+                                    {/* Footer */}
+                                    <div className="shrink-0 flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
+                                        <div className="text-xs text-slate-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <span>កំពុងរៀបចំបង្កើតសាខាហាងថ្មីក្នុងប្រព័ន្ធ</span>
                                         </div>
-
-                                        <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-zinc-800">
+                                        <div className="flex items-center gap-3">
                                             <button
                                                 type="button"
-                                                onClick={() => setShowLocModal(false)}
-                                                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
+                                                onClick={() => {
+                                                    setShowLocModal(false);
+                                                    locForm.reset();
+                                                }}
+                                                className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
                                             >
-                                                បោះបង់
+                                                បោះបង់ (Cancel)
                                             </button>
                                             <button
                                                 type="submit"
                                                 disabled={locForm.processing}
-                                                className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                                                className="px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
                                             >
-                                                បង្កើតសាខា
+                                                {locForm.processing ? (
+                                                    'កំពុងបង្កើតសាខា...'
+                                                ) : (
+                                                    <>
+                                                        <Check className="w-4 h-4" />
+                                                        <span>បង្កើតសាខាហាង</span>
+                                                    </>
+                                                )}
                                             </button>
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                </form>
                             </div>,
                             document.body
                         )}
