@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, usePage, router, Head } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import {
@@ -32,6 +33,12 @@ import {
     Minimize,
     ChevronDown,
     ChevronRight,
+    ArrowLeft,
+    Keyboard,
+    Coins,
+    Printer,
+    Sparkles,
+    Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/context/language-context';
@@ -106,6 +113,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [helpModalOpen, setHelpModalOpen] = useState(false);
     const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (helpModalOpen) {
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = 'unset';
+            };
+        }
+    }, [helpModalOpen]);
     const [isDark, setIsDark] = useState<boolean>(() => {
         if (typeof window !== 'undefined') {
             const stored = localStorage.getItem('pos_theme');
@@ -1384,69 +1405,258 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 )}
             </div>
 
-            {/* Help & POS Shortcuts Modal */}
-            {helpModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 animate-in fade-in">
-                    <div className="relative w-full max-w-lg bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden p-6">
-                        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                                    <HelpCircle className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-white text-base font-khmer">ជំនួយ & ផ្លូវកាត់ក្តារចុច (Help & Shortcuts)</h3>
-                                    <p className="text-xs text-zinc-400 font-mono">POS Quick Reference Guide</p>
-                                </div>
+            {/* Help & POS Shortcuts Full-Workspace Suite */}
+            {mounted && helpModalOpen && createPortal(
+                <div
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
+                    onWheel={(e) => e.stopPropagation()}
+                >
+                    {/* Header Bar */}
+                    <div className="h-16 px-6 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0">
+                                <HelpCircle className="w-5 h-5 text-amber-500" />
                             </div>
-                            <button
-                                onClick={() => setHelpModalOpen(false)}
-                                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <div className="py-4 space-y-3">
-                            <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
-                                    <span className="text-zinc-300 font-khmer">បញ្ជាទិញថ្មី (New Order)</span>
-                                    <kbd className="px-2 py-1 rounded bg-zinc-800 text-amber-400 font-mono font-bold border border-zinc-700">F2</kbd>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
+                                        មជ្ឈមណ្ឌលជំនួយ & ផ្លូវកាត់ក្តារចុច (POS System Guide & Shortcuts)
+                                    </h2>
+                                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                        REFERENCE SUITE V2.0
+                                    </span>
                                 </div>
-                                <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
-                                    <span className="text-zinc-300 font-khmer">គិតលុយ (Checkout)</span>
-                                    <kbd className="px-2 py-1 rounded bg-zinc-800 text-emerald-400 font-mono font-bold border border-zinc-700">F8</kbd>
-                                </div>
-                                <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
-                                    <span className="text-zinc-300 font-khmer">បង្រួម/ពង្រីក ម៉ឺនុយ</span>
-                                    <kbd className="px-2 py-1 rounded bg-zinc-800 text-zinc-300 font-mono border border-zinc-700">Ctrl+B</kbd>
-                                </div>
-                                <div className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between">
-                                    <span className="text-zinc-300 font-khmer">បិទផ្ទាំង (Cancel)</span>
-                                    <kbd className="px-2 py-1 rounded bg-zinc-800 text-zinc-300 font-mono border border-zinc-700">Esc</kbd>
-                                </div>
-                            </div>
-
-                            <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/20 text-xs text-emerald-300">
-                                <div className="font-bold flex items-center gap-1.5 mb-1 font-khmer">
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                    ប្រព័ន្ធគណនាលុយពីររូបិយប័ណ្ណ (Dual-Currency POS)
-                                </div>
-                                <p className="text-emerald-200/80 leading-relaxed font-khmer">
-                                    ប្រព័ន្ធគាំទ្រការទូទាត់ប្រាក់ដុល្លារ ($) និងប្រាក់រៀល (៛) ស្វ័យប្រវត្តិតាមអត្រាប្តូរប្រាក់ ១ ដុល្លារ = ៤,១០០ រៀល។
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                    <span>មគ្គុទ្ទេសក៍ប្រតិបត្តិការរហ័ស • POS High-Speed Shortcuts & Operational Reference</span>
                                 </p>
                             </div>
                         </div>
 
-                        <div className="pt-3 border-t border-zinc-800 flex justify-end">
-                            <Button
-                                onClick={() => setHelpModalOpen(false)}
-                                className="bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold text-xs px-4 cursor-pointer"
-                            >
-                                យល់ព្រម (Got it)
-                            </Button>
+                        <button
+                            type="button"
+                            onClick={() => setHelpModalOpen(false)}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>ត្រឡប់ក្រោយ</span>
+                        </button>
+                    </div>
+
+                    {/* Content Area - 2 Columns */}
+                    <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+                        {/* Left Column: Shortcuts, Dual-Currency Guide, Thermal Printer Guide */}
+                        <div className="w-full lg:w-7/12 p-6 lg:p-8 space-y-6 overflow-y-auto">
+                            {/* Hotkeys Matrix */}
+                            <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                                    <div className="flex items-center gap-2">
+                                        <Keyboard className="w-4 h-4 text-amber-500" />
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
+                                            ផ្លូវកាត់ក្តារចុចសំខាន់ៗ (Core POS Keyboard Shortcuts)
+                                        </h4>
+                                    </div>
+                                    <span className="text-[10px] font-mono text-zinc-400">GLOBAL SHORTCUTS</span>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
+                                                បញ្ជាទិញថ្មី (New POS Order)
+                                            </span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បើកផ្ទាំងគិតលុយលឿន</span>
+                                        </div>
+                                        <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                            F2
+                                        </kbd>
+                                    </div>
+
+                                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
+                                                គិតលុយ (Checkout / Pay)
+                                            </span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បើកផ្ទាំងទូទាត់ប្រាក់</span>
+                                        </div>
+                                        <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                            F8
+                                        </kbd>
+                                    </div>
+
+                                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
+                                                បង្រួម/ពង្រីក Sidebar
+                                            </span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ផ្លាស់ប្តូរទំហំម៉ឺនុយ</span>
+                                        </div>
+                                        <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
+                                            Ctrl+B / ⌘+B
+                                        </kbd>
+                                    </div>
+
+                                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+                                        <div>
+                                            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
+                                                ត្រឡប់ក្រោយ / បោះបង់
+                                            </span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បិទ Workspace ឬ Modal</span>
+                                        </div>
+                                        <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
+                                            Esc
+                                        </kbd>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Dual-Currency POS System Guide */}
+                            <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
+                                <div className="flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                                    <Coins className="w-4 h-4 text-emerald-500" />
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
+                                        ប្រព័ន្ធគណនាលុយពីររូបិយប័ណ្ណ (Dual-Currency Pricing & Settlement)
+                                    </h4>
+                                </div>
+
+                                <div className="space-y-3 text-xs text-zinc-600 dark:text-zinc-400 font-khmer">
+                                    <p className="leading-relaxed">
+                                        ប្រព័ន្ធគាំទ្រការទូទាត់ប្រាក់ដុល្លារអាមេរិក ($) និងប្រាក់រៀលកម្ពុជា (៛) ដោយស្វ័យប្រវត្តិតាមអត្រាប្តូរប្រាក់ផ្លូវការដែលបានកំណត់ក្នុង Settings។
+                                    </p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                                        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-200">
+                                            <div className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 font-sans">
+                                                អត្រាប្តូរប្រាក់គោល (Base Rate)
+                                            </div>
+                                            <div className="text-sm font-bold mt-0.5">1 USD = 4,100 KHR</div>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-200">
+                                            <div className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-sans">
+                                                ក្បួនបង្គត់លុយអាប់ (Rounding Policy)
+                                            </div>
+                                            <div className="text-sm font-bold mt-0.5">បង្គត់ត្រឹម ១០០ រៀល</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Hardware & Receipt Printing Guide */}
+                            <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
+                                <div className="flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                                    <Printer className="w-4 h-4 text-blue-500" />
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
+                                        ម៉ាស៊ីនព្រីនវិក្កយបត្រកម្តៅ (Thermal Printer & Hardware Support)
+                                    </h4>
+                                </div>
+
+                                <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 font-khmer leading-relaxed">
+                                    <p>
+                                        ប្រព័ន្ធគាំទ្រម៉ាស៊ីនព្រីនប្រភេទ Thermal ESC/POS ទំហំ <strong>80mm</strong> (ស្ដង់ដារ) និង <strong>58mm</strong> (ខ្នាតតូច) ព្រមទាំងភ្ជាប់មកជាមួយ KHQR Standard QR Code សម្រាប់ការស្កេនទូទាត់ប្រាក់ភ្លាមៗ។
+                                    </p>
+                                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                                        រាល់ការបោះពុម្ពវិក្កយបត្រឡើងវិញ នឹងត្រូវបានកត់ត្រាក្នុង Append-Only Audit Stream ដោយស្វ័យប្រវត្តិ។
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Interactive Reference Passport */}
+                        <div className="w-full lg:w-5/12 p-6 lg:p-8 bg-zinc-900 border-l border-zinc-800 text-zinc-100 flex flex-col justify-between overflow-y-auto">
+                            <div className="space-y-5">
+                                <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                                    <div>
+                                        <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
+                                            SYSTEM PASSPORT
+                                        </span>
+                                        <h3 className="text-sm font-bold font-mono text-white">
+                                            POS REFERENCE DOSSIER
+                                        </h3>
+                                    </div>
+                                    <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                        ONLINE & READY
+                                    </span>
+                                </div>
+
+                                {/* System Info Card */}
+                                <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-4">
+                                    <div className="flex items-center justify-between text-zinc-400">
+                                        <span className="font-khmer">កំណែប្រព័ន្ធ (Version)៖</span>
+                                        <span className="text-amber-400 font-bold">V2.0 Blueprint</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-400">
+                                        <span className="font-khmer">ឈ្មោះហាង (Business)៖</span>
+                                        <span className="text-white font-bold font-khmer">{business.business_name_primary || 'លៀសហាល អ៉ីទុម'}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-400">
+                                        <span className="font-khmer">គណនីបច្ចុប្បន្ន៖</span>
+                                        <span className="text-zinc-200">@{user?.username || 'admin'}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-400">
+                                        <span className="font-khmer">តួនាទី (Role)៖</span>
+                                        <span className="text-emerald-400 uppercase">{user?.role || 'admin'}</span>
+                                    </div>
+                                </div>
+
+                                {/* Security Invariants Status */}
+                                <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
+                                    <div className="text-[10px] text-zinc-400 uppercase font-sans font-bold mb-1">
+                                        Security Invariants Enforcement
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-300">
+                                        <span>INV-01 (Immutable Invoices):</span>
+                                        <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-300">
+                                        <span>INV-04 (SHA-256 Backups):</span>
+                                        <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-zinc-300">
+                                        <span>INV-07 (Append-Only Audit):</span>
+                                        <span className="text-emerald-400 font-bold">100% RETAINED</span>
+                                    </div>
+                                </div>
+
+                                {/* Quick Shortcuts Reminder Box */}
+                                <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/80 space-y-2 text-xs">
+                                    <div className="font-bold text-amber-400 font-khmer flex items-center gap-1.5">
+                                        <Sparkles className="w-4 h-4" />
+                                        <span>គន្លឹះប្រើប្រាស់រហ័ស (Speed Tips)</span>
+                                    </div>
+                                    <p className="text-zinc-300 font-khmer text-[11.5px] leading-relaxed">
+                                        ចុច <strong>F2</strong> ពីគ្រប់ទីកន្លែងក្នុងប្រព័ន្ធ ដើម្បីបើកផ្ទាំងលក់ POS ភ្លាមៗ ឬចុច <strong>Esc</strong> ដើម្បីត្រឡប់ក្រោយវិញ។
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Security Stamp Footer */}
+                            <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                <span>REFERENCE: POS_SYSTEM_HELP</span>
+                                <span>SPEC-14 HOTKEYS</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    {/* Footer Bar */}
+                    <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                        <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                            <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                Esc
+                            </kbd>
+                            <span>ដើម្បីត្រឡប់ក្រោយ / បិទមគ្គុទ្ទេសក៍</span>
+                        </div>
+
+                        <div className="flex items-center gap-3 ml-auto">
+                            <button
+                                type="button"
+                                onClick={() => setHelpModalOpen(false)}
+                                className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
+                            >
+                                <Check className="w-4 h-4" />
+                                <span>យល់ព្រម (Acknowledge & Close)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                document.body
             )}
             {/* Logout Confirmation Dialog */}
             {logoutConfirmOpen && (
