@@ -33,7 +33,7 @@ import {
     CheckCircle2,
     AlertCircle,
     Trash2,
-    Link2,
+    FolderUp,
     Loader2,
 } from 'lucide-react';
 
@@ -83,28 +83,7 @@ interface CatalogProps {
 
 type TabType = 'products' | 'units' | 'categories';
 
-const SYSTEM_IMAGE_PRESETS = [
-    { label: 'លៀសអប់', path: '/images/products/leas-op.png' },
-    { label: 'លៀសសរអប់', path: '/images/products/leas-sar-op.png' },
-    { label: 'ខ្យងស្ងោរ', path: '/images/products/khyong-sngor.png' },
-    { label: 'ខ្យងស្រែអប់', path: '/images/products/khyong-sre-op.png' },
-    { label: 'ងាវស្រុះ', path: '/images/products/ngeav-sros.png' },
-    { label: 'ងាវអប់អំពិលទុំ', path: '/images/products/ngeav-op-ampil-mtes.png' },
-    { label: 'ក្តាមស្ងោរ', path: '/images/products/kdam-sngor.png' },
-    { label: 'ក្តាមស្រែអប់', path: '/images/products/kdam-sre-op-ampil-mtes.png' },
-    { label: 'ខ្យៅស្ងោរ', path: '/images/products/khyav-sngor.png' },
-    { label: 'ខ្យៅអប់គ្រឿង', path: '/images/products/khyav-op-kroeung.png' },
-    { label: 'បង្កងអប់អំពិល', path: '/images/products/bangkang-op-ampil-mtes.png' },
-    { label: 'ពងក្រួចកូន', path: '/images/products/pong-krouch-koun.png' },
-    { label: 'ស្លាបមាន់បំពង', path: '/images/products/sleab-moan-bampong.png' },
-    { label: 'ស្លាបមាន់កណ្តាល', path: '/images/products/sleab-moan-kandal.png' },
-    { label: 'សាច់គោច្រនួច', path: '/images/products/sach-ko-chranoch.png' },
-    { label: 'ប្រហិតសាច់គោអប់', path: '/images/products/prohet-sach-ko-op.png' },
-    { label: 'ប្រហិតសាច់គោ', path: '/images/products/prohet-sach-ko.png' },
-    { label: 'ប្រហិតបន្លែ', path: '/images/products/prohet-banle.png' },
-    { label: 'កូកាកូឡា', path: '/images/products/coca-cola.jpg' },
-    { label: 'ទឹកបរិសុទ្ធ', path: '/images/products/mineral-water.jpg' },
-];
+
 
 export default function CatalogIndex({
     products,
@@ -1258,20 +1237,20 @@ export default function CatalogIndex({
                                     </div>
                                 </div>
 
-                                {/* RIGHT COLUMN: Product Media & Presets (6 cols) */}
-                                <div className="lg:col-span-6 flex flex-col p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3.5">
+                                {/* RIGHT COLUMN: Product Media (Local Upload Only) */}
+                                <div className="lg:col-span-6 flex flex-col p-4 sm:p-5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80">
                                     {/* Section Header */}
-                                    <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70 dark:border-zinc-800/70">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-7 h-7 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                                    <div className="flex items-center justify-between pb-3 border-b border-zinc-200/70 dark:border-zinc-800/70 mb-3.5 shrink-0">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
                                                 <ImageIcon className="w-4 h-4" />
                                             </div>
                                             <div>
                                                 <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer block">
-                                                    រូបភាពមុខម្ហូប / Product Media
+                                                    រូបភាពមុខម្ហូប / Product Image
                                                 </span>
                                                 <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                    Upload ពីម៉ាស៊ីនផ្ទាល់ ឬ ជ្រើសរើសរូបគំរូក្នុងប្រព័ន្ធ
+                                                    ផ្ទុកឡើងរូបភាពទំនិញពីកុំព្យូទ័ររបស់អ្នក
                                                 </span>
                                             </div>
                                         </div>
@@ -1284,7 +1263,7 @@ export default function CatalogIndex({
                                                     setUploadedFileName(null);
                                                     setUploadError(null);
                                                 }}
-                                                className="text-xs text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                                className="text-xs text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-rose-500/10 transition-colors cursor-pointer border border-rose-500/20"
                                                 title="ដករូបភាពចេញ"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
@@ -1293,172 +1272,136 @@ export default function CatalogIndex({
                                         )}
                                     </div>
 
-                                    {/* Top: Live Preview & Local Upload Dropzone */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-stretch">
-                                        {/* Left: Preview Card (4 cols) */}
-                                        <div className="sm:col-span-4 flex flex-col items-center justify-center relative min-h-[125px] rounded-2xl bg-white dark:bg-zinc-900 border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-2 overflow-hidden shadow-inner group">
-                                            {productForm.data.image_url ? (
-                                                <>
+                                    {/* Hidden File Input */}
+                                    <input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp,image/gif"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                handleFileSelect(e.target.files[0]);
+                                            }
+                                        }}
+                                    />
+
+                                    {/* Main Content Area */}
+                                    <div className="flex-1 flex flex-col min-h-0 justify-center">
+                                        {productForm.data.image_url ? (
+                                            /* Selected / Uploaded Image View */
+                                            <div className="flex flex-col items-center justify-between flex-1 gap-3.5 p-4 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
+                                                <div className="relative w-full flex-1 min-h-[220px] max-h-[300px] rounded-2xl bg-zinc-100 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/80 flex items-center justify-center p-3 overflow-hidden shadow-inner group">
                                                     <img
                                                         src={productForm.data.image_url}
                                                         alt="Product Preview"
-                                                        className="w-full h-full max-h-[115px] object-contain rounded-xl transition-transform group-hover:scale-105"
+                                                        className="max-h-[250px] max-w-full object-contain rounded-xl shadow-md transition-transform group-hover:scale-102"
                                                         onError={(e) => {
                                                             (e.target as HTMLElement).style.display = 'none';
                                                         }}
                                                     />
-                                                    <div className="absolute top-1.5 right-1.5 bg-emerald-500 text-white rounded-full p-0.5 shadow-sm">
+                                                    <div className="absolute top-3 right-3 bg-emerald-500 text-white rounded-full p-1 shadow-md flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-khmer font-bold">
                                                         <Check className="w-3 h-3 stroke-[3]" />
+                                                        <span>បានជ្រើសរើស</span>
                                                     </div>
-                                                </>
-                                            ) : (
-                                                <div className="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 text-center p-2">
-                                                    <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-1 text-zinc-400">
-                                                        <Utensils className="w-5 h-5 stroke-[1.5]" />
-                                                    </div>
-                                                    <span className="text-[11px] font-khmer font-medium">គ្មានរូបភាព</span>
-                                                    <span className="text-[9px] text-zinc-400 font-mono">No image set</span>
                                                 </div>
-                                            )}
-                                        </div>
 
-                                        {/* Right: Drag & Drop / Click to Upload Box (8 cols) */}
-                                        <div
-                                            onDragOver={(e) => {
-                                                e.preventDefault();
-                                                setIsDraggingOver(true);
-                                            }}
-                                            onDragLeave={() => setIsDraggingOver(false)}
-                                            onDrop={(e) => {
-                                                e.preventDefault();
-                                                setIsDraggingOver(false);
-                                                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                                                    handleFileSelect(e.dataTransfer.files[0]);
-                                                }
-                                            }}
-                                            onClick={() => fileInputRef.current?.click()}
-                                            className={`sm:col-span-8 flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center relative ${
-                                                isDraggingOver
-                                                    ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/30'
-                                                    : 'border-zinc-300 dark:border-zinc-700 hover:border-amber-500/70 hover:bg-zinc-100/60 dark:hover:bg-zinc-800/40 bg-white/70 dark:bg-zinc-900/60'
-                                            }`}
-                                        >
-                                            <input
-                                                ref={fileInputRef}
-                                                type="file"
-                                                accept="image/png,image/jpeg,image/webp,image/gif"
-                                                className="hidden"
-                                                onChange={(e) => {
-                                                    if (e.target.files && e.target.files[0]) {
-                                                        handleFileSelect(e.target.files[0]);
+                                                {/* Footer Controls for current image */}
+                                                <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70">
+                                                    <div className="flex items-center gap-2 min-w-0">
+                                                        <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-500 flex items-center justify-center shrink-0">
+                                                            <CheckCircle2 className="w-4 h-4" />
+                                                        </div>
+                                                        <div className="truncate">
+                                                            <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 block truncate">
+                                                                {uploadedFileName || 'រូបភាពមុខម្ហូប (Product Photo)'}
+                                                            </span>
+                                                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-khmer block">
+                                                                រួចរាល់សម្រាប់បង្ហាញលើប្រព័ន្ធ POS
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-2 shrink-0">
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            onClick={() => fileInputRef.current?.click()}
+                                                            className="border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-khmer text-xs rounded-xl h-8 px-3 cursor-pointer"
+                                                        >
+                                                            <UploadCloud className="w-3.5 h-3.5 mr-1" />
+                                                            <span>ប្តូររូបថ្មី</span>
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* Empty State: Big Interactive Drag & Drop Box */
+                                            <div
+                                                onDragOver={(e) => {
+                                                    e.preventDefault();
+                                                    setIsDraggingOver(true);
+                                                }}
+                                                onDragLeave={() => setIsDraggingOver(false)}
+                                                onDrop={(e) => {
+                                                    e.preventDefault();
+                                                    setIsDraggingOver(false);
+                                                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                                        handleFileSelect(e.dataTransfer.files[0]);
                                                     }
                                                 }}
-                                            />
-
-                                            {isUploadingImage ? (
-                                                <div className="flex flex-col items-center gap-1.5 py-1.5">
-                                                    <Loader2 className="w-7 h-7 text-amber-500 animate-spin" />
-                                                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
-                                                        កំពុងផ្ទុកឡើងរូបភាព...
-                                                    </span>
-                                                    <span className="text-[10px] text-zinc-400 font-mono">Uploading image...</span>
-                                                </div>
-                                            ) : uploadedFileName ? (
-                                                <div className="flex flex-col items-center gap-1 py-1">
-                                                    <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
-                                                        <CheckCircle2 className="w-5 h-5" />
-                                                    </div>
-                                                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[200px]">
-                                                        {uploadedFileName}
-                                                    </span>
-                                                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-khmer">
-                                                        បានផ្ទុកឡើងជោគជ័យ (ចុចដើម្បីប្តូររូបថ្មី)
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <div className="flex flex-col items-center gap-1 py-0.5">
-                                                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
-                                                        <UploadCloud className="w-5 h-5" />
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer block">
-                                                            ចុច Upload ពីកុំព្យូទ័រ ឬ អូសទម្លាក់ទីនេះ
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className={`flex-1 min-h-[280px] sm:min-h-[320px] flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center relative group ${
+                                                    isDraggingOver
+                                                        ? 'border-amber-500 bg-amber-500/10 ring-4 ring-amber-500/20 scale-[0.99]'
+                                                        : 'border-zinc-300 dark:border-zinc-700 hover:border-amber-500/70 hover:bg-amber-500/5 bg-white/60 dark:bg-zinc-900/40'
+                                                }`}
+                                            >
+                                                {isUploadingImage ? (
+                                                    <div className="flex flex-col items-center gap-2 py-6">
+                                                        <Loader2 className="w-10 h-10 text-amber-500 animate-spin" />
+                                                        <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-khmer">
+                                                            កំពុងផ្ទុកឡើងរូបភាពពីកុំព្យូទ័រ...
                                                         </span>
-                                                        <span className="text-[10px] text-zinc-400 font-mono block mt-0.5">
-                                                            PNG, JPG, WEBP (រហូតដល់ 5MB)
-                                                        </span>
+                                                        <span className="text-xs text-zinc-400 font-mono">Uploading image, please wait...</span>
                                                     </div>
-                                                </div>
-                                            )}
-
-                                            {uploadError && (
-                                                <div className="mt-1.5 text-[10px] text-rose-500 font-khmer flex items-center gap-1 bg-rose-500/10 px-2 py-0.5 rounded-md">
-                                                    <AlertCircle className="w-3 h-3 shrink-0" />
-                                                    <span>{uploadError}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Preset Dishe Gallery */}
-                                    <div className="pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70 flex-1 flex flex-col min-h-0">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 font-khmer flex items-center gap-1.5">
-                                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>រូបភាពគំរូក្នុងប្រព័ន្ធ (ចុច ១ ដងដើម្បីយកភ្លាមៗ):</span>
-                                            </span>
-                                            <span className="text-[10px] text-zinc-400 font-mono">
-                                                {SYSTEM_IMAGE_PRESETS.length} presets
-                                            </span>
-                                        </div>
-
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-1.5 overflow-y-auto max-h-[160px] pr-1">
-                                            {SYSTEM_IMAGE_PRESETS.map((preset) => {
-                                                const isSelected = productForm.data.image_url === preset.path;
-                                                return (
-                                                    <button
-                                                        key={preset.path}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            productForm.setData('image_url', preset.path);
-                                                            setUploadedFileName(null);
-                                                            setUploadError(null);
-                                                        }}
-                                                        className={`flex items-center gap-2 p-1.5 rounded-xl text-[11px] font-khmer border transition-all cursor-pointer text-left ${
-                                                            isSelected
-                                                                ? 'bg-amber-500 text-zinc-950 border-amber-600 font-bold shadow-xs ring-1 ring-amber-500/50'
-                                                                : 'bg-white hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300'
-                                                        }`}
-                                                    >
-                                                        <div className="w-6 h-6 rounded-lg overflow-hidden shrink-0 border border-black/10 bg-white">
-                                                            <img
-                                                                src={preset.path}
-                                                                alt=""
-                                                                className="w-full h-full object-cover"
-                                                            />
+                                                ) : (
+                                                    <>
+                                                        <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 mb-3.5 group-hover:scale-110 group-hover:bg-amber-500/15 transition-all shadow-sm">
+                                                            <UploadCloud className="w-8 h-8 stroke-[1.75]" />
                                                         </div>
-                                                        <span className="truncate flex-1">{preset.label}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
 
-                                    {/* Direct URL Input */}
-                                    <div className="pt-2 border-t border-zinc-200/70 dark:border-zinc-800/70">
-                                        <div className="flex items-center gap-2">
-                                            <Link2 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                                            <input
-                                                type="text"
-                                                value={productForm.data.image_url}
-                                                onChange={(e) => {
-                                                    productForm.setData('image_url', e.target.value);
-                                                    setUploadedFileName(null);
-                                                }}
-                                                placeholder="ឬបញ្ចូល URL រូបភាពដោយផ្ទាល់ (e.g. https://...)"
-                                                className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 font-mono"
-                                            />
-                                        </div>
+                                                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white font-khmer mb-1">
+                                                            ចុចទីនេះដើម្បី Upload ឬ អូសទម្លាក់រូបភាពពីកុំព្យូទ័រ
+                                                        </h4>
+                                                        <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer max-w-sm mb-4">
+                                                            ជ្រើសរើសរូបភាពមុខម្ហូប ឬភេសជ្ជៈ ដើម្បីបង្ហាញក្នុងប្រព័ន្ធលក់ POS
+                                                        </p>
+
+                                                        <div className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer text-xs shadow-md shadow-amber-500/20 inline-flex items-center gap-2 transition-transform group-hover:scale-105">
+                                                            <FolderUp className="w-4 h-4" />
+                                                            <span>ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (Browse)</span>
+                                                        </div>
+
+                                                        <div className="mt-5 flex items-center justify-center gap-3 text-[10px] text-zinc-400 dark:text-zinc-500 font-khmer border-t border-zinc-200/60 dark:border-zinc-800/60 pt-3 w-full max-w-xs">
+                                                            <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 font-mono">
+                                                                PNG, JPG, WEBP
+                                                            </span>
+                                                            <span>•</span>
+                                                            <span>ធំបំផុត 5MB</span>
+                                                            <span>•</span>
+                                                            <span>ទំហំ 1:1 (ការ៉េ)</span>
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                                {uploadError && (
+                                                    <div className="mt-3 text-xs text-rose-500 font-khmer flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 px-3 py-1 rounded-xl">
+                                                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                        <span>{uploadError}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
