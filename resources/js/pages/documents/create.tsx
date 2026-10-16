@@ -516,7 +516,7 @@ export default function DocumentCreate({
                 <div className="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 sm:px-5 py-2 flex items-center justify-between shrink-0 gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
                         {/* Order Mode Switcher */}
-                        <div className="flex items-center bg-slate-800/90 p-0.5 rounded-xl border border-slate-700/70 h-9 shrink-0">
+                        <div className="flex items-center bg-slate-800/90 p-0.5 rounded-xl border border-slate-700/70 h-9 shrink-0 overflow-hidden">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -548,9 +548,9 @@ export default function DocumentCreate({
 
                         {/* Dine-in Unified Table Selector */}
                         {orderMode === 'dine_in' && (
-                            <div className="flex items-center h-9 rounded-xl border border-slate-700/80 bg-slate-800/90 text-xs shadow-xs divide-x divide-slate-700/70 shrink-0">
+                            <div className="flex items-center h-9 rounded-xl border border-slate-700/80 bg-slate-800/90 text-xs shadow-xs divide-x divide-slate-700/70 shrink-0 overflow-hidden">
                                 {/* Quick Table Dropdown */}
-                                <div className="relative flex items-center h-full">
+                                <div className="relative flex items-center h-full rounded-l-xl">
                                     <div className="pl-2.5 pr-1 text-amber-400">
                                         <Utensils className="w-3.5 h-3.5" />
                                     </div>
@@ -593,7 +593,7 @@ export default function DocumentCreate({
                                     type="button"
                                     onClick={() => setIsTablesModalOpen(true)}
                                     title="មើលប្លង់តុទាំងអស់ (Floor Table Map)"
-                                    className="h-full px-2.5 flex items-center gap-1.5 bg-slate-800/60 hover:bg-slate-700 text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap text-xs font-medium"
+                                    className="h-full px-2.5 flex items-center gap-1.5 bg-transparent hover:bg-slate-700/50 text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap text-xs font-medium rounded-r-xl"
                                 >
                                     <Users className="w-3.5 h-3.5 text-amber-400" />
                                     <span className="hidden sm:inline">ប្លង់តុ ({tables_list.length})</span>
@@ -611,7 +611,7 @@ export default function DocumentCreate({
                             <button
                                 type="button"
                                 onClick={() => setIsTablesModalOpen(true)}
-                                className="h-9 px-3 rounded-xl border border-slate-700/80 bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-medium flex items-center gap-2 cursor-pointer shadow-xs transition shrink-0"
+                                className="h-9 px-3 rounded-xl border border-slate-700/80 bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-medium flex items-center gap-2 cursor-pointer shadow-xs transition shrink-0 overflow-hidden"
                                 title="មើលប្លង់តុ (Floor Table Map)"
                             >
                                 <Users className="w-3.5 h-3.5 text-amber-400" />
