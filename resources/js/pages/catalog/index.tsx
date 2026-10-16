@@ -663,7 +663,6 @@ export default function CatalogIndex({
                                             <th className="px-4 py-3 whitespace-nowrap">Category / ប្រភេទ</th>
                                             <th className="px-4 py-3 whitespace-nowrap">Unit / ឯកតា</th>
                                             <th className="px-4 py-3 text-right whitespace-nowrap">Unit Price / តម្លៃ</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Package / កញ្ចប់</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
                                             <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
                                         </tr>
@@ -671,7 +670,7 @@ export default function CatalogIndex({
                                     <tbody className="divide-y divide-zinc-800/60">
                                         {filteredProducts.length === 0 ? (
                                             <tr>
-                                                <td colSpan={8} className="px-4 py-12 text-center text-zinc-500">
+                                                <td colSpan={7} className="px-4 py-12 text-center text-zinc-500">
                                                     រកមិនឃើញមុខទំនិញដែលត្រូវនឹងការស្វែងរកទេ
                                                 </td>
                                             </tr>
@@ -737,15 +736,6 @@ export default function CatalogIndex({
                                                             <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
                                                                 {priceKHR.toLocaleString()} ៛
                                                             </div>
-                                                        </td>
-                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
-                                                            {p.is_primary_package ? (
-                                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap">
-                                                                    Buffet Pax
-                                                                </span>
-                                                            ) : (
-                                                                <span className="text-zinc-400 dark:text-zinc-600 font-mono">—</span>
-                                                            )}
                                                         </td>
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             <button
@@ -1163,76 +1153,38 @@ export default function CatalogIndex({
                                         </div>
                                     </div>
 
-                                    {/* Section 3: Settings Toggles */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {/* Buffet Switch Card */}
-                                        <div
-                                            onClick={() => productForm.setData('is_primary_package', !productForm.data.is_primary_package)}
-                                            className={`p-3 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
-                                                productForm.data.is_primary_package
-                                                    ? 'bg-amber-500/10 border-amber-500/40 ring-1 ring-amber-500/20'
-                                                    : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                            }`}
-                                        >
-                                            <div className="flex items-center gap-2.5">
-                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
-                                                    productForm.data.is_primary_package
-                                                        ? 'bg-amber-500 text-zinc-950 shadow-xs'
-                                                        : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
-                                                }`}>
-                                                    <Sparkles className="w-4 h-4" />
-                                                </div>
-                                                <div>
-                                                    <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        កញ្ចប់ប៊ូហ្វេ (Buffet)
-                                                    </span>
-                                                    <span className="block text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                        មុខម្ហូបក្នុងកញ្ចប់ប៊ូហ្វេ
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 ${
-                                                productForm.data.is_primary_package ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                                    {/* Section 3: Status Toggle */}
+                                    <div
+                                        onClick={() => productForm.setData('is_active', !productForm.data.is_active)}
+                                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
+                                            productForm.data.is_active
+                                                ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20'
+                                                : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-[#cbd5e1] dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
+                                                productForm.data.is_active
+                                                    ? 'bg-emerald-500 text-white shadow-xs'
+                                                    : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
                                             }`}>
-                                                <div className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
-                                                    productForm.data.is_primary_package ? 'translate-x-4.5' : 'translate-x-0'
-                                                }`} />
+                                                <Check className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    ស្ថានភាពមុខទំនិញ (Product Status)
+                                                </span>
+                                                <span className="block text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                    {productForm.data.is_active ? 'បើកដំណើរការលក់លើប្រព័ន្ធ POS (Active)' : 'ផ្អាកលក់បណ្តោះអាសន្នលើប្រព័ន្ធ POS (Inactive)'}
+                                                </span>
                                             </div>
                                         </div>
-
-                                        {/* Active Switch Card */}
-                                        <div
-                                            onClick={() => productForm.setData('is_active', !productForm.data.is_active)}
-                                            className={`p-3 rounded-2xl border transition-all cursor-pointer select-none flex items-center justify-between ${
-                                                productForm.data.is_active
-                                                    ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20'
-                                                    : 'bg-zinc-50/70 dark:bg-zinc-900/40 border-zinc-200/80 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700'
-                                            }`}
-                                        >
-                                            <div className="flex items-center gap-2.5">
-                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${
-                                                    productForm.data.is_active
-                                                        ? 'bg-emerald-500 text-white shadow-xs'
-                                                        : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
-                                                }`}>
-                                                    <Check className="w-4 h-4" />
-                                                </div>
-                                                <div>
-                                                    <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        ស្ថានភាព (Active)
-                                                    </span>
-                                                    <span className="block text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                        {productForm.data.is_active ? 'បើកលក់លើ POS' : 'ផ្អាកលក់បណ្តោះអាសន្ន'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className={`w-10 h-5.5 rounded-full transition-colors relative p-0.5 ${
-                                                productForm.data.is_active ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-700'
-                                            }`}>
-                                                <div className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform ${
-                                                    productForm.data.is_active ? 'translate-x-4.5' : 'translate-x-0'
-                                                }`} />
-                                            </div>
+                                        <div className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${
+                                            productForm.data.is_active ? 'bg-emerald-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                                        }`}>
+                                            <div className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
+                                                productForm.data.is_active ? 'translate-x-5' : 'translate-x-0'
+                                            }`} />
                                         </div>
                                     </div>
                                 </div>
