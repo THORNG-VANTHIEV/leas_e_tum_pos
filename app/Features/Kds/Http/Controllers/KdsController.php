@@ -41,6 +41,8 @@ class KdsController extends Controller
                     'id' => $doc->id,
                     'document_number' => $doc->document_number,
                     'reference_identifier' => $doc->reference_identifier ?: 'Takeaway',
+                    'order_source' => $doc->order_source?->value ?? 'walk_in',
+                    'external_order_ref' => $doc->external_order_ref,
                     'kitchen_status' => $doc->kitchen_status ?: 'pending',
                     'kitchen_started_at' => $doc->kitchen_started_at?->toIso8601String(),
                     'kitchen_ready_at' => $doc->kitchen_ready_at?->toIso8601String(),

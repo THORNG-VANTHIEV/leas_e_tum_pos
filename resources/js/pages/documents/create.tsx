@@ -8,7 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { useTranslation } from '@/context/language-context';
+import { ORDER_SOURCES, OrderSourceBadge, OrderSourceValue, formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import {
+    Bike,
     Search,
     Plus,
     Minus,
@@ -142,6 +144,11 @@ export default function DocumentCreate({
     const [selectedTable, setSelectedTable] = useState<string>(initial_table || tables_list[0] || 'តុ ០១');
     const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
     const [currentDraftId, setCurrentDraftId] = useState<number | null>(null);
+
+    // Takeaway order source (walk-in or delivery app) and the app's own order number
+    const [orderSource, setOrderSource] = useState<OrderSourceValue>('walk_in');
+    const [externalOrderRef, setExternalOrderRef] = useState<string>('');
+    const effectiveOrderSource: OrderSourceValue = orderMode === 'dine_in' ? 'walk_in' : orderSource;
 
     const [selectedCategory, setSelectedCategory] = useState<number | 'all'>('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -502,6 +509,8 @@ export default function DocumentCreate({
             '/invoices/checkout',
             {
                 table_identifier: tableName,
+                order_source: effectiveOrderSource,
+                external_order_ref: isDeliveryPlatform(effectiveOrderSource) ? externalOrderRef.trim() || null : null,
                 customer_id: selectedCustomerId,
                 document_id: currentDraftId,
                 payment_method: paymentMethod,
@@ -903,6 +912,9 @@ export default function DocumentCreate({
                                                 {language === 'km' ? 'ញ៉ាំនៅហាង' : 'DINE-IN'}
                                             </span>
                                         )}
+                                        {isDeliveryPlatform(effectiveOrderSource) && (
+                                            <OrderSourceBadge source={effectiveOrderSource} className="shrink-0" />
+                                        )}
                                     </div>
                                     <p className="text-[10px] sm:text-[11px] text-zinc-400 font-mono mt-0.5 whitespace-nowrap truncate">
                                         {totals.totalItems} {language === 'km' ? 'មុខក្នុងកន្ត្រក' : 'items'} • {lines.reduce((acc, l) => acc + l.quantity, 0)} {language === 'km' ? 'ចំនួន' : 'qty'}
@@ -1243,6 +1255,9 @@ export default function DocumentCreate({
                                     <span className="font-semibold text-slate-700 dark:text-zinc-300">
                                         {orderMode === 'takeaway' ? 'ខ្ចប់ (Takeaway)' : `តុ៖ ${selectedTable}`}
                                     </span>
+                                    {isDeliveryPlatform(effectiveOrderSource) && (
+                                        <OrderSourceBadge source={effectiveOrderSource} externalRef={externalOrderRef.trim() || null} />
+                                    )}
                                     <span>•</span>
                                     <span>{totals.totalItems} មុខទំនិញ</span>
                                     <span>•</span>
@@ -1288,6 +1303,59 @@ export default function DocumentCreate({
                                         </span>
                                     </div>
                                 </div>
+
+                                {/* Section 0: Order Source (Takeaway only — walk-in or delivery app) */}
+                                {orderMode === 'takeaway' && (
+                                    <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
+                                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
+                                            <div className="flex items-center gap-2">
+                                                <Bike className="w-4 h-4 text-amber-500" />
+                                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
+                                                    ប្រភពការកម្មង់ (Order Source) *
+                                                </h3>
+                                            </div>
+                                            <span className="text-xs text-slate-400 dark:text-zinc-500 font-khmer">
+                                                បង្ហាញលើវិក្កយបត្រ
+                                            </span>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                                            {ORDER_SOURCES.map((source) => {
+                                                const isSelected = orderSource === source.value;
+                                                return (
+                                                    <button
+                                                        key={source.value}
+                                                        type="button"
+                                                        onClick={() => setOrderSource(source.value)}
+                                                        className={`h-11 px-2 rounded-xl border text-xs font-bold transition cursor-pointer font-khmer truncate ${
+                                                            isSelected
+                                                                ? `${source.badgeClass} ring-2 ring-current/20 shadow-sm`
+                                                                : 'bg-slate-50 dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
+                                                        }`}
+                                                    >
+                                                        {language === 'km' ? source.labelKm : source.label}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {isDeliveryPlatform(orderSource) && (
+                                            <div className="space-y-1.5">
+                                                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 font-khmer">
+                                                    លេខកម្មង់របស់ App <span className="font-normal text-slate-400">(App Order #)</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={externalOrderRef}
+                                                    onChange={(e) => setExternalOrderRef(e.target.value)}
+                                                    maxLength={40}
+                                                    placeholder="ឧ. f7k2-x9pq"
+                                                    className="w-full h-10 px-3.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 transition-all"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
 
                                 {/* Section 1: Payment Method Selection */}
                                 <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
@@ -1597,6 +1665,13 @@ export default function DocumentCreate({
                                             <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between pt-1">
                                                 <span>{new Date().toISOString().slice(0, 10)}</span>
                                                 <span>{orderMode === 'takeaway' ? 'ខ្ចប់' : selectedTable}</span>
+                                            </div>
+                                            <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between">
+                                                <span className="font-khmer">កម្មង់ពី (Order From)</span>
+                                                <span className="font-bold text-slate-900 dark:text-zinc-100">
+                                                    {formatOrderSource(effectiveOrderSource)}
+                                                    {isDeliveryPlatform(effectiveOrderSource) && externalOrderRef.trim() && ` #${externalOrderRef.trim()}`}
+                                                </span>
                                             </div>
                                         </div>
 

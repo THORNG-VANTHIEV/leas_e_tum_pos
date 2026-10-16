@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { OrderSourceBadge, isDeliveryPlatform } from '@/components/order-source';
 import {
     Search,
     Plus,
@@ -26,6 +27,8 @@ interface DocumentRecord {
     business_date: string;
     event_time: string;
     reference_identifier: string | null;
+    order_source: string | null;
+    external_order_ref: string | null;
     unit_count: number;
     source_total: string;
     source_total_verified: boolean;
@@ -197,7 +200,12 @@ export default function DocumentIndex({ documents, filters, active_period }: Ind
                                                     {doc.business_date} {doc.event_time}
                                                 </td>
                                                 <td className="px-4 py-3 font-bold text-zinc-200">
-                                                    {doc.reference_identifier || '—'}
+                                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                                        <span>{doc.reference_identifier || '—'}</span>
+                                                        {isDeliveryPlatform(doc.order_source) && (
+                                                            <OrderSourceBadge source={doc.order_source} externalRef={doc.external_order_ref} />
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-teal-400 font-semibold">
                                                     {doc.unit_count} pax

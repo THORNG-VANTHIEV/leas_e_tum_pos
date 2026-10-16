@@ -3,20 +3,24 @@
 namespace App\Features\Documents\Http\Controllers;
 
 use App\Enums\DocumentStatus;
+use App\Enums\OrderSource;
 use App\Enums\PeriodStatus;
 use App\Features\Documents\Actions\CheckoutOrderAction;
 use App\Features\Documents\Actions\CreateDraftDocument;
 use App\Features\Documents\Actions\HoldTableOrderAction;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
+use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\RestaurantTable;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -117,7 +121,7 @@ class DocumentController extends Controller
                 ]),
             ]);
 
-        $tablesList = \App\Models\RestaurantTable::where('is_active', true)
+        $tablesList = RestaurantTable::where('is_active', true)
             ->orderBy('sort_order')
             ->pluck('name')
             ->toArray();
@@ -130,7 +134,7 @@ class DocumentController extends Controller
             ];
         }
 
-        $customers = \App\Models\Customer::where('is_active', true)
+        $customers = Customer::where('is_active', true)
             ->orderBy('name')
             ->take(30)
             ->get(['id', 'name', 'phone', 'tier', 'loyalty_points']);
@@ -167,6 +171,8 @@ class DocumentController extends Controller
             'amount_received' => ['nullable', 'string'],
             'discount_amount' => ['nullable', 'string'],
             'table_identifier' => ['nullable', 'string', 'max:50'],
+            'order_source' => ['nullable', Rule::enum(OrderSource::class)],
+            'external_order_ref' => ['nullable', 'string', 'max:40'],
             'customer_id' => ['nullable', 'integer', 'exists:customers,id'],
             'document_id' => ['nullable', 'integer', 'exists:documents,id'],
             'note' => ['nullable', 'string', 'max:1000'],
@@ -190,6 +196,7 @@ class DocumentController extends Controller
             if ($request->wantsJson()) {
                 return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
             }
+
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -223,6 +230,7 @@ class DocumentController extends Controller
             if ($request->wantsJson()) {
                 return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
             }
+
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
@@ -234,6 +242,7 @@ class DocumentController extends Controller
     {
         if ($invoice->status !== DocumentStatus::Draft) {
             $msg = 'អាចលុបចោលបានតែការកុម្ម៉ង់ដែលមិនទាន់គិតលុយ (Draft) ប៉ុណ្ណោះ។';
+
             return $request->wantsJson()
                 ? response()->json(['success' => false, 'error' => $msg], 422)
                 : back()->with('error', $msg);
@@ -272,6 +281,7 @@ class DocumentController extends Controller
 
         try {
             $document = $this->createDraft->handle($validated, $request->user()->id);
+
             return redirect()->route('invoices.show', $document->id)
                 ->with('success', "Draft order #{$document->id} (Table {$document->reference_identifier}) created successfully.");
         } catch (DomainException $e) {

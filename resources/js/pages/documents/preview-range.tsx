@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 
 interface DocumentItem {
     id: number;
@@ -25,6 +26,8 @@ interface DocumentItem {
     business_date: string;
     event_time: string;
     reference_identifier: string | null;
+    order_source: string | null;
+    external_order_ref: string | null;
     unit_count: number;
     source_total: string;
     source_total_verified: boolean;
@@ -365,6 +368,13 @@ export default function PreviewRange({
                                                 <span className="font-semibold text-zinc-800">{doc.reference_identifier}</span>
                                             </div>
                                         )}
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-zinc-500">Order From:</span>
+                                            <span className="font-semibold text-zinc-800 font-khmer">
+                                                {formatOrderSource(doc.order_source)}
+                                                {isDeliveryPlatform(doc.order_source) && doc.external_order_ref && ` #${doc.external_order_ref}`}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {/* Line Items Table */}
@@ -544,6 +554,13 @@ export default function PreviewRange({
                                             <div>
                                                 <span className="text-zinc-500 block text-[10px]">TABLE / REFERENCE</span>
                                                 <span className="font-semibold text-zinc-900">{doc.reference_identifier || '—'}</span>
+                                            </div>
+                                            <div>
+                                                <span className="text-zinc-500 block text-[10px]">ORDER FROM</span>
+                                                <span className="font-semibold text-zinc-900 font-khmer">
+                                                    {formatOrderSource(doc.order_source)}
+                                                    {isDeliveryPlatform(doc.order_source) && doc.external_order_ref && ` #${doc.external_order_ref}`}
+                                                </span>
                                             </div>
                                         </div>
 

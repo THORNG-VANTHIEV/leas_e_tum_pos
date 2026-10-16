@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DocumentStatus;
+use App\Enums\OrderSource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,6 +21,8 @@ class Document extends Model
         'business_date',
         'event_time',
         'reference_identifier',
+        'order_source',
+        'external_order_ref',
         'unit_count',
         'source_total',
         'source_total_verified',
@@ -50,6 +53,7 @@ class Document extends Model
 
     protected $casts = [
         'status' => DocumentStatus::class,
+        'order_source' => OrderSource::class,
         'business_date' => 'date:Y-m-d',
         'source_total' => 'decimal:2',
         'subtotal' => 'decimal:2',

@@ -3,6 +3,7 @@ import { Head, Link, usePage, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { Printer, ArrowLeft, RefreshCw, CheckCircle2, QrCode, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 
 interface DocumentPrintProps {
     document: {
@@ -13,6 +14,8 @@ interface DocumentPrintProps {
         business_date: string;
         event_time: string;
         reference_identifier: string | null;
+        order_source: string | null;
+        external_order_ref: string | null;
         unit_count: number;
         source_total: string;
         source_total_verified: boolean;
@@ -215,8 +218,24 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                     )}
                 </div>
 
+                {/* Delivery app banner — always printed so packers and riders can match the bag */}
+                {isDeliveryPlatform(doc.order_source) && (
+                    <div className="my-2 border-2 border-black rounded px-2 py-1.5 text-center">
+                        <div className="text-[15px] font-black uppercase tracking-wide font-khmer">
+                            {formatOrderSource(doc.order_source)}
+                        </div>
+                        {doc.external_order_ref && (
+                            <div className="text-[12px] font-bold">ORDER #: {doc.external_order_ref}</div>
+                        )}
+                    </div>
+                )}
+
                 {/* Meta details */}
                 <div className="space-y-1 text-[11px] pb-2 border-b border-dashed border-zinc-400">
+                    <div className="flex justify-between">
+                        <span className="text-zinc-600">ORDER FROM:</span>
+                        <span className="font-bold font-khmer">{formatOrderSource(doc.order_source)}</span>
+                    </div>
                     <div className="flex justify-between">
                         <span className="text-zinc-600">RECEIPT NO:</span>
                         <span className="font-bold">

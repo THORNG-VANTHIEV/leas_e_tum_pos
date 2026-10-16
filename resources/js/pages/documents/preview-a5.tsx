@@ -3,6 +3,7 @@ import { Head, Link, usePage, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { Printer, ArrowLeft, RefreshCw, FileText, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 
 interface DocumentPrintProps {
     document: {
@@ -13,6 +14,8 @@ interface DocumentPrintProps {
         business_date: string;
         event_time: string;
         reference_identifier: string | null;
+        order_source: string | null;
+        external_order_ref: string | null;
         unit_count: number;
         source_total: string;
         source_total_verified: boolean;
@@ -235,6 +238,16 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                                 <div>
                                     <span className="text-zinc-500">TABLE / REF: </span>
                                     <span className="font-bold">{doc.reference_identifier}</span>
+                                </div>
+                            )}
+                            <div>
+                                <span className="text-zinc-500">ORDER FROM: </span>
+                                <span className="font-bold font-khmer">{formatOrderSource(doc.order_source)}</span>
+                            </div>
+                            {isDeliveryPlatform(doc.order_source) && doc.external_order_ref && (
+                                <div>
+                                    <span className="text-zinc-500">APP ORDER #: </span>
+                                    <span className="font-bold">{doc.external_order_ref}</span>
                                 </div>
                             )}
                         </div>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
+import { OrderSourceBadge, isDeliveryPlatform } from '@/components/order-source';
 import {
     ReceiptText,
     ArrowLeft,
@@ -29,6 +30,8 @@ interface DocumentShowProps {
         business_date: string;
         event_time: string;
         reference_identifier: string | null;
+        order_source: string | null;
+        external_order_ref: string | null;
         unit_count: number;
         source_total: string;
         source_total_verified: boolean;
@@ -162,6 +165,13 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                             <span className="text-emerald-600 dark:text-emerald-400 font-bold font-sans">
                                 {doc.reference_identifier || '—'}
                             </span>
+                        </div>
+                        <div>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Order From</span>
+                            <OrderSourceBadge
+                                source={doc.order_source}
+                                externalRef={isDeliveryPlatform(doc.order_source) ? doc.external_order_ref : null}
+                            />
                         </div>
                         <div>
                             <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Cashier</span>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { AppLayout } from '@/layouts/app-layout';
+import { OrderSourceBadge, isDeliveryPlatform } from '@/components/order-source';
 import {
     ChefHat,
     Clock,
@@ -28,6 +29,8 @@ interface KdsOrder {
     id: number;
     document_number: string;
     reference_identifier: string;
+    order_source: string;
+    external_order_ref: string | null;
     kitchen_status: 'pending' | 'cooking' | 'ready' | 'served';
     kitchen_started_at: string | null;
     kitchen_ready_at: string | null;
@@ -443,6 +446,13 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 >
                                                     {order.reference_identifier}
                                                 </h3>
+                                                {isDeliveryPlatform(order.order_source) && (
+                                                    <OrderSourceBadge
+                                                        source={order.order_source}
+                                                        externalRef={order.external_order_ref}
+                                                        className="mt-1"
+                                                    />
+                                                )}
                                             </div>
                                             <div className="shrink-0">
                                                 {getStatusBadge(order.kitchen_status)}

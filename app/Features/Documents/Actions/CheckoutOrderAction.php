@@ -3,12 +3,16 @@
 namespace App\Features\Documents\Actions;
 
 use App\Enums\DocumentStatus;
+use App\Enums\OrderSource;
 use App\Enums\PeriodStatus;
 use App\Features\Documents\Services\DocumentCalculator;
+use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
+use App\Models\RestaurantTable;
 use App\Support\Audit\AuditService;
+use App\Support\Money\Money;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -22,9 +26,7 @@ final class CheckoutOrderAction
     /**
      * Execute instant real-time POS checkout with authoritative sequence number.
      *
-     * @param array<string, mixed> $data
-     * @param int $cashierId
-     * @return Document
+     * @param  array<string, mixed>  $data
      */
     public function handle(array $data, int $cashierId): Document
     {
@@ -90,11 +92,11 @@ final class CheckoutOrderAction
             // Compute expected grand total
             $itemsSubtotalCents = 0;
             foreach ($calcItems as $ci) {
-                $itemsSubtotalCents += \App\Support\Money\Money::toCents((string) $ci['unit_price']) * (int) $ci['quantity'];
+                $itemsSubtotalCents += Money::toCents((string) $ci['unit_price']) * (int) $ci['quantity'];
             }
-            $discountCents = \App\Support\Money\Money::toCents($discountAmountInput);
+            $discountCents = Money::toCents($discountAmountInput);
             $expectedGrandTotalCents = max(0, $itemsSubtotalCents - $discountCents);
-            $expectedGrandTotal = \App\Support\Money\Money::fromCents($expectedGrandTotalCents);
+            $expectedGrandTotal = Money::fromCents($expectedGrandTotalCents);
 
             $amountReceivedInput = (string) ($data['amount_received'] ?? '');
             if ($paymentMethod !== 'cash' || $amountReceivedInput === '' || bccomp($amountReceivedInput, $expectedGrandTotal, 2) === -1) {
@@ -120,6 +122,12 @@ final class CheckoutOrderAction
 
             $tableName = $data['table_identifier'] ?? $data['reference_identifier'] ?? 'Takeaway';
 
+            // Delivery app orders keep the platform's own order number; walk-in orders never carry one
+            $orderSource = OrderSource::tryFrom((string) ($data['order_source'] ?? '')) ?? OrderSource::WalkIn;
+            $externalOrderRef = $orderSource->isDeliveryPlatform()
+                ? (trim((string) ($data['external_order_ref'] ?? '')) ?: null)
+                : null;
+
             // 5. Update Existing Table Draft or Insert New Finalized Document
             $existingDocId = $data['document_id'] ?? null;
             if ($existingDocId) {
@@ -141,6 +149,8 @@ final class CheckoutOrderAction
                     'payment_method' => $paymentMethod,
                     'status' => DocumentStatus::Finalized,
                     'reference_identifier' => $tableName,
+                    'order_source' => $orderSource,
+                    'external_order_ref' => $externalOrderRef,
                     'kitchen_status' => 'pending',
                     'customer_id' => ! empty($data['customer_id']) ? (int) $data['customer_id'] : null,
                     'points_earned' => ! empty($data['customer_id']) ? (int) floor((float) $calc['grand_total']) : 0,
@@ -161,6 +171,8 @@ final class CheckoutOrderAction
                     'business_date' => now()->toDateString(),
                     'event_time' => now()->format('H:i:s'),
                     'reference_identifier' => $tableName,
+                    'order_source' => $orderSource,
+                    'external_order_ref' => $externalOrderRef,
                     'unit_count' => $calc['unit_count'],
                     'source_total' => $calc['grand_total'],
                     'source_total_verified' => true,
@@ -188,7 +200,7 @@ final class CheckoutOrderAction
 
             // Accrue loyalty points to customer if attached
             if (! empty($document->customer_id)) {
-                $customer = \App\Models\Customer::find($document->customer_id);
+                $customer = Customer::find($document->customer_id);
                 if ($customer) {
                     $customer->increment('visits_count');
                     $customer->increment('loyalty_points', $document->points_earned);
@@ -204,7 +216,7 @@ final class CheckoutOrderAction
             }
 
             // If table order checked out, set restaurant table back to available
-            $resTable = \App\Models\RestaurantTable::where('name', $tableName)->orWhere('code', $tableName)->first();
+            $resTable = RestaurantTable::where('name', $tableName)->orWhere('code', $tableName)->first();
             if ($resTable) {
                 $resTable->update(['status' => 'available']);
             }
@@ -227,6 +239,8 @@ final class CheckoutOrderAction
                     'grand_total' => $calc['grand_total'],
                     'payment_method' => $paymentMethod,
                     'table' => $tableName,
+                    'order_source' => $orderSource->value,
+                    'external_order_ref' => $externalOrderRef,
                 ],
                 null,
                 $cashierId,
