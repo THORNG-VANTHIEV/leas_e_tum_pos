@@ -408,9 +408,9 @@ export default function ExpensesIndex({
                                                         <td className="py-3 px-4 font-mono text-zinc-400">
                                                             {item.expense_date}
                                                         </td>
-                                                        <td className="py-3 px-4">
+                                                        <td className="py-3 px-4 whitespace-nowrap">
                                                             <span
-                                                                className={`px-2 py-0.5 rounded-full text-[11px] font-medium border ${cat.color}`}
+                                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium font-khmer whitespace-nowrap border ${cat.color}`}
                                                             >
                                                                 {cat.nameKh}
                                                             </span>

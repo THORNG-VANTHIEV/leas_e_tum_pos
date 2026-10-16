@@ -562,7 +562,7 @@ export default function CatalogIndex({
 
                                                 return (
                                                     <tr key={p.id} className="hover:bg-zinc-800/40 transition-colors">
-                                                        <td className="px-4 py-3 font-mono text-zinc-400">
+                                                        <td className="px-4 py-3 font-mono text-zinc-400 whitespace-nowrap">
                                                             {p.sku || '—'}
                                                         </td>
                                                         <td className="px-4 py-3">
@@ -594,12 +594,12 @@ export default function CatalogIndex({
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td className="px-4 py-3">
-                                                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                                                        <td className="px-4 py-3 whitespace-nowrap">
+                                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold font-khmer whitespace-nowrap bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                                                                 {p.category.name_primary}
                                                             </span>
                                                         </td>
-                                                        <td className="px-4 py-3">
+                                                        <td className="px-4 py-3 whitespace-nowrap">
                                                             <div className="catalog-unit-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all bg-sky-50 text-sky-800 border border-sky-200/90 shadow-2xs dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-500/30">
                                                                 <Scale className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
                                                                 <span className="font-semibold tracking-tight">{p.unit.name_primary}</span>
@@ -610,7 +610,7 @@ export default function CatalogIndex({
                                                                 )}
                                                             </div>
                                                         </td>
-                                                        <td className="px-4 py-3 text-right font-mono">
+                                                        <td className="px-4 py-3 text-right font-mono whitespace-nowrap">
                                                             <div className="font-bold text-amber-600 dark:text-amber-300">
                                                                 ${priceUSD.toFixed(2)}
                                                             </div>
@@ -618,35 +618,35 @@ export default function CatalogIndex({
                                                                 {priceKHR.toLocaleString()} ៛
                                                             </div>
                                                         </td>
-                                                        <td className="px-4 py-3 text-center">
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             {p.is_primary_package ? (
-                                                                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap">
                                                                     Buffet Pax
                                                                 </span>
                                                             ) : (
                                                                 <span className="text-zinc-400 dark:text-zinc-600 font-mono">—</span>
                                                             )}
                                                         </td>
-                                                        <td className="px-4 py-3 text-center">
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             <button
                                                                 onClick={() => handleToggleProduct(p)}
                                                                 title="Click to toggle status"
                                                                 className="cursor-pointer"
                                                             >
                                                                 {p.is_active ? (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                                                         Active
                                                                     </span>
                                                                 ) : (
-                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
+                                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
                                                                         Inactive
                                                                     </span>
                                                                 )}
                                                             </button>
                                                         </td>
-                                                        <td className="px-4 py-3 text-right">
+                                                        <td className="px-4 py-3 text-right whitespace-nowrap">
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
