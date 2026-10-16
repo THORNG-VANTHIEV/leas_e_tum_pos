@@ -1194,130 +1194,272 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     document.body
                 )}
 
-                {/* Adjust Loyalty Points Modal (Protected with Sidebar constraint) */}
+                {/* Adjust Loyalty Points Full-Workspace Suite */}
                 {mounted && pointsCustomer && createPortal(
                     <div
-                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150"
+                        className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                         onWheel={(e) => e.stopPropagation()}
                     >
-                        <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3.5 mb-4">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500">
-                                        <Coins className="w-4 h-4" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            កែប្រែពិន្ទុសន្សំ
+                        {/* Header */}
+                        <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-xs shrink-0">
+                                    <Coins className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                            កែសម្រួលពិន្ទុសន្សំអតិថិជន
                                         </h3>
-                                        <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                            អតិថិជន: <strong className="text-slate-900 dark:text-zinc-100">{pointsCustomer.name}</strong>
+                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
+                                            Points Adjustment
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                        អតិថិជន៖ <strong className="text-zinc-900 dark:text-white">{pointsCustomer.name}</strong> • សមតុល្យបច្ចុប្បន្ន៖ <span className="font-mono font-bold text-amber-600 dark:text-amber-400">{pointsCustomer.loyalty_points} pts</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setPointsCustomer(null)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                                title="ត្រឡប់ក្រោយ (Esc)"
+                            >
+                                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-600 dark:text-amber-400" />
+                                <span>ត្រឡប់ក្រោយ</span>
+                            </button>
+                        </div>
+
+                        {/* Body - 2 Columns (7 / 5) */}
+                        <form onSubmit={handlePointsSubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                            <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                                {/* LEFT COLUMN: Points Adjustment Form (7 cols) */}
+                                <div className="lg:col-span-7 space-y-4">
+                                    {/* Stepper Card */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <Coins className="w-4 h-4 text-amber-500" />
+                                            <span>កំណត់ចំនួនពិន្ទុកែសម្រួល / Points Adjustment Quantity</span>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setPointsAdjustment((prev) => prev - 10)}
+                                                    className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-rose-500/10 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
+                                                    title="ដក 10 ពិន្ទុ"
+                                                >
+                                                    <Minus className="w-5 h-5" />
+                                                </button>
+                                                <div className="relative flex-1">
+                                                    <input
+                                                        type="number"
+                                                        value={pointsAdjustment}
+                                                        onChange={(e) => setPointsAdjustment(Number(e.target.value))}
+                                                        className="w-full h-12 px-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-2xl text-center text-xl font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
+                                                    />
+                                                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-mono text-zinc-400">
+                                                        pts
+                                                    </span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setPointsAdjustment((prev) => prev + 10)}
+                                                    className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-500/10 hover:text-emerald-500 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-400 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
+                                                    title="បន្ថែម 10 ពិន្ទុ"
+                                                >
+                                                    <Plus className="w-5 h-5" />
+                                                </button>
+                                            </div>
+
+                                            {/* Quick Increment Pills */}
+                                            <div className="space-y-1.5 pt-1">
+                                                <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer block">
+                                                    ចុចជ្រើសរើសបរិមាណរហ័ស (Quick Delta Values)៖
+                                                </span>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {[-100, -50, -25, -10, 10, 25, 50, 100, 250, 500].map((val) => (
+                                                        <button
+                                                            key={val}
+                                                            type="button"
+                                                            onClick={() => setPointsAdjustment(val)}
+                                                            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer ${
+                                                                pointsAdjustment === val
+                                                                    ? val > 0
+                                                                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
+                                                                        : 'bg-rose-500 text-white border-rose-500 shadow-xs'
+                                                                    : 'bg-zinc-100 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-amber-500/50'
+                                                            }`}
+                                                        >
+                                                            {val > 0 ? `+${val}` : val}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Reason Card with Quick Presets */}
+                                    <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                        <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                            <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                                <Edit2 className="w-4 h-4 text-amber-500" />
+                                                <span>មូលហេតុនៃការកែប្រែ (Adjustment Reason)</span>
+                                                <span className="text-rose-500">*</span>
+                                            </div>
+                                        </div>
+
+                                        <input
+                                            type="text"
+                                            required
+                                            value={pointsReason}
+                                            onChange={(e) => setPointsReason(e.target.value)}
+                                            placeholder="ឧទាហរណ៍៖ កាដូលួងចិត្តអតិថិជន, រង្វាន់ខួបកំណើត VIP..."
+                                            className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 font-khmer transition-all"
+                                        />
+
+                                        {/* Quick Reason Presets */}
+                                        <div className="space-y-1.5 pt-1">
+                                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                                                <span>គំរូមូលហេតុរហ័ស (Quick Presets)៖</span>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {[
+                                                    'កាដូលួងចិត្តអតិថិជន (Customer Courtesy)',
+                                                    'រង្វាន់ពិសេសសម្រាប់អតិថិជន VIP (VIP Bonus)',
+                                                    'កែតម្រូវកំហុសឆ្គងបច្ចេកទេស (Correction of Discrepancy)',
+                                                    'បំពេញបន្ថែមពីកម្មវិធីប្រូម៉ូសិន (Campaign Promotion)',
+                                                ].map((preset, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        onClick={() => setPointsReason(preset)}
+                                                        className="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/90 hover:border-amber-500/40 hover:bg-amber-500/5 text-zinc-700 dark:text-zinc-300 text-[11px] font-khmer transition-all cursor-pointer text-left"
+                                                    >
+                                                        {preset}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Security & Audit Notice */}
+                                    <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-1.5 text-xs">
+                                        <div className="flex items-center gap-2 font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
+                                            <ShieldCheck className="w-4 h-4 text-amber-500" />
+                                            <span>កំណត់ហេតុសវនកម្ម (Audit Log Verification)</span>
+                                        </div>
+                                        <p className="text-zinc-600 dark:text-zinc-400 text-[11px] font-khmer leading-relaxed">
+                                            រាល់ការបន្ថែម ឬដកពិន្ទុ នឹងត្រូវរក្សាទុកក្នុងប្រវត្តិគណនីអតិថិជន និងប្រព័ន្ធសវនកម្មរដ្ឋបាលជាអចិន្ត្រៃយ៍ ដើម្បីភាពច្បាស់លាស់ និងតម្លាភាពក្នុងការគ្រប់គ្រង។
                                         </p>
                                     </div>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => setPointsCustomer(null)}
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" />
-                                    <span>ត្រឡប់ក្រោយ</span>
-                                </button>
+
+                                {/* RIGHT COLUMN: Membership Pass & Points Transition (5 cols) */}
+                                <div className="lg:col-span-5 space-y-4">
+                                    <div className="sticky top-4 space-y-4">
+                                        {/* Digital Member Card */}
+                                        <div className={`rounded-2xl border p-5 space-y-4 shadow-sm relative overflow-hidden bg-gradient-to-br ${TIER_CONFIG[pointsCustomer.tier]?.gradient || 'from-zinc-800 to-zinc-950'} border-amber-500/30 text-white`}>
+                                            {/* Watermark */}
+                                            <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+                                                <Award className="w-40 h-40 text-amber-400" />
+                                            </div>
+
+                                            {/* Top Banner */}
+                                            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                                                <div className="space-y-0.5">
+                                                    <span className="text-[10px] font-mono tracking-widest uppercase text-white/70">
+                                                        LOYALTY MEMBERSHIP CARD
+                                                    </span>
+                                                    <h4 className="text-sm font-bold text-white font-khmer">
+                                                        {pointsCustomer.name}
+                                                    </h4>
+                                                </div>
+                                                <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-white/10 text-amber-300 border border-white/20">
+                                                    {pointsCustomer.tier} TIER
+                                                </span>
+                                            </div>
+
+                                            {/* Transition Display */}
+                                            <div className="p-4 rounded-xl bg-black/40 border border-white/10 grid grid-cols-2 gap-3 text-center">
+                                                <div className="space-y-0.5 border-r border-white/10 pr-2">
+                                                    <span className="text-[10px] text-white/60 font-khmer block">ពិន្ទុបច្ចុប្បន្ន</span>
+                                                    <span className="text-lg font-bold font-mono text-white">
+                                                        {pointsCustomer.loyalty_points}
+                                                    </span>
+                                                    <span className="text-[10px] text-white/40 font-mono block">pts</span>
+                                                </div>
+                                                <div className="space-y-0.5 pl-2">
+                                                    <span className="text-[10px] text-amber-300 font-khmer block">ពិន្ទុក្រោយកែប្រែ</span>
+                                                    <span className="text-lg font-bold font-mono text-amber-400">
+                                                        {Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment)}
+                                                    </span>
+                                                    <span className="text-[10px] text-amber-300/60 font-mono block">pts</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Delta indicator */}
+                                            <div className="flex items-center justify-between text-xs font-mono px-1">
+                                                <span className="text-white/70 font-khmer">ការប្រែប្រួលសុទ្ធ (Net Delta)៖</span>
+                                                <span className={`font-bold ${pointsAdjustment >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                    {pointsAdjustment >= 0 ? `+${pointsAdjustment}` : pointsAdjustment} pts
+                                                </span>
+                                            </div>
+
+                                            {/* Details Grid */}
+                                            <div className="space-y-2 text-xs border-t border-white/10 pt-3">
+                                                <div className="flex items-center justify-between text-white/70">
+                                                    <span className="font-khmer">លេខទូរស័ព្ទ៖</span>
+                                                    <span className="text-white font-mono">{pointsCustomer.phone || '—'}</span>
+                                                </div>
+                                                <div className="flex items-center justify-between text-white/70">
+                                                    <span className="font-khmer">អត្ថប្រយោជន៍កម្រិត៖</span>
+                                                    <span className="text-amber-300 text-[11px] font-khmer">{TIER_CONFIG[pointsCustomer.tier]?.perk || '—'}</span>
+                                                </div>
+                                                <div className="flex items-center justify-between text-white/70">
+                                                    <span className="font-khmer">តម្លៃប្តូរប្រហាក់ប្រហែល៖</span>
+                                                    <span className="text-emerald-400 font-mono font-bold">
+                                                        ≈ ${(Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment) * 0.01).toFixed(2)} USD
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <form onSubmit={handlePointsSubmit} className="space-y-4">
-                                {/* Current vs Projected */}
-                                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-center justify-between text-xs">
-                                    <div>
-                                        <span className="text-slate-500 dark:text-zinc-400 font-khmer">ពិន្ទុបច្ចុប្បន្ន:</span>
-                                        <div className="text-base font-bold font-mono text-slate-800 dark:text-zinc-200">
-                                            {pointsCustomer.loyalty_points} pts
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="text-slate-500 dark:text-zinc-400 font-khmer">ពិន្ទុក្រោយកែប្រែ:</span>
-                                        <div className="text-base font-bold font-mono text-amber-600 dark:text-amber-400">
-                                            {Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment)} pts
-                                        </div>
-                                    </div>
+                            {/* Footer Bar */}
+                            <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                                <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                                    <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                        Esc
+                                    </kbd>
+                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
                                 </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                        ចំនួនពិន្ទុកែសម្រួល (+ បន្ថែម ឬ - ដក)
-                                    </label>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => setPointsAdjustment((prev) => prev - 10)}
-                                            className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 transition-all cursor-pointer"
-                                        >
-                                            <Minus className="w-4 h-4" />
-                                        </button>
-                                        <input
-                                            type="number"
-                                            value={pointsAdjustment}
-                                            onChange={(e) => setPointsAdjustment(Number(e.target.value))}
-                                            className="w-full h-10 px-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-center text-lg font-bold font-mono text-amber-600 dark:text-amber-400 focus:outline-none focus:border-amber-500"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setPointsAdjustment((prev) => prev + 10)}
-                                            className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-zinc-700 transition-all cursor-pointer"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                        </button>
-                                    </div>
-
-                                    {/* Quick Increment Pills */}
-                                    <div className="flex flex-wrap gap-1.5 mt-2">
-                                        {[-50, -10, 10, 25, 50, 100].map((val) => (
-                                            <button
-                                                key={val}
-                                                type="button"
-                                                onClick={() => setPointsAdjustment(val)}
-                                                className={`px-2 py-1 rounded-lg text-xs font-mono font-bold border transition-all cursor-pointer ${
-                                                    pointsAdjustment === val
-                                                        ? 'bg-amber-500 text-zinc-950 border-amber-500'
-                                                        : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:border-amber-500/50'
-                                                }`}
-                                            >
-                                                {val > 0 ? `+${val}` : val}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                        មូលហេតុនៃការកែប្រែ *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={pointsReason}
-                                        onChange={(e) => setPointsReason(e.target.value)}
-                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer transition-all"
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-zinc-800">
+                                <div className="flex items-center gap-3 ml-auto">
                                     <button
                                         type="button"
                                         onClick={() => setPointsCustomer(null)}
-                                        className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
+                                        className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
                                         បោះបង់
                                     </button>
+
                                     <button
                                         type="submit"
-                                        className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+                                        disabled={!pointsReason.trim()}
+                                        className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        អនុវត្តការកែប្រែ
+                                        <Coins className="w-4 h-4" />
+                                        <span>អនុវត្តការកែប្រែពិន្ទុ (Save Points Adjustment)</span>
                                     </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>,
                     document.body
                 )}
