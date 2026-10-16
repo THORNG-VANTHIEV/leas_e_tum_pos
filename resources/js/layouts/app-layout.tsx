@@ -133,6 +133,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         }
     }, [isDark]);
 
+    useEffect(() => {
+        if (typeof document !== 'undefined') {
+            document.documentElement.style.setProperty('--sidebar-width', collapsed ? '5rem' : '16rem');
+        }
+    }, [collapsed]);
+
     const { language, setLanguage, toggleLanguage, t, getName, getSecondaryName } = useTranslation();
 
     const toggleTheme = () => {

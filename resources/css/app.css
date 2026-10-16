@@ -36,6 +36,7 @@
 }
 
 :root {
+    --sidebar-width: 16rem;
     --bg-dark: #09090b;
     --card-dark: #121215;
     --card-border: rgba(255, 255, 255, 0.08);

@@ -130,7 +130,7 @@ export default function CatalogIndex({
 
     const [productModalOpen, setProductModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [isProductModalMaximized, setIsProductModalMaximized] = useState(false);
+    const [isProductModalMaximized, setIsProductModalMaximized] = useState(true);
 
     const [unitModalOpen, setUnitModalOpen] = useState(false);
     const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
@@ -885,8 +885,8 @@ export default function CatalogIndex({
 
             {/* Product Modal */}
             {productModalOpen && mounted && createPortal(
-                <div className={`fixed inset-0 z-[100] flex items-center justify-center ${isProductModalMaximized ? 'p-0' : 'p-2 sm:p-4'} bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200`}>
-                    <div className={`relative w-full ${isProductModalMaximized ? 'h-full max-w-none rounded-none' : 'max-w-[96vw] 2xl:max-w-[1440px] rounded-3xl max-h-[96vh]'} bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden my-auto flex flex-col transition-all duration-200`}>
+                <div className={`fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-950/75 backdrop-blur-md animate-in fade-in duration-200 ${isProductModalMaximized ? 'p-0' : 'p-3 sm:p-5 items-center justify-center'}`}>
+                    <div className={`relative w-full ${isProductModalMaximized ? 'h-full max-w-none rounded-none' : 'max-w-5xl 2xl:max-w-6xl rounded-3xl max-h-[96vh] my-auto'} bg-white dark:bg-zinc-950 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col transition-all duration-200`}>
                         {/* Header */}
                         <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
@@ -1293,7 +1293,7 @@ export default function CatalogIndex({
 
             {/* Unit Modal */}
             {unitModalOpen && mounted && createPortal(
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
@@ -1388,7 +1388,7 @@ export default function CatalogIndex({
 
             {/* Category Modal */}
             {categoryModalOpen && mounted && createPortal(
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
+                <div className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200">
                     <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
                         <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3">
