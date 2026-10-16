@@ -1353,7 +1353,7 @@ export default function CatalogIndex({
                                                 className={`flex-1 min-h-[280px] sm:min-h-[320px] flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed transition-all cursor-pointer text-center relative group ${
                                                     isDraggingOver
                                                         ? 'border-amber-500 bg-amber-500/10 ring-4 ring-amber-500/20 scale-[0.99]'
-                                                        : 'border-zinc-200 dark:border-zinc-800 hover:border-amber-500/60 hover:bg-amber-500/5 bg-white/60 dark:bg-zinc-900/40'
+                                                        : 'border-[#cbd5e1] dark:border-zinc-700 hover:border-amber-500/60 hover:bg-amber-500/5 bg-white/60 dark:bg-zinc-900/40'
                                                 }`}
                                             >
                                                 {isUploadingImage ? (
@@ -1382,7 +1382,7 @@ export default function CatalogIndex({
                                                             <span>ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (Browse)</span>
                                                         </div>
 
-                                                        <div className="mt-5 flex items-center justify-center gap-3 text-[10px] text-zinc-400 dark:text-zinc-500 font-khmer border-t border-zinc-200/60 dark:border-zinc-800/60 pt-3 w-full max-w-xs">
+                                                        <div className="mt-5 flex items-center justify-center gap-3 text-[10px] text-zinc-400 dark:text-zinc-500 font-khmer border-t border-[#cbd5e1] dark:border-zinc-800/60 pt-3 w-full max-w-xs">
                                                             <span className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 font-mono">
                                                                 PNG, JPG, WEBP
                                                             </span>
