@@ -35,6 +35,7 @@ import {
     Trash2,
     FolderUp,
     Loader2,
+    ShieldCheck,
 } from 'lucide-react';
 
 interface Unit {
@@ -1403,220 +1404,485 @@ export default function CatalogIndex({
                 document.body
             )}
 
-            {/* Unit Modal */}
+            {/* Unit Modal (Full-Workspace 2-Column Suite) */}
             {unitModalOpen && mounted && createPortal(
                 <div
-                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain"
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                     onWheel={(e) => e.stopPropagation()}
                 >
-                    <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
-                        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                                    <Scale className="w-5 h-5" />
-                                </div>
-                                <div>
+                    {/* Header */}
+                    <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-xs shrink-0">
+                                <Scale className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
                                     <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        {editingUnit ? 'កែប្រែឯកតាគិត' : 'បន្ថែមឯកតាគិតថ្មី'}
+                                        {editingUnit ? 'កែប្រែឯកតាគិតទំនិញ' : 'បន្ថែមឯកតាគិតថ្មី'}
                                     </h3>
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-                                        Measurement Unit definition
-                                    </p>
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                                        {editingUnit ? 'Edit Unit' : 'New Unit of Measurement'}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                    {editingUnit ? editingUnit.name_primary : 'កំណត់ឯកតាគិតសម្រាប់មុខម្ហូប ភេសជ្ជៈ និងការលក់ក្នុងប្រព័ន្ធ POS'}
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setUnitModalOpen(false)}
+                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                            title="ត្រឡប់ក្រោយ (Esc)"
+                        >
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-emerald-600 dark:text-emerald-400" />
+                            <span>ត្រឡប់ក្រោយ</span>
+                        </button>
+                    </div>
+
+                    {/* Body - 2 Columns (7 / 5) */}
+                    <form onSubmit={handleUnitSubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                        <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                            {/* LEFT COLUMN: Inputs (7 cols) */}
+                            <div className="lg:col-span-7 space-y-4">
+                                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                        <Scale className="w-4 h-4 text-emerald-500" />
+                                        <span>ព័ត៌មានឯកតាគិត / Measurement Unit Identity</span>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                            កូដឯកតា (Unit Code) <span className="text-rose-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={unitForm.data.code}
+                                            onChange={(e) => unitForm.setData('code', e.target.value)}
+                                            placeholder="e.g. CAN, PLATE, SET, BOTTLE"
+                                            className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                                            required
+                                        />
+                                        {unitForm.errors.code && (
+                                            <p className="text-[11px] text-rose-500 font-khmer mt-1">{unitForm.errors.code}</p>
+                                        )}
+                                        <div className="flex items-center gap-1.5 mt-2">
+                                            <span className="text-[11px] text-zinc-400 font-khmer">កូដគំរូ:</span>
+                                            {['PLATE', 'CAN', 'BOTTLE', 'GLASS', 'SET', 'BOWL'].map((sample) => (
+                                                <button
+                                                    key={sample}
+                                                    type="button"
+                                                    onClick={() => unitForm.setData('code', sample)}
+                                                    className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-emerald-500 transition cursor-pointer"
+                                                >
+                                                    {sample}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                ឈ្មោះឯកតាជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={unitForm.data.name_primary}
+                                                onChange={(e) => unitForm.setData('name_primary', e.target.value)}
+                                                placeholder="ឧ. ចាន, កំប៉ុង, ដប, កែវ"
+                                                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                ឈ្មោះជាភាសាអង់គ្លេស (Optional)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={unitForm.data.name_secondary}
+                                                onChange={(e) => unitForm.setData('name_secondary', e.target.value)}
+                                                placeholder="e.g. Plate, Can, Bottle, Glass"
+                                                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Quick Preset Buttons */}
+                                    <div>
+                                        <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                            គំរូឯកតាពេញនិយម (Quick Unit Presets)
+                                        </label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                { code: 'PLATE', kh: 'ចាន', en: 'Plate' },
+                                                { code: 'CAN', kh: 'កំប៉ុង', en: 'Can' },
+                                                { code: 'BOTTLE', kh: 'ដប', en: 'Bottle' },
+                                                { code: 'GLASS', kh: 'កែវ', en: 'Glass' },
+                                                { code: 'SET', kh: 'ឈុត', en: 'Set' },
+                                                { code: 'PORTION', kh: 'ចំណែក', en: 'Portion' },
+                                            ].map((preset) => (
+                                                <button
+                                                    key={preset.code}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        unitForm.setData({
+                                                            code: preset.code,
+                                                            name_primary: preset.kh,
+                                                            name_secondary: preset.en,
+                                                        });
+                                                    }}
+                                                    className="px-2.5 py-1.5 rounded-lg text-xs bg-zinc-50 dark:bg-zinc-800 hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-khmer transition cursor-pointer"
+                                                >
+                                                    {preset.kh} ({preset.code})
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setUnitModalOpen(false)}
-                                className="w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
+
+                            {/* RIGHT COLUMN: Live Simulation Preview (5 cols) */}
+                            <div className="lg:col-span-5 space-y-4">
+                                <div className="rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 shadow-lg space-y-4 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600" />
+
+                                    <div className="flex items-center justify-between pt-1">
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-mono">
+                                                Unit Display Simulation
+                                            </span>
+                                        </div>
+                                        <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                                            {unitForm.data.code || 'UNIT'}
+                                        </span>
+                                    </div>
+
+                                    {/* Menu Card Pricing Preview */}
+                                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                                        <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
+                                            ការបង្ហាញលើបញ្ជីមុខម្ហូប POS:
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                                            <div>
+                                                <div className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
+                                                    លៀសឆាអ៉ីទុមពិសេស
+                                                </div>
+                                                <div className="text-[11px] text-zinc-400 font-mono">
+                                                    SKU: POS-001
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-sm font-bold text-amber-500 font-mono">
+                                                    $2.50
+                                                </div>
+                                                <div className="text-[11px] text-zinc-500 font-khmer">
+                                                    / {unitForm.data.name_primary || 'ឯកតា'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Receipt Line Item Simulation */}
+                                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2 font-mono text-xs">
+                                        <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
+                                            ការបោះពុម្ពលើវិក្កយបត្រ (Receipt Line):
+                                        </div>
+                                        <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-dashed border-zinc-300 dark:border-zinc-800 text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1 font-khmer">
+                                            <div className="flex justify-between font-bold">
+                                                <span>លៀសឆាអ៉ីទុមពិសេស</span>
+                                                <span className="font-mono">$5.00</span>
+                                            </div>
+                                            <div className="flex justify-between text-zinc-400 text-[10px]">
+                                                <span>2 {unitForm.data.name_primary || 'ឯកតា'} x $2.50</span>
+                                                <span className="font-mono">20,500 ៛</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <form onSubmit={handleUnitSubmit} className="space-y-4 pt-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                    កូដឯកតា (Unit Code) <span className="text-rose-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={unitForm.data.code}
-                                    onChange={(e) => unitForm.setData('code', e.target.value)}
-                                    placeholder="e.g. CAN, PLATE, SET"
-                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                    required
-                                />
-                                {unitForm.errors.code && (
-                                    <p className="text-[11px] text-rose-500 font-khmer mt-1">{unitForm.errors.code}</p>
-                                )}
+                        {/* Footer */}
+                        <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span>{editingUnit ? 'កំពុងកែសម្រួលឯកតាគិត' : 'កំពុងបង្កើតឯកតាគិតថ្មី'}</span>
                             </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                    ឈ្មោះឯកតាជាភាសាខ្មែរ <span className="text-rose-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={unitForm.data.name_primary}
-                                    onChange={(e) => unitForm.setData('name_primary', e.target.value)}
-                                    placeholder="ឧ. កែវ, ចាន, កំប៉ុង"
-                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                    ឈ្មោះជាភាសាអង់គ្លេស (Optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={unitForm.data.name_secondary}
-                                    onChange={(e) => unitForm.setData('name_secondary', e.target.value)}
-                                    placeholder="e.g. Cup / Glass"
-                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                            <div className="flex items-center gap-2.5">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setUnitModalOpen(false)}
-                                    className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl"
+                                    className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                 >
                                     បោះបង់ (Cancel)
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={unitForm.processing}
-                                    className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold font-khmer text-xs rounded-xl shadow-md shadow-emerald-500/20"
+                                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-emerald-600/20 cursor-pointer flex items-center gap-2"
                                 >
-                                    {editingUnit ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតឯកតាថ្មី'}
+                                    {unitForm.processing ? (
+                                        'កំពុងរក្សាទុក...'
+                                    ) : (
+                                        <>
+                                            <Check className="w-4 h-4" />
+                                            <span>{editingUnit ? 'កែប្រែឯកតា' : 'រក្សាទុកឯកតា'}</span>
+                                        </>
+                                    )}
                                 </Button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>,
                 document.body
             )}
 
-            {/* Category Modal */}
+            {/* Category Modal (Full-Workspace 2-Column Suite) */}
             {categoryModalOpen && mounted && createPortal(
                 <div
-                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain"
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                     onWheel={(e) => e.stopPropagation()}
                 >
-                    <div className="relative w-full max-w-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl p-6 overflow-hidden">
-                        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400">
-                                    <Tags className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        {editingCategory ? 'កែប្រែប្រភេទមុខទំនិញ' : 'បន្ថែមប្រភេទថ្មី'}
-                                    </h3>
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-mono">
-                                        Menu category categorization
-                                    </p>
-                                </div>
+                    {/* Header */}
+                    <div className="px-6 py-3.5 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400 shadow-xs shrink-0">
+                                <Tags className="w-5 h-5" />
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setCategoryModalOpen(false)}
-                                className="w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleCategorySubmit} className="space-y-4 pt-4">
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        កូដប្រភេទ (Code) <span className="text-rose-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={categoryForm.data.code}
-                                        onChange={(e) => categoryForm.setData('code', e.target.value)}
-                                        placeholder="e.g. SOUPS"
-                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                                        required
-                                    />
-                                    {categoryForm.errors.code && (
-                                        <p className="text-[11px] text-rose-500 font-khmer mt-1">{categoryForm.errors.code}</p>
-                                    )}
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                        {editingCategory ? 'កែប្រែប្រភេទមុខទំនិញ' : 'បន្ថែមប្រភេទមុខទំនិញថ្មី'}
+                                    </h3>
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
+                                        {editingCategory ? 'Edit Category' : 'New POS Category'}
+                                    </span>
                                 </div>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
+                                    {editingCategory ? editingCategory.name_primary : 'រៀបចំប្រភេទមុខម្ហូប ភេសជ្ជៈ និងទំនិញដើម្បីបង្ហាញលើផ្ទាំងប៊ូតុង POS ឱ្យងាយស្រួលរក'}
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setCategoryModalOpen(false)}
+                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
+                            title="ត្រឡប់ក្រោយ (Esc)"
+                        >
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-teal-600 dark:text-teal-400" />
+                            <span>ត្រឡប់ក្រោយ</span>
+                        </button>
+                    </div>
 
-                                <div>
-                                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                        ចំណាត់ថ្នាក់ (Type) <span className="text-rose-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <select
-                                            value={categoryForm.data.category_type}
-                                            onChange={(e) => categoryForm.setData('category_type', e.target.value)}
-                                            className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 appearance-none cursor-pointer pr-8"
-                                            required
-                                        >
-                                            <option value="food">Food (ម្ហូប)</option>
-                                            <option value="beverage">Beverage (ភេសជ្ជៈ)</option>
-                                            <option value="package">Package (កញ្ចប់)</option>
-                                            <option value="general">General (ទូទៅ)</option>
-                                        </select>
-                                        <ChevronDown className="w-3.5 h-3.5 text-zinc-400 absolute right-2.5 top-2.5 pointer-events-none" />
+                    {/* Body - 2 Columns (7 / 5) */}
+                    <form onSubmit={handleCategorySubmit} className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+                        <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+                            {/* LEFT COLUMN: Inputs (7 cols) */}
+                            <div className="lg:col-span-7 space-y-4">
+                                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                                        <Tags className="w-4 h-4 text-teal-500" />
+                                        <span>ព័ត៌មានប្រភេទមុខទំនិញ / Category Details</span>
+                                    </div>
+
+                                    {/* Category Type selector cards */}
+                                    <div>
+                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-2 font-khmer">
+                                            ចំណាត់ថ្នាក់ចម្បង (Category Classification) <span className="text-rose-500">*</span>
+                                        </label>
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                            {[
+                                                { type: 'food', label: 'ម្ហូបអាហារ (Food)', icon: Utensils, desc: 'ម្ហូប & ស៊ុប' },
+                                                { type: 'beverage', label: 'ភេសជ្ជៈ (Beverage)', icon: Wine, desc: 'ទឹកក្រូច & ស្រាបៀរ' },
+                                                { type: 'package', label: 'កញ្ចប់ (Package)', icon: Package, desc: 'ឈុត & កញ្ចប់' },
+                                                { type: 'general', label: 'ទូទៅ (General)', icon: Tags, desc: 'មុខទំនិញផ្សេងៗ' },
+                                            ].map((item) => {
+                                                const Icon = item.icon;
+                                                const isSelected = categoryForm.data.category_type === item.type;
+                                                return (
+                                                    <button
+                                                        key={item.type}
+                                                        type="button"
+                                                        onClick={() => categoryForm.setData('category_type', item.type)}
+                                                        className={`p-3 rounded-2xl border text-left transition cursor-pointer ${
+                                                            isSelected
+                                                                ? 'bg-teal-500/15 border-teal-500 text-teal-700 dark:text-teal-300 shadow-sm'
+                                                                : 'bg-zinc-50 dark:bg-zinc-800/60 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-teal-400/40'
+                                                        }`}
+                                                    >
+                                                        <Icon className="w-5 h-5 mb-1.5 text-teal-500" />
+                                                        <div className="text-xs font-bold font-khmer">{item.label}</div>
+                                                        <div className="text-[10px] text-zinc-400 font-khmer">{item.desc}</div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                កូដប្រភេទ (Code) <span className="text-rose-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={categoryForm.data.code}
+                                                onChange={(e) => categoryForm.setData('code', e.target.value)}
+                                                placeholder="e.g. SOUPS, CLAMS, BEV"
+                                                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                                required
+                                            />
+                                            {categoryForm.errors.code && (
+                                                <p className="text-[11px] text-rose-500 font-khmer mt-1">{categoryForm.errors.code}</p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                                ឈ្មោះប្រភេទជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={categoryForm.data.name_primary}
+                                                onChange={(e) => categoryForm.setData('name_primary', e.target.value)}
+                                                placeholder="ឧ. លៀស & គ្រឿងសមុទ្រ"
+                                                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
+                                            ឈ្មោះជាភាសាអង់គ្លេស (English Optional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={categoryForm.data.name_secondary}
+                                            onChange={(e) => categoryForm.setData('name_secondary', e.target.value)}
+                                            placeholder="e.g. Clams & Seafood"
+                                            className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                        />
+                                    </div>
+
+                                    {/* Category Presets */}
+                                    <div>
+                                        <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
+                                            គំរូប្រភេទពេញនិយម (Quick Category Presets)
+                                        </label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {[
+                                                { code: 'CLAMS', kh: 'លៀស & ងាវស្រស់', en: 'Clams & Shellfish', type: 'food' },
+                                                { code: 'BEVERAGE', kh: 'ភេសជ្ជៈ & ទឹកក្រូច', en: 'Beverages & Soft Drinks', type: 'beverage' },
+                                                { code: 'SNACKS', kh: 'គ្រឿងក្លែម & បំពង', en: 'Appetizers & Fried', type: 'food' },
+                                                { code: 'RICE', kh: 'បាយ & មីឆា', en: 'Rice & Fried Noodles', type: 'food' },
+                                            ].map((preset) => (
+                                                <button
+                                                    key={preset.code}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        categoryForm.setData({
+                                                            code: preset.code,
+                                                            name_primary: preset.kh,
+                                                            name_secondary: preset.en,
+                                                            category_type: preset.type,
+                                                        });
+                                                    }}
+                                                    className="px-2.5 py-1.5 rounded-lg text-xs bg-zinc-50 dark:bg-zinc-800 hover:bg-teal-500/10 hover:border-teal-500/30 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-khmer transition cursor-pointer"
+                                                >
+                                                    {preset.kh}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                    ឈ្មោះប្រភេទជាភាសាខ្មែរ <span className="text-rose-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={categoryForm.data.name_primary}
-                                    onChange={(e) => categoryForm.setData('name_primary', e.target.value)}
-                                    placeholder="ឧ. ស៊ុប & មី"
-                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                                    required
-                                />
-                            </div>
+                            {/* RIGHT COLUMN: Live POS Screen Category Tab Preview (5 cols) */}
+                            <div className="lg:col-span-5 space-y-4">
+                                <div className="rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-5 shadow-lg space-y-4 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600" />
 
-                            <div>
-                                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                    ឈ្មោះជាភាសាអង់គ្លេស (Optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={categoryForm.data.name_secondary}
-                                    onChange={(e) => categoryForm.setData('name_secondary', e.target.value)}
-                                    placeholder="e.g. Soups & Noodles"
-                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                                />
-                            </div>
+                                    <div className="flex items-center justify-between pt-1">
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles className="w-4 h-4 text-teal-500" />
+                                            <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
+                                                POS Menu Tab Preview
+                                            </span>
+                                        </div>
+                                        <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20 uppercase">
+                                            {categoryForm.data.category_type}
+                                        </span>
+                                    </div>
 
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                                    {/* POS Filter Tab Mock */}
+                                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                                        <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
+                                            ប៊ូតុងប្រភេទលើអេក្រង់ POS:
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            <div className="px-3.5 py-2 rounded-xl bg-amber-500 text-zinc-950 font-bold font-khmer text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5">
+                                                <Tags className="w-3.5 h-3.5" />
+                                                <span>{categoryForm.data.name_primary || 'ឈ្មោះប្រភេទ'}</span>
+                                            </div>
+                                            <div className="px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-khmer text-xs">
+                                                មុខទំនិញទាំងអស់
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* KDS Dispatch Note */}
+                                    <div className="p-3.5 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-800 dark:text-teal-300 space-y-1.5">
+                                        <div className="font-bold flex items-center gap-1.5 font-khmer">
+                                            <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                                            <span>ការបញ្ជូនទៅផ្ទះបាយស្វ័យប្រវត្ត (KDS Routing)</span>
+                                        </div>
+                                        <p className="text-[11px] text-teal-700/90 dark:text-teal-300/80 leading-relaxed font-khmer">
+                                            ប្រភេទម្ហូប (Food) នឹងត្រូវបញ្ជូនទៅកាន់អេក្រង់ចុងភៅ KDS ផ្ទះបាយដោយស្វ័យប្រវត្តិ។ ចំណែកឯភេសជ្ជៈ (Beverage) នឹងត្រូវបញ្ជូនទៅកាន់បញ្ជរភេសជ្ជៈ។
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
+                            <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                                <span>{editingCategory ? 'កំពុងកែសម្រួលប្រភេទមុខទំនិញ' : 'កំពុងបង្កើតប្រភេទមុខទំនិញថ្មី'}</span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setCategoryModalOpen(false)}
-                                    className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl"
+                                    className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                 >
                                     បោះបង់ (Cancel)
                                 </Button>
                                 <Button
                                     type="submit"
                                     disabled={categoryForm.processing}
-                                    className="bg-teal-500 hover:bg-teal-400 text-zinc-950 font-bold font-khmer text-xs rounded-xl shadow-md shadow-teal-500/20"
+                                    className="bg-teal-600 hover:bg-teal-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-teal-600/20 cursor-pointer flex items-center gap-2"
                                 >
-                                    {editingCategory ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតប្រភេទថ្មី'}
+                                    {categoryForm.processing ? (
+                                        'កំពុងរក្សាទុក...'
+                                    ) : (
+                                        <>
+                                            <Check className="w-4 h-4" />
+                                            <span>{editingCategory ? 'កែប្រែប្រភេទ' : 'រក្សាទុកប្រភេទ'}</span>
+                                        </>
+                                    )}
                                 </Button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>,
                 document.body
             )}
