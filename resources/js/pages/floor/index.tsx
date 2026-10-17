@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import {
@@ -24,6 +25,8 @@ import {
     Plus,
     Eye,
     ArrowLeft,
+    Pencil,
+    Trash2,
 } from 'lucide-react';
 
 interface ActiveOrder {
@@ -110,6 +113,12 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
         shape: 'square',
     });
 
+    // Edit / remove tables (admin & supervisor only — mirrors route middleware)
+    const { auth } = usePage<PageProps>().props;
+    const canManageTables = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
+    const [editingTableId, setEditingTableId] = useState<number | null>(null);
+    const [deletingTable, setDeletingTable] = useState<TableItem | null>(null);
+
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -146,7 +155,28 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
             capacity: 4,
             shape: 'square',
         });
+        setEditingTableId(null);
         setShowAddModal(true);
+    };
+
+    const handleOpenEditModal = (table: TableItem) => {
+        setAddForm({
+            code: table.code,
+            name: table.name,
+            zone: table.zone,
+            capacity: table.capacity,
+            shape: table.shape,
+        });
+        setEditingTableId(table.id);
+        setShowAddModal(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (!deletingTable) return;
+        router.delete(`/tables/${deletingTable.id}`, {
+            preserveScroll: true,
+            onFinish: () => setDeletingTable(null),
+        });
     };
 
     const handleZoneChange = (zone: string) => {
@@ -160,9 +190,12 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
     const handleAddSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        router.post('/tables', addForm, {
+        const url = editingTableId ? `/tables/${editingTableId}` : '/tables';
+        router[editingTableId ? 'patch' : 'post'](url, addForm, {
+            preserveScroll: true,
             onSuccess: () => {
                 setShowAddModal(false);
+                setEditingTableId(null);
                 setAddForm({
                     code: '',
                     name: '',
@@ -372,7 +405,27 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                                     <div className="text-[11px] text-zinc-400 mb-3 flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
-                                        <span>{table.zone}</span>
+                                        <span className="flex-1 truncate">{table.zone}</span>
+                                        {canManageTables && (
+                                            <div className="flex items-center gap-0.5 shrink-0">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleOpenEditModal(table)}
+                                                    title="កែប្រែតុ (Edit)"
+                                                    className="p-1 rounded-md text-zinc-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                                                >
+                                                    <Pencil className="w-3.5 h-3.5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setDeletingTable(table)}
+                                                    title="លុបតុ (Delete)"
+                                                    className="p-1 rounded-md text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Active Order Details (if occupied) */}
@@ -461,6 +514,45 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                     })}
                 </div>
 
+                {/* Delete Table Confirmation */}
+                {deletingTable && mounted && createPortal(
+                    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                                    <Trash2 className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                        លុបតុ {deletingTable.name} ({deletingTable.code})?
+                                    </h3>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
+                                        តុនេះនឹងលែងបង្ហាញនៅលើប្លង់ និងក្នុង POS ទៀតហើយ។ វិក្កយបត្រចាស់ៗនៅតែរក្សាឈ្មោះតុដដែល។
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setDeletingTable(null)}
+                                    className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
+                                >
+                                    បោះបង់
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleConfirmDelete}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer font-khmer"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span>លុបតុ</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>,
+                    document.body
+                )}
+
                 {/* Full-Workspace Add Table Modal */}
                 {showAddModal && mounted && createPortal(
                     <div
@@ -476,10 +568,10 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            បន្ថែមតុថ្មីក្នុងប្លង់
+                                            {editingTableId ? 'កែប្រែព័ត៌មានតុ' : 'បន្ថែមតុថ្មីក្នុងប្លង់'}
                                         </h2>
                                         <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                            NEW FLOOR TABLE
+                                            {editingTableId ? 'EDIT TABLE' : 'NEW FLOOR TABLE'}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
@@ -712,7 +804,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             </div>
                                             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-khmer">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                តុថ្មី (New Table)
+                                                {editingTableId ? 'កំពុងកែប្រែ (Editing)' : 'តុថ្មី (New Table)'}
                                             </span>
                                         </div>
 
@@ -856,7 +948,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                         className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 transition cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-1.5 active:scale-[0.98] font-khmer"
                                     >
                                         <PlusCircle className="w-4 h-4" />
-                                        <span>បង្កើតតុថ្មី (Create Table)</span>
+                                        <span>{editingTableId ? 'រក្សាទុកការកែប្រែ (Save)' : 'បង្កើតតុថ្មី (Create Table)'}</span>
                                     </button>
                                 </div>
                             </div>

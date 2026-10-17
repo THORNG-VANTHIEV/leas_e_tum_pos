@@ -44,6 +44,8 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/tables', [FloorTableController::class, 'index'])->name('tables.index');
     Route::post('/tables', [FloorTableController::class, 'store'])->name('tables.store');
     Route::patch('/tables/{table}/status', [FloorTableController::class, 'updateStatus'])->name('tables.status');
+    Route::patch('/tables/{table}', [FloorTableController::class, 'update'])->middleware('role:admin,supervisor')->name('tables.update');
+    Route::delete('/tables/{table}', [FloorTableController::class, 'destroy'])->middleware('role:admin,supervisor')->name('tables.destroy');
 
     // 04. Kitchen Display System (KDS)
     Route::get('/kds', [KdsController::class, 'index'])->name('kds.index');

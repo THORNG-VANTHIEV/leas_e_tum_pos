@@ -2,18 +2,25 @@
 
 namespace App\Features\Floor\Http\Controllers;
 
+use App\Enums\DocumentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\Location;
 use App\Models\RestaurantTable;
+use App\Support\Audit\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class FloorTableController extends Controller
 {
+    public function __construct(
+        private readonly AuditService $audit,
+    ) {}
+
     public function index(Request $request): Response
     {
         $zone = $request->query('zone', 'all');
@@ -107,6 +114,70 @@ class FloorTableController extends Controller
         ]);
 
         return back()->with('success', "បានបង្កើតតុថ្មី: {$validated['name']} ({$validated['code']})");
+    }
+
+    public function update(Request $request, RestaurantTable $table): RedirectResponse
+    {
+        $validated = $request->validate([
+            'code' => ['required', 'string', 'max:30', Rule::unique('restaurant_tables', 'code')->ignore($table->id)],
+            'name' => 'required|string|max:60',
+            'zone' => 'required|string|max:40',
+            'capacity' => 'required|integer|min:1|max:50',
+            'shape' => 'required|in:square,rectangle,round',
+        ]);
+
+        $validated['code'] = strtoupper($validated['code']);
+
+        // Open orders are linked by table name/code, so renaming would orphan them
+        $isRenamed = $validated['name'] !== $table->name || $validated['code'] !== $table->code;
+        if ($isRenamed && $this->hasOpenOrder($table)) {
+            return back()->with('error', "មិនអាចប្តូរឈ្មោះ ឬកូដតុ {$table->name} បានទេ ព្រោះកំពុងមានការកម្មង់បើក។");
+        }
+
+        $oldValues = $table->only(array_keys($validated));
+        $table->update($validated);
+
+        $this->audit->record(
+            'table.updated',
+            $table,
+            $oldValues,
+            $table->only(array_keys($validated)),
+            null,
+            $request->user()->id,
+            "Updated table {$table->code}"
+        );
+
+        return back()->with('success', "បានកែប្រែតុ: {$table->name} ({$table->code})");
+    }
+
+    public function destroy(Request $request, RestaurantTable $table): RedirectResponse
+    {
+        if ($this->hasOpenOrder($table)) {
+            return back()->with('error', "មិនអាចលុបតុ {$table->name} បានទេ ព្រោះកំពុងមានការកម្មង់បើក។");
+        }
+
+        // Deactivate rather than delete so historical invoices keep their table reference meaningful
+        $table->update(['is_active' => false]);
+
+        $this->audit->record(
+            'table.deactivated',
+            $table,
+            ['is_active' => true],
+            ['is_active' => false],
+            null,
+            $request->user()->id,
+            "Removed table {$table->code} from the floor plan"
+        );
+
+        return back()->with('success', "បានលុបតុ {$table->name} ចេញពីប្លង់។");
+    }
+
+    private function hasOpenOrder(RestaurantTable $table): bool
+    {
+        return Document::query()
+            ->where('status', DocumentStatus::Draft)
+            ->whereIn('reference_identifier', [$table->name, $table->code])
+            ->exists();
     }
 
     public function updateStatus(Request $request, RestaurantTable $table): RedirectResponse|JsonResponse
