@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
+import { useExchangeRate } from '@/components/currency';
 
 interface DocumentItem {
     id: number;
@@ -78,6 +79,7 @@ export default function PreviewRange({
     format: initialFormat,
     periods,
 }: PreviewRangeProps) {
+    const exchangeRate = useExchangeRate();
     const { business } = usePage<PageProps>().props;
     const [format, setFormat] = useState<'80mm' | 'a5'>(initialFormat || '80mm');
     const [startSeq, setStartSeq] = useState<number | string>(range.start_sequence || 1);
@@ -437,7 +439,7 @@ export default function PreviewRange({
                                             <div className="text-right">
                                                 <div>${Number(doc.grand_total).toFixed(2)}</div>
                                                 <div className="text-[11px] font-normal text-zinc-600 font-khmer">
-                                                    {Math.round(Number(doc.grand_total) * 4100).toLocaleString()} ៛
+                                                    {Math.round(Number(doc.grand_total) * exchangeRate).toLocaleString()} ៛
                                                 </div>
                                             </div>
                                         </div>
@@ -451,7 +453,7 @@ export default function PreviewRange({
                                                 <span>${Number(doc.change_amount).toFixed(2)}</span>
                                                 {Number(doc.change_amount) > 0 && (
                                                     <span className="block text-[10px] font-normal text-zinc-600 font-khmer">
-                                                        ≈ {Math.round(Number(doc.change_amount) * 4100).toLocaleString()} ៛
+                                                        ≈ {Math.round(Number(doc.change_amount) * exchangeRate).toLocaleString()} ៛
                                                     </span>
                                                 )}
                                             </div>
@@ -623,7 +625,7 @@ export default function PreviewRange({
                                                     <div className="text-right">
                                                         <div>${Number(doc.grand_total).toFixed(2)}</div>
                                                         <div className="text-xs font-normal text-zinc-600 font-khmer">
-                                                            ≈ {Math.round(Number(doc.grand_total) * 4100).toLocaleString()} ៛
+                                                            ≈ {Math.round(Number(doc.grand_total) * exchangeRate).toLocaleString()} ៛
                                                         </div>
                                                     </div>
                                                 </div>

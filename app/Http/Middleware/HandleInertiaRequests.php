@@ -68,6 +68,7 @@ class HandleInertiaRequests extends Middleware
                     'document_language' => $setting->document_language,
                     'document_footer' => $setting->document_footer,
                     'print_settings' => $setting->print_settings,
+                    'exchange_rate_khr' => $setting->khrExchangeRate(),
                     'entry_settings' => $setting->entry_settings,
                     'font_settings' => $setting->font_settings,
                 ];

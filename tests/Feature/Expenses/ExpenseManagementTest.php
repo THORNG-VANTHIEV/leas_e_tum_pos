@@ -4,6 +4,7 @@ namespace Tests\Feature\Expenses;
 
 use App\Enums\PeriodStatus;
 use App\Models\AuditLog;
+use App\Models\BusinessSetting;
 use App\Models\Expense;
 use App\Models\Period;
 use App\Models\User;
@@ -100,6 +101,17 @@ class ExpenseManagementTest extends TestCase
             ->assertSessionHas('error');
 
         $this->assertDatabaseHas('expenses', ['id' => $expense->id, 'title' => 'Ice delivery']);
+    }
+
+    public function test_new_expense_converts_to_riel_with_the_rate_from_settings(): void
+    {
+        $settings = BusinessSetting::current();
+        $settings->update(['print_settings' => [...($settings->print_settings ?? []), 'exchange_rate_khr' => 4000]]);
+        $cashier = User::where('username', 'cashier1')->firstOrFail();
+
+        $this->actingAs($cashier)->post(route('expenses.store'), $this->validPayload());
+
+        $this->assertSame(40000, Expense::latest('id')->firstOrFail()->amount_khr);
     }
 
     private function createExpense(): Expense

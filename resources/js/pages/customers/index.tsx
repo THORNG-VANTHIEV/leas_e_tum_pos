@@ -27,6 +27,7 @@ import {
     Star,
     ShieldCheck,
 } from 'lucide-react';
+import { useExchangeRate } from '@/components/currency';
 
 interface Customer {
     id: number;
@@ -105,6 +106,7 @@ const TIER_CONFIG: Record<
 };
 
 export default function CustomersIndex({ customers, metrics, filters }: CustomersProps) {
+    const exchangeRate = useExchangeRate();
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
         setMounted(true);
@@ -351,7 +353,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 ${Number(metrics.total_spent_usd || 0).toFixed(2)}
                             </div>
                             <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
-                                ≈ {Math.round(Number(metrics.total_spent_usd || 0) * 4100).toLocaleString()} ៛
+                                ≈ {Math.round(Number(metrics.total_spent_usd || 0) * exchangeRate).toLocaleString()} ៛
                             </div>
                         </Card>
                     </div>
@@ -528,7 +530,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     ${Number(c.total_spent_usd).toFixed(2)}
                                                 </div>
                                                 <div className="text-[10px] text-zinc-400 font-mono">
-                                                    ≈ {Math.round(Number(c.total_spent_usd) * 4000).toLocaleString()} ៛
+                                                    ≈ {Math.round(Number(c.total_spent_usd) * exchangeRate).toLocaleString()} ៛
                                                 </div>
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">

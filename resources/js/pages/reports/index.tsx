@@ -30,6 +30,7 @@ import {
     PieChart,
     Layers,
 } from 'lucide-react';
+import { useExchangeRate } from '@/components/currency';
 
 const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
     utilities: { nameKh: 'ថ្លៃទឹក-ភ្លើង-សំរាម', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
@@ -124,6 +125,7 @@ export default function ReportsIndex({
     cashiers,
     filters,
 }: ReportsPageProps) {
+    const exchangeRate = useExchangeRate();
     const { auth, business } = usePage<PageProps>().props;
     const isAdmin = auth.user?.role === 'admin';
 
@@ -391,7 +393,7 @@ export default function ReportsIndex({
                                 {business.currency_symbol}{metrics.gross_sales}
                             </div>
                             <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
-                                ≈ {Math.round((parseFloat(metrics.gross_sales) || 0) * 4100).toLocaleString()} ៛
+                                ≈ {Math.round((parseFloat(metrics.gross_sales) || 0) * exchangeRate).toLocaleString()} ៛
                             </div>
                             <div className="text-[11px] text-zinc-400 font-khmer mt-1">
                                 បញ្ចុះតម្លៃ: -{business.currency_symbol}{metrics.discounts}
@@ -410,7 +412,7 @@ export default function ReportsIndex({
                                 {business.currency_symbol}{metrics.net_sales}
                             </div>
                             <div className="text-xs text-teal-400 font-mono font-medium mt-1">
-                                ≈ {Math.round((parseFloat(metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
+                                ≈ {Math.round((parseFloat(metrics.net_sales) || 0) * exchangeRate).toLocaleString()} ៛
                             </div>
                             <div className="text-[11px] text-zinc-400 font-khmer mt-1">
                                 ពន្ធកត់ត្រា: {business.currency_symbol}{metrics.tax_collected}
@@ -429,7 +431,7 @@ export default function ReportsIndex({
                                 {business.currency_symbol}{metrics.net_cash_received}
                             </div>
                             <div className="text-xs text-amber-400 font-mono font-medium mt-1">
-                                ≈ {Math.round((parseFloat(metrics.net_cash_received) || 0) * 4100).toLocaleString()} ៛
+                                ≈ {Math.round((parseFloat(metrics.net_cash_received) || 0) * exchangeRate).toLocaleString()} ៛
                             </div>
                             <div className="text-[11px] text-zinc-400 font-mono mt-1">
                                 Tendered: {business.currency_symbol}{metrics.cash_tendered} • Change: {business.currency_symbol}{metrics.change_given}
@@ -602,7 +604,7 @@ export default function ReportsIndex({
                                         {business.currency_symbol}{financialSummary?.net_sales ?? metrics.net_sales}
                                     </div>
                                     <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
-                                        ≈ {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
+                                        ≈ {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * exchangeRate).toLocaleString()} ៛
                                     </div>
                                     <div className="text-[11px] text-zinc-500 font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
                                         <span>លក់ដុល: {business.currency_symbol}{financialSummary?.gross_sales ?? metrics.gross_sales}</span>
@@ -644,7 +646,7 @@ export default function ReportsIndex({
                                         {business.currency_symbol}{(financialSummary?.stock_purchases ?? 0).toFixed(2)}
                                     </div>
                                     <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
-                                        ≈ {Math.round((financialSummary?.stock_purchases ?? 0) * 4100).toLocaleString()} ៛
+                                        ≈ {Math.round((financialSummary?.stock_purchases ?? 0) * exchangeRate).toLocaleString()} ៛
                                     </div>
                                     <div className="text-[11px] text-zinc-500 font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
                                         <span>{financialSummary?.purchases_count ?? 0} វិក្កយបត្រទិញ</span>
@@ -676,7 +678,7 @@ export default function ReportsIndex({
                                         {isProfitable ? '+' : ''}{business.currency_symbol}{(financialSummary?.net_profit ?? 0).toFixed(2)}
                                     </div>
                                     <div className="text-xs text-zinc-400 font-mono font-medium mt-1">
-                                        ≈ {Math.round((financialSummary?.net_profit ?? 0) * 4100).toLocaleString()} ៛
+                                        ≈ {Math.round((financialSummary?.net_profit ?? 0) * exchangeRate).toLocaleString()} ៛
                                     </div>
                                     <div className="text-[11px] font-khmer mt-2 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
                                         <span className={isProfitable ? 'text-emerald-400 font-medium' : 'text-rose-400 font-medium'}>
@@ -731,7 +733,7 @@ export default function ReportsIndex({
                                                     {business.currency_symbol}{financialSummary?.gross_sales ?? metrics.gross_sales}
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-zinc-400">
-                                                    {Math.round((parseFloat(financialSummary?.gross_sales ?? metrics.gross_sales) || 0) * 4100).toLocaleString()} ៛
+                                                    {Math.round((parseFloat(financialSummary?.gross_sales ?? metrics.gross_sales) || 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-zinc-400">
                                                     —
@@ -745,7 +747,7 @@ export default function ReportsIndex({
                                                     -{business.currency_symbol}{financialSummary?.discounts ?? metrics.discounts}
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-rose-400/80">
-                                                    -{Math.round((parseFloat(financialSummary?.discounts ?? metrics.discounts) || 0) * 4100).toLocaleString()} ៛
+                                                    -{Math.round((parseFloat(financialSummary?.discounts ?? metrics.discounts) || 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-rose-400/80">
                                                     {((parseFloat(financialSummary?.discounts ?? metrics.discounts) || 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
@@ -759,7 +761,7 @@ export default function ReportsIndex({
                                                     {business.currency_symbol}{financialSummary?.net_sales ?? metrics.net_sales}
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-teal-300">
-                                                    {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * 4100).toLocaleString()} ៛
+                                                    {Math.round((parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-teal-300 font-bold">
                                                     100.0%
@@ -780,7 +782,7 @@ export default function ReportsIndex({
                                                     {business.currency_symbol}{(financialSummary?.stock_purchases ?? 0).toFixed(2)}
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-zinc-400">
-                                                    {Math.round((financialSummary?.stock_purchases ?? 0) * 4100).toLocaleString()} ៛
+                                                    {Math.round((financialSummary?.stock_purchases ?? 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-zinc-400">
                                                     {((financialSummary?.stock_purchases ?? 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
@@ -845,7 +847,7 @@ export default function ReportsIndex({
                                                     {business.currency_symbol}{(financialSummary?.total_outgoing ?? 0).toFixed(2)}
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-rose-400">
-                                                    {Math.round((financialSummary?.total_outgoing ?? 0) * 4100).toLocaleString()} ៛
+                                                    {Math.round((financialSummary?.total_outgoing ?? 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-3 text-right font-mono text-rose-400 font-bold">
                                                     {((financialSummary?.total_outgoing ?? 0) / (parseFloat(financialSummary?.net_sales ?? metrics.net_sales) || 1) * 100).toFixed(1)}%
@@ -873,7 +875,7 @@ export default function ReportsIndex({
                                                     {isProfitable ? '+' : ''}{business.currency_symbol}{(financialSummary?.net_profit ?? 0).toFixed(2)}
                                                 </td>
                                                 <td className="p-4 text-right font-mono">
-                                                    {Math.round((financialSummary?.net_profit ?? 0) * 4100).toLocaleString()} ៛
+                                                    {Math.round((financialSummary?.net_profit ?? 0) * exchangeRate).toLocaleString()} ៛
                                                 </td>
                                                 <td className="p-4 text-right font-mono text-base font-black">
                                                     {financialSummary?.profit_margin_pct ?? 0}%

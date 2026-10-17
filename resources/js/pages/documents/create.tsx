@@ -134,7 +134,7 @@ export default function DocumentCreate({
     tables_list = ['តុ ០១', 'តុ ០២', 'តុ ០៣', 'តុ ០៤', 'តុ ០៥', 'តុ ០៦', 'តុ ០៧', 'តុ ០៨', 'តុ ០៩', 'តុ ១០', 'តុ ១១', 'តុ ១២'],
     customers = [],
     initial_table = '',
-    exchange_rate = 4100,
+    exchange_rate = 4000,
 }: CreateProps) {
     const { business } = usePage<PageProps>().props;
     const { language, t, getName, getSecondaryName } = useTranslation();
@@ -1846,7 +1846,7 @@ export default function DocumentCreate({
                         const activeFocusedTable = active_tables.find((t) => t.table_identifier === focusedTableName);
                         const isFocusedOccupied = !!activeFocusedTable;
                         const floorTotalUSD = active_tables.reduce((sum, t) => sum + parseFloat(t.grand_total || '0'), 0);
-                        const floorTotalKHR = Math.round(floorTotalUSD * 4100);
+                        const floorTotalKHR = Math.round(floorTotalUSD * exchange_rate);
 
                         return (
                             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">

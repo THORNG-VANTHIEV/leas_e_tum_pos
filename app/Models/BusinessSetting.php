@@ -40,6 +40,14 @@ class BusinessSetting extends Model
         ];
     }
 
+    /**
+     * Riel per US dollar, as configured in Settings → Invoice & Print. Single source for every KHR conversion.
+     */
+    public function khrExchangeRate(): float
+    {
+        return (float) ($this->print_settings['exchange_rate_khr'] ?? 4000);
+    }
+
     public static function current(): self
     {
         return static::firstOrCreate(

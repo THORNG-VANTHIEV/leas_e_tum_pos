@@ -72,7 +72,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
     const showDiscount = printOpts.show_discount ?? true;
     const showTax = printOpts.show_tax ?? false;
     const showDualCurrency = printOpts.show_dual_currency ?? true;
-    const exchangeRate = printOpts.exchange_rate_khr || 4100;
+    const exchangeRate = business.exchange_rate_khr || printOpts.exchange_rate_khr || 4000;
     const showPaymentMethod = printOpts.show_payment_method ?? true;
     const showChange = printOpts.show_change ?? true;
     const showQrPayment = printOpts.show_qr_payment ?? true;

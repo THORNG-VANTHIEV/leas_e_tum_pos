@@ -49,7 +49,7 @@ class PurchaseController extends Controller
             ->get();
 
         $business = BusinessSetting::current();
-        $exchangeRate = (float) ($business->invoice_settings['exchange_rate'] ?? 4100);
+        $exchangeRate = $business->khrExchangeRate();
 
         // Calculate summary metrics
         $totalPurchasesUsd = (float) Purchase::where('status', '!=', 'cancelled')->sum('total_amount');

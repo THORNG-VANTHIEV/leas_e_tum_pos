@@ -1529,7 +1529,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                             <div className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 font-sans">
                                                 អត្រាប្តូរប្រាក់គោល (Base Rate)
                                             </div>
-                                            <div className="text-sm font-bold mt-0.5">1 USD = 4,100 KHR</div>
+                                            <div className="text-sm font-bold mt-0.5">1 USD = {(business?.exchange_rate_khr || 4000).toLocaleString()} KHR</div>
                                         </div>
                                         <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-200">
                                             <div className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-sans">

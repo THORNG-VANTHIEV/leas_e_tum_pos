@@ -11,8 +11,6 @@ use App\Support\Audit\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -45,7 +43,7 @@ class CatalogController extends Controller
             ->get();
 
         $business = BusinessSetting::current();
-        $exchangeRate = (float) ($business->print_settings['exchange_rate_khr'] ?? $business->invoice_settings['exchange_rate'] ?? 4000);
+        $exchangeRate = $business->khrExchangeRate();
 
         return Inertia::render('catalog/index', [
             'products' => $products,
@@ -65,10 +63,10 @@ class CatalogController extends Controller
         ]);
 
         $file = $request->file('image');
-        $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+        $fileName = 'prod_'.time().'_'.bin2hex(random_bytes(6)).'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('products', $fileName, 'public');
 
-        $url = '/storage/' . $path;
+        $url = '/storage/'.$path;
 
         return response()->json([
             'success' => true,
@@ -101,9 +99,9 @@ class CatalogController extends Controller
         $imageUrl = $validated['image_url'] ?? null;
         if ($request->hasFile('image_file')) {
             $file = $request->file('image_file');
-            $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+            $fileName = 'prod_'.time().'_'.bin2hex(random_bytes(6)).'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('products', $fileName, 'public');
-            $imageUrl = '/storage/' . $path;
+            $imageUrl = '/storage/'.$path;
         }
 
         $product = Product::create([
@@ -154,9 +152,9 @@ class CatalogController extends Controller
         $imageUrl = $validated['image_url'] ?? null;
         if ($request->hasFile('image_file')) {
             $file = $request->file('image_file');
-            $fileName = 'prod_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+            $fileName = 'prod_'.time().'_'.bin2hex(random_bytes(6)).'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('products', $fileName, 'public');
-            $imageUrl = '/storage/' . $path;
+            $imageUrl = '/storage/'.$path;
         }
 
         $product->update([

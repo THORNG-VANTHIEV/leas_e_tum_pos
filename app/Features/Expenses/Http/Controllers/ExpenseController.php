@@ -75,7 +75,7 @@ class ExpenseController extends Controller
             ->keyBy('category');
 
         $settings = BusinessSetting::current();
-        $exchangeRate = $settings->exchange_rate ?? 4100;
+        $exchangeRate = $settings->khrExchangeRate();
 
         return Inertia::render('expenses/index', [
             'expenses' => $expenses,
@@ -186,7 +186,7 @@ class ExpenseController extends Controller
      */
     private function expenseAttributes(array $validated): array
     {
-        $rate = BusinessSetting::current()->exchange_rate ?? 4100;
+        $rate = BusinessSetting::current()->khrExchangeRate();
 
         return [
             'category' => $validated['category'],
@@ -221,7 +221,7 @@ class ExpenseController extends Controller
         }
 
         $settings = BusinessSetting::current();
-        $rate = $settings->exchange_rate ?? 4100;
+        $rate = $settings->khrExchangeRate();
         $amountKhr = $validated['amount_khr'] ?? (int) round($validated['amount_usd'] * $rate);
 
         CashDrawerLog::create([

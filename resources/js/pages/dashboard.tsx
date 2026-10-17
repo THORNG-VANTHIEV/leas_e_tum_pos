@@ -18,6 +18,7 @@ import {
     Settings,
     Clock,
 } from 'lucide-react';
+import { useExchangeRate } from '@/components/currency';
 
 interface DashboardProps {
     stats: {
@@ -48,6 +49,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ stats, system_metrics }: DashboardProps) {
+    const exchangeRate = useExchangeRate();
     const { auth, business } = usePage<PageProps>().props;
     const user = auth.user;
 
@@ -141,7 +143,7 @@ export default function Dashboard({ stats, system_metrics }: DashboardProps) {
                             <span className="text-[10px] text-zinc-500 font-mono">{business.currency_code}</span>
                         </div>
                         <p className="text-[11px] text-emerald-400/80 font-khmer mt-1">
-                            ≈ {Math.round((parseFloat(stats.gross_revenue) || 0) * 4100).toLocaleString()} ៛ (អត្រា 1$ = 4,100៛)
+                            ≈ {Math.round((parseFloat(stats.gross_revenue) || 0) * exchangeRate).toLocaleString()} ៛ (អត្រា 1$ = {exchangeRate.toLocaleString()}៛)
                         </p>
                     </Card>
 

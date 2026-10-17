@@ -16,6 +16,7 @@ export interface User {
 }
 
 export interface BusinessSettings {
+    exchange_rate_khr?: number;
     business_name_primary: string;
     business_name_secondary?: string | null;
     address?: string | null;

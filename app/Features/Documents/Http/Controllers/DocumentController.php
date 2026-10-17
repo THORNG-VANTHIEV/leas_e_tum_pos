@@ -157,7 +157,7 @@ class DocumentController extends Controller
             'tables_list' => $tablesList,
             'customers' => $customers,
             'initial_table' => $request->query('table_ref', ''),
-            'exchange_rate' => (float) (BusinessSetting::current()->print_settings['exchange_rate_khr'] ?? 4000),
+            'exchange_rate' => BusinessSetting::current()->khrExchangeRate(),
         ]);
     }
 

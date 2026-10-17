@@ -21,6 +21,7 @@ import {
     ShieldCheck,
     Ban,
 } from 'lucide-react';
+import { useExchangeRate } from '@/components/currency';
 
 interface DocumentShowProps {
     document: {
@@ -63,6 +64,7 @@ interface DocumentShowProps {
 }
 
 export default function DocumentShow({ document: doc }: DocumentShowProps) {
+    const exchangeRate = useExchangeRate();
     const { business, auth } = usePage<PageProps>().props;
 
     // Only admins and supervisors may void a finalized invoice (mirrors route middleware)
@@ -314,7 +316,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                                         {doc.grand_total}
                                     </span>
                                     <div className="text-xs font-mono text-emerald-400/80 font-khmer">
-                                        ≈ {Math.round((parseFloat(doc.grand_total) || 0) * 4100).toLocaleString()} ៛
+                                        ≈ {Math.round((parseFloat(doc.grand_total) || 0) * exchangeRate).toLocaleString()} ៛
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +338,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                                         </span>
                                         {parseFloat(doc.change_amount) > 0 && (
                                             <span className="block text-[10px] font-normal text-zinc-400 font-khmer">
-                                                ≈ {Math.round(parseFloat(doc.change_amount) * 4100).toLocaleString()} ៛
+                                                ≈ {Math.round(parseFloat(doc.change_amount) * exchangeRate).toLocaleString()} ៛
                                             </span>
                                         )}
                                     </div>
