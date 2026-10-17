@@ -50,6 +50,49 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "test:pos": [
+            "@php artisan test tests/Feature/Documents tests/Feature/Printing"
+        ],
+        "test:kitchen": [
+            "@php artisan test tests/Feature/Kds"
+        ],
+        "test:floor": [
+            "@php artisan test tests/Feature/Floor"
+        ],
+        "test:catalog": [
+            "@php artisan test tests/Feature/Catalog"
+        ],
+        "test:purchases": [
+            "@php artisan test tests/Feature/Purchases"
+        ],
+        "test:expenses": [
+            "@php artisan test tests/Feature/Expenses"
+        ],
+        "test:customers": [
+            "@php artisan test tests/Feature/Customers"
+        ],
+        "test:reports": [
+            "@php artisan test tests/Feature/Reports tests/Feature/Periods"
+        ],
+        "test:users": [
+            "@php artisan test tests/Feature/Users tests/Feature/Auth tests/Feature/Approvals tests/Feature/Audit"
+        ],
+        "test:backups": [
+            "@php artisan test tests/Feature/Backups"
+        ],
+        "test:unit": [
+            "@php artisan test tests/Unit"
+        ],
+        "test:smoke": [
+            "@php artisan test tests/Feature/Smoke"
+        ],
+        "test:types": [
+            "npx tsc --noEmit -p ."
+        ],
+        "check": [
+            "@test:types",
+            "@test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -84,5 +127,21 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts-descriptions": {
+        "test:pos": "POS checkout, hold table, void, delivery apps, invoices & printing",
+        "test:kitchen": "Kitchen tickets and KDS",
+        "test:floor": "Floor plan and tables",
+        "test:catalog": "Products, units, categories",
+        "test:purchases": "Purchases and suppliers",
+        "test:expenses": "Expenses and cash drawer",
+        "test:customers": "Customers and loyalty",
+        "test:reports": "Sales reports and accounting periods",
+        "test:users": "Login, staff, permissions, approvals, audit trail",
+        "test:backups": "Backup, restore and daily backup command",
+        "test:unit": "Money and calculator unit tests",
+        "test:smoke": "Open every page for admin, supervisor and cashier",
+        "test:types": "TypeScript type check of the frontend",
+        "check": "Type check + full test suite (run before committing)"
+    }
 }

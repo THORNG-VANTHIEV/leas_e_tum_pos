@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Documents;
+namespace Tests\Feature\Kds;
 
 use App\Models\Document;
 use App\Models\KitchenTicket;

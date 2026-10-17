@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\User;
+use Database\Seeders\LeashalEtumProductsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,8 +17,11 @@ class LivePosCheckoutTest extends TestCase
     use RefreshDatabase;
 
     protected User $cashier;
+
     protected Product $clams;
+
     protected Product $balut;
+
     protected Product $drinks;
 
     protected function setUp(): void
@@ -25,16 +29,16 @@ class LivePosCheckoutTest extends TestCase
         parent::setUp();
 
         $this->seed();
-        $this->seed(\Database\Seeders\LeashalEtumProductsSeeder::class);
+        $this->seed(LeashalEtumProductsSeeder::class);
 
         $this->cashier = User::where('username', 'cashier1')->first() ?? User::factory()->create([
             'role' => 'cashier',
             'is_active' => true,
         ]);
 
-        $this->clams = Product::where('sku', 'ETUM-01')->firstOrFail();
-        $this->balut = Product::where('sku', 'GRILL-01')->firstOrFail();
-        $this->drinks = Product::where('sku', 'DRK-01')->firstOrFail();
+        $this->clams = Product::where('sku', 'ETUM-OP-01')->firstOrFail();
+        $this->balut = Product::where('sku', 'ETUM-OP-02')->firstOrFail();
+        $this->drinks = Product::where('sku', 'ETUM-OP-05')->firstOrFail();
     }
 
     public function test_pos_terminal_screen_loads_without_requiring_manual_period_activation(): void
@@ -51,7 +55,7 @@ class LivePosCheckoutTest extends TestCase
             ->has('products')
             ->has('active_tables')
             ->has('tables_list')
-            ->where('exchange_rate', 4100)
+            ->where('exchange_rate', 4000) // Settings default (1$ = 4,000៛)
         );
 
         // Active period should have been auto-provisioned
@@ -68,7 +72,7 @@ class LivePosCheckoutTest extends TestCase
             'amount_received' => '10.00',
             'discount_amount' => '0.00',
             'items' => [
-                ['product_id' => $this->clams->id, 'quantity' => 2], // 2 * $2.00 = $4.00
+                ['product_id' => $this->clams->id, 'quantity' => 2], // 2 * $1.75 = $3.50
                 ['product_id' => $this->drinks->id, 'quantity' => 2], // 2 * $1.25 = $2.50
             ],
         ];
@@ -80,9 +84,9 @@ class LivePosCheckoutTest extends TestCase
         $this->assertNotNull($document);
         $this->assertSame(DocumentStatus::Finalized, $document->status);
         $this->assertNotNull($document->document_number);
-        $this->assertSame('6.50', $document->grand_total);
+        $this->assertSame('6.00', $document->grand_total);
         $this->assertSame('10.00', $document->amount_received);
-        $this->assertSame('3.50', $document->change_amount);
+        $this->assertSame('4.00', $document->change_amount);
         $this->assertSame('ខ្ចប់ (Takeaway)', $document->reference_identifier);
         $this->assertCount(2, $document->items);
 
@@ -96,7 +100,7 @@ class LivePosCheckoutTest extends TestCase
             'payment_method' => 'khqr',
             'discount_amount' => '0.50',
             'items' => [
-                ['product_id' => $this->balut->id, 'quantity' => 2], // 2 * $1.50 = $3.00 - $0.50 = $2.50
+                ['product_id' => $this->balut->id, 'quantity' => 2], // 2 * $2.50 = $5.00 - $0.50 = $4.50
             ],
         ];
 
@@ -106,8 +110,8 @@ class LivePosCheckoutTest extends TestCase
         $document = Document::latest('id')->first();
         $this->assertNotNull($document);
         $this->assertSame(DocumentStatus::Finalized, $document->status);
-        $this->assertSame('2.50', $document->grand_total);
-        $this->assertSame('2.50', $document->amount_received);
+        $this->assertSame('4.50', $document->grand_total);
+        $this->assertSame('4.50', $document->amount_received);
         $this->assertSame('0.00', $document->change_amount);
         $this->assertSame('khqr', $document->payment_method);
     }
@@ -118,7 +122,7 @@ class LivePosCheckoutTest extends TestCase
         $holdPayload = [
             'table_identifier' => 'តុ ០៣',
             'items' => [
-                ['product_id' => $this->clams->id, 'quantity' => 1], // $2.00
+                ['product_id' => $this->clams->id, 'quantity' => 1], // $1.75
             ],
         ];
 
@@ -132,7 +136,7 @@ class LivePosCheckoutTest extends TestCase
             ->first();
 
         $this->assertNotNull($draft);
-        $this->assertSame('2.00', $draft->grand_total);
+        $this->assertSame('1.75', $draft->grand_total);
 
         // 2. Later, customer orders 2 more items and settles table
         $checkoutPayload = [
@@ -141,8 +145,8 @@ class LivePosCheckoutTest extends TestCase
             'payment_method' => 'cash',
             'amount_received' => '5.00',
             'items' => [
-                ['product_id' => $this->clams->id, 'quantity' => 1], // $2.00
-                ['product_id' => $this->drinks->id, 'quantity' => 2], // 2 * $1.25 = $2.50 -> Total $4.50
+                ['product_id' => $this->clams->id, 'quantity' => 1], // $1.75
+                ['product_id' => $this->drinks->id, 'quantity' => 2], // 2 * $1.25 = $2.50 -> Total $4.25
             ],
         ];
 
@@ -151,8 +155,8 @@ class LivePosCheckoutTest extends TestCase
 
         $settled = Document::find($draft->id);
         $this->assertSame(DocumentStatus::Finalized, $settled->status);
-        $this->assertSame('4.50', $settled->grand_total);
-        $this->assertSame('0.50', $settled->change_amount);
+        $this->assertSame('4.25', $settled->grand_total);
+        $this->assertSame('0.75', $settled->change_amount);
     }
 
     public function test_cancel_table_order(): void
