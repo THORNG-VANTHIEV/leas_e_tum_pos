@@ -112,6 +112,55 @@ class OrderSourceCheckoutTest extends TestCase
             );
     }
 
+    public function test_delivery_order_can_be_paid_via_the_app(): void
+    {
+        $this->actingAs($this->cashier)
+            ->post(route('invoices.checkout'), $this->checkoutPayload([
+                'order_source' => 'grab',
+                'payment_method' => 'app',
+            ]))
+            ->assertSessionHasNoErrors();
+
+        $document = Document::latest('id')->firstOrFail();
+        $this->assertSame('app', $document->payment_method);
+        $this->assertSame($document->grand_total, $document->amount_received);
+        $this->assertSame('0.00', $document->change_amount);
+    }
+
+    public function test_walk_in_order_cannot_be_marked_paid_via_app(): void
+    {
+        $this->actingAs($this->cashier)
+            ->post(route('invoices.checkout'), $this->checkoutPayload([
+                'order_source' => 'walk_in',
+                'payment_method' => 'app',
+            ]))
+            ->assertSessionHasErrors(['payment_method' => 'បង់តាម App ប្រើបានតែការកម្មង់ពី foodpanda, Grab, Nham24, WOWNOW ឬ App ផ្សេងៗប៉ុណ្ណោះ។']);
+    }
+
+    public function test_report_breaks_sales_down_by_channel_and_payment_method(): void
+    {
+        $admin = User::where('username', 'admin')->firstOrFail();
+        Document::query()->delete();
+
+        // ETUM-OP-01 = $1.75
+        $this->actingAs($this->cashier)->post(route('invoices.checkout'), $this->checkoutPayload(['order_source' => 'foodpanda', 'payment_method' => 'app']));
+        $this->actingAs($this->cashier)->post(route('invoices.checkout'), $this->checkoutPayload(['order_source' => 'foodpanda', 'payment_method' => 'app']));
+        $this->actingAs($this->cashier)->post(route('invoices.checkout'), $this->checkoutPayload(['payment_method' => 'cash']));
+
+        $this->actingAs($admin)
+            ->get(route('reports.index'))
+            ->assertInertia(fn ($page) => $page
+                ->where('sales_by_source', [
+                    ['source' => 'foodpanda', 'count' => 2, 'total' => '3.50'],
+                    ['source' => 'walk_in', 'count' => 1, 'total' => '1.75'],
+                ])
+                ->where('sales_by_payment', [
+                    ['method' => 'app', 'count' => 2, 'total' => '3.50'],
+                    ['method' => 'cash', 'count' => 1, 'total' => '1.75'],
+                ])
+            );
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>

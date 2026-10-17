@@ -172,7 +172,7 @@ class DocumentController extends Controller
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:9999'],
-            'payment_method' => ['required', 'string', 'in:cash,card,qr_transfer,khqr'],
+            'payment_method' => ['required', 'string', 'in:cash,card,qr_transfer,khqr,app'],
             'amount_received' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:999999'],
             'discount_amount' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:999999'],
             'table_identifier' => ['nullable', 'string', 'max:50'],

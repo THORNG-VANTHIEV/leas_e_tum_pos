@@ -3,6 +3,7 @@
 namespace App\Features\Reports\Http\Controllers;
 
 use App\Enums\DocumentStatus;
+use App\Enums\OrderSource;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\Expense;
@@ -89,6 +90,27 @@ class ReportController extends Controller
 
         // Cashier breakdown aggregation
         $cashierBreakdown = [];
+        // Sales per channel (walk-in / delivery apps) and per payment method, for reconciling app payouts and the drawer
+        $sumCents = fn ($docs) => $docs->sum(fn (Document $doc) => Money::toCents((string) $doc->grand_total));
+        $salesBySource = $validDocs
+            ->groupBy(fn (Document $doc) => $doc->order_source?->value ?? OrderSource::WalkIn->value)
+            ->map(fn ($docs, $source) => [
+                'source' => $source,
+                'count' => $docs->count(),
+                'total' => Money::fromCents($sumCents($docs)),
+            ])
+            ->sortByDesc('count')
+            ->values();
+        $salesByPayment = $validDocs
+            ->groupBy(fn (Document $doc) => strtolower((string) $doc->payment_method))
+            ->map(fn ($docs, $method) => [
+                'method' => $method,
+                'count' => $docs->count(),
+                'total' => Money::fromCents($sumCents($docs)),
+            ])
+            ->sortByDesc('count')
+            ->values();
+
         // Attribute each sale to the cashier who took the payment
         $groupedByCashier = $validDocs->groupBy(fn (Document $doc) => $doc->ownerId());
 
@@ -212,6 +234,8 @@ class ReportController extends Controller
             'documents' => $documents,
             'periods' => $periods,
             'cashiers' => $cashiers,
+            'sales_by_source' => $salesBySource,
+            'sales_by_payment' => $salesByPayment,
             'filters' => [
                 'period_id' => $selectedPeriodId,
                 'start_date' => $startDate,

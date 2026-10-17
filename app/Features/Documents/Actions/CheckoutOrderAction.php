@@ -140,6 +140,13 @@ final class CheckoutOrderAction
 
             // Delivery app orders keep the platform's own order number; walk-in orders never carry one
             $orderSource = OrderSource::tryFrom((string) ($data['order_source'] ?? '')) ?? OrderSource::WalkIn;
+
+            // "Paid via app" money arrives later from the platform, so it only makes sense for delivery app orders
+            if ($paymentMethod === 'app' && ! $orderSource->isDeliveryPlatform()) {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'បង់តាម App ប្រើបានតែការកម្មង់ពី foodpanda, Grab, Nham24, WOWNOW ឬ App ផ្សេងៗប៉ុណ្ណោះ។',
+                ]);
+            }
             $externalOrderRef = $orderSource->isDeliveryPlatform()
                 ? (trim((string) ($data['external_order_ref'] ?? '')) ?: null)
                 : null;

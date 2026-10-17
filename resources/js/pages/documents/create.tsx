@@ -167,7 +167,7 @@ export default function DocumentCreate({
     const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
     const [isMobileCartOpen, setIsMobileCartOpen] = useState(false);
     const [isTablesModalOpen, setIsTablesModalOpen] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card'>('cash');
+    const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card' | 'app'>('cash');
     const [amountReceived, setAmountReceived] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [checkoutError, setCheckoutError] = useState<string | null>(null);
@@ -507,7 +507,7 @@ export default function DocumentCreate({
     const openCheckoutModal = () => {
         if (lines.length === 0) return;
         setAmountReceived(totals.grandTotalUSD);
-        setPaymentMethod('cash');
+        setPaymentMethod(isDeliveryPlatform(effectiveOrderSource) ? 'app' : 'cash');
         setCheckoutError(null);
         setIsCheckoutModalOpen(true);
     };
@@ -1342,7 +1342,11 @@ export default function DocumentCreate({
                                                     <button
                                                         key={source.value}
                                                         type="button"
-                                                        onClick={() => setOrderSource(source.value)}
+                                                        onClick={() => {
+                                                            setOrderSource(source.value);
+                                                            // App orders are normally paid through the app; walk-in falls back to cash
+                                                            setPaymentMethod(source.value === 'walk_in' ? 'cash' : 'app');
+                                                        }}
                                                         className={`h-11 px-2 rounded-xl border text-xs font-bold transition cursor-pointer font-khmer truncate ${
                                                             isSelected
                                                                 ? `${source.badgeClass} ring-2 ring-current/20 shadow-sm`
@@ -1387,7 +1391,7 @@ export default function DocumentCreate({
                                         </span>
                                     </div>
 
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className={`grid gap-3 ${isDeliveryPlatform(effectiveOrderSource) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'}`}>
                                         <button
                                             type="button"
                                             onClick={() => setPaymentMethod('cash')}
@@ -1441,6 +1445,27 @@ export default function DocumentCreate({
                                             <span className="font-bold">កាតធនាគារ (Card)</span>
                                             <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">POS Terminal</span>
                                         </button>
+
+                                        {/* Delivery apps collect the money and pay the shop later: not cash in the drawer */}
+                                        {isDeliveryPlatform(effectiveOrderSource) && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setPaymentMethod('app')}
+                                                className={`p-4 rounded-xl border text-center font-bold text-xs flex flex-col items-center gap-2 transition cursor-pointer font-khmer ${
+                                                    paymentMethod === 'app'
+                                                        ? 'bg-pink-500/15 border-pink-500 text-pink-700 dark:text-pink-300 ring-2 ring-pink-500/20 shadow-md'
+                                                        : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
+                                                }`}
+                                            >
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                                                    paymentMethod === 'app' ? 'bg-pink-600 text-white shadow-md shadow-pink-600/20' : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
+                                                }`}>
+                                                    <Bike className="w-5 h-5" />
+                                                </div>
+                                                <span className="font-bold">បង់តាម App</span>
+                                                <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">App ផ្ទេរលុយក្រោយ</span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 

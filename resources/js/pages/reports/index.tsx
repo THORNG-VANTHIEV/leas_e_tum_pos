@@ -31,6 +31,7 @@ import {
     Layers,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
+import { OrderSourceBadge } from '@/components/order-source';
 
 const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
     utilities: { nameKh: 'ថ្លៃទឹក-ភ្លើង-សំរាម', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
@@ -110,6 +111,8 @@ interface ReportsPageProps {
     }[];
     periods: { id: number; code: string; name: string; status: string }[];
     cashiers: { id: number; name: string; username: string }[];
+    sales_by_source: { source: string; count: number; total: string }[];
+    sales_by_payment: { method: string; count: number; total: string }[];
     filters: {
         period_id: string | null;
         start_date: string | null;
@@ -117,6 +120,14 @@ interface ReportsPageProps {
         cashier_id: string | null;
     };
 }
+
+const PAYMENT_LABELS: Record<string, string> = {
+    cash: 'សាច់ប្រាក់ (Cash) — ក្នុងថតបេឡា',
+    khqr: 'KHQR',
+    qr_transfer: 'QR Transfer',
+    card: 'កាត (Card)',
+    app: 'បង់តាម App — រង់ចាំ App ផ្ទេរ',
+};
 
 export default function ReportsIndex({
     metrics,
@@ -126,6 +137,8 @@ export default function ReportsIndex({
     periods,
     cashiers,
     filters,
+    sales_by_source: salesBySource,
+    sales_by_payment: salesByPayment,
 }: ReportsPageProps) {
     const exchangeRate = useExchangeRate();
     const { auth, business } = usePage<PageProps>().props;
@@ -484,6 +497,34 @@ export default function ReportsIndex({
                             មានការកម្មង់កំពុងបើក (មិនទាន់គិតប្រាក់) <strong className="font-mono">{metrics.open_orders_count}</strong> ចំនួន
                             សរុប <strong className="font-mono">${metrics.open_orders_value}</strong> — មិនទាន់រាប់ក្នុងចំណូលទេ។
                         </span>
+                    </div>
+                )}
+
+                {/* Sales by channel and by payment method (reconcile delivery app payouts and the cash drawer) */}
+                {(salesBySource.length > 0 || salesByPayment.length > 0) && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl space-y-2">
+                            <h3 className="text-xs font-bold text-zinc-200 font-khmer">ការលក់តាមប្រភព (Sales by Channel)</h3>
+                            {salesBySource.map((row) => (
+                                <div key={row.source} className="flex items-center justify-between text-xs">
+                                    <OrderSourceBadge source={row.source} />
+                                    <span className="font-mono text-zinc-300">
+                                        {row.count} × · <strong className="text-zinc-100">${row.total}</strong>
+                                    </span>
+                                </div>
+                            ))}
+                        </Card>
+                        <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl space-y-2">
+                            <h3 className="text-xs font-bold text-zinc-200 font-khmer">ការលក់តាមវិធីបង់ប្រាក់ (Sales by Payment)</h3>
+                            {salesByPayment.map((row) => (
+                                <div key={row.method} className="flex items-center justify-between text-xs">
+                                    <span className="font-khmer text-zinc-300">{PAYMENT_LABELS[row.method] ?? row.method.toUpperCase()}</span>
+                                    <span className="font-mono text-zinc-300">
+                                        {row.count} × · <strong className="text-zinc-100">${row.total}</strong>
+                                    </span>
+                                </div>
+                            ))}
+                        </Card>
                     </div>
                 )}
 
