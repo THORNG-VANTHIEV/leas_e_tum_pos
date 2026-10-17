@@ -128,7 +128,7 @@ export default function PreviewRange({
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 py-6 px-4 selection:bg-emerald-500/30 selection:text-emerald-300">
-            <Head title={`Continuous Range Print (${documents.length} Invoices)`} />
+            <Head title={`ព្រីនជាបាច់ (${documents.length} វិក្កយបត្រ)`} />
 
             {/* Hardware Print Stylesheets for Continuous Multi-Document Rolls and A5 Pages */}
             <style>{`
@@ -179,17 +179,17 @@ export default function PreviewRange({
                         <Link href="/invoices">
                             <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                                 <ArrowLeft className="w-4 h-4 mr-1.5" />
-                                <span>Invoices Register</span>
+                                <span className="font-khmer">បញ្ជីវិក្កយបត្រ</span>
                             </Button>
                         </Link>
                         <div className="h-5 w-[1px] bg-zinc-800" />
                         <div>
                             <h1 className="text-sm font-bold text-white flex items-center gap-2">
                                 <Layers className="w-4 h-4 text-emerald-400" />
-                                Continuous Range Printing
+                                <span className="font-khmer">ព្រីនវិក្កយបត្រជាបាច់</span>
                             </h1>
-                            <p className="text-xs text-zinc-400">
-                                Deterministic batch #{range.start_sequence} - #{range.end_sequence} ({documents.length} finalized documents)
+                            <p className="text-xs text-zinc-400 font-khmer">
+                                លេខ #{range.start_sequence} ដល់ #{range.end_sequence} (វិក្កយបត្រ {documents.length} សន្លឹក)
                             </p>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ export default function PreviewRange({
                             className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-950/50 cursor-pointer"
                         >
                             <Printer className="w-4 h-4 mr-1.5" />
-                            <span>{isPrinting ? 'Recording...' : `Print Batch (${documents.length})`}</span>
+                            <span className="font-khmer">{isPrinting ? 'កំពុងកត់ត្រា...' : `ព្រីនទាំងអស់ (${documents.length})`}</span>
                         </Button>
                     </div>
                 </div>
@@ -241,7 +241,7 @@ export default function PreviewRange({
                 >
                     <div className="flex flex-wrap items-center gap-3">
                         <div className="flex items-center gap-2">
-                            <span className="text-zinc-400">Start Sequence:</span>
+                            <span className="text-zinc-400 font-khmer">ពីលេខ:</span>
                             <Input
                                 type="number"
                                 min={1}
@@ -251,7 +251,7 @@ export default function PreviewRange({
                             />
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-zinc-400">End Sequence:</span>
+                            <span className="text-zinc-400 font-khmer">ដល់លេខ:</span>
                             <Input
                                 type="number"
                                 min={1}
@@ -262,13 +262,13 @@ export default function PreviewRange({
                         </div>
                         {periods.length > 0 && (
                             <div className="flex items-center gap-2">
-                                <span className="text-zinc-400">Period:</span>
+                                <span className="text-zinc-400 font-khmer">វគ្គ:</span>
                                 <select
                                     value={selectedPeriod}
                                     onChange={(e) => setSelectedPeriod(e.target.value)}
                                     className="h-8 bg-zinc-950 border border-zinc-700 rounded-lg px-2 text-zinc-200 text-xs focus:ring-1 focus:ring-emerald-500"
                                 >
-                                    <option value="">All Finalized Periods</option>
+                                    <option value="">គ្រប់វគ្គ</option>
                                     {periods.map((p) => (
                                         <option key={p.id} value={p.id}>
                                             {p.code} - {p.name}
@@ -279,16 +279,16 @@ export default function PreviewRange({
                         )}
                         <Button type="submit" variant="outline" size="sm" className="h-8 border-zinc-700 text-xs">
                             <Filter className="w-3.5 h-3.5 mr-1 text-emerald-400" />
-                            Apply Range
+                            <span className="font-khmer">បង្ហាញ</span>
                         </Button>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs font-mono">
                         <span className="text-zinc-400">
-                            Available: <strong className="text-white">#{range.min_available_sequence}</strong> to <strong className="text-white">#{range.max_available_sequence}</strong>
+                            <span className="font-khmer">មានលេខ:</span> <strong className="text-white">#{range.min_available_sequence}</strong> <span className="font-khmer">ដល់</span> <strong className="text-white">#{range.max_available_sequence}</strong>
                         </span>
                         <span className="text-zinc-400">
-                            Batch Total: <strong className="text-emerald-400">${range.total_amount}</strong>
+                            <span className="font-khmer">សរុប:</span> <strong className="text-emerald-400">${range.total_amount}</strong>
                         </span>
                     </div>
                 </form>
@@ -298,13 +298,13 @@ export default function PreviewRange({
             {documents.length === 0 && (
                 <div className="max-w-md mx-auto my-16 p-8 text-center bg-zinc-900/40 rounded-2xl border border-zinc-800">
                     <AlertCircle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
-                    <h3 className="text-base font-bold text-white mb-1">No Finalized Documents Found</h3>
-                    <p className="text-xs text-zinc-400 mb-4">
-                        There are no finalized documents matching sequence range #{startSeq} to #{endSeq}.
+                    <h3 className="text-base font-bold text-white mb-1 font-khmer">រកមិនឃើញវិក្កយបត្រទេ</h3>
+                    <p className="text-xs text-zinc-400 mb-4 font-khmer">
+                        គ្មានវិក្កយបត្រដែលបានគិតប្រាក់ ចាប់ពីលេខ #{startSeq} ដល់ #{endSeq} ទេ។
                     </p>
                     <Link href="/invoices">
                         <Button variant="outline" size="sm">
-                            Return to Invoices Register
+                            <span className="font-khmer">ត្រឡប់ទៅបញ្ជីវិក្កយបត្រ</span>
                         </Button>
                     </Link>
                 </div>
@@ -319,8 +319,8 @@ export default function PreviewRange({
                             <div key={doc.id} className="relative">
                                 {/* Slip Index Indicator (Hidden When Printing) */}
                                 <div className="no-print mb-2 flex items-center justify-between text-[11px] text-zinc-500 font-mono px-2">
-                                    <span>Slip #{idx + 1} of {documents.length}</span>
-                                    <span>Doc {doc.document_number} (Seq #{doc.sequence_no})</span>
+                                    <span className="font-khmer">សន្លឹកទី {idx + 1} / {documents.length}</span>
+                                    <span>{doc.document_number} (#{doc.sequence_no})</span>
                                 </div>
 
                                 <div className="print-slip-80mm bg-white text-zinc-900 rounded-lg shadow-2xl p-5 border border-zinc-200/50 font-sans">
@@ -341,7 +341,7 @@ export default function PreviewRange({
                                         )}
                                         {business.phone && (
                                             <p className="text-[10px] text-zinc-500 font-mono mt-0.5">
-                                                Tel: {business.phone}
+                                                <span className="font-khmer">ទូរស័ព្ទ / Tel:</span> {business.phone}
                                             </p>
                                         )}
                                     </div>
@@ -349,29 +349,29 @@ export default function PreviewRange({
                                     {/* Document Meta */}
                                     <div className="py-2.5 border-b border-dashed border-zinc-300 text-[11px] space-y-1 font-mono">
                                         <div className="flex justify-between items-center">
-                                            <span className="text-zinc-500">Invoice No:</span>
+                                            <span className="text-zinc-500 font-khmer">លេខវិក្កយបត្រ / No:</span>
                                             <span className="font-bold text-zinc-950">{doc.document_number}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-zinc-500">Seq #:</span>
+                                            <span className="text-zinc-500 font-khmer">លេខរៀង / Seq #:</span>
                                             <span className="font-semibold text-zinc-800">#{doc.sequence_no}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-zinc-500">Date/Time:</span>
+                                            <span className="text-zinc-500 font-khmer">កាលបរិច្ឆេទ / Date:</span>
                                             <span className="text-zinc-800">{doc.business_date} {doc.event_time}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-zinc-500">Cashier:</span>
+                                            <span className="text-zinc-500 font-khmer">អ្នកគិតប្រាក់ / Cashier:</span>
                                             <span className="text-zinc-800">{doc.creator.name}</span>
                                         </div>
                                         {doc.reference_identifier && (
                                             <div className="flex justify-between items-center">
-                                                <span className="text-zinc-500">Table / Ref:</span>
+                                                <span className="text-zinc-500 font-khmer">តុ / Table:</span>
                                                 <span className="font-semibold text-zinc-800">{doc.reference_identifier}</span>
                                             </div>
                                         )}
                                         <div className="flex justify-between items-center">
-                                            <span className="text-zinc-500">Order From:</span>
+                                            <span className="text-zinc-500 font-khmer">កម្មង់ពី / From:</span>
                                             <span className="font-semibold text-zinc-800 font-khmer">
                                                 {formatOrderSource(doc.order_source)}
                                                 {isDeliveryPlatform(doc.order_source) && doc.external_order_ref && ` #${doc.external_order_ref}`}
@@ -384,10 +384,10 @@ export default function PreviewRange({
                                         <table className="w-full text-[11px]">
                                             <thead>
                                                 <tr className="border-b border-zinc-200 text-zinc-600 font-medium pb-1">
-                                                    <th className="text-left pb-1 font-semibold">Item</th>
-                                                    <th className="text-center pb-1 w-10 font-semibold">Qty</th>
-                                                    <th className="text-right pb-1 w-14 font-semibold">Price</th>
-                                                    <th className="text-right pb-1 w-16 font-semibold">Total</th>
+                                                    <th className="text-left pb-1 font-semibold font-khmer">មុខទំនិញ / Item</th>
+                                                    <th className="text-center pb-1 w-10 font-semibold font-khmer">ចំនួន</th>
+                                                    <th className="text-right pb-1 w-14 font-semibold font-khmer">តម្លៃ</th>
+                                                    <th className="text-right pb-1 w-16 font-semibold font-khmer">សរុប</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-zinc-100">
@@ -419,23 +419,23 @@ export default function PreviewRange({
                                     {/* Financial Totals */}
                                     <div className="py-2.5 border-b border-dashed border-zinc-300 text-[11px] space-y-1 font-mono">
                                         <div className="flex justify-between text-zinc-600">
-                                            <span>Subtotal:</span>
+                                            <span className="font-khmer">សរុបរង / Subtotal:</span>
                                             <span>${Number(doc.subtotal).toFixed(2)}</span>
                                         </div>
                                         {Number(doc.discount_amount) > 0 && (
                                             <div className="flex justify-between text-rose-600">
-                                                <span>Discount:</span>
+                                                <span className="font-khmer">បញ្ចុះតម្លៃ / Discount:</span>
                                                 <span>-${Number(doc.discount_amount).toFixed(2)}</span>
                                             </div>
                                         )}
                                         {Number(doc.tax_amount) > 0 && (
                                             <div className="flex justify-between text-zinc-600">
-                                                <span>Tax (VAT):</span>
+                                                <span className="font-khmer">ពន្ធ / Tax:</span>
                                                 <span>+${Number(doc.tax_amount).toFixed(2)}</span>
                                             </div>
                                         )}
                                         <div className="flex justify-between items-baseline text-base font-black text-zinc-950 pt-1.5 border-t border-zinc-200">
-                                            <span>GRAND TOTAL / សរុប:</span>
+                                            <span className="font-khmer">សរុប / TOTAL:</span>
                                             <div className="text-right">
                                                 <div>${Number(doc.grand_total).toFixed(2)}</div>
                                                 <div className="text-[11px] font-normal text-zinc-600 font-khmer">
@@ -444,11 +444,11 @@ export default function PreviewRange({
                                             </div>
                                         </div>
                                         <div className="flex justify-between text-zinc-700 pt-1">
-                                            <span>Cash Received:</span>
+                                            <span className="font-khmer">ប្រាក់ទទួល / Paid:</span>
                                             <span>${Number(doc.amount_received).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between font-bold text-zinc-900">
-                                            <span>Change Due / ប្រាក់អាប់:</span>
+                                            <span className="font-khmer">ប្រាក់អាប់ / Change:</span>
                                             <div className="text-right">
                                                 <span>${Number(doc.change_amount).toFixed(2)}</span>
                                                 {Number(doc.change_amount) > 0 && (
@@ -466,11 +466,11 @@ export default function PreviewRange({
                                             {business.document_footer || 'សូមអរគុណ! Thank you for your visit!'}
                                         </p>
                                         <p className="font-mono text-[9px] text-zinc-400">
-                                            Period: {doc.period.code} • Batch Print
+                                            <span className="font-khmer">វគ្គ / Period:</span> {doc.period.code}
                                         </p>
                                         {isReprint && (
                                             <div className="inline-block mt-1 px-2 py-0.5 border border-zinc-400 text-zinc-600 font-mono text-[9px] uppercase tracking-wider font-bold">
-                                                REPRINT
+                                                <span className="font-khmer">ព្រីនឡើងវិញ / REPRINT</span>
                                             </div>
                                         )}
                                     </div>
@@ -501,8 +501,8 @@ export default function PreviewRange({
                             <div key={doc.id} className="relative">
                                 {/* Sheet Index Indicator (Hidden When Printing) */}
                                 <div className="no-print mb-2 flex items-center justify-between text-[11px] text-zinc-500 font-mono px-2">
-                                    <span>A5 Sheet #{idx + 1} of {documents.length}</span>
-                                    <span>Invoice #{doc.document_number} (Seq #{doc.sequence_no})</span>
+                                    <span className="font-khmer">សន្លឹក A5 ទី {idx + 1} / {documents.length}</span>
+                                    <span>{doc.document_number} (#{doc.sequence_no})</span>
                                 </div>
 
                                 <div className="print-slip-a5 bg-white text-zinc-900 rounded-xl shadow-2xl p-8 border border-zinc-200 font-sans min-h-[580px] flex flex-col justify-between">
@@ -525,20 +525,20 @@ export default function PreviewRange({
                                                 )}
                                                 {business.phone && (
                                                     <p className="text-xs text-zinc-600 font-mono">
-                                                        Tel: {business.phone}
+                                                        <span className="font-khmer">ទូរស័ព្ទ / Tel:</span> {business.phone}
                                                     </p>
                                                 )}
                                             </div>
 
                                             <div className="text-right">
                                                 <div className="inline-block bg-zinc-900 text-white text-xs font-mono font-bold px-3 py-1 rounded">
-                                                    COMMERCIAL INVOICE
+                                                    <span className="font-khmer">វិក្កយបត្រ / INVOICE</span>
                                                 </div>
                                                 <div className="mt-2 text-xs font-mono space-y-0.5">
                                                     <p className="font-bold text-sm text-zinc-950">{doc.document_number}</p>
-                                                    <p className="text-zinc-600">Seq: #{doc.sequence_no}</p>
-                                                    <p className="text-zinc-600">Date: {doc.business_date}</p>
-                                                    <p className="text-zinc-600">Time: {doc.event_time}</p>
+                                                    <p className="text-zinc-600"><span className="font-khmer">លេខរៀង / Seq:</span> #{doc.sequence_no}</p>
+                                                    <p className="text-zinc-600"><span className="font-khmer">កាលបរិច្ឆេទ / Date:</span> {doc.business_date}</p>
+                                                    <p className="text-zinc-600"><span className="font-khmer">ម៉ោង / Time:</span> {doc.event_time}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -546,19 +546,19 @@ export default function PreviewRange({
                                         {/* Meta Information Bar */}
                                         <div className="grid grid-cols-3 gap-4 py-3 border-b border-zinc-200 text-xs font-mono bg-zinc-50 px-3 my-4 rounded">
                                             <div>
-                                                <span className="text-zinc-500 block text-[10px]">CASHIER</span>
+                                                <span className="text-zinc-500 block text-[10px] font-khmer">អ្នកគិតប្រាក់ / CASHIER</span>
                                                 <span className="font-semibold text-zinc-900">{doc.creator.name}</span>
                                             </div>
                                             <div>
-                                                <span className="text-zinc-500 block text-[10px]">PERIOD / BATCH</span>
+                                                <span className="text-zinc-500 block text-[10px] font-khmer">វគ្គ / PERIOD</span>
                                                 <span className="font-semibold text-zinc-900">{doc.period.code}</span>
                                             </div>
                                             <div>
-                                                <span className="text-zinc-500 block text-[10px]">TABLE / REFERENCE</span>
+                                                <span className="text-zinc-500 block text-[10px] font-khmer">តុ / TABLE</span>
                                                 <span className="font-semibold text-zinc-900">{doc.reference_identifier || '—'}</span>
                                             </div>
                                             <div>
-                                                <span className="text-zinc-500 block text-[10px]">ORDER FROM</span>
+                                                <span className="text-zinc-500 block text-[10px] font-khmer">កម្មង់ពី / FROM</span>
                                                 <span className="font-semibold text-zinc-900 font-khmer">
                                                     {formatOrderSource(doc.order_source)}
                                                     {isDeliveryPlatform(doc.order_source) && doc.external_order_ref && ` #${doc.external_order_ref}`}
@@ -571,11 +571,11 @@ export default function PreviewRange({
                                             <thead>
                                                 <tr className="border-b-2 border-zinc-800 text-zinc-800 font-semibold uppercase text-[10px]">
                                                     <th className="text-left py-2">#</th>
-                                                    <th className="text-left py-2">Description / Name</th>
-                                                    <th className="text-center py-2">Unit</th>
-                                                    <th className="text-center py-2">Qty</th>
-                                                    <th className="text-right py-2">Unit Price</th>
-                                                    <th className="text-right py-2">Line Total</th>
+                                                    <th className="text-left py-2 font-khmer">មុខទំនិញ / Description</th>
+                                                    <th className="text-center py-2 font-khmer">ឯកតា / Unit</th>
+                                                    <th className="text-center py-2 font-khmer">ចំនួន / Qty</th>
+                                                    <th className="text-right py-2 font-khmer">តម្លៃ / Price</th>
+                                                    <th className="text-right py-2 font-khmer">សរុប / Total</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-zinc-200">
@@ -605,23 +605,23 @@ export default function PreviewRange({
                                         <div className="flex justify-end">
                                             <div className="w-64 space-y-1.5 text-xs font-mono">
                                                 <div className="flex justify-between text-zinc-600">
-                                                    <span>Subtotal:</span>
+                                                    <span className="font-khmer">សរុបរង / Subtotal:</span>
                                                     <span>${Number(doc.subtotal).toFixed(2)}</span>
                                                 </div>
                                                 {Number(doc.discount_amount) > 0 && (
                                                     <div className="flex justify-between text-rose-600">
-                                                        <span>Discount:</span>
+                                                        <span className="font-khmer">បញ្ចុះតម្លៃ / Discount:</span>
                                                         <span>-${Number(doc.discount_amount).toFixed(2)}</span>
                                                     </div>
                                                 )}
                                                 {Number(doc.tax_amount) > 0 && (
                                                     <div className="flex justify-between text-zinc-600">
-                                                        <span>VAT / Tax:</span>
+                                                        <span className="font-khmer">ពន្ធ / Tax:</span>
                                                         <span>+${Number(doc.tax_amount).toFixed(2)}</span>
                                                     </div>
                                                 )}
                                                 <div className="flex justify-between items-baseline text-base font-black text-zinc-950 pt-2 border-t-2 border-zinc-900">
-                                                    <span>TOTAL DUE / សរុប:</span>
+                                                    <span className="font-khmer">សរុប / TOTAL:</span>
                                                     <div className="text-right">
                                                         <div>${Number(doc.grand_total).toFixed(2)}</div>
                                                         <div className="text-xs font-normal text-zinc-600 font-khmer">
@@ -642,7 +642,7 @@ export default function PreviewRange({
                                             <div>
                                                 <div className="h-14 border-b border-zinc-400" />
                                                 <p className="mt-2 font-medium text-zinc-700">អ្នកទទួល / Received By</p>
-                                                <p className="text-[10px] text-zinc-500 font-mono">Customer Signature</p>
+                                                <p className="text-[10px] text-zinc-500 font-khmer">ហត្ថលេខាអតិថិជន / Signature</p>
                                             </div>
                                         </div>
 

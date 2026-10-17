@@ -5,6 +5,7 @@ import { Printer, ArrowLeft, RefreshCw, CheckCircle2, QrCode, Wifi } from 'lucid
 import { Button } from '@/components/ui/button';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { useAutoPrint } from '@/components/print-queue';
+import { paymentMethodLabel } from '@/components/document-status';
 
 interface DocumentPrintProps {
     document: {
@@ -55,7 +56,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
     const showLogo = printOpts.show_logo ?? true;
     const showBusinessName = printOpts.show_business_name ?? true;
     const headerTitleEn = printOpts.header_title_en || 'RECEIPT';
-    const headerTitleKm = printOpts.header_title_km;
+    const headerTitleKm = printOpts.header_title_km || 'វិក្កយបត្រ';
     const showAddress = printOpts.show_address ?? true;
     const showPhone = printOpts.show_phone ?? true;
     const showVatTin = printOpts.show_vat_tin ?? true;
@@ -76,9 +77,9 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
     const showPaymentMethod = printOpts.show_payment_method ?? true;
     const showChange = printOpts.show_change ?? true;
     const showQrPayment = printOpts.show_qr_payment ?? true;
-    const qrPaymentText = printOpts.qr_payment_text || 'Scan to Pay / KHQR';
+    const qrPaymentText = printOpts.qr_payment_text || 'ស្កេនដើម្បីបង់ / Scan to Pay';
     const qrCodeImage = printOpts.qr_code_image;
-    const qrBankName = printOpts.qr_bank_name || 'Bakong KHQR • Scan to Pay';
+    const qrBankName = printOpts.qr_bank_name || 'Bakong KHQR';
     const qrAccountName = printOpts.qr_account_name;
     const qrAccountNumber = printOpts.qr_account_number;
     const showWifi = printOpts.show_wifi_info ?? true;
@@ -115,7 +116,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-900 py-6 px-4 selection:bg-zinc-200">
-            <Head title={`80mm Receipt - ${doc.document_number || `Draft #${doc.id}`}`} />
+            <Head title={`វិក្កយបត្រ 80mm - ${doc.document_number || `ព្រាង #${doc.id}`}`} />
 
             {/* Print styles injected for precise 80mm continuous thermal slip */}
             <style>{`
@@ -151,12 +152,12 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 <Link href={`/invoices/${doc.id}`}>
                     <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                         <ArrowLeft className="w-4 h-4 mr-1.5" />
-                        <span>Invoice</span>
+                        <span className="font-khmer">វិក្កយបត្រ</span>
                     </Button>
                 </Link>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400 font-mono">80mm Thermal</span>
+                    <span className="text-xs text-zinc-400 font-khmer">ក្រដាស 80mm</span>
                     <Button
                         size="sm"
                         onClick={handlePrint}
@@ -168,7 +169,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                         ) : (
                             <Printer className="w-4 h-4 mr-1.5" />
                         )}
-                        <span>{isPrinting ? 'Recording...' : 'Print Slip'}</span>
+                        <span className="font-khmer">{isPrinting ? 'កំពុងកត់ត្រា...' : 'ព្រីន'}</span>
                     </Button>
                 </div>
             </div>
@@ -179,7 +180,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 <div className="text-center space-y-1 pb-3 border-b border-dashed border-zinc-400">
                     {isReprint && (
                         <div className="inline-block px-2 py-0.5 mb-1 text-[10px] font-bold tracking-widest uppercase border border-black rounded">
-                            *** DUPLICATE / REPRINT ***
+                            <span className="font-khmer">*** ព្រីនឡើងវិញ / REPRINT ***</span>
                         </div>
                     )}
                     {showLogo && (
@@ -212,7 +213,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                     )}
                     {showPhone && business.phone && (
                         <div className="text-[11px] text-zinc-700">
-                            TEL: {business.phone}
+                            <span className="font-khmer">ទូរស័ព្ទ / TEL:</span> {business.phone}
                         </div>
                     )}
                     {showVatTin && (business.vat_number || business.tax_identifier) && (
@@ -229,7 +230,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                             {formatOrderSource(doc.order_source)}
                         </div>
                         {doc.external_order_ref && (
-                            <div className="text-[12px] font-bold">ORDER #: {doc.external_order_ref}</div>
+                            <div className="text-[12px] font-bold"><span className="font-khmer">លេខកម្មង់ / ORDER #:</span> {doc.external_order_ref}</div>
                         )}
                     </div>
                 )}
@@ -237,36 +238,36 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 {/* Meta details */}
                 <div className="space-y-1 text-[11px] pb-2 border-b border-dashed border-zinc-400">
                     <div className="flex justify-between">
-                        <span className="text-zinc-600">ORDER FROM:</span>
+                        <span className="text-zinc-600 font-khmer">កម្មង់ពី / FROM:</span>
                         <span className="font-bold font-khmer">{formatOrderSource(doc.order_source)}</span>
                     </div>
                     <div className="flex justify-between">
-                        <span className="text-zinc-600">RECEIPT NO:</span>
+                        <span className="text-zinc-600 font-khmer">លេខវិក្កយបត្រ / NO:</span>
                         <span className="font-bold">
                             {doc.document_number || `DRAFT-${String(doc.provisional_order).padStart(4, '0')}`}
                         </span>
                     </div>
                     {showDateTime && (
                         <div className="flex justify-between">
-                            <span className="text-zinc-600">DATE & TIME:</span>
+                            <span className="text-zinc-600 font-khmer">កាលបរិច្ឆេទ / DATE:</span>
                             <span>{doc.business_date} {doc.event_time.slice(0, 5)}</span>
                         </div>
                     )}
                     {showTableRef && doc.reference_identifier && (
                         <div className="flex justify-between">
-                            <span className="text-zinc-600">TABLE / REF:</span>
+                            <span className="text-zinc-600 font-khmer">តុ / TABLE:</span>
                             <span className="font-bold">{doc.reference_identifier}</span>
                         </div>
                     )}
                     {showCashier && (
                         <div className="flex justify-between">
-                            <span className="text-zinc-600">CASHIER:</span>
+                            <span className="text-zinc-600 font-khmer">អ្នកគិតប្រាក់ / CASHIER:</span>
                             <span>{doc.creator.name}</span>
                         </div>
                     )}
                     {showGuestCount && (
                         <div className="flex justify-between">
-                            <span className="text-zinc-600">GUEST PAX / UNITS:</span>
+                            <span className="text-zinc-600 font-khmer">ភ្ញៀវ / GUESTS:</span>
                             <span>{doc.unit_count}</span>
                         </div>
                     )}
@@ -275,8 +276,8 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 {/* Line Items Table */}
                 <div className="space-y-1.5 pb-3 border-b border-dashed border-zinc-400">
                     <div className="flex justify-between text-[11px] font-bold text-zinc-700 pb-1 border-b border-zinc-300">
-                        <span>ITEM / QTY</span>
-                        <span>AMOUNT</span>
+                        <span className="font-khmer">មុខទំនិញ / ITEM</span>
+                        <span className="font-khmer">ទឹកប្រាក់ / AMOUNT</span>
                     </div>
 
                     {doc.items.map((item) => (
@@ -307,27 +308,27 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                 <div className="space-y-1 text-[12px] pb-3 border-b border-dashed border-zinc-400">
                     {showSubtotal && (
                         <div className="flex justify-between">
-                            <span>SUBTOTAL:</span>
+                            <span className="font-khmer">សរុបរង / SUBTOTAL:</span>
                             <span>{business.currency_symbol}{doc.subtotal}</span>
                         </div>
                     )}
 
                     {showTax && parseFloat(doc.tax_amount) > 0 && (
                         <div className="flex justify-between text-[11px] text-zinc-600">
-                            <span>TAX:</span>
+                            <span className="font-khmer">ពន្ធ / TAX:</span>
                             <span>{business.currency_symbol}{doc.tax_amount}</span>
                         </div>
                     )}
 
                     {showDiscount && parseFloat(doc.discount_amount) > 0 && (
                         <div className="flex justify-between text-[11px] text-zinc-600">
-                            <span>DISCOUNT:</span>
+                            <span className="font-khmer">បញ្ចុះតម្លៃ / DISCOUNT:</span>
                             <span>-{business.currency_symbol}{doc.discount_amount}</span>
                         </div>
                     )}
 
                     <div className="flex justify-between items-baseline text-[14px] font-bold pt-1.5 border-t border-zinc-300">
-                        <span>TOTAL DUE / សរុប:</span>
+                        <span className="font-khmer">សរុប / TOTAL:</span>
                         <div className="text-right">
                             <div>{business.currency_symbol}{doc.grand_total}</div>
                             {showDualCurrency && (
@@ -340,14 +341,14 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
 
                     {showPaymentMethod && (
                         <div className="flex justify-between pt-1 text-[11px] text-zinc-600">
-                            <span>TENDERED ({doc.payment_method.toUpperCase()}):</span>
+                            <span className="font-khmer">ប្រាក់ទទួល / PAID ({paymentMethodLabel(doc.payment_method)}):</span>
                             <span>{business.currency_symbol}{doc.amount_received}</span>
                         </div>
                     )}
 
                     {showChange && (
                         <div className="flex justify-between font-bold text-[12px]">
-                            <span>CHANGE / ប្រាក់អាប់:</span>
+                            <span className="font-khmer">ប្រាក់អាប់ / CHANGE:</span>
                             <div className="text-right">
                                 <span>{business.currency_symbol}{doc.change_amount}</span>
                                 {showDualCurrency && parseFloat(doc.change_amount) > 0 && (
@@ -365,7 +366,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                     <div className="text-center p-2 rounded border border-zinc-300 bg-zinc-50 space-y-1">
                         <div className="text-[10px] font-bold text-zinc-800 uppercase flex items-center justify-center gap-1">
                             <QrCode className="w-3.5 h-3.5 text-rose-600" />
-                            <span>{qrPaymentText}</span>
+                            <span className="font-khmer">{qrPaymentText}</span>
                         </div>
                         {qrCodeImage ? (
                             <div className="w-28 h-28 mx-auto bg-white p-1 border border-zinc-300 rounded flex items-center justify-center">
@@ -398,10 +399,10 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                     <div className="p-1.5 rounded border border-dashed border-zinc-300 text-[10px] text-center space-y-0.5">
                         <div className="font-bold text-zinc-800 flex items-center justify-center gap-1">
                             <Wifi className="w-3 h-3 text-sky-600" />
-                            <span>FREE WI-FI</span>
+                            <span className="font-khmer">វ៉ាយហ្វាយ / FREE WI-FI</span>
                         </div>
                         <div className="text-zinc-600">
-                            SSID: <span className="font-bold">{wifiSsid}</span> | Pass: <span className="font-mono">{wifiPassword}</span>
+                            SSID: <span className="font-bold">{wifiSsid}</span> | <span className="font-khmer">លេខសម្ងាត់ / Pass:</span> <span className="font-mono">{wifiPassword}</span>
                         </div>
                     </div>
                 )}
@@ -413,7 +414,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                             {policyNote}
                         </div>
                     )}
-                    <div>{business.document_footer || 'Thank you for dining with us! សូមអរគុណ!'}</div>
+                    <div><span className="font-khmer">{business.document_footer || 'សូមអរគុណ! Thank you for dining with us!'}</span></div>
                     <div className="text-[9px] text-zinc-500 tracking-wider font-sans font-medium">
                         លៀសហាល អ៉ីទុម POS • LEASHAL ETUM
                     </div>
