@@ -191,7 +191,7 @@ class SettingsController extends Controller
     public function uploadQrCode(Request $request): JsonResponse
     {
         $request->validate([
-            'qr_image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg', 'max:5120'],
+            'qr_image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ]);
 
         $file = $request->file('qr_image');

@@ -59,7 +59,7 @@ class CatalogController extends Controller
     public function uploadImage(Request $request): JsonResponse
     {
         $request->validate([
-            'image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
+            'image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,gif', 'max:5120'],
         ]);
 
         $file = $request->file('image');
@@ -90,7 +90,7 @@ class CatalogController extends Controller
             'unit_id' => ['required', 'exists:units,id'],
             'unit_price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:500'],
-            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
+            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,gif', 'max:5120'],
             'is_primary_package' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
             'is_active' => ['boolean'],
@@ -141,7 +141,7 @@ class CatalogController extends Controller
             'unit_id' => ['required', 'exists:units,id'],
             'unit_price' => ['required', 'numeric', 'min:0'],
             'image_url' => ['nullable', 'string', 'max:500'],
-            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,svg,gif', 'max:5120'],
+            'image_file' => ['nullable', 'image', 'mimes:png,jpg,jpeg,webp,gif', 'max:5120'],
             'is_primary_package' => ['boolean'],
             'sort_order' => ['nullable', 'integer'],
             'is_active' => ['boolean'],

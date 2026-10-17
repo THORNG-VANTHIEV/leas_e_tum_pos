@@ -8,6 +8,7 @@ use DomainException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class RestoreBackupAction
@@ -133,6 +134,23 @@ class RestoreBackupAction
             $totalRows += count($rows);
         }
 
+        // Uploaded images (archives made before images were included simply have none)
+        $stagedFiles = [];
+        foreach ($manifest['files'] ?? [] as $path => $meta) {
+            if (! is_string($path) || ! preg_match(BackupArchiver::FILE_PATH_PATTERN, $path)) {
+                $zip->close();
+                throw new DomainException("Unauthorized file path '{$path}' in backup archive.");
+            }
+
+            $contents = $zip->getFromName("files/{$path}");
+            if ($contents === false || hash('sha256', $contents) !== ($meta['checksum'] ?? '')) {
+                $zip->close();
+                throw new DomainException("Integrity check failed for file {$path}.");
+            }
+
+            $stagedFiles[$path] = $contents;
+        }
+
         $zip->close();
 
         // 3. Prepare Pre-Restore Recovery Point
@@ -179,6 +197,11 @@ class RestoreBackupAction
                 DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
             throw new DomainException('Restore database transaction failed: '.$e->getMessage(), 0, $e);
+        }
+
+        // Images are written after the database swap succeeds; existing files not in the backup are kept
+        foreach ($stagedFiles as $path => $contents) {
+            Storage::disk('public')->put($path, $contents);
         }
 
         // 5. Record Audit Log for the restore event

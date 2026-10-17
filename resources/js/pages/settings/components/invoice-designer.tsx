@@ -873,7 +873,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         <input
                                             ref={qrFileInputRef}
                                             type="file"
-                                            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                            accept="image/png,image/jpeg,image/webp"
                                             onChange={handleQrFileSelect}
                                             className="hidden"
                                             id="qr-code-upload-input"

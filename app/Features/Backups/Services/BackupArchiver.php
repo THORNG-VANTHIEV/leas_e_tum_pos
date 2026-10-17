@@ -3,10 +3,11 @@
 namespace App\Features\Backups\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 /**
- * Writes the V2.0 backup archive (manifest + one JSON file per table) used by manual downloads,
+ * Writes the V2.0 backup archive (manifest, one JSON file per table, uploaded images) used by manual downloads,
  * scheduled daily backups and pre-restore recovery points.
  */
 final class BackupArchiver
@@ -40,6 +41,16 @@ final class BackupArchiver
     ];
 
     /**
+     * Uploaded files on the public disk that the database points at (menu photos, KHQR image).
+     */
+    public const FILE_DIRECTORIES = ['products', 'qr_codes'];
+
+    /**
+     * A restorable file path: one of the directories above plus a plain file name (no traversal).
+     */
+    public const FILE_PATH_PATTERN = '#^(products|qr_codes)/[A-Za-z0-9._-]+$#';
+
+    /**
      * @param  array<string, mixed>  $manifestExtras
      * @return array<string, mixed> The manifest written into the archive
      */
@@ -55,6 +66,7 @@ final class BackupArchiver
             'timezone' => config('app.timezone'),
             ...$manifestExtras,
             'tables' => [],
+            'files' => [],
         ];
 
         foreach (self::TABLES as $tableName) {
@@ -67,6 +79,22 @@ final class BackupArchiver
                 'byte_size' => strlen($json),
                 'checksum' => hash('sha256', $json),
             ];
+        }
+
+        $disk = Storage::disk('public');
+        foreach (self::FILE_DIRECTORIES as $directory) {
+            foreach ($disk->files($directory) as $path) {
+                if (! preg_match(self::FILE_PATH_PATTERN, $path)) {
+                    continue;
+                }
+
+                $contents = $disk->get($path);
+                $zip->addFromString("files/{$path}", $contents);
+                $manifest['files'][$path] = [
+                    'byte_size' => strlen($contents),
+                    'checksum' => hash('sha256', $contents),
+                ];
+            }
         }
 
         $zip->addFromString('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
