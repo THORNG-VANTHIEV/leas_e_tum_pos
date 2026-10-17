@@ -9,6 +9,8 @@ use App\Models\Period;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
+use Illuminate\View\View;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -46,12 +48,20 @@ class PageAccessTest extends TestCase
 
         $failures = [];
         foreach ($this->pages($ids) as $url) {
-            $status = $this->actingAs($user)->get($url)->getStatusCode();
+            $response = $this->actingAs($user)->get($url);
+            $status = $response->getStatusCode();
             $mustBeForbidden = ! $user->isAdmin() && collect(self::ADMIN_ONLY_PREFIXES)->contains(fn ($prefix) => str_starts_with($url, $prefix));
             $expected = $mustBeForbidden ? 403 : 200;
 
             if ($status !== $expected) {
                 $failures[] = "{$url} => {$status} (expected {$expected})";
+            }
+
+            // Pages must not replace the shared business props (logo, exchange rate) with their own copy
+            $view = $response->baseResponse instanceof Response ? $response->baseResponse->getOriginalContent() : null;
+            $page = $view instanceof View ? ($view->getData()['page'] ?? null) : null;
+            if (is_array($page) && empty($page['props']['business']['logo_url'])) {
+                $failures[] = "{$url} => shared business.logo_url is missing";
             }
         }
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\DocumentStatus;
 use App\Enums\PeriodStatus;
 use App\Models\AuditLog;
-use App\Models\BusinessSetting;
 use App\Models\Document;
 use App\Models\Location;
 use App\Models\Period;
@@ -76,7 +75,6 @@ class DashboardController extends Controller
         return Inertia::render('dashboard', [
             'stats' => $stats,
             'system_metrics' => $systemMetrics,
-            'business' => BusinessSetting::current(),
             'cashiers' => $user->canViewAllRecords() ? User::filterOptions() : [],
             'filters' => ['cashier_id' => $cashierId],
         ]);
