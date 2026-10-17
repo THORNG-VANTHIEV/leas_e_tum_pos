@@ -15,7 +15,7 @@
 | **អតិថិជន** | `composer test:customers` | អតិថិជន, ពិន្ទុសន្សំ | `app/Features/Customers`, `pages/customers` |
 | **របាយការណ៍** | `composer test:reports` | ចំណូល (ដក Void), cashier ឃើញតែការលក់ខ្លួន, បិទវគ្គ | `app/Features/Reports`, `app/Features/Periods` |
 | **បុគ្គលិក & សិទ្ធិ** | `composer test:users` | Login, បុគ្គលិក, សាខា, សិទ្ធិ Admin/Supervisor/Cashier, Approval, Audit | `SettingsController`, `routes/web.php`, `RoleGuard` |
-| **Backup** | `composer test:backups` | Backup គ្រប់ 22 តារាង, Restore, Backup ប្រចាំថ្ងៃ | `app/Features/Backups`, `BackupDailyCommand` |
+| **Backup** | `composer test:backups` | Backup គ្រប់ 22 តារាង + រូបភាព, Restore, Backup ប្រចាំថ្ងៃ | `app/Features/Backups`, `BackupDailyCommand` |
 | **គណនាលុយ** | `composer test:unit` | Money, DocumentCalculator | `app/Support/Money`, `DocumentCalculator` |
 | **បើកគ្រប់ទំព័រ** | `composer test:smoke` | បើកទំព័រទាំង 27 ជា admin / supervisor / cashier ជាមួយទិន្នន័យពិត | ក្រោយកែ layout, routes, shared props ឬ CSS ធំៗ |
 | **TypeScript** | `composer test:types` | កំហុស type ក្នុង frontend | រាល់ពេលកែ `.tsx` / `.ts` |
