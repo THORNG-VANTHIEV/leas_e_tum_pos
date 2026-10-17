@@ -1060,6 +1060,19 @@ html.light .bg-zinc-100\/90,
 html.light .bg-slate-100 {
     background-color: #f1f5f9 !important;
 }
+/* Light-first dividers and dashed rules (slate/zinc 200-300 are inverted to dark tones in light mode) */
+html.light .divide-slate-200 > :not(:last-child),
+html.light .divide-slate-100 > :not(:last-child),
+html.light .divide-zinc-200 > :not(:last-child),
+html.light .divide-zinc-100 > :not(:last-child) {
+    border-color: #e2e8f0 !important;
+}
+
+html.light .border-slate-300,
+html.light .border-zinc-300 {
+    border-color: #cbd5e1 !important;
+}
+
 html.light .border-zinc-200,
 html.light .border-zinc-200\/80,
 html.light .border-zinc-200\/70,

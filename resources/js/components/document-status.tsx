@@ -39,6 +39,23 @@ export const PAYMENT_METHOD_LABELS: Record<string, string> = {
     app: tr('បង់តាម App / Paid via App'),
 };
 
+/** Payment method name in the selected UI language (screens only; receipts stay bilingual) */
+const PAYMENT_METHOD_NAMES: Record<string, string> = {
+    cash: tr('សាច់ប្រាក់'),
+    khqr: 'KHQR',
+    qr_transfer: tr('ផ្ទេរតាម QR'),
+    card: tr('កាត'),
+    app: tr('បង់តាម App'),
+};
+
+export function paymentMethodName(method: string | null | undefined): string {
+    if (!method) {
+        return '—';
+    }
+
+    return PAYMENT_METHOD_NAMES[method] ?? method.toUpperCase();
+}
+
 export function paymentMethodLabel(method: string | null | undefined): string {
     if (!method) {
         return '—';
