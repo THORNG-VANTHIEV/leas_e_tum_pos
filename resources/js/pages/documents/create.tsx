@@ -308,6 +308,9 @@ export default function DocumentCreate({
         setIsDraggingCategory(false);
     };
 
+    // Latest confirm action for the keyboard shortcut (the listener below keeps an older closure)
+    const confirmCheckoutRef = useRef<() => void>(() => {});
+
     // Keyboard shortcuts: / to search, F2 to checkout, Escape to close modals
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -317,7 +320,10 @@ export default function DocumentCreate({
             }
             if (e.key === 'F2') {
                 e.preventDefault();
-                if (lines.length > 0) {
+                // F2 opens checkout, and a second F2 confirms the payment
+                if (isCheckoutModalOpen) {
+                    confirmCheckoutRef.current();
+                } else if (lines.length > 0) {
                     openCheckoutModal();
                 }
             }
@@ -514,6 +520,20 @@ export default function DocumentCreate({
         setIsCheckoutModalOpen(true);
     };
 
+    // Cash still owed (received less than the total) and the payment buttons shown at checkout
+    const cashReceivedUSD = parseFloat(amountReceived || '0');
+    const isCashShort = paymentMethod === 'cash' && cashReceivedUSD < parseFloat(totals.grandTotalUSD);
+    const cashShortUSD = Math.max(0, parseFloat(totals.grandTotalUSD) - cashReceivedUSD).toFixed(2);
+    const canConfirmCheckout = !isSubmitting && lines.length > 0 && !isCashShort;
+    const paymentOptions: { id: 'cash' | 'khqr' | 'card' | 'app'; label: string; icon: typeof Coins; activeClass: string }[] = [
+        { id: 'cash', label: tr('សាច់ប្រាក់'), icon: Coins, activeClass: 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-300 ring-2 ring-amber-500/20' },
+        { id: 'khqr', label: 'KHQR', icon: QrCode, activeClass: 'bg-rose-500/15 border-rose-500 text-rose-700 dark:text-rose-300 ring-2 ring-rose-500/20' },
+        { id: 'card', label: tr('កាត'), icon: CreditCard, activeClass: 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20' },
+        ...(isDeliveryPlatform(effectiveOrderSource)
+            ? [{ id: 'app' as const, label: tr('បង់តាម App'), icon: Bike, activeClass: 'bg-pink-500/15 border-pink-500 text-pink-700 dark:text-pink-300 ring-2 ring-pink-500/20' }]
+            : []),
+    ];
+
     // Confirm Settlement & Checkout
     const handleConfirmCheckout = () => {
         if (lines.length === 0 || isSubmitting) return;
@@ -546,6 +566,12 @@ export default function DocumentCreate({
                 },
             }
         );
+    };
+
+    confirmCheckoutRef.current = () => {
+        if (canConfirmCheckout) {
+            handleConfirmCheckout();
+        }
     };
 
     // Filter items
@@ -1255,7 +1281,7 @@ export default function DocumentCreate({
                     onWheel={(e) => e.stopPropagation()}
                 >
                     {/* Top Header */}
-                    <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
+                    <div className="shrink-0 flex items-center justify-between px-6 py-3 border-b border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-sm">
                                 <Receipt className="w-5 h-5" />
@@ -1294,42 +1320,60 @@ export default function DocumentCreate({
                         </button>
                     </div>
 
-                    {/* 2-Column Body */}
-                    <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-8">
-                        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-                            {/* Left Column: Payment & Tender Controls (7 cols) */}
-                            <div className="lg:col-span-7 space-y-6">
-                                {/* Grand Total Highlight Banner */}
-                                <div className="px-6 py-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-4">
-                                    <span className="text-sm font-bold text-amber-700 dark:text-amber-400 font-khmer">
-                                        {tr('សរុបត្រូវបង់')}
-                                    </span>
-                                    <div className="text-right leading-tight">
-                                        <div className="text-4xl font-bold font-mono text-amber-600 dark:text-amber-400">
+                    {/* Body: everything fits on one screen (only the receipt item list scrolls) */}
+                    <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden p-4 lg:p-5">
+                        <div className="lg:h-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            {/* Left: total, source, payment, cash, customer */}
+                            <div className="lg:col-span-8 flex flex-col gap-3 lg:min-h-0">
+                                {/* Total due + change in one bar */}
+                                <div className="grid grid-cols-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 overflow-hidden">
+                                    <div className="px-5 py-3">
+                                        <div className="text-xs font-bold text-amber-700 dark:text-amber-400 font-khmer">{tr('សរុបត្រូវបង់')}</div>
+                                        <div className="text-4xl font-bold font-mono text-amber-600 dark:text-amber-400 leading-tight">
                                             ${totals.grandTotalUSD}
                                         </div>
-                                        <div className="mt-1 text-sm font-mono font-semibold text-slate-500 dark:text-zinc-400">
+                                        <div className="text-sm font-mono font-semibold text-slate-500 dark:text-zinc-400">
                                             {totals.grandTotalKHR.toLocaleString()} ៛
                                         </div>
                                     </div>
+                                    <div className={`px-5 py-3 text-right border-l border-amber-500/30 ${
+                                        paymentMethod !== 'cash'
+                                            ? 'bg-white/40 dark:bg-zinc-900/40'
+                                            : isCashShort
+                                              ? 'bg-amber-500/10'
+                                              : 'bg-emerald-500/10'
+                                    }`}>
+                                        {paymentMethod === 'cash' ? (
+                                            <>
+                                                <div className={`text-xs font-bold font-khmer ${isCashShort ? 'text-amber-700 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400'}`}>
+                                                    {isCashShort ? tr('នៅខ្វះ') : tr('ប្រាក់អាប់')}
+                                                </div>
+                                                <div className={`text-4xl font-bold font-mono leading-tight ${isCashShort ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                                                    ${isCashShort ? cashShortUSD : totals.changeUSD}
+                                                </div>
+                                                <div className="text-sm font-mono font-semibold text-slate-500 dark:text-zinc-400">
+                                                    {(isCashShort ? Math.round(parseFloat(cashShortUSD) * exchange_rate) : totals.changeKHR).toLocaleString()} ៛
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="text-xs font-bold text-slate-500 dark:text-zinc-400 font-khmer">{tr('វិធីបង់ប្រាក់')}</div>
+                                                <div className="text-2xl font-bold text-slate-900 dark:text-zinc-100 font-khmer leading-snug pt-1">
+                                                    {paymentMethodName(paymentMethod)}
+                                                </div>
+                                                <div className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">{tr('មិនមានប្រាក់អាប់')}</div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
 
-                                {/* Section 0: Order Source (Takeaway only — walk-in or delivery app) */}
-                                {orderMode === 'takeaway' && (
-                                    <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
-                                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
-                                            <div className="flex items-center gap-2">
-                                                <Bike className="w-4 h-4 text-amber-500" />
-                                                <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    {tr('ប្រភពការកម្មង់')}
-                                                </h3>
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                                            {ORDER_SOURCES.map((source) => {
-                                                const isSelected = orderSource === source.value;
-                                                return (
+                                <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 divide-y divide-slate-100 dark:divide-zinc-800/80">
+                                    {/* Order source (takeaway only) */}
+                                    {orderMode === 'takeaway' && (
+                                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+                                            <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('ប្រភពការកម្មង់')}</span>
+                                            <div className="flex-1 grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                                                {ORDER_SOURCES.map((source) => (
                                                     <button
                                                         key={source.value}
                                                         type="button"
@@ -1338,434 +1382,240 @@ export default function DocumentCreate({
                                                             // App orders are normally paid through the app; walk-in falls back to cash
                                                             setPaymentMethod(source.value === 'walk_in' ? 'cash' : 'app');
                                                         }}
-                                                        className={`h-11 px-2 rounded-xl border text-xs font-bold transition cursor-pointer font-khmer truncate ${
-                                                            isSelected
-                                                                ? `${source.badgeClass} ring-2 ring-current/20 shadow-sm`
+                                                        className={`h-9 px-2 rounded-lg border text-xs font-bold transition cursor-pointer font-khmer truncate ${
+                                                            orderSource === source.value
+                                                                ? `${source.badgeClass} ring-2 ring-current/20`
                                                                 : 'bg-slate-50 dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
                                                         }`}
                                                     >
                                                         {language === 'km' ? source.labelKm : source.label}
                                                     </button>
+                                                ))}
+                                            </div>
+                                            {isDeliveryPlatform(orderSource) && (
+                                                <div className="w-full flex items-center gap-3">
+                                                    <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('លេខកម្មង់របស់ App')}</span>
+                                                    <input
+                                                        type="text"
+                                                        value={externalOrderRef}
+                                                        onChange={(e) => setExternalOrderRef(e.target.value)}
+                                                        maxLength={40}
+                                                        placeholder={tr('ឧ. f7k2-x9pq')}
+                                                        className="flex-1 h-9 px-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg text-xs font-mono font-bold text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 focus:outline-none focus:border-amber-500"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Payment method */}
+                                    <div className="flex items-center gap-3 px-4 py-3">
+                                        <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('វិធីបង់ប្រាក់')}</span>
+                                        <div className={`flex-1 grid gap-2 ${paymentOptions.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'}`}>
+                                            {paymentOptions.map((option) => {
+                                                const Icon = option.icon;
+                                                const isSelected = paymentMethod === option.id;
+                                                return (
+                                                    <button
+                                                        key={option.id}
+                                                        type="button"
+                                                        onClick={() => setPaymentMethod(option.id)}
+                                                        className={`h-12 px-3 rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition cursor-pointer font-khmer ${
+                                                            isSelected
+                                                                ? option.activeClass
+                                                                : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
+                                                        }`}
+                                                    >
+                                                        <Icon className="w-4 h-4 shrink-0" />
+                                                        <span className="truncate">{option.label}</span>
+                                                    </button>
                                                 );
                                             })}
                                         </div>
-
-                                        {isDeliveryPlatform(orderSource) && (
-                                            <div className="space-y-1.5">
-                                                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 font-khmer">
-                                                    {tr('លេខកម្មង់របស់ App')} <span className="font-normal text-slate-400">(App Order #)</span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={externalOrderRef}
-                                                    onChange={(e) => setExternalOrderRef(e.target.value)}
-                                                    maxLength={40}
-                                                    placeholder={tr("ឧ. f7k2-x9pq")}
-                                                    className="w-full h-10 px-3.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 transition-all"
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {/* Section 1: Payment Method Selection */}
-                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
-                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
-                                        <div className="flex items-center gap-2">
-                                            <Coins className="w-4 h-4 text-amber-500" />
-                                            <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                {tr('វិធីបង់ប្រាក់')}
-                                            </h3>
-                                        </div>
                                     </div>
 
-                                    <div className={`grid gap-3 ${isDeliveryPlatform(effectiveOrderSource) ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'}`}>
-                                        <button
-                                            type="button"
-                                            onClick={() => setPaymentMethod('cash')}
-                                            className={`p-4 rounded-xl border text-center font-bold text-xs flex flex-col items-center gap-2 transition cursor-pointer font-khmer ${
-                                                paymentMethod === 'cash'
-                                                    ? 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-300 ring-2 ring-amber-500/20 shadow-md'
-                                                    : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
-                                            }`}
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                                paymentMethod === 'cash' ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-500/20' : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
-                                            }`}>
-                                                <Coins className="w-5 h-5" />
-                                            </div>
-                                            <span className="font-bold">{tr('សាច់ប្រាក់')}</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ដុល្លារ & រៀល')}</span>
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => setPaymentMethod('khqr')}
-                                            className={`p-4 rounded-xl border text-center font-bold text-xs flex flex-col items-center gap-2 transition cursor-pointer font-khmer ${
-                                                paymentMethod === 'khqr'
-                                                    ? 'bg-rose-500/15 border-rose-500 text-rose-700 dark:text-rose-300 ring-2 ring-rose-500/20 shadow-md'
-                                                    : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
-                                            }`}
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                                paymentMethod === 'khqr' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
-                                            }`}>
-                                                <QrCode className="w-5 h-5" />
-                                            </div>
-                                            <span className="font-bold">KHQR</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ស្កេនទូរស័ព្ទ')}</span>
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => setPaymentMethod('card')}
-                                            className={`p-4 rounded-xl border text-center font-bold text-xs flex flex-col items-center gap-2 transition cursor-pointer font-khmer ${
-                                                paymentMethod === 'card'
-                                                    ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20 shadow-md'
-                                                    : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
-                                            }`}
-                                        >
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                                paymentMethod === 'card' ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20' : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
-                                            }`}>
-                                                <CreditCard className="w-5 h-5" />
-                                            </div>
-                                            <span className="font-bold">{tr('កាត')}</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ម៉ាស៊ីនកាត')}</span>
-                                        </button>
-
-                                        {/* Delivery apps collect the money and pay the shop later: not cash in the drawer */}
-                                        {isDeliveryPlatform(effectiveOrderSource) && (
-                                            <button
-                                                type="button"
-                                                onClick={() => setPaymentMethod('app')}
-                                                className={`p-4 rounded-xl border text-center font-bold text-xs flex flex-col items-center gap-2 transition cursor-pointer font-khmer ${
-                                                    paymentMethod === 'app'
-                                                        ? 'bg-pink-500/15 border-pink-500 text-pink-700 dark:text-pink-300 ring-2 ring-pink-500/20 shadow-md'
-                                                        : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700'
-                                                }`}
-                                            >
-                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                                    paymentMethod === 'app' ? 'bg-pink-600 text-white shadow-md shadow-pink-600/20' : 'bg-slate-200 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400'
-                                                }`}>
-                                                    <Bike className="w-5 h-5" />
+                                    {/* Cash: amount + quick notes */}
+                                    {paymentMethod === 'cash' && (
+                                        <div className="px-4 py-3 space-y-2.5">
+                                            <div className="flex items-center gap-3">
+                                                <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('ប្រាក់ទទួល')}</span>
+                                                <div className="relative flex-1">
+                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-base font-mono">$</span>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        autoFocus
+                                                        value={amountReceived}
+                                                        onChange={(e) => setAmountReceived(e.target.value)}
+                                                        onFocus={(e) => e.target.select()}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === 'Enter') {
+                                                                e.preventDefault();
+                                                                if (canConfirmCheckout) handleConfirmCheckout();
+                                                            }
+                                                        }}
+                                                        placeholder="0.00"
+                                                        className="w-full h-11 pl-8 pr-24 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-lg font-bold font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500"
+                                                    />
+                                                    <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold text-slate-400">
+                                                        ≈ {Math.round(parseFloat(amountReceived || '0') * exchange_rate).toLocaleString()} ៛
+                                                    </span>
                                                 </div>
-                                                <span className="font-bold">{tr('បង់តាម App')}</span>
-                                                <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('App ផ្ទេរលុយក្រោយ')}</span>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Section 2: Customer & Loyalty Points */}
-                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-3">
-                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
-                                        <div className="flex items-center gap-2">
-                                            <Users className="w-4 h-4 text-amber-500" />
-                                            <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                {tr('អតិថិជន & ពិន្ទុ')}
-                                            </h3>
-                                        </div>
-                                        {selectedCustomerId && (
-                                            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30 font-khmer">
-                                                +{Math.floor(parseFloat(totals.grandTotalUSD))} {tr('ពិន្ទុនឹងទទួលបាន')}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <select
-                                        value={selectedCustomerId || ''}
-                                        onChange={(e) => setSelectedCustomerId(e.target.value ? Number(e.target.value) : null)}
-                                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer cursor-pointer transition-all"
-                                    >
-                                        <option value="">{tr('ភ្ញៀវទូទៅ (មិនសន្សំពិន្ទុ)')}</option>
-                                        {customers.map((c) => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.name} {c.phone ? `(${c.phone})` : ''} — {c.tier.toUpperCase()} · {c.loyalty_points} {tr('ពិន្ទុ')}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Section 3: Tender Execution (CASH) */}
-                                {paymentMethod === 'cash' && (
-                                    <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
-                                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
-                                            <div className="flex items-center gap-2">
-                                                <Banknote className="w-4 h-4 text-amber-500" />
-                                                <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    {tr('ប្រាក់ទទួល')}
-                                                </h3>
                                             </div>
-                                            {amountReceived && (
-                                                <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                                    ≈ {(Math.round(parseFloat(amountReceived || '0') * exchange_rate)).toLocaleString()} ៛
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* Tender Input */}
-                                        <div className="relative">
-                                            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-base font-mono">
-                                                $
-                                            </span>
-                                            <input
-                                                type="number"
-                                                step="0.01"
-                                                value={amountReceived}
-                                                onChange={(e) => setAmountReceived(e.target.value)}
-                                                placeholder="0.00"
-                                                className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-lg font-black font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
-                                            />
-                                        </div>
-
-                                        {/* Quick USD Chips */}
-                                        <div className="space-y-1.5">
-                                            <span className="text-xs font-semibold text-slate-500 dark:text-zinc-400 font-khmer">
-                                                {tr('ដុល្លារ')}
-                                            </span>
-                                            <div className="flex flex-wrap gap-2">
-                                                {[
-                                                    { label: `${tr('គ្រប់ចំនួន')} $${totals.grandTotalUSD}`, val: totals.grandTotalUSD },
-                                                    { label: '$5', val: '5.00' },
-                                                    { label: '$10', val: '10.00' },
-                                                    { label: '$20', val: '20.00' },
-                                                    { label: '$50', val: '50.00' },
-                                                    { label: '$100', val: '100.00' },
-                                                ].map((btn) => {
-                                                    const isSelected = parseFloat(amountReceived || '0') === parseFloat(btn.val);
-                                                    return (
-                                                        <button
-                                                            key={btn.label}
-                                                            type="button"
-                                                            onClick={() => setAmountReceived(btn.val)}
-                                                            className={`px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
-                                                                isSelected
-                                                                    ? 'bg-amber-500 text-zinc-950 border-amber-500 shadow-md shadow-amber-500/20'
-                                                                    : 'bg-slate-50 dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-amber-500/40'
-                                                            }`}
-                                                        >
-                                                            {btn.label}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Quick KHR Chips */}
-                                        <div className="space-y-1.5">
-                                            <span className="text-xs font-semibold text-slate-500 dark:text-zinc-400 font-khmer">
-                                                {tr('រៀល')}
-                                            </span>
-                                            <div className="flex flex-wrap gap-2">
-                                                {[
-                                                    { label: `${tr('គ្រប់ចំនួន')} ${totals.grandTotalKHR.toLocaleString()} ៛`, val: totals.grandTotalUSD },
-                                                    { label: '10,000 ៛', val: (10000 / exchange_rate).toFixed(2) },
-                                                    { label: '20,000 ៛', val: (20000 / exchange_rate).toFixed(2) },
-                                                    { label: '50,000 ៛', val: (50000 / exchange_rate).toFixed(2) },
-                                                    { label: '100,000 ៛', val: (100000 / exchange_rate).toFixed(2) },
-                                                ].map((btn) => {
-                                                    const isSelected = parseFloat(amountReceived || '0') === parseFloat(btn.val);
-                                                    return (
-                                                        <button
-                                                            key={btn.label}
-                                                            type="button"
-                                                            onClick={() => setAmountReceived(btn.val)}
-                                                            className={`px-3 py-1.5 rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
-                                                                isSelected
-                                                                    ? 'bg-emerald-500 text-zinc-950 border-emerald-500 shadow-md shadow-emerald-500/20'
-                                                                    : 'bg-slate-50 dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-emerald-500/40'
-                                                            }`}
-                                                        >
-                                                            {btn.label}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Change Due Box */}
-                                        <div className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
-                                            parseFloat(totals.changeUSD) > 0
-                                                ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-500/40 shadow-sm'
-                                                : parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-500/40'
-                                                : 'bg-slate-50 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800'
-                                        }`}>
-                                            <div>
-                                                <span className="text-xs font-bold block text-slate-800 dark:text-zinc-200 font-khmer">
-                                                    {parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                        ? tr('នៅខ្វះ')
-                                                        : tr('ប្រាក់អាប់')}
-                                                </span>
-                                                <span className="text-xs font-mono font-semibold text-slate-500 dark:text-zinc-400">
-                                                    {parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                        ? `${Math.round((parseFloat(totals.grandTotalUSD) - parseFloat(amountReceived || '0')) * exchange_rate).toLocaleString()} ៛`
-                                                        : `${totals.changeKHR.toLocaleString()} ៛`}
-                                                </span>
-                                            </div>
-                                            <div className={`text-2xl font-black font-mono ${
-                                                parseFloat(totals.changeUSD) > 0
-                                                    ? 'text-emerald-600 dark:text-emerald-400'
-                                                    : parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                    ? 'text-amber-600 dark:text-amber-400'
-                                                    : 'text-slate-400 dark:text-zinc-500'
-                                            }`}>
-                                                {parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                    ? `-$${(parseFloat(totals.grandTotalUSD) - parseFloat(amountReceived || '0')).toFixed(2)}`
-                                                    : `$${totals.changeUSD}`}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section 3: KHQR Live Terminal */}
-                                {paymentMethod === 'khqr' && (
-                                    <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center space-y-4">
-                                        <div className="px-3.5 py-1 bg-rose-600 rounded-full text-white font-black text-xs tracking-wider shadow-md shadow-rose-600/30">
-                                            KHQR • BAKONG
-                                        </div>
-                                        <div className="w-48 h-48 bg-white p-3 rounded-2xl shadow-xl border-2 border-slate-200 dark:border-zinc-700 flex items-center justify-center relative">
-                                            <div className="w-full h-full border-2 border-slate-900 border-dashed rounded-xl flex flex-col items-center justify-center text-slate-900">
-                                                <QrCode className="w-20 h-20 text-slate-900 mb-1" />
-                                                <span className="text-[10px] font-bold font-khmer">{tr('ស្កេនដើម្បីទូទាត់')}</span>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 font-khmer">
-                                                {business.business_name_primary}
-                                            </h4>
-                                            <p className="text-sm text-rose-600 dark:text-rose-400 font-mono font-bold">
-                                                ${totals.grandTotalUSD} ({totals.grandTotalKHR.toLocaleString()} ៛)
-                                            </p>
-                                            <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-khmer pt-1">
-                                                {tr('គាំទ្ររាល់កម្មវិធីធនាគារទាំងអស់ (ABA, Acleda, Canadia, Bakong...)')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Section 3: Card Terminal Ready */}
-                                {paymentMethod === 'card' && (
-                                    <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm flex flex-col items-center text-center space-y-4">
-                                        <div className="w-16 h-16 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-500 shadow-md">
-                                            <CreditCard className="w-8 h-8" />
-                                        </div>
-                                        <div className="space-y-1 max-w-sm">
-                                            <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 font-khmer">
-                                                {tr('ម៉ាស៊ីនឆូតកាតត្រៀមរួចរាល់')}
-                                            </h4>
-                                            <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                {tr('សូមឆូតកាត ឬប៉ះកាតលើម៉ាស៊ីនកាត។')}
-                                            </p>
-                                            <div className="flex items-center justify-center gap-2 pt-2 text-[10px] font-mono text-sky-600 dark:text-sky-400 font-bold">
-                                                <span>VISA</span> • <span>MASTERCARD</span> • <span>UNIONPAY</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Right Column: Live Digital Receipt / Bill Preview (5 cols) */}
-                            <div className="lg:col-span-5 space-y-6">
-                                <div className="bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm space-y-4">
-                                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-zinc-800/80">
-                                        <div className="flex items-center gap-2">
-                                            <Receipt className="w-4 h-4 text-amber-500" />
-                                            <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                {tr('មើលវិក្កយបត្រជាមុន')}
-                                            </h3>
-                                        </div>
-                                    </div>
-
-                                    {/* Digital Thermal Paper Receipt Card */}
-                                    <div className="p-5 rounded-2xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 shadow-inner font-mono text-xs text-slate-800 dark:text-zinc-200 space-y-4">
-                                        {/* Receipt Header */}
-                                        <div className="text-center space-y-1 pb-3 border-b border-dashed border-slate-300 dark:border-zinc-700">
-                                            <h4 className="font-bold text-sm text-slate-900 dark:text-white font-khmer">
-                                                {business.business_name_primary}
-                                            </h4>
-                                            <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-khmer">
-                                                {tr('វិក្កយបត្រ')}
-                                            </p>
-                                            <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between pt-1">
-                                                <span>{new Date().toISOString().slice(0, 10)}</span>
-                                                <span>{orderMode === 'takeaway' ? tr('ខ្ចប់') : selectedTable}</span>
-                                            </div>
-                                            <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between">
-                                                <span className="font-khmer">{tr('កម្មង់ពី')}</span>
-                                                <span className="font-bold text-slate-900 dark:text-zinc-100">
-                                                    {language === 'km' ? getOrderSource(effectiveOrderSource).labelKm : getOrderSource(effectiveOrderSource).label}
-                                                    {isDeliveryPlatform(effectiveOrderSource) && externalOrderRef.trim() && ` #${externalOrderRef.trim()}`}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Itemized Table */}
-                                        <div className="max-h-48 overflow-y-auto space-y-2 divide-y divide-slate-200 dark:divide-zinc-800/60 pr-1">
-                                            {lines.map((item, idx) => (
-                                                <div key={idx} className="pt-2 first:pt-0 flex items-start justify-between text-xs">
-                                                    <div className="min-w-0 flex-1 pr-2">
-                                                        <div className="font-semibold text-slate-900 dark:text-zinc-100 truncate font-khmer">
-                                                            {getName(item)}
-                                                        </div>
-                                                        <div className="text-[10px] text-slate-500 dark:text-zinc-400">
-                                                            {item.quantity} x ${parseFloat(item.unit_price).toFixed(2)}
-                                                        </div>
-                                                    </div>
-                                                    <div className="font-bold text-slate-900 dark:text-zinc-100 shrink-0">
-                                                        ${(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                            {[
+                                                {
+                                                    key: 'usd',
+                                                    label: tr('ដុល្លារ'),
+                                                    tone: 'amber',
+                                                    chips: [
+                                                        { label: tr('គ្រប់ចំនួន'), val: totals.grandTotalUSD },
+                                                        { label: '$5', val: '5.00' },
+                                                        { label: '$10', val: '10.00' },
+                                                        { label: '$20', val: '20.00' },
+                                                        { label: '$50', val: '50.00' },
+                                                        { label: '$100', val: '100.00' },
+                                                    ],
+                                                },
+                                                {
+                                                    key: 'khr',
+                                                    label: tr('រៀល'),
+                                                    tone: 'emerald',
+                                                    chips: [
+                                                        { label: `${totals.grandTotalKHR.toLocaleString()} ៛`, val: totals.grandTotalUSD },
+                                                        { label: '10,000 ៛', val: (10000 / exchange_rate).toFixed(2) },
+                                                        { label: '20,000 ៛', val: (20000 / exchange_rate).toFixed(2) },
+                                                        { label: '50,000 ៛', val: (50000 / exchange_rate).toFixed(2) },
+                                                        { label: '100,000 ៛', val: (100000 / exchange_rate).toFixed(2) },
+                                                    ],
+                                                },
+                                            ].map((group) => (
+                                                <div key={group.key} className="flex items-center gap-3">
+                                                    <span className="w-24 shrink-0 text-xs text-slate-500 dark:text-zinc-400 font-khmer">{group.label}</span>
+                                                    <div className="flex-1 flex flex-wrap gap-1.5">
+                                                        {group.chips.map((chip) => {
+                                                            const isSelected = parseFloat(amountReceived || '0') === parseFloat(chip.val);
+                                                            return (
+                                                                <button
+                                                                    key={chip.label}
+                                                                    type="button"
+                                                                    onClick={() => setAmountReceived(chip.val)}
+                                                                    className={`h-8 px-3 rounded-lg border text-xs font-mono font-bold transition cursor-pointer ${
+                                                                        isSelected
+                                                                            ? group.tone === 'amber'
+                                                                                ? 'bg-amber-500 text-zinc-950 border-amber-500'
+                                                                                : 'bg-emerald-500 text-zinc-950 border-emerald-500'
+                                                                            : 'bg-slate-50 dark:bg-zinc-950 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-amber-500/40'
+                                                                    }`}
+                                                                >
+                                                                    {chip.label}
+                                                                </button>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
+                                    )}
 
-                                        {/* Subtotals & Grand Total */}
-                                        <div className="pt-3 border-t border-dashed border-slate-300 dark:border-zinc-700 space-y-1.5 text-xs">
-                                            <div className="flex items-center justify-between text-slate-600 dark:text-zinc-400">
-                                                <span className="font-khmer">{tr('សរុបរង')}</span>
-                                                <span>${totals.subtotalUSD}</span>
+                                    {/* KHQR / card / app: one short instruction line */}
+                                    {paymentMethod !== 'cash' && (
+                                        <div className="flex items-center gap-3 px-4 py-3">
+                                            <span className="w-24 shrink-0" />
+                                            <div className="flex-1 flex items-center gap-3 text-xs text-slate-600 dark:text-zinc-400 font-khmer">
+                                                {paymentMethod === 'khqr' && <QrCode className="w-8 h-8 text-rose-500 shrink-0" />}
+                                                {paymentMethod === 'card' && <CreditCard className="w-8 h-8 text-sky-500 shrink-0" />}
+                                                {paymentMethod === 'app' && <Bike className="w-8 h-8 text-pink-500 shrink-0" />}
+                                                <span>
+                                                    {paymentMethod === 'khqr' && tr('ឱ្យភ្ញៀវស្កេន KHQR ហើយពិនិត្យថាលុយចូលគណនីគ្រប់ចំនួន មុនចុចបញ្ជាក់។')}
+                                                    {paymentMethod === 'card' && tr('សូមឆូតកាត ឬប៉ះកាតលើម៉ាស៊ីនកាត។')}
+                                                    {paymentMethod === 'app' && tr('App ប្រមូលលុយពីភ្ញៀវ ហើយផ្ទេរឱ្យហាងពេលក្រោយ — មិនចូលថតបេឡាទេ។')}
+                                                </span>
                                             </div>
+                                        </div>
+                                    )}
 
-                                            {parseFloat(totals.discountUSD) > 0 && (
-                                                <div className="flex items-center justify-between text-rose-600 dark:text-rose-400">
-                                                    <span className="font-khmer">{tr('បញ្ចុះតម្លៃ')}</span>
-                                                    <span>-${totals.discountUSD}</span>
+                                    {/* Customer (loyalty points) */}
+                                    <div className="flex items-center gap-3 px-4 py-3">
+                                        <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('សមាជិក')}</span>
+                                        <select
+                                            value={selectedCustomerId || ''}
+                                            onChange={(e) => setSelectedCustomerId(e.target.value ? Number(e.target.value) : null)}
+                                            className="flex-1 h-9 px-3 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-lg text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer cursor-pointer"
+                                        >
+                                            <option value="">{tr('ភ្ញៀវទូទៅ (មិនសន្សំពិន្ទុ)')}</option>
+                                            {customers.map((c) => (
+                                                <option key={c.id} value={c.id}>
+                                                    {c.name} {c.phone ? `(${c.phone})` : ''} — {c.tier.toUpperCase()} · {c.loyalty_points} {tr('ពិន្ទុ')}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {selectedCustomerId && (
+                                            <span className="shrink-0 text-[11px] font-bold text-amber-600 dark:text-amber-400 font-khmer">
+                                                +{Math.floor(parseFloat(totals.grandTotalUSD))} {tr('ពិន្ទុ')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right: receipt preview (its item list scrolls if the order is long) */}
+                            <div className="lg:col-span-4 lg:min-h-0 flex flex-col rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 overflow-hidden">
+                                <div className="shrink-0 flex items-center gap-2 px-4 py-2.5 border-b border-slate-100 dark:border-zinc-800/80">
+                                    <Receipt className="w-4 h-4 text-amber-500" />
+                                    <h3 className="text-sm font-bold text-slate-900 dark:text-zinc-100 font-khmer">{tr('មើលវិក្កយបត្រជាមុន')}</h3>
+                                </div>
+                                <div className="flex-1 min-h-0 flex flex-col p-4 font-mono text-xs text-slate-800 dark:text-zinc-200">
+                                    <div className="shrink-0 text-center pb-2.5 border-b border-dashed border-slate-300 dark:border-zinc-700">
+                                        <div className="font-bold text-sm text-slate-900 dark:text-white font-khmer">{business.business_name_primary}</div>
+                                        <div className="flex items-center justify-between pt-1 text-[10px] text-slate-500 dark:text-zinc-400 font-khmer">
+                                            <span className="font-mono">{new Date().toISOString().slice(0, 10)}</span>
+                                            <span>
+                                                {orderMode === 'takeaway' ? tr('ខ្ចប់') : selectedTable}
+                                                {' · '}
+                                                {language === 'km' ? getOrderSource(effectiveOrderSource).labelKm : getOrderSource(effectiveOrderSource).label}
+                                                {isDeliveryPlatform(effectiveOrderSource) && externalOrderRef.trim() && ` #${externalOrderRef.trim()}`}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 min-h-0 overflow-y-auto py-2 divide-y divide-slate-100 dark:divide-zinc-800/60">
+                                        {lines.map((item, idx) => (
+                                            <div key={idx} className="py-1.5 flex items-start justify-between gap-2">
+                                                <div className="min-w-0">
+                                                    <div className="font-semibold text-slate-900 dark:text-zinc-100 truncate font-khmer">{getName(item)}</div>
+                                                    <div className="text-[10px] text-slate-500 dark:text-zinc-400">
+                                                        {item.quantity} x ${parseFloat(item.unit_price).toFixed(2)}
+                                                    </div>
                                                 </div>
-                                            )}
+                                                <div className="font-bold text-slate-900 dark:text-zinc-100 shrink-0">
+                                                    ${(parseFloat(item.unit_price) * item.quantity).toFixed(2)}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                                            <div className="pt-2 flex items-baseline justify-between text-base font-bold text-slate-900 dark:text-white">
-                                                <span className="font-khmer">{tr('សរុប')}</span>
-                                                <span className="text-amber-600 dark:text-amber-400 font-mono">${totals.grandTotalUSD}</span>
-                                            </div>
-                                            <div className="flex items-center justify-end text-xs font-semibold text-slate-500 dark:text-zinc-400">
-                                                <span>{totals.grandTotalKHR.toLocaleString()} ៛</span>
-                                            </div>
+                                    <div className="shrink-0 pt-2.5 border-t border-dashed border-slate-300 dark:border-zinc-700 space-y-1">
+                                        <div className="flex items-center justify-between text-slate-600 dark:text-zinc-400">
+                                            <span className="font-khmer">{tr('សរុបរង')}</span>
+                                            <span>${totals.subtotalUSD}</span>
                                         </div>
-
-                                        {/* Payment Tender on Receipt */}
-                                        <div className="pt-3 border-t border-dashed border-slate-300 dark:border-zinc-700 space-y-1 text-[11px] text-slate-600 dark:text-zinc-400">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-khmer">{tr('វិធីបង់ប្រាក់')}</span>
-                                                <span className="font-bold text-slate-800 dark:text-zinc-200 font-khmer">{paymentMethodName(paymentMethod)}</span>
+                                        {parseFloat(totals.discountUSD) > 0 && (
+                                            <div className="flex items-center justify-between text-rose-600 dark:text-rose-400">
+                                                <span className="font-khmer">{tr('បញ្ចុះតម្លៃ')}</span>
+                                                <span>-${totals.discountUSD}</span>
                                             </div>
-                                            {paymentMethod === 'cash' && (
-                                                <>
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="font-khmer">{tr('ប្រាក់ទទួល')}</span>
-                                                        <span>${amountReceived || totals.grandTotalUSD}</span>
-                                                    </div>
-                                                    <div className="flex items-center justify-between font-bold text-emerald-600 dark:text-emerald-400">
-                                                        <span className="font-khmer">{tr('ប្រាក់អាប់')}</span>
-                                                        <span>${totals.changeUSD} ({totals.changeKHR.toLocaleString()} ៛)</span>
-                                                    </div>
-                                                </>
-                                            )}
+                                        )}
+                                        <div className="flex items-baseline justify-between text-base font-bold text-slate-900 dark:text-white">
+                                            <span className="font-khmer">{tr('សរុប')}</span>
+                                            <span className="text-amber-600 dark:text-amber-400">${totals.grandTotalUSD}</span>
                                         </div>
-
-                                        {/* Receipt Footer Message */}
-                                        <div className="pt-3 border-t border-slate-300 dark:border-zinc-700 text-center text-[10px] text-slate-500 dark:text-zinc-400 font-khmer">
-                                            {business.document_footer || tr('សូមអរគុណ! សូមអញ្ជើញមកពិសាម្តងទៀត')}
+                                        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
+                                            <span className="font-khmer">{paymentMethodName(paymentMethod)}</span>
+                                            <span>
+                                                {paymentMethod === 'cash'
+                                                    ? `${tr('អាប់')} $${totals.changeUSD} (${totals.changeKHR.toLocaleString()} ៛)`
+                                                    : `${totals.grandTotalKHR.toLocaleString()} ៛`}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -1802,11 +1652,12 @@ export default function DocumentCreate({
                             <button
                                 type="button"
                                 onClick={handleConfirmCheckout}
-                                disabled={isSubmitting || (paymentMethod === 'cash' && parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD))}
+                                disabled={!canConfirmCheckout}
                                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-zinc-950 font-black text-xs shadow-lg shadow-amber-500/25 border border-amber-300/40 transition active:scale-[0.98] cursor-pointer font-khmer disabled:opacity-50"
                             >
                                 <Printer className="w-4 h-4" />
                                 <span>{isSubmitting ? tr('កំពុងដំណើរការ...') : tr('បញ្ជាក់ការទូទាត់ & ចេញវិក្កយបត្រ')}</span>
+                                <kbd className="hidden sm:inline px-1.5 py-0.5 rounded bg-zinc-950/10 text-[10px] font-mono">F2</kbd>
                             </button>
                         </div>
                     </div>
