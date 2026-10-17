@@ -77,7 +77,7 @@ class OrderSourceCheckoutTest extends TestCase
                 'order_source' => 'ubereats',
             ]));
 
-        $response->assertSessionHasErrors(['order_source' => 'The selected order source is invalid.']);
+        $response->assertSessionHasErrors(['order_source' => 'ប្រភពការកម្មង់ ដែលបានជ្រើសមិនត្រឹមត្រូវ។']);
         $this->assertSame($documentCountBefore, Document::count());
     }
 
@@ -89,7 +89,7 @@ class OrderSourceCheckoutTest extends TestCase
                 'external_order_ref' => str_repeat('A', 41),
             ]));
 
-        $response->assertSessionHasErrors(['external_order_ref' => 'The external order ref field must not be greater than 40 characters.']);
+        $response->assertSessionHasErrors(['external_order_ref' => 'លេខការកម្មង់ App មិនអាចវែងលើស 40 តួអក្សរ។']);
     }
 
     public function test_thermal_receipt_receives_order_source_and_app_order_number(): void

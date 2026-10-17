@@ -29,11 +29,11 @@ final class VoidDocumentAction
             $document = Document::query()->lockForUpdate()->findOrFail($documentId);
 
             if ($document->status === DocumentStatus::Void) {
-                throw new DomainException('Document is already voided.');
+                throw new DomainException('វិក្កយបត្រនេះត្រូវបានលុបចោល (Void) រួចហើយ។');
             }
 
             if ($document->status !== DocumentStatus::Finalized) {
-                throw new DomainException('Only finalized documents with an official number may be voided.');
+                throw new DomainException('អាច Void បានតែវិក្កយបត្រដែលបានគិតប្រាក់ និងមានលេខរួចហើយប៉ុណ្ណោះ។');
             }
 
             // If approval is provided, validate and consume it atomically

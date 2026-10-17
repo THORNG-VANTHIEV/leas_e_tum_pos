@@ -11,8 +11,6 @@ class RoleGuard
 {
     /**
      * Handle an incoming request.
-     *
-     * @param string ...$roles
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
@@ -25,7 +23,7 @@ class RoleGuard
         $userRole = is_string($user->role) ? $user->role : $user->role->value;
 
         if (! in_array($userRole, $roles, true)) {
-            abort(403, 'Unauthorized. Your role does not have permission to access this resource.');
+            abort(403, 'តួនាទីរបស់អ្នកមិនមានសិទ្ធិចូលទំព័រនេះទេ។');
         }
 
         return $next($request);

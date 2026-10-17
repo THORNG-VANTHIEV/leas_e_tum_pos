@@ -63,7 +63,7 @@ class PurchaseEditTest extends TestCase
 
         $this->actingAs($admin)
             ->patch(route('purchases.update', $purchase), [...$this->payload(), 'items' => []])
-            ->assertSessionHasErrors(['items' => 'The items field is required.']);
+            ->assertSessionHasErrors(['items' => 'សូមបំពេញ មុខទំនិញ។']);
 
         $this->assertCount(1, $purchase->refresh()->items);
     }

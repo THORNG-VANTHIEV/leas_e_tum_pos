@@ -46,7 +46,7 @@ class AuthenticatedSessionController extends Controller
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             throw ValidationException::withMessages([
-                'username' => "Too many login attempts. Please try again in {$seconds} seconds.",
+                'username' => "ព្យាយាម login ច្រើនដងពេក។ សូមរង់ចាំ {$seconds} វិនាទី។",
             ]);
         }
 
@@ -67,7 +67,7 @@ class AuthenticatedSessionController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'username' => 'These credentials do not match our records.',
+                'username' => 'ឈ្មោះអ្នកប្រើ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។',
             ]);
         }
 
@@ -85,7 +85,7 @@ class AuthenticatedSessionController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'username' => 'Your account is deactivated or archived. Please contact an administrator.',
+                'username' => 'គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។',
             ]);
         }
 

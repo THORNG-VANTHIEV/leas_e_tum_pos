@@ -10,12 +10,7 @@ final class DocumentCalculator
     /**
      * Authoritative calculation contract.
      *
-     * @param array<int, array{quantity: int, unit_price: string, is_primary_package?: bool}> $items
-     * @param string|null $sourceTotal
-     * @param string $amountReceived
-     * @param string $taxAmount
-     * @param string $discountAmount
-     * @param string $paymentMethod
+     * @param  array<int, array{quantity: int, unit_price: string, is_primary_package?: bool}>  $items
      * @return array<string, mixed>
      */
     public function calculate(
@@ -27,7 +22,7 @@ final class DocumentCalculator
         string $paymentMethod = 'cash',
     ): array {
         if ($items === []) {
-            throw new DomainException('A document requires at least one line item.');
+            throw new DomainException('វិក្កយបត្រត្រូវមានមុខទំនិញយ៉ាងហោចណាស់មួយ។');
         }
 
         $subtotal = 0;
@@ -37,21 +32,21 @@ final class DocumentCalculator
         foreach ($items as $index => $item) {
             $quantity = $item['quantity'] ?? null;
             if (! is_int($quantity) || $quantity < 1 || $quantity > 9999) {
-                throw new DomainException('Quantity must be an integer from 1 to 9999.');
+                throw new DomainException('ចំនួនត្រូវជាចំនួនគត់ពី 1 ដល់ 9999។');
             }
 
             $unitPrice = Money::toCents($item['unit_price']);
             if ($unitPrice < 0) {
-                throw new DomainException('Unit price cannot be negative.');
+                throw new DomainException('តម្លៃមិនអាចតិចជាងសូន្យទេ។');
             }
             if ($unitPrice > intdiv(Money::MAX_CENTS, $quantity)) {
-                throw new DomainException('Line total exceeds the supported monetary range.');
+                throw new DomainException('តម្លៃសរុបនៃមុខទំនិញធំពេក។');
             }
 
             $lineTotal = $quantity * $unitPrice;
             $subtotal += $lineTotal;
             if ($subtotal > Money::MAX_CENTS) {
-                throw new DomainException('Subtotal exceeds the supported monetary range.');
+                throw new DomainException('សរុបរងធំពេក។');
             }
 
             $lineTotals[$index] = Money::fromCents($lineTotal);
@@ -65,26 +60,26 @@ final class DocumentCalculator
         $received = Money::toCents($amountReceived);
 
         if ($tax < 0 || $discount < 0 || $received < 0) {
-            throw new DomainException('Tax, discount, and received amount cannot be negative.');
+            throw new DomainException('ពន្ធ បញ្ចុះតម្លៃ និងប្រាក់ទទួល មិនអាចតិចជាងសូន្យទេ។');
         }
         if ($discount > $subtotal) {
-            throw new DomainException('Discount cannot exceed subtotal in the current policy.');
+            throw new DomainException('បញ្ចុះតម្លៃមិនអាចលើសសរុបរងទេ។');
         }
 
         $grandTotal = $subtotal + $tax - $discount;
         if ($grandTotal < 0 || $grandTotal > Money::MAX_CENTS) {
-            throw new DomainException('Grand total is outside the supported monetary range.');
+            throw new DomainException('សរុបរួមធំពេក ឬមិនត្រឹមត្រូវ។');
         }
         if ($paymentMethod === 'cash' && $received < $grandTotal) {
-            throw new DomainException('Cash received must cover the grand total.');
+            throw new DomainException('ប្រាក់ទទួលមិនគ្រប់ចំនួនសរុបទេ។');
         }
         if ($paymentMethod !== 'cash' && $received !== $grandTotal) {
-            throw new DomainException('Non-cash payment must equal the grand total under the current policy.');
+            throw new DomainException('ការបង់មិនមែនសាច់ប្រាក់ ត្រូវតែស្មើនឹងសរុបរួម។');
         }
 
         $sourceCents = $sourceTotal === null ? null : Money::toCents($sourceTotal);
         if ($sourceCents !== null && $sourceCents < 0) {
-            throw new DomainException('Source total cannot be negative.');
+            throw new DomainException('សរុបតាមក្រដាសមិនអាចតិចជាងសូន្យទេ។');
         }
         $effectiveSource = $sourceCents ?? $grandTotal;
         $variance = $grandTotal - $effectiveSource;

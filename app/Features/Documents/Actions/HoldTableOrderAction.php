@@ -38,7 +38,7 @@ final class HoldTableOrderAction
 
             $rawItems = $data['items'] ?? [];
             if (empty($rawItems)) {
-                throw new DomainException('Please add at least one item to save table order.');
+                throw new DomainException('សូមបន្ថែមមុខម្ហូបយ៉ាងហោចណាស់មួយ មុននឹងរក្សាទុកតុ។');
             }
 
             $tableName = trim((string) ($data['table_identifier'] ?? $data['reference_identifier'] ?? 'តុ ០១'));
@@ -74,7 +74,7 @@ final class HoldTableOrderAction
                 $product = $products->get($productId);
 
                 if (! $product) {
-                    throw new DomainException("Product #{$productId} is not available.");
+                    throw new DomainException("មុខទំនិញ #{$productId} មិនមានលក់ទេ។");
                 }
 
                 $quantity = max(1, (int) ($rawItem['quantity'] ?? 1));

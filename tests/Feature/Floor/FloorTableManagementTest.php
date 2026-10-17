@@ -53,7 +53,7 @@ class FloorTableManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->patch(route('tables.update', $table), [...$this->tablePayload($table), 'code' => 'TEST-02'])
-            ->assertSessionHasErrors(['code' => 'The code has already been taken.']);
+            ->assertSessionHasErrors(['code' => 'លេខកូដ នេះមានក្នុងប្រព័ន្ធរួចហើយ។']);
     }
 
     public function test_table_with_open_order_cannot_be_renamed_or_deleted(): void

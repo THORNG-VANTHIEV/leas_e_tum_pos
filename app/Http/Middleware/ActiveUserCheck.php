@@ -22,7 +22,7 @@ class ActiveUserCheck
                 $request->session()->regenerateToken();
 
                 return redirect()->route('login')->withErrors([
-                    'username' => 'Your account has been deactivated or archived. Please contact an administrator.',
+                    'username' => 'គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។',
                 ]);
             }
         }

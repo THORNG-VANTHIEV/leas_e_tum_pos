@@ -13,13 +13,13 @@ class DocumentCalculatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->calculator = new DocumentCalculator();
+        $this->calculator = new DocumentCalculator;
     }
 
     public function test_rejects_empty_items(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('A document requires at least one line item.');
+        $this->expectExceptionMessage('វិក្កយបត្រត្រូវមានមុខទំនិញយ៉ាងហោចណាស់មួយ។');
 
         $this->calculator->calculate([], '10.00', '10.00');
     }
@@ -27,7 +27,7 @@ class DocumentCalculatorTest extends TestCase
     public function test_rejects_invalid_quantity(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Quantity must be an integer from 1 to 9999.');
+        $this->expectExceptionMessage('ចំនួនត្រូវជាចំនួនគត់ពី 1 ដល់ 9999។');
 
         $this->calculator->calculate([
             ['quantity' => 0, 'unit_price' => '10.00'],
@@ -105,7 +105,7 @@ class DocumentCalculatorTest extends TestCase
     public function test_cash_received_insufficient_throws_domain_exception(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Cash received must cover the grand total.');
+        $this->expectExceptionMessage('ប្រាក់ទទួលមិនគ្រប់ចំនួនសរុបទេ។');
 
         $this->calculator->calculate(
             items: [['quantity' => 1, 'unit_price' => '20.00']],
@@ -117,7 +117,7 @@ class DocumentCalculatorTest extends TestCase
     public function test_discount_exceeding_subtotal_throws_domain_exception(): void
     {
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage('Discount cannot exceed subtotal in the current policy.');
+        $this->expectExceptionMessage('បញ្ចុះតម្លៃមិនអាចលើសសរុបរងទេ។');
 
         $this->calculator->calculate(
             items: [['quantity' => 1, 'unit_price' => '10.00']],

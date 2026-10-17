@@ -83,7 +83,7 @@ class ExpenseManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->patch(route('expenses.update', $expense), [...$this->validPayload(), 'title' => ''])
-            ->assertSessionHasErrors(['title' => 'The title field is required.']);
+            ->assertSessionHasErrors(['title' => 'សូមបំពេញ ចំណងជើង។']);
     }
 
     public function test_expense_in_closed_period_cannot_be_changed(): void

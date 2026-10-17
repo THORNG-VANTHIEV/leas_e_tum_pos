@@ -17,10 +17,6 @@ final class PurgeDraftDocumentAction
 
     /**
      * Guarded hard purge of an unnumbered draft document with full audit snapshot.
-     *
-     * @param int $documentId
-     * @param int $actorId
-     * @return void
      */
     public function handle(int $documentId, int $actorId): void
     {
@@ -31,11 +27,11 @@ final class PurgeDraftDocumentAction
                 || $document->sequence_no !== null
                 || $document->document_number !== null
                 || $document->finalized_at !== null) {
-                throw new DomainException('Only an unnumbered draft may be purged (Invariant INV-07).');
+                throw new DomainException('អាចលុបបានតែការកម្មង់ព្រាងដែលមិនទាន់មានលេខវិក្កយបត្រប៉ុណ្ណោះ។ (Only an unnumbered draft may be purged)');
             }
 
             if ($document->revisions()->exists() || $document->printLogs()->exists()) {
-                throw new DomainException('A document with revision or official print history cannot be purged.');
+                throw new DomainException('មិនអាចលុបវិក្កយបត្រដែលធ្លាប់កែ ឬធ្លាប់ព្រីនជាផ្លូវការបានទេ។');
             }
 
             $snapshot = [

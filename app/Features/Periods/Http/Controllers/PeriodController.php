@@ -77,7 +77,7 @@ class PeriodController extends Controller
             'Created draft period'
         );
 
-        return back()->with('success', "Period '{$period->code}' created as draft.");
+        return back()->with('success', "បានបង្កើតវគ្គ '{$period->code}' (ព្រាង)។");
     }
 
     /**
@@ -86,7 +86,7 @@ class PeriodController extends Controller
     public function activate(Request $request, Period $period): RedirectResponse
     {
         if ($period->status !== PeriodStatus::Draft && $period->status !== PeriodStatus::Review) {
-            return back()->with('error', 'Only draft periods or periods in review can be activated.');
+            return back()->with('error', 'អាចបើកបានតែវគ្គព្រាង ឬវគ្គកំពុងពិនិត្យប៉ុណ្ណោះ។');
         }
 
         $setting = BusinessSetting::current();
@@ -110,7 +110,7 @@ class PeriodController extends Controller
             'Activated period and snapshotted entry policy'
         );
 
-        return back()->with('success', "Period '{$period->code}' is now ACTIVE for cashier entry.");
+        return back()->with('success', "វគ្គ '{$period->code}' បានបើកសម្រាប់ការលក់ហើយ។");
     }
 
     /**
@@ -119,7 +119,7 @@ class PeriodController extends Controller
     public function review(Request $request, Period $period): RedirectResponse
     {
         if ($period->status !== PeriodStatus::Active) {
-            return back()->with('error', 'Only active periods can be placed under review.');
+            return back()->with('error', 'អាចដាក់ពិនិត្យបានតែវគ្គដែលកំពុងបើកប៉ុណ្ណោះ។');
         }
 
         $period->update([
@@ -138,7 +138,7 @@ class PeriodController extends Controller
         );
 
         return redirect()->route('periods.review-view', $period->id)
-            ->with('success', "Period '{$period->code}' entry locked for review.");
+            ->with('success', "វគ្គ '{$period->code}' ត្រូវបានចាក់សោសម្រាប់ពិនិត្យ។");
     }
 
     /**
@@ -170,8 +170,9 @@ class PeriodController extends Controller
     {
         try {
             $finalized = $this->finalizeAction->handle($period->id, $request->user()->id);
+
             return redirect()->route('periods.index')
-                ->with('success', "Period '{$finalized->code}' finalized successfully. Sequence up to #{$finalized->last_sequence_no} stamped.");
+                ->with('success', "បានបិទបញ្ជីវគ្គ '{$finalized->code}' ហើយ។ លេខវិក្កយបត្ររហូតដល់ #{$finalized->last_sequence_no}។");
         } catch (DomainException $e) {
             return back()->with('error', $e->getMessage());
         }

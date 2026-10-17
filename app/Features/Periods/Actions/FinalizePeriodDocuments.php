@@ -28,7 +28,7 @@ final class FinalizePeriodDocuments
             $period = Period::query()->lockForUpdate()->findOrFail($periodId);
 
             if ($period->status !== PeriodStatus::Review && $period->status !== PeriodStatus::Active) {
-                throw new DomainException('Only an active period or a period under review can be finalized.');
+                throw new DomainException('អាចបិទបញ្ជីបានតែវគ្គដែលកំពុងបើក ឬកំពុងពិនិត្យប៉ុណ្ណោះ។');
             }
 
             $requireSource = (bool) data_get(
@@ -66,18 +66,18 @@ final class FinalizePeriodDocuments
                 ->get();
 
             if ($documents->isEmpty() && $period->last_sequence_no === 0) {
-                throw new DomainException('An empty period cannot be finalized.');
+                throw new DomainException('មិនអាចបិទបញ្ជីវគ្គដែលគ្មានវិក្កយបត្របានទេ។');
             }
 
             // 1. Authoritative recalculation and verification of each document
             foreach ($documents as $document) {
                 if ($document->document_number !== null) {
-                    throw new DomainException('A document with an existing official number cannot be re-sequenced.');
+                    throw new DomainException('វិក្កយបត្រដែលមានលេខរួចហើយ មិនអាចដាក់លេខម្តងទៀតបានទេ។');
                 }
 
                 $items = $document->items()->orderBy('line_position')->get();
                 if ($items->isEmpty()) {
-                    throw new DomainException("Document #{$document->id} has no line items.");
+                    throw new DomainException("វិក្កយបត្រ #{$document->id} គ្មានមុខទំនិញ។");
                 }
 
                 $calculated = $this->calculator->calculate(
@@ -95,12 +95,12 @@ final class FinalizePeriodDocuments
 
                 foreach (['subtotal', 'tax_amount', 'discount_amount', 'grand_total', 'amount_received', 'change_amount'] as $field) {
                     if (Money::toCents((string) $document->{$field}) !== Money::toCents($calculated[$field])) {
-                        throw new DomainException("Stored {$field} does not match authoritative calculation on document #{$document->id}.");
+                        throw new DomainException("{$field} របស់វិក្កយបត្រ #{$document->id} មិនត្រូវនឹងការគណនារបស់ប្រព័ន្ធ។");
                     }
                 }
 
                 if ($requireSource && ! $document->source_total_verified) {
-                    throw new DomainException("Document #{$document->id} requires verified physical source-total reconciliation before finalization.");
+                    throw new DomainException("វិក្កយបត្រ #{$document->id} ត្រូវផ្ទៀងផ្ទាត់សរុបតាមក្រដាសសិន មុននឹងបិទបញ្ជី។");
                 }
             }
 

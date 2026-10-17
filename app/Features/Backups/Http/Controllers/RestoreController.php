@@ -26,11 +26,12 @@ class RestoreController extends Controller
 
         try {
             $report = $this->restoreAction->inspect($request->file('backup_file'));
+
             return response()->json($report);
         } catch (DomainException $e) {
             return response()->json(['valid' => false, 'error' => $e->getMessage()], 422);
         } catch (\Throwable $e) {
-            return response()->json(['valid' => false, 'error' => 'System error: ' . $e->getMessage()], 500);
+            return response()->json(['valid' => false, 'error' => 'System error: '.$e->getMessage()], 500);
         }
     }
 
@@ -54,9 +55,9 @@ class RestoreController extends Controller
                 "Database restored successfully ({$result['tables_restored']} tables, {$result['rows_restored']} records). Emergency recovery point: {$result['recovery_point']}"
             );
         } catch (DomainException $e) {
-            return back()->with('error', 'Restore rejected: ' . $e->getMessage());
+            return back()->with('error', 'មិនអាច Restore បានទេ៖ '.$e->getMessage());
         } catch (\Throwable $e) {
-            return back()->with('error', 'System error during restore: ' . $e->getMessage());
+            return back()->with('error', 'មានបញ្ហាប្រព័ន្ធពេល Restore៖ '.$e->getMessage());
         }
     }
 

@@ -60,31 +60,31 @@ class RestoreBackupAction
         $filePath = $archive instanceof UploadedFile ? $archive->getRealPath() : $archive;
 
         if (! file_exists($filePath)) {
-            throw new DomainException('Backup archive file not found.');
+            throw new DomainException('រកមិនឃើញ file backup ទេ។');
         }
 
         $zip = new ZipArchive;
         if ($zip->open($filePath) !== true) {
-            throw new DomainException('Corrupt or invalid ZIP archive file.');
+            throw new DomainException('file ZIP ខូច ឬមិនត្រឹមត្រូវ។');
         }
 
         // 1. Inspect archive & validate manifest
         $manifestContent = $zip->getFromName('manifest.json');
         if ($manifestContent === false) {
             $zip->close();
-            throw new DomainException('Archive is missing manifest.json specification header.');
+            throw new DomainException('file backup ខ្វះ manifest.json។');
         }
 
         $manifest = json_decode($manifestContent, true);
         if (! is_array($manifest) || ($manifest['format_version'] ?? '') !== '2.0') {
             $zip->close();
-            throw new DomainException('Unsupported archive format version. Expected V2.0 manifest.');
+            throw new DomainException('ទម្រង់ file backup មិនគាំទ្រ (ត្រូវការ V2.0)។');
         }
 
         $tableInventory = $manifest['tables'] ?? [];
         if (empty($tableInventory)) {
             $zip->close();
-            throw new DomainException('Manifest contains empty or invalid table inventory.');
+            throw new DomainException('បញ្ជីតារាងក្នុង manifest ទទេ ឬមិនត្រឹមត្រូវ។');
         }
 
         // 2. Validate paths, checksums, and JSON integrity before touching live data
@@ -94,7 +94,7 @@ class RestoreBackupAction
         foreach ($tableInventory as $tableName => $meta) {
             if (! in_array($tableName, self::ALLOWLIST, true)) {
                 $zip->close();
-                throw new DomainException("Unauthorized table '{$tableName}' in backup archive.");
+                throw new DomainException("តារាង '{$tableName}' មិនត្រូវបានអនុញ្ញាតក្នុង file backup ទេ។");
             }
 
             // Path Traversal Guard
@@ -102,32 +102,32 @@ class RestoreBackupAction
             $entryIndex = $zip->locateName($entryName);
             if ($entryIndex === false) {
                 $zip->close();
-                throw new DomainException("Archive missing table payload: {$entryName}");
+                throw new DomainException("file backup ខ្វះទិន្នន័យ៖ {$entryName}");
             }
 
             $rawJson = $zip->getFromIndex($entryIndex);
             if ($rawJson === false) {
                 $zip->close();
-                throw new DomainException("Failed to decompress {$entryName}.");
+                throw new DomainException("មិនអាចពន្លា {$entryName} បានទេ។");
             }
 
             // Verify SHA-256 Checksum
             $calculatedChecksum = hash('sha256', $rawJson);
             if ($calculatedChecksum !== ($meta['checksum'] ?? '')) {
                 $zip->close();
-                throw new DomainException("Integrity check failed: Checksum mismatch for {$tableName}.");
+                throw new DomainException("ទិន្នន័យ {$tableName} ត្រូវបានកែប្រែ ឬខូច (checksum មិនត្រូវគ្នា)។");
             }
 
             // Verify JSON Shape
             $rows = json_decode($rawJson, true);
             if (! is_array($rows)) {
                 $zip->close();
-                throw new DomainException("Corrupted JSON array data in {$tableName}.");
+                throw new DomainException("ទិន្នន័យ JSON ក្នុង {$tableName} ខូច។");
             }
 
             if (count($rows) !== ($meta['row_count'] ?? 0)) {
                 $zip->close();
-                throw new DomainException("Row count mismatch in manifest for {$tableName}.");
+                throw new DomainException("ចំនួនជួរក្នុង {$tableName} មិនត្រូវនឹង manifest។");
             }
 
             $stagedData[$tableName] = $rows;
@@ -139,13 +139,13 @@ class RestoreBackupAction
         foreach ($manifest['files'] ?? [] as $path => $meta) {
             if (! is_string($path) || ! preg_match(BackupArchiver::FILE_PATH_PATTERN, $path)) {
                 $zip->close();
-                throw new DomainException("Unauthorized file path '{$path}' in backup archive.");
+                throw new DomainException("ទីតាំង file '{$path}' ក្នុង backup មិនត្រូវបានអនុញ្ញាតទេ។");
             }
 
             $contents = $zip->getFromName("files/{$path}");
             if ($contents === false || hash('sha256', $contents) !== ($meta['checksum'] ?? '')) {
                 $zip->close();
-                throw new DomainException("Integrity check failed for file {$path}.");
+                throw new DomainException("file {$path} ត្រូវបានកែប្រែ ឬខូច។");
             }
 
             $stagedFiles[$path] = $contents;
@@ -196,7 +196,7 @@ class RestoreBackupAction
             if ($driver === 'mysql') {
                 DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
-            throw new DomainException('Restore database transaction failed: '.$e->getMessage(), 0, $e);
+            throw new DomainException('ការ Restore database បរាជ័យ៖ '.$e->getMessage(), 0, $e);
         }
 
         // Images are written after the database swap succeeds; existing files not in the backup are kept
@@ -244,24 +244,24 @@ class RestoreBackupAction
         $filePath = $archive instanceof UploadedFile ? $archive->getRealPath() : $archive;
 
         if (! file_exists($filePath)) {
-            throw new DomainException('Backup archive file not found.');
+            throw new DomainException('រកមិនឃើញ file backup ទេ។');
         }
 
         $zip = new ZipArchive;
         if ($zip->open($filePath) !== true) {
-            throw new DomainException('Corrupt or invalid ZIP archive file.');
+            throw new DomainException('file ZIP ខូច ឬមិនត្រឹមត្រូវ។');
         }
 
         $manifestContent = $zip->getFromName('manifest.json');
         if ($manifestContent === false) {
             $zip->close();
-            throw new DomainException('Archive is missing manifest.json header.');
+            throw new DomainException('file backup ខ្វះ manifest.json។');
         }
 
         $manifest = json_decode($manifestContent, true);
         if (! is_array($manifest) || ($manifest['format_version'] ?? '') !== '2.0') {
             $zip->close();
-            throw new DomainException('Unsupported archive format version. Expected V2.0 manifest.');
+            throw new DomainException('ទម្រង់ file backup មិនគាំទ្រ (ត្រូវការ V2.0)។');
         }
 
         $tableInventory = $manifest['tables'] ?? [];
@@ -272,26 +272,26 @@ class RestoreBackupAction
         foreach ($tableInventory as $tableName => $meta) {
             if (! in_array($tableName, self::ALLOWLIST, true)) {
                 $zip->close();
-                throw new DomainException("Unauthorized table '{$tableName}' in backup archive.");
+                throw new DomainException("តារាង '{$tableName}' មិនត្រូវបានអនុញ្ញាតក្នុង file backup ទេ។");
             }
 
             $entryName = "tables/{$tableName}.json";
             $entryIndex = $zip->locateName($entryName);
             if ($entryIndex === false) {
                 $zip->close();
-                throw new DomainException("Archive missing table payload: {$entryName}");
+                throw new DomainException("file backup ខ្វះទិន្នន័យ៖ {$entryName}");
             }
 
             $rawJson = $zip->getFromIndex($entryIndex);
             if ($rawJson === false) {
                 $zip->close();
-                throw new DomainException("Failed to read {$entryName}.");
+                throw new DomainException("មិនអាចអាន {$entryName} បានទេ។");
             }
 
             $calculatedChecksum = hash('sha256', $rawJson);
             if ($calculatedChecksum !== ($meta['checksum'] ?? '')) {
                 $zip->close();
-                throw new DomainException("Integrity error: SHA-256 checksum mismatch for {$tableName}.");
+                throw new DomainException("ទិន្នន័យ {$tableName} ត្រូវបានកែប្រែ ឬខូច (SHA-256 មិនត្រូវគ្នា)។");
             }
 
             $rows = json_decode($rawJson, true);

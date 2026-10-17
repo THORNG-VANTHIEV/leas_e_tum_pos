@@ -62,7 +62,7 @@ class BackupImagesTest extends TestCase
         $zip->close();
 
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage("Unauthorized file path '../../.env' in backup archive.");
+        $this->expectExceptionMessage("ទីតាំង file '../../.env' ក្នុង backup មិនត្រូវបានអនុញ្ញាតទេ។");
 
         app(RestoreBackupAction::class)->handle($this->archivePath, User::where('username', 'admin')->firstOrFail()->id);
     }

@@ -292,7 +292,7 @@ class DocumentController extends Controller
             $document = $this->createDraft->handle($validated, $request->user()->id);
 
             return redirect()->route('invoices.show', $document->id)
-                ->with('success', "Draft order #{$document->id} (Table {$document->reference_identifier}) created successfully.");
+                ->with('success', "បានរក្សាទុកការកម្មង់ #{$document->id} (តុ {$document->reference_identifier})។");
         } catch (DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
@@ -347,7 +347,7 @@ class DocumentController extends Controller
 
         // Cashier ownership scoping
         if (! $user->canViewInvoice($invoice)) {
-            abort(403, 'Unauthorized. You cannot view invoices created by other operators.');
+            abort(403, 'អ្នកមិនមានសិទ្ធិមើលវិក្កយបត្ររបស់បុគ្គលិកផ្សេងទេ។');
         }
 
         $invoice->load(['creator:id,name,username', 'period', 'items.product']);

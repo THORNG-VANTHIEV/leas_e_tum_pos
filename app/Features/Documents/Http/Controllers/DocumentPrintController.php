@@ -147,7 +147,7 @@ class DocumentPrintController extends Controller
             );
         }
 
-        return back()->with('success', 'Print request logged.');
+        return back()->with('success', 'បានកត់ត្រាការព្រីន។');
     }
 
     /**
@@ -228,6 +228,6 @@ class DocumentPrintController extends Controller
             ]);
         }
 
-        return back()->with('success', "Batch print request recorded for {$documents->count()} documents.");
+        return back()->with('success', "បានកត់ត្រាការព្រីនវិក្កយបត្រ {$documents->count()} សន្លឹក។");
     }
 }

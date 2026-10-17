@@ -77,7 +77,7 @@ class SettingsController extends Controller
             'Updated business profile'
         );
 
-        return back()->with('success', 'Business profile updated successfully.');
+        return back()->with('success', 'បានរក្សាទុកព័ត៌មានហាង។');
     }
 
     /**
@@ -107,7 +107,7 @@ class SettingsController extends Controller
             'Toggled source reconciliation or entry controls'
         );
 
-        return back()->with('success', 'Entry controls updated successfully.');
+        return back()->with('success', 'បានរក្សាទុកការកំណត់ការលក់។');
     }
 
     /**
@@ -182,7 +182,7 @@ class SettingsController extends Controller
             'Updated invoice print templates and layout designer'
         );
 
-        return back()->with('success', 'Invoice & print layout settings updated successfully.');
+        return back()->with('success', 'បានរក្សាទុកការកំណត់វិក្កយបត្រ និងការព្រីន។');
     }
 
     /**
@@ -235,7 +235,7 @@ class SettingsController extends Controller
             'Created location branch'
         );
 
-        return back()->with('success', "Location '{$location->name_primary}' created.");
+        return back()->with('success', "បានបង្កើតសាខា '{$location->name_primary}'។");
     }
 
     /**
@@ -264,7 +264,7 @@ class SettingsController extends Controller
             'Updated location branch'
         );
 
-        return back()->with('success', 'Location updated.');
+        return back()->with('success', 'បានកែសាខា។');
     }
 
     /**
@@ -303,7 +303,7 @@ class SettingsController extends Controller
             'Created user account'
         );
 
-        return back()->with('success', "User '{$user->username}' created.");
+        return back()->with('success', "បានបង្កើតគណនី '{$user->username}'។");
     }
 
     /**
@@ -324,7 +324,7 @@ class SettingsController extends Controller
         // Self-protection: Admin cannot deactivate themselves
         if ($request->user()->id === $user->id && ! $validated['is_active']) {
             throw ValidationException::withMessages([
-                'is_active' => 'Self-protection guard: You cannot deactivate your own logged-in account.',
+                'is_active' => 'អ្នកមិនអាចបិទគណនីដែលអ្នកកំពុងប្រើបានទេ។',
             ]);
         }
 
@@ -337,7 +337,7 @@ class SettingsController extends Controller
 
             if ($activeAdminCount === 0) {
                 throw ValidationException::withMessages([
-                    'is_active' => 'Last-admin guard: Cannot deactivate or demote the only remaining active administrator.',
+                    'is_active' => 'មិនអាចបិទ ឬដកតួនាទី Admin ចុងក្រោយបានទេ។',
                 ]);
             }
         }
@@ -376,7 +376,7 @@ class SettingsController extends Controller
             'Updated user account'
         );
 
-        return back()->with('success', "User '{$user->username}' updated.");
+        return back()->with('success', "បានកែគណនី '{$user->username}'។");
     }
 
     /**
@@ -391,7 +391,7 @@ class SettingsController extends Controller
         // Self-protection
         if ($request->user()->id === $user->id) {
             throw ValidationException::withMessages([
-                'reason' => 'Self-protection guard: You cannot archive your own logged-in account.',
+                'reason' => 'អ្នកមិនអាចដាក់ប័ណ្ណសារគណនីដែលអ្នកកំពុងប្រើបានទេ។',
             ]);
         }
 
@@ -405,7 +405,7 @@ class SettingsController extends Controller
 
             if ($otherAdmins === 0) {
                 throw ValidationException::withMessages([
-                    'reason' => 'Last-admin guard: Cannot archive the last active administrator.',
+                    'reason' => 'មិនអាចដាក់ប័ណ្ណសារ Admin ចុងក្រោយបានទេ។',
                 ]);
             }
         }
@@ -426,7 +426,7 @@ class SettingsController extends Controller
             $validated['reason']
         );
 
-        return back()->with('success', "User '{$user->username}' has been archived.");
+        return back()->with('success', "បានដាក់ប័ណ្ណសារគណនី '{$user->username}'។");
     }
 
     /**
@@ -450,6 +450,6 @@ class SettingsController extends Controller
             'Restored archived user (set as inactive)'
         );
 
-        return back()->with('success', "User '{$user->username}' restored as inactive.");
+        return back()->with('success', "បានស្ដារគណនី '{$user->username}' (ស្ថានភាពបិទ)។");
     }
 }

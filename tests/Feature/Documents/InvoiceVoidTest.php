@@ -61,7 +61,7 @@ class InvoiceVoidTest extends TestCase
 
         $this->actingAs($admin)
             ->post(route('invoices.void', $invoice), ['reason' => ''])
-            ->assertSessionHasErrors(['reason' => 'The reason field is required.']);
+            ->assertSessionHasErrors(['reason' => 'សូមបំពេញ មូលហេតុ។']);
 
         $this->assertSame(DocumentStatus::Finalized, $invoice->refresh()->status);
     }
@@ -75,7 +75,7 @@ class InvoiceVoidTest extends TestCase
 
         $this->actingAs($admin)
             ->post(route('invoices.void', $invoice), ['reason' => 'Second void'])
-            ->assertSessionHas('error', 'Document is already voided.');
+            ->assertSessionHas('error', 'វិក្កយបត្រនេះត្រូវបានលុបចោល (Void) រួចហើយ។');
     }
 
     public function test_voiding_invoice_reverses_customer_loyalty(): void

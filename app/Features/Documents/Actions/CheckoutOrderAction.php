@@ -45,7 +45,7 @@ final class CheckoutOrderAction
             // 2. Resolve Products and Authoritative Prices
             $rawItems = $data['items'] ?? [];
             if (empty($rawItems)) {
-                throw new DomainException('Please add at least one item to checkout.');
+                throw new DomainException('សូមបន្ថែមមុខម្ហូបយ៉ាងហោចណាស់មួយ មុននឹងគិតប្រាក់។');
             }
 
             $productIds = array_column($rawItems, 'product_id');
@@ -63,7 +63,7 @@ final class CheckoutOrderAction
                 $product = $products->get($productId);
 
                 if (! $product) {
-                    throw new DomainException("Product #{$productId} is not available.");
+                    throw new DomainException("មុខទំនិញ #{$productId} មិនមានលក់ទេ។");
                 }
 
                 $quantity = max(1, (int) ($rawItem['quantity'] ?? 1));

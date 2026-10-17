@@ -12,11 +12,8 @@ final class ApprovalGuard
     /**
      * Assert that an approval is approved, unexpired, unconsumed, and matches target and payload.
      *
-     * @param ApprovalRequest $approval
-     * @param ApprovalType $type
-     * @param string $targetType
-     * @param int $targetId
-     * @param array<string, mixed>|null $normalizedPayload
+     * @param  array<string, mixed>|null  $normalizedPayload
+     *
      * @throws DomainException
      */
     public function assertUsable(
@@ -27,27 +24,27 @@ final class ApprovalGuard
         ?array $normalizedPayload = null
     ): void {
         if ($approval->status !== ApprovalStatus::Approved) {
-            throw new DomainException('Approval request is not in approved status.');
+            throw new DomainException('សំណើនេះមិនទាន់ត្រូវបានអនុម័តទេ។ (Approval request is not in approved status)');
         }
 
         if ($approval->expires_at === null || ! $approval->expires_at->isFuture()) {
-            throw new DomainException('Approval request has expired and can no longer be used.');
+            throw new DomainException('សំណើនេះផុតកំណត់ហើយ មិនអាចប្រើបានទៀតទេ។ (Approval request has expired)');
         }
 
         if ($approval->used_at !== null || $approval->status === ApprovalStatus::Used) {
-            throw new DomainException('Approval request has already been consumed (single-use invariant INV-06).');
+            throw new DomainException('សំណើនេះត្រូវបានប្រើរួចហើយ (ប្រើបានតែម្តង)។ (Approval request has already been consumed)');
         }
 
         if ($approval->request_type !== $type) {
-            throw new DomainException("Approval request type mismatch. Expected {$type->value}.");
+            throw new DomainException("ប្រភេទសំណើមិនត្រូវគ្នា។ ត្រូវការ {$type->value}។");
         }
 
         if ($approval->target_type !== $targetType || (int) $approval->target_id !== $targetId) {
-            throw new DomainException('Approval request target does not match current operation.');
+            throw new DomainException('សំណើនេះមិនមែនសម្រាប់ប្រតិបត្តិការនេះទេ។');
         }
 
         if ($normalizedPayload !== null && ($approval->requested_changes ?? []) !== $normalizedPayload) {
-            throw new DomainException('Approved mutation payload does not match attempted changes.');
+            throw new DomainException('ការកែប្រែមិនដូចអ្វីដែលបានអនុម័តទេ។');
         }
     }
 }

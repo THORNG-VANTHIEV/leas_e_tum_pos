@@ -9,7 +9,6 @@ use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
 use App\Support\Audit\AuditService;
-use App\Support\Money\Money;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -23,9 +22,7 @@ final class CreateDraftDocument
     /**
      * Create an immutable draft document.
      *
-     * @param array<string, mixed> $data
-     * @param int $creatorId
-     * @return Document
+     * @param  array<string, mixed>  $data
      */
     public function handle(array $data, int $creatorId): Document
     {
@@ -33,7 +30,7 @@ final class CreateDraftDocument
             $period = Period::findOrFail($data['period_id']);
 
             if ($period->status !== PeriodStatus::Active) {
-                throw new DomainException('Drafts can only be created in an active accounting period.');
+                throw new DomainException('អាចបង្កើតការកម្មង់បានតែក្នុងវគ្គដែលកំពុងបើកប៉ុណ្ណោះ។');
             }
 
             $entryPolicy = $period->entry_settings_snapshot ?? [];
@@ -42,7 +39,7 @@ final class CreateDraftDocument
             // 1. Authoritative Server-Side Product Resolution & Snapshots
             $rawItems = $data['items'] ?? [];
             if (empty($rawItems)) {
-                throw new DomainException('A document requires at least one item.');
+                throw new DomainException('វិក្កយបត្រត្រូវមានមុខទំនិញយ៉ាងហោចណាស់មួយ។');
             }
 
             $productIds = array_column($rawItems, 'product_id');
@@ -60,12 +57,12 @@ final class CreateDraftDocument
                 $product = $products->get($productId);
 
                 if (! $product) {
-                    throw new DomainException("Product #{$productId} is inactive or does not exist.");
+                    throw new DomainException("មុខទំនិញ #{$productId} ត្រូវបានបិទ ឬមិនមានក្នុងប្រព័ន្ធ។");
                 }
 
                 $quantity = (int) $rawItem['quantity'];
                 if ($quantity < 1 || $quantity > 9999) {
-                    throw new DomainException('Quantity must be between 1 and 9999.');
+                    throw new DomainException('ចំនួនត្រូវនៅចន្លោះ 1 ដល់ 9999។');
                 }
 
                 // Authoritative master price
@@ -115,7 +112,7 @@ final class CreateDraftDocument
             if ($requireSource) {
                 if (! $calc['source_total_verified'] || $calc['variance'] !== '0.00') {
                     throw new DomainException(
-                        "Source total reconciliation mismatch. Variance is {$calc['variance']}. Document requires exact balance."
+                        "សរុបតាមក្រដាសមិនត្រូវនឹងប្រព័ន្ធ (ខុសគ្នា {$calc['variance']})។ ត្រូវតែស្មើគ្នាពិតប្រាកដ។"
                     );
                 }
             }

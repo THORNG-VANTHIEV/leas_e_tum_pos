@@ -120,7 +120,7 @@ class ProductSnapshotTest extends TestCase
         $action = app(CreateDraftDocument::class);
 
         $this->expectException(DomainException::class);
-        $this->expectExceptionMessage("Product #{$this->product->id} is inactive or does not exist.");
+        $this->expectExceptionMessage("មុខទំនិញ #{$this->product->id} ត្រូវបានបិទ ឬមិនមានក្នុងប្រព័ន្ធ។");
 
         $action->handle([
             'period_id' => $this->period->id,
