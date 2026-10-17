@@ -586,7 +586,7 @@ export default function SettingsIndex({
                     </Card>
                 )}
 
-                {/* TAB: Invoice & Print Designer (80mm / A4) */}
+                {/* TAB: Invoice & Print Designer (80mm / A5) */}
                 {activeTab === 'invoice' && (
                     <InvoiceDesigner settings={settings} />
                 )}

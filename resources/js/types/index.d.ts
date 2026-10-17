@@ -30,7 +30,7 @@ export interface BusinessSettings {
     document_language: string;
     document_footer?: string | null;
     print_settings?: {
-        default_format?: '80mm' | 'a4';
+        default_format?: '80mm' | 'a5';
         format?: string;
         show_logo?: boolean;
         show_business_name?: boolean;

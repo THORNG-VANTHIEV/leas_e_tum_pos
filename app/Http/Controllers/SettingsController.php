@@ -8,11 +8,9 @@ use App\Models\BusinessSetting;
 use App\Models\Location;
 use App\Models\User;
 use App\Support\Audit\AuditService;
-use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -118,7 +116,7 @@ class SettingsController extends Controller
     public function updatePrintSettings(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'default_format' => ['required', 'string', 'in:80mm,a4'],
+            'default_format' => ['required', 'string', 'in:80mm,a5'],
             'show_logo' => ['nullable', 'boolean'],
             'show_business_name' => ['nullable', 'boolean'],
             'header_title_en' => ['nullable', 'string', 'max:120'],
@@ -197,10 +195,10 @@ class SettingsController extends Controller
         ]);
 
         $file = $request->file('qr_image');
-        $fileName = 'khqr_' . time() . '_' . bin2hex(random_bytes(6)) . '.' . $file->getClientOriginalExtension();
+        $fileName = 'khqr_'.time().'_'.bin2hex(random_bytes(6)).'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('qr_codes', $fileName, 'public');
 
-        $url = asset('storage/' . $path);
+        $url = asset('storage/'.$path);
 
         return response()->json([
             'success' => true,

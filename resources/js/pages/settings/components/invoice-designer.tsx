@@ -38,8 +38,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
     const { auth } = usePage<PageProps>().props;
     const currentPrint = settings.print_settings || {};
 
-    const [activePreviewFormat, setActivePreviewFormat] = useState<'80mm' | 'a4'>(
-        (currentPrint.default_format as '80mm' | 'a4') || '80mm'
+    const [activePreviewFormat, setActivePreviewFormat] = useState<'80mm' | 'a5'>(
+        (currentPrint.default_format as '80mm' | 'a5') || '80mm'
     );
     const [previewZoom, setPreviewZoom] = useState<number>(100);
     const [sampleScenario, setSampleScenario] = useState<'dine_in' | 'takeaway'>('dine_in');
@@ -48,7 +48,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
     // Form state initialized with print_settings or clean defaults
     const form = useForm({
-        default_format: (currentPrint.default_format as '80mm' | 'a4') || '80mm',
+        default_format: (currentPrint.default_format as '80mm' | 'a5') || '80mm',
         show_logo: currentPrint.show_logo ?? true,
         show_business_name: currentPrint.show_business_name ?? true,
         header_title_en: currentPrint.header_title_en || 'COMMERCIAL INVOICE',
@@ -294,7 +294,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                     }
                     @page {
                         margin: 0;
-                        size: ${activePreviewFormat === '80mm' ? '80mm auto' : 'A4 portrait'};
+                        size: ${activePreviewFormat === '80mm' ? '80mm auto' : 'A5 portrait'};
                     }
                 }
             `}</style>
@@ -307,7 +307,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                         <span>Invoice & Receipt Template Designer</span>
                     </h2>
                     <p className="text-xs text-zinc-400 mt-1">
-                        Customize visual fields, headers, currency display, KHQR, and policies for both 80mm thermal receipts and A4 invoices with real-time live preview.
+                        Customize visual fields, headers, currency display, KHQR, and policies for both 80mm thermal receipts and A5 invoices with real-time live preview.
                     </p>
                 </div>
 
@@ -383,17 +383,17 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            form.setData('default_format', 'a4');
-                                            setActivePreviewFormat('a4');
+                                            form.setData('default_format', 'a5');
+                                            setActivePreviewFormat('a5');
                                         }}
                                         className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                                            form.data.default_format === 'a4'
+                                            form.data.default_format === 'a5'
                                                 ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400 font-bold'
                                                 : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
                                         }`}
                                     >
                                         <FileText className="w-3.5 h-3.5" />
-                                        <span>A4 Invoice</span>
+                                        <span>A5 Invoice</span>
                                     </button>
                                 </div>
                             </div>
@@ -595,7 +595,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
                                     <span className="text-xs font-semibold text-zinc-200">Show Customer Details</span>
-                                    <p className="text-[10px] text-zinc-400">Customer name & phone on A4</p>
+                                    <p className="text-[10px] text-zinc-400">Customer name & phone on A5</p>
                                 </div>
                                 <Switch
                                     id="show_customer_info"
@@ -1039,16 +1039,16 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             )}
                         </div>
 
-                        {/* A4 Signature Blocks */}
+                        {/* A5 Signature Blocks */}
                         <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                             <div className="flex items-center gap-2.5">
                                 <UserCheck className="w-4 h-4 text-emerald-400" />
                                 <div>
                                     <span className="text-xs font-semibold text-zinc-200">
-                                        Show Signature & Stamp Blocks (A4)
+                                        Show Signature & Stamp Blocks (A5)
                                     </span>
                                     <p className="text-[10px] text-zinc-400">
-                                        Official Cashier & Customer signature lines on A4
+                                        Official Cashier & Customer signature lines on A5
                                     </p>
                                 </div>
                             </div>
@@ -1102,15 +1102,15 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setActivePreviewFormat('a4')}
+                                onClick={() => setActivePreviewFormat('a5')}
                                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer flex items-center gap-1.5 ${
-                                    activePreviewFormat === 'a4'
+                                    activePreviewFormat === 'a5'
                                         ? 'bg-emerald-500 text-zinc-950 shadow-xs'
                                         : 'text-zinc-400 hover:text-white'
                                 }`}
                             >
                                 <FileText className="w-3.5 h-3.5" />
-                                <span>A4 Invoice</span>
+                                <span>A5 Invoice</span>
                             </button>
                         </div>
 
@@ -1467,12 +1467,12 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             )}
 
                             {/* =========================================================================
-                                A4 FORMAL COMMERCIAL INVOICE PREVIEW CANVAS
+                                A5 FORMAL COMMERCIAL INVOICE PREVIEW CANVAS (148 × 210 mm)
                                 ========================================================================= */}
-                            {activePreviewFormat === 'a4' && (
+                            {activePreviewFormat === 'a5' && (
                                 <div
                                     id="live-invoice-print-canvas"
-                                    className="w-[480px] bg-white text-black p-6 rounded shadow-2xl font-sans text-xs space-y-5 border border-zinc-300 select-none relative"
+                                    className="w-[420px] min-h-[596px] bg-white text-black p-6 rounded shadow-2xl font-sans text-xs space-y-5 border border-zinc-300 select-none relative"
                                 >
                                     {/* Header Letterhead */}
                                     <div className="flex items-start justify-between pb-3 border-b-2 border-zinc-900 gap-4">
