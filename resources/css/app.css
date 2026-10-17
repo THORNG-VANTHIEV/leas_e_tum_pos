@@ -1087,3 +1087,29 @@ html.light .border-slate-100 {
 }
 
 
+
+/* ========================================================
+   THERMAL PRINTING (80mm receipts, batch slips, kitchen tickets)
+   Thermal heads cannot print grey: grey text is dithered into dots and looks blurry,
+   so everything on the slip prints solid black and a little heavier.
+   ======================================================== */
+@media print {
+    .receipt-container,
+    .receipt-container *,
+    .print-slip-80mm,
+    .print-slip-80mm *,
+    .kitchen-ticket,
+    .kitchen-ticket * {
+        color: #000 !important;
+        border-color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        -webkit-font-smoothing: none;
+        text-shadow: none !important;
+    }
+
+    .receipt-container,
+    .print-slip-80mm {
+        font-weight: 600;
+    }
+}
