@@ -1981,36 +1981,36 @@ export default function DocumentCreate({
                                 </div>
 
                                 {/* Right Column: Live Floor Passport & Table Dossier */}
-                                <div className="w-full lg:w-5/12 p-6 lg:p-8 bg-zinc-900 border-l border-zinc-800 text-zinc-100 flex flex-col justify-between overflow-y-auto">
+                                <div className="w-full lg:w-5/12 p-6 lg:p-8 bg-zinc-100/70 dark:bg-zinc-900/80 border-t lg:border-t-0 lg:border-l border-zinc-200 dark:border-zinc-800 flex flex-col justify-between overflow-y-auto">
                                     <div className="space-y-5">
-                                        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                                        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-zinc-800">
                                             <div>
-                                                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
+                                                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 block">
                                                     FLOOR PASSPORT & REAL-TIME DISPATCH
                                                 </span>
-                                                <h3 className="text-sm font-bold font-mono text-white">
+                                                <h3 className="text-sm font-bold font-mono text-zinc-900 dark:text-white">
                                                     TABLE STATUS DOSSIER
                                                 </h3>
                                             </div>
                                             <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
                                                 isFocusedOccupied
-                                                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                                                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                                    ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                                                    : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
                                             }`}>
                                                 {isFocusedOccupied ? 'OCCUPIED • កំពុងទទួលភ្ញៀវ' : 'VACANT • តុទំនេរ'}
                                             </span>
                                         </div>
 
                                         {/* Focused Table Card */}
-                                        <div className="p-4 rounded-2xl bg-black/40 border border-zinc-800 space-y-3 font-mono text-xs">
+                                        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-950/80 border border-zinc-200/90 dark:border-zinc-800/90 shadow-xs dark:shadow-none space-y-3 font-mono text-xs">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <span className="text-[10px] text-zinc-400 font-khmer block">តុដែលកំពុងមើល (Selected)</span>
-                                                    <h3 className="text-lg font-bold text-white font-khmer">{focusedTableName}</h3>
+                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">តុដែលកំពុងមើល (Selected)</span>
+                                                    <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-khmer">{focusedTableName}</h3>
                                                 </div>
                                                 <div className="text-right">
-                                                    <span className="text-[10px] text-zinc-400 font-khmer block">តំបន់ (Zone)</span>
-                                                    <span className="text-amber-400 font-bold font-khmer">
+                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">តំបន់ (Zone)</span>
+                                                    <span className="text-amber-600 dark:text-amber-400 font-bold font-khmer">
                                                         {focusedTableName.toLowerCase().includes('vip')
                                                             ? 'បន្ទប់ VIP'
                                                             : focusedTableName.includes('សួន')
@@ -2021,39 +2021,39 @@ export default function DocumentCreate({
                                             </div>
 
                                             {isFocusedOccupied && activeFocusedTable ? (
-                                                <div className="space-y-3 pt-3 border-t border-zinc-800">
-                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
-                                                        <span>លេខកូដវិក្កយបត្រ៖</span>
-                                                        <span className="text-amber-400 font-bold">#TBL-DRAFT-{activeFocusedTable.id}</span>
+                                                <div className="space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                                                    <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
+                                                        <span className="font-khmer">លេខកូដវិក្កយបត្រ៖</span>
+                                                        <span className="text-amber-600 dark:text-amber-400 font-bold">#TBL-DRAFT-{activeFocusedTable.id}</span>
                                                     </div>
-                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
-                                                        <span>ពេលអង្គុយ៖</span>
-                                                        <span className="text-zinc-200">{activeFocusedTable.created_at}</span>
+                                                    <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
+                                                        <span className="font-khmer">ពេលអង្គុយ៖</span>
+                                                        <span className="text-zinc-800 dark:text-zinc-200 font-medium">{activeFocusedTable.created_at}</span>
                                                     </div>
-                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
-                                                        <span>ទឹកប្រាក់សរុប៖</span>
-                                                        <span className="text-emerald-400 font-bold text-sm">
+                                                    <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
+                                                        <span className="font-khmer">ទឹកប្រាក់សរុប៖</span>
+                                                        <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">
                                                             ${parseFloat(activeFocusedTable.grand_total).toFixed(2)}
                                                         </span>
                                                     </div>
 
                                                     {/* Ordered Items Preview */}
-                                                    <div className="pt-2 border-t border-zinc-800/80">
-                                                        <span className="text-[10px] text-zinc-400 uppercase font-sans font-bold block mb-1.5">
+                                                    <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80">
+                                                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-sans font-bold block mb-1.5">
                                                             មុខម្ហូបដែលបានកុម្ម៉ង់ ({activeFocusedTable.items.length} មុខ)៖
                                                         </span>
                                                         <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
                                                             {activeFocusedTable.items.map((item, idx) => (
-                                                                <div key={idx} className="flex items-center justify-between py-1 border-b border-zinc-800/40 text-[11px]">
+                                                                <div key={idx} className="flex items-center justify-between py-1 border-b border-zinc-100 dark:border-zinc-800/40 text-[11px]">
                                                                     <div className="min-w-0 pr-2">
-                                                                        <span className="text-zinc-200 font-khmer truncate block">
+                                                                        <span className="text-zinc-800 dark:text-zinc-200 font-khmer truncate block font-medium">
                                                                             {item.name_primary}
                                                                         </span>
-                                                                        <span className="text-[10px] text-zinc-500 font-mono">
+                                                                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-mono">
                                                                             x{item.quantity} • ${parseFloat(item.unit_price).toFixed(2)}
                                                                         </span>
                                                                     </div>
-                                                                    <span className="font-mono text-zinc-300 font-bold shrink-0">
+                                                                    <span className="font-mono text-zinc-900 dark:text-zinc-300 font-bold shrink-0">
                                                                         ${parseFloat(item.line_total).toFixed(2)}
                                                                     </span>
                                                                 </div>
@@ -2062,14 +2062,14 @@ export default function DocumentCreate({
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="py-4 text-center space-y-2 pt-3 border-t border-zinc-800">
-                                                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                                                        <Check className="w-5 h-5" />
+                                                <div className="py-4 text-center space-y-2 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                                                    <div className="w-11 h-11 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-xs">
+                                                        <Check className="w-5 h-5 stroke-[2.5]" />
                                                     </div>
-                                                    <p className="text-xs text-zinc-300 font-khmer">
+                                                    <p className="text-xs font-bold text-zinc-800 dark:text-zinc-100 font-khmer">
                                                         តុនេះទំនេរ រួចរាល់សម្រាប់ទទួលភ្ញៀវថ្មីភ្លាមៗ
                                                     </p>
-                                                    <p className="text-[10px] text-zinc-500 font-khmer">
+                                                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer leading-relaxed">
                                                         ចុចលើប៊ូតុងខាងក្រោមដើម្បីកំណត់តុនេះសម្រាប់វិក្កយបត្របច្ចុប្បន្ន
                                                     </p>
                                                 </div>
@@ -2077,41 +2077,41 @@ export default function DocumentCreate({
                                         </div>
 
                                         {/* Floor Capacity & Analytics Summary */}
-                                        <div className="p-4 rounded-2xl bg-black/40 border border-zinc-800 space-y-2.5 text-xs font-mono">
-                                            <div className="flex items-center justify-between text-zinc-400">
+                                        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-950/80 border border-zinc-200/90 dark:border-zinc-800/90 shadow-xs dark:shadow-none space-y-3 text-xs font-mono">
+                                            <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 font-medium">
                                                 <span>Occupancy Rate:</span>
-                                                <span className="text-amber-400 font-bold">
+                                                <span className="text-amber-600 dark:text-amber-400 font-black text-sm">
                                                     {Math.round((activeTablesCount / (tables_list.length || 1)) * 100)}%
                                                 </span>
                                             </div>
-                                            <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                            <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden p-0.5 border border-zinc-200 dark:border-zinc-700/50">
                                                 <div
-                                                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
+                                                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-500"
                                                     style={{ width: `${Math.round((activeTablesCount / (tables_list.length || 1)) * 100)}%` }}
                                                 />
                                             </div>
-                                            <div className="flex items-center justify-between text-zinc-400 pt-1">
+                                            <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 pt-0.5 font-medium">
                                                 <span>Active Floor Sales:</span>
-                                                <span className="text-emerald-400 font-bold">
+                                                <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">
                                                     ${floorTotalUSD.toFixed(2)} ({floorTotalKHR.toLocaleString()} ៛)
                                                 </span>
                                             </div>
                                         </div>
 
                                         {/* Dining Rules Card */}
-                                        <div className="p-3.5 rounded-xl bg-zinc-800/60 border border-zinc-700/80 space-y-1.5 text-xs">
-                                            <div className="font-bold text-amber-400 font-khmer flex items-center gap-1.5">
-                                                <Sparkles className="w-4 h-4" />
+                                        <div className="p-3.5 rounded-xl bg-amber-500/10 dark:bg-amber-500/10 border border-amber-500/25 space-y-1.5 text-xs">
+                                            <div className="font-bold text-amber-700 dark:text-amber-400 font-khmer flex items-center gap-1.5">
+                                                <Sparkles className="w-4 h-4 text-amber-500" />
                                                 <span>យន្តការកុម្ម៉ង់អាហារ (Order Persistence)</span>
                                             </div>
-                                            <p className="text-zinc-300 font-khmer text-[11px] leading-relaxed">
+                                            <p className="text-zinc-600 dark:text-zinc-300 font-khmer text-[11px] leading-relaxed">
                                                 រាល់តុដែលបានផ្អាកទុក (Hold Table) នឹងរក្សាទុកទំនិញក្នុងប្រព័ន្ធ Database ដោយស្វ័យប្រវត្តិតាមគោលការណ៍ INV-01។
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Security Stamp Footer */}
-                                    <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
                                         <span>AUDIT: FLOOR_TABLE_DISPATCH</span>
                                         <span>SPEC-08 ENFORCED</span>
                                     </div>
