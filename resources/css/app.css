@@ -1048,6 +1048,7 @@ html.dark .catalog-count-pill.is-positive-teal {
 
 /* Safety guard for light mode so bg-zinc-100 / bg-slate-100 doesn't turn solid black */
 html.light .bg-zinc-100,
+html.light .bg-zinc-100\/90,
 html.light .bg-slate-100 {
     background-color: #f1f5f9 !important;
 }
@@ -1058,6 +1059,8 @@ html.light .border-zinc-200\/60,
 html.light .border-zinc-200\/50,
 html.light .border-zinc-100,
 html.light .border-slate-200,
+html.light .border-slate-200\/60,
+html.light .border-slate-200\/50,
 html.light .border-slate-100 {
     border-color: #e2e8f0 !important;
 }
