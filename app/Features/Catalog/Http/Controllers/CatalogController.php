@@ -2,8 +2,10 @@
 
 namespace App\Features\Catalog\Http\Controllers;
 
+use App\Enums\DocumentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
+use App\Models\DocumentItem;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Unit;
@@ -11,6 +13,7 @@ use App\Support\Audit\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -372,5 +375,106 @@ class CatalogController extends Controller
         $statusLabel = $category->is_active ? __('បើកដំណើរការ') : __('ផ្អាកដំណើរការ');
 
         return back()->with('success', __('បាន:statusLabelប្រភេទ \':name_primary\'', ['statusLabel' => $statusLabel, 'name_primary' => $category->name_primary]));
+    }
+
+    /**
+     * Delete a product. Invoices and purchases keep their own name/price snapshot, so history stays intact;
+     * a dish that is still on an unpaid table order cannot be removed.
+     */
+    public function destroyProduct(Request $request, Product $product): RedirectResponse
+    {
+        $onOpenOrder = DocumentItem::where('product_id', $product->id)
+            ->whereHas('document', fn ($query) => $query->where('status', DocumentStatus::Draft))
+            ->exists();
+
+        if ($onOpenOrder) {
+            return back()->with('error', __('មិនអាចលុប \':name_primary\' បានទេ ព្រោះកំពុងមានក្នុងការកម្មង់តុដែលមិនទាន់គិតប្រាក់។', ['name_primary' => $product->name_primary]));
+        }
+
+        $oldData = $product->toArray();
+        $product->delete();
+        $this->deleteUnusedUploadedImage($product->image_url);
+
+        $this->audit->record(
+            'product.deleted',
+            $product,
+            $oldData,
+            null,
+            null,
+            $request->user()->id,
+            "Deleted product '{$product->name_primary}'"
+        );
+
+        return back()->with('success', __('បានលុបមុខទំនិញ \':name_primary\'', ['name_primary' => $product->name_primary]));
+    }
+
+    /**
+     * Delete a unit that no product uses any more.
+     */
+    public function destroyUnit(Request $request, Unit $unit): RedirectResponse
+    {
+        $productCount = $unit->products()->count();
+
+        if ($productCount > 0) {
+            return back()->with('error', __('មិនអាចលុបឯកតា \':name_primary\' បានទេ ព្រោះមានមុខទំនិញ :count កំពុងប្រើ។ សូមប្តូរឯកតារបស់មុខទំនិញទាំងនោះសិន។', ['name_primary' => $unit->name_primary, 'count' => $productCount]));
+        }
+
+        $oldData = $unit->toArray();
+        $unit->delete();
+
+        $this->audit->record(
+            'unit.deleted',
+            $unit,
+            $oldData,
+            null,
+            null,
+            $request->user()->id,
+            "Deleted unit '{$unit->name_primary}'"
+        );
+
+        return back()->with('success', __('បានលុបឯកតា \':name_primary\'', ['name_primary' => $unit->name_primary]));
+    }
+
+    /**
+     * Delete a category that has no products left.
+     */
+    public function destroyCategory(Request $request, ProductCategory $category): RedirectResponse
+    {
+        $productCount = $category->products()->count();
+
+        if ($productCount > 0) {
+            return back()->with('error', __('មិនអាចលុបប្រភេទ \':name_primary\' បានទេ ព្រោះមានមុខទំនិញ :count នៅក្នុងប្រភេទនេះ។ សូមផ្លាស់មុខទំនិញទៅប្រភេទផ្សេងសិន។', ['name_primary' => $category->name_primary, 'count' => $productCount]));
+        }
+
+        $oldData = $category->toArray();
+        $category->delete();
+
+        $this->audit->record(
+            'category.deleted',
+            $category,
+            $oldData,
+            null,
+            null,
+            $request->user()->id,
+            "Deleted category '{$category->name_primary}'"
+        );
+
+        return back()->with('success', __('បានលុបប្រភេទ \':name_primary\'', ['name_primary' => $category->name_primary]));
+    }
+
+    /**
+     * Remove an uploaded product photo from storage once no other product points to it.
+     */
+    private function deleteUnusedUploadedImage(?string $imageUrl): void
+    {
+        if (! $imageUrl || ! str_starts_with($imageUrl, '/storage/products/')) {
+            return;
+        }
+
+        if (Product::where('image_url', $imageUrl)->exists()) {
+            return;
+        }
+
+        Storage::disk('public')->delete(substr($imageUrl, strlen('/storage/')));
     }
 }

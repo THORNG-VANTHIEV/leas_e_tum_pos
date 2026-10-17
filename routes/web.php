@@ -121,14 +121,17 @@ Route::middleware(['auth', 'active'])->group(function () {
             Route::post('/products', [CatalogController::class, 'storeProduct'])->name('products.store');
             Route::patch('/products/{product}', [CatalogController::class, 'updateProduct'])->name('products.update');
             Route::post('/products/{product}/toggle', [CatalogController::class, 'toggleProduct'])->name('products.toggle');
+            Route::delete('/products/{product}', [CatalogController::class, 'destroyProduct'])->name('products.destroy');
 
             Route::post('/units', [CatalogController::class, 'storeUnit'])->name('units.store');
             Route::patch('/units/{unit}', [CatalogController::class, 'updateUnit'])->name('units.update');
             Route::post('/units/{unit}/toggle', [CatalogController::class, 'toggleUnit'])->name('units.toggle');
+            Route::delete('/units/{unit}', [CatalogController::class, 'destroyUnit'])->name('units.destroy');
 
             Route::post('/categories', [CatalogController::class, 'storeCategory'])->name('categories.store');
             Route::patch('/categories/{category}', [CatalogController::class, 'updateCategory'])->name('categories.update');
             Route::post('/categories/{category}/toggle', [CatalogController::class, 'toggleCategory'])->name('categories.toggle');
+            Route::delete('/categories/{category}', [CatalogController::class, 'destroyCategory'])->name('categories.destroy');
         });
     });
 

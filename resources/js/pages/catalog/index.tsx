@@ -97,6 +97,24 @@ export default function CatalogIndex({
     // Prices and menu structure are manager-only (mirrors route middleware)
     const { auth } = usePage<PageProps>().props;
     const canManageCatalog = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
+
+    // Record waiting for delete confirmation (managers only; the server refuses records still in use)
+    const [deleteTarget, setDeleteTarget] = useState<
+        { kind: 'products' | 'units' | 'categories'; id: number; name: string } | null
+    >(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleConfirmDelete = () => {
+        if (!deleteTarget) return;
+        setIsDeleting(true);
+        router.delete(`/catalog/${deleteTarget.kind}/${deleteTarget.id}`, {
+            preserveScroll: true,
+            onFinish: () => {
+                setIsDeleting(false);
+                setDeleteTarget(null);
+            },
+        });
+    };
     const [activeTab, setActiveTab] = useState<TabType>(() => {
         if (typeof window !== 'undefined') {
             const saved = sessionStorage.getItem('catalog_active_tab') as TabType;
@@ -764,7 +782,7 @@ export default function CatalogIndex({
                                                             </button>
                                                         </td>
                                                         <td className="px-4 py-3 text-right whitespace-nowrap">
-                                                            {canManageCatalog && (
+                                                            {canManageCatalog && (<>
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
@@ -774,7 +792,16 @@ export default function CatalogIndex({
                                                                 <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                                 {tr('កែ')}
                                                             </Button>
-                                                            )}
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => setDeleteTarget({ kind: 'products', id: p.id, name: p.name_primary })}
+                                                                title={tr('លុប')}
+                                                                className="h-7 ml-1.5 text-xs border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 cursor-pointer"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </Button>
+                                                            </>)}
                                                         </td>
                                                     </tr>
                                                 );
@@ -859,7 +886,7 @@ export default function CatalogIndex({
                                                     </button>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    {canManageCatalog && (
+                                                    {canManageCatalog && (<>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -869,7 +896,17 @@ export default function CatalogIndex({
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                         {tr('កែ')}
                                                     </Button>
-                                                    )}
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => setDeleteTarget({ kind: 'units', id: u.id, name: u.name_primary })}
+                                                                disabled={(u.products_count || 0) > 0}
+                                                                title={(u.products_count || 0) > 0 ? tr('មិនអាចលុបបានទេ ព្រោះមានមុខទំនិញកំពុងប្រើ') : tr('លុប')}
+                                                                className="h-7 ml-1.5 text-xs border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 cursor-pointer"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </Button>
+                                                    </>)}
                                                 </td>
                                             </tr>
                                         ))}
@@ -951,7 +988,7 @@ export default function CatalogIndex({
                                                     </button>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    {canManageCatalog && (
+                                                    {canManageCatalog && (<>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -961,7 +998,17 @@ export default function CatalogIndex({
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                         {tr('កែ')}
                                                     </Button>
-                                                    )}
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => setDeleteTarget({ kind: 'categories', id: c.id, name: c.name_primary })}
+                                                                disabled={(c.products_count || 0) > 0}
+                                                                title={(c.products_count || 0) > 0 ? tr('មិនអាចលុបបានទេ ព្រោះមានមុខទំនិញកំពុងប្រើ') : tr('លុប')}
+                                                                className="h-7 ml-1.5 text-xs border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 cursor-pointer"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </Button>
+                                                    </>)}
                                                 </td>
                                             </tr>
                                         ))}
@@ -1897,6 +1944,47 @@ export default function CatalogIndex({
                             </div>
                         </div>
                     </form>
+                </div>,
+                document.body
+            )}
+            {/* Delete confirmation */}
+            {deleteTarget && createPortal(
+                <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4">
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                                <Trash2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                    {tr('លុប')} "{deleteTarget.name}"?
+                                </h3>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
+                                    {deleteTarget.kind === 'products'
+                                        ? tr('មុខទំនិញនេះនឹងបាត់ពីម៉ឺនុយ POS។ វិក្កយបត្រ និងការទិញចូលចាស់ៗនៅតែរក្សាឈ្មោះ និងតម្លៃដដែល។ បើគ្រាន់តែចង់ឈប់លក់មួយរយៈ សូមចុច "បិទ" ជំនួសវិញ។')
+                                        : tr('អាចលុបបានតែពេលគ្មានមុខទំនិញណាមួយកំពុងប្រើប៉ុណ្ណោះ។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។')}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setDeleteTarget(null)}
+                                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
+                            >
+                                {tr('បោះបង់')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleConfirmDelete}
+                                disabled={isDeleting}
+                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer font-khmer disabled:opacity-50"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                <span>{tr('លុប')}</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>,
                 document.body
             )}

@@ -9,7 +9,7 @@
 | **POS & វិក្កយបត្រ** | `composer test:pos` | គិតប្រាក់, ផ្អាកតុ, Void, foodpanda/Grab, សិទ្ធិមើលវិក្កយបត្រ, ព្រីនជាបាច់ | `app/Features/Documents`, `pages/documents` |
 | **ផ្ទះបាយ** | `composer test:kitchen` | បុងចុងភៅ (មុខថ្មី/បោះបង់, ព្រីនឡើងវិញ), KDS | `KitchenTicketIssuer`, `app/Features/Kds`, `pages/kds`, `pages/kitchen-tickets` |
 | **តុ** | `composer test:floor` | បង្កើត/កែ/លុបតុ, តុមានភ្ញៀវ | `app/Features/Floor`, `pages/floor` |
-| **មុខទំនិញ** | `composer test:catalog` | មុខទំនិញ, ឯកតា, ប្រភេទ | `app/Features/Catalog`, `pages/catalog` |
+| **មុខទំនិញ** | `composer test:catalog` | មុខទំនិញ, ឯកតា, ប្រភេទ, ការលុប (ការពារពេលកំពុងប្រើ) | `app/Features/Catalog`, `pages/catalog` |
 | **ការទិញចូល** | `composer test:purchases` | ការទិញចូល, ការកែ, អ្នកផ្គត់ផ្គង់ | `app/Features/Purchases`, `pages/purchases` |
 | **ចំណាយ** | `composer test:expenses` | ចំណាយ, ការកែ/លុប, អត្រាប្តូរប្រាក់, ថតបេឡា | `app/Features/Expenses`, `pages/expenses` |
 | **វេន & ថតបេឡា** | `composer test:shifts` | បើកវេន, លុយគួរមាន, រាប់ដុល្លារ+រៀល, ខ្វះ/លើស, ប្រវត្តិតាមសិទ្ធិ | `app/Features/Shifts`, `pages/shifts` |
@@ -57,7 +57,7 @@
 - [ ] KDS បង្ហាញតុដែលផ្អាកភ្លាមៗ (មុនពេលបង់ប្រាក់)
 
 ### សិទ្ធិ (ចូលជា cashier1)
-- [ ] មិនឃើញប៊ូតុងកែតម្លៃ, បន្ថែមមុខម្ហូប, កែពិន្ទុ, បន្ថែម/កែ/លុបតុ, កែ/លុបចំណាយ, Void
+- [ ] មិនឃើញប៊ូតុងកែតម្លៃ, បន្ថែម/លុបមុខម្ហូប ឯកតា ប្រភេទ, កែពិន្ទុ, បន្ថែម/កែ/លុបតុ, កែ/លុបចំណាយ, Void
 - [ ] Dashboard, វិក្កយបត្រ, Reports, ចំណាយ, ការទិញចូល, Print Range បង្ហាញតែទិន្នន័យរបស់ខ្លួន (គ្មាន filter បុគ្គលិក)
 - [ ] ចូលជា admin → filter "បុគ្គលិកទាំងអស់" ប្តូរទៅ cashier ម្នាក់ → តួលេខប្តូរតាម
 
