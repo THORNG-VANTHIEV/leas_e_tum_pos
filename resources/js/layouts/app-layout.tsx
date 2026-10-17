@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Link, usePage, router, Head } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import {
+    Lock,
     LayoutDashboard,
     ReceiptText,
     Settings,
@@ -326,7 +327,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
         const isOp = path.startsWith('/tables') || path.startsWith('/kds') || (path.startsWith('/invoices') && path !== '/invoices/create');
         const isInv = path.startsWith('/catalog') || path.startsWith('/purchases');
-        const isFin = path.startsWith('/expenses') || path.startsWith('/customers') || path.startsWith('/approvals');
+        const isFin = path.startsWith('/expenses') || path.startsWith('/shifts') || path.startsWith('/customers') || path.startsWith('/approvals');
 
         return {
             operations: isOp || (stored.operations !== undefined ? stored.operations : isOp),
@@ -436,6 +437,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         khmerName: 'ចំណាយ & ថតបេឡា',
                         href: '/expenses',
                         icon: WalletCards,
+                    },
+                    {
+                        name: 'Cash Shift',
+                        khmerName: 'វេន & បិទថតបេឡា',
+                        href: '/shifts',
+                        icon: Lock,
                     },
                     {
                         name: 'Customers',

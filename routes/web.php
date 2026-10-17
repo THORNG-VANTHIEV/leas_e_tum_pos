@@ -14,6 +14,7 @@ use App\Features\Kds\Http\Controllers\KitchenTicketController;
 use App\Features\Periods\Http\Controllers\PeriodController;
 use App\Features\Purchases\Http\Controllers\PurchaseController;
 use App\Features\Reports\Http\Controllers\ReportController;
+use App\Features\Shifts\Http\Controllers\CashShiftController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SettingsController;
@@ -69,6 +70,11 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::patch('/expenses/{expense}', [ExpenseController::class, 'update'])->middleware('role:admin,supervisor')->name('expenses.update');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->middleware('role:admin,supervisor')->name('expenses.destroy');
     Route::get('/expenses/export/csv', [ExpenseController::class, 'exportCsv'])->name('expenses.export.csv');
+
+    // Cash drawer shifts: open with a float, close by counting the drawer
+    Route::get('/shifts', [CashShiftController::class, 'index'])->name('shifts.index');
+    Route::post('/shifts/open', [CashShiftController::class, 'open'])->name('shifts.open');
+    Route::post('/shifts/close', [CashShiftController::class, 'close'])->name('shifts.close');
 
     // POS Live Terminal, Fast Checkout & Table Management
     Route::get('/invoices', [DocumentController::class, 'index'])->name('invoices.index');

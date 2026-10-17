@@ -12,12 +12,13 @@
 | **មុខទំនិញ** | `composer test:catalog` | មុខទំនិញ, ឯកតា, ប្រភេទ | `app/Features/Catalog`, `pages/catalog` |
 | **ការទិញចូល** | `composer test:purchases` | ការទិញចូល, ការកែ, អ្នកផ្គត់ផ្គង់ | `app/Features/Purchases`, `pages/purchases` |
 | **ចំណាយ** | `composer test:expenses` | ចំណាយ, ការកែ/លុប, អត្រាប្តូរប្រាក់, ថតបេឡា | `app/Features/Expenses`, `pages/expenses` |
+| **វេន & ថតបេឡា** | `composer test:shifts` | បើកវេន, លុយគួរមាន, រាប់ដុល្លារ+រៀល, ខ្វះ/លើស, ប្រវត្តិតាមសិទ្ធិ | `app/Features/Shifts`, `pages/shifts` |
 | **អតិថិជន** | `composer test:customers` | អតិថិជន, ពិន្ទុសន្សំ | `app/Features/Customers`, `pages/customers` |
 | **របាយការណ៍** | `composer test:reports` | ចំណូល (ដក Void), cashier ឃើញតែការលក់ខ្លួន, បិទវគ្គ | `app/Features/Reports`, `app/Features/Periods` |
 | **បុគ្គលិក & សិទ្ធិ** | `composer test:users` | Login, បុគ្គលិក, សាខា, សិទ្ធិ Admin/Supervisor/Cashier, Approval, Audit | `SettingsController`, `routes/web.php`, `RoleGuard` |
 | **Backup** | `composer test:backups` | Backup គ្រប់ 22 តារាង + រូបភាព, Restore, Backup ប្រចាំថ្ងៃ | `app/Features/Backups`, `BackupDailyCommand` |
 | **គណនាលុយ** | `composer test:unit` | Money, DocumentCalculator | `app/Support/Money`, `DocumentCalculator` |
-| **បើកគ្រប់ទំព័រ** | `composer test:smoke` | បើកទំព័រទាំង 27 ជា admin / supervisor / cashier ជាមួយទិន្នន័យពិត | ក្រោយកែ layout, routes, shared props ឬ CSS ធំៗ |
+| **បើកគ្រប់ទំព័រ** | `composer test:smoke` | បើកទំព័រទាំង 28 ជា admin / supervisor / cashier ជាមួយទិន្នន័យពិត | ក្រោយកែ layout, routes, shared props ឬ CSS ធំៗ |
 | **TypeScript** | `composer test:types` | កំហុស type ក្នុង frontend | រាល់ពេលកែ `.tsx` / `.ts` |
 | **ទាំងអស់** | `composer check` | TypeScript + test ទាំងអស់ | **មុនពេល commit / push** |
 
@@ -43,6 +44,11 @@
 - [ ] Chrome បើកជាមួយ `--kiosk-printing` → ព្រីនដោយមិនលោតផ្ទាំងសួរ
 - [ ] foodpanda / Grab → ប្រអប់ឈ្មោះ app និង ORDER # ដិតនៅលើវិក្កយបត្រ
 - [ ] ម៉ោងលើវិក្កយបត្រ = ម៉ោងនាឡិកាកម្ពុជា
+
+### វេន & ថតបេឡា
+- [ ] បើកវេនជាមួយលុយដើម → លក់ជាសាច់ប្រាក់ និង KHQR → "លុយគួរមាន" កើនតែការលក់ជាសាច់ប្រាក់
+- [ ] រាប់ដុល្លារ + រៀល → បិទវេន → សារ "ត្រូវគ្នា / ខ្វះ / លើស" ត្រឹមត្រូវ
+- [ ] ចុច **ប្តូរអ្នកប្រើ** → cashier ម្នាក់ទៀត login ហើយឃើញតែវេនរបស់ខ្លួន
 
 ### តុ & ផ្ទះបាយ
 - [ ] តុដែលផ្អាក → ទំព័រ Floor បង្ហាញ **មានភ្ញៀវ**, សរុបប្រាក់ និងនាទី

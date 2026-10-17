@@ -71,6 +71,9 @@
         "test:customers": [
             "@php artisan test tests/Feature/Customers"
         ],
+        "test:shifts": [
+            "@php artisan test tests/Feature/Shifts"
+        ],
         "test:reports": [
             "@php artisan test tests/Feature/Reports tests/Feature/Periods"
         ],
@@ -136,6 +139,7 @@
         "test:purchases": "Purchases and suppliers",
         "test:expenses": "Expenses and cash drawer",
         "test:customers": "Customers and loyalty",
+        "test:shifts": "Cash shifts: opening float, drawer count and variance",
         "test:reports": "Sales reports and accounting periods",
         "test:users": "Login, staff, permissions, approvals, audit trail",
         "test:backups": "Backup, restore and daily backup command",

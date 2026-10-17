@@ -105,7 +105,7 @@ class PageAccessTest extends TestCase
             '/kds', '/kds?status=all', "/kitchen-tickets/{$ids['ticket']}/print",
             '/tables', '/tables?zone=all',
             '/catalog', '/purchases', '/customers', '/customers/lookup?q=a',
-            '/expenses', '/expenses/export/csv', '/reports', '/reports/export/csv', '/approvals',
+            '/expenses', '/expenses/export/csv', '/shifts', '/reports', '/reports/export/csv', '/approvals',
             '/settings', '/settings/periods', "/periods/{$ids['period']}/review",
         ];
     }
