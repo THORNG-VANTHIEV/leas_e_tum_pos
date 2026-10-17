@@ -58,6 +58,8 @@ interface ReportsPageProps {
         total_units: number;
         void_count: number;
         void_value: string;
+        open_orders_count: number;
+        open_orders_value: string;
         unverified_count: number;
     };
     financialSummary?: {
@@ -470,6 +472,17 @@ export default function ReportsIndex({
                                 <strong>Reconciliation Alert:</strong> {metrics.unverified_count} document(s) have unverified physical source totals.
                             </span>
                         </div>
+                    </div>
+                )}
+
+                {/* Held tables not paid yet: not part of sales until checkout */}
+                {metrics.open_orders_count > 0 && (
+                    <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-700 dark:text-sky-300 text-xs flex items-center gap-2.5 font-khmer">
+                        <Users className="w-4 h-4 shrink-0" />
+                        <span>
+                            មានការកម្មង់កំពុងបើក (មិនទាន់គិតប្រាក់) <strong className="font-mono">{metrics.open_orders_count}</strong> ចំនួន
+                            សរុប <strong className="font-mono">${metrics.open_orders_value}</strong> — មិនទាន់រាប់ក្នុងចំណូលទេ។
+                        </span>
                     </div>
                 )}
 

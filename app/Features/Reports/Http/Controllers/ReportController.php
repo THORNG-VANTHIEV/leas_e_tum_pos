@@ -2,6 +2,7 @@
 
 namespace App\Features\Reports\Http\Controllers;
 
+use App\Enums\DocumentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\Expense;
@@ -51,8 +52,10 @@ class ReportController extends Controller
         $allDocs = (clone $baseQuery)->get();
 
         // Separate active finalized/draft vs void documents per spec Section 13.5
-        $validDocs = $allDocs->where('status', '!=', 'void');
-        $voidDocs = $allDocs->where('status', '===', 'void');
+        // Sales are paid invoices only; held tables (drafts) are reported separately as open orders
+        $validDocs = $allDocs->filter(fn (Document $doc) => $doc->status === DocumentStatus::Finalized);
+        $voidDocs = $allDocs->filter(fn (Document $doc) => $doc->status === DocumentStatus::Void);
+        $openDocs = $allDocs->filter(fn (Document $doc) => in_array($doc->status, [DocumentStatus::Draft, DocumentStatus::Review], true));
 
         $grossSalesCents = 0;
         $discountCents = 0;
@@ -204,6 +207,8 @@ class ReportController extends Controller
                 'total_documents' => $validDocs->count(),
                 'total_units' => $totalUnits,
                 'void_count' => $voidDocs->count(),
+                'open_orders_count' => $openDocs->count(),
+                'open_orders_value' => Money::fromCents($openDocs->sum(fn (Document $doc) => Money::toCents((string) $doc->grand_total))),
                 'void_value' => Money::fromCents($voidValueCents),
                 'unverified_count' => $unverifiedCount,
             ],
@@ -251,7 +256,7 @@ class ReportController extends Controller
 
         $docs = $query->orderBy('id')->get();
 
-        $filename = 'financial-register-' . now()->format('Y-m-d-His') . '.csv';
+        $filename = 'financial-register-'.now()->format('Y-m-d-His').'.csv';
 
         return ResponseFactory::stream(function () use ($docs) {
             $handle = fopen('php://output', 'w');
@@ -279,7 +284,7 @@ class ReportController extends Controller
 
             foreach ($docs as $d) {
                 fputcsv($handle, [
-                    $d->document_number ?? ('DRAFT-' . str_pad((string) $d->provisional_order, 4, '0', STR_PAD_LEFT)),
+                    $d->document_number ?? ('DRAFT-'.str_pad((string) $d->provisional_order, 4, '0', STR_PAD_LEFT)),
                     strtoupper($d->status),
                     $d->period->code ?? 'N/A',
                     $d->business_date,

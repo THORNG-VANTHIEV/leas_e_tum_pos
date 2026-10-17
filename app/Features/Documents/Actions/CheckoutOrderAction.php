@@ -7,15 +7,18 @@ use App\Enums\OrderSource;
 use App\Enums\PeriodStatus;
 use App\Features\Documents\Services\DocumentCalculator;
 use App\Features\Documents\Services\KitchenTicketIssuer;
+use App\Models\BusinessSetting;
 use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\RestaurantTable;
+use App\Models\User;
 use App\Support\Audit\AuditService;
 use App\Support\Money\Money;
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 final class CheckoutOrderAction
 {
@@ -97,6 +100,17 @@ final class CheckoutOrderAction
                 $itemsSubtotalCents += Money::toCents((string) $ci['unit_price']) * (int) $ci['quantity'];
             }
             $discountCents = Money::toCents($discountAmountInput);
+
+            // Cashiers may only give small discounts; larger ones must be entered by a supervisor or admin
+            $actor = User::find($cashierId);
+            $maxDiscountPercent = BusinessSetting::current()->cashierMaxDiscountPercent();
+            if ($actor?->isCashier() && $discountCents * 100 > $itemsSubtotalCents * $maxDiscountPercent) {
+                $maxDiscount = Money::fromCents(intdiv($itemsSubtotalCents * $maxDiscountPercent, 100));
+
+                throw ValidationException::withMessages([
+                    'discount_amount' => "Cashier អាចបញ្ចុះតម្លៃបានត្រឹម {$maxDiscountPercent}% (\${$maxDiscount})។ សូមឱ្យ Supervisor ឬ Admin ធ្វើការបញ្ចុះតម្លៃលើសនេះ។",
+                ]);
+            }
             $expectedGrandTotalCents = max(0, $itemsSubtotalCents - $discountCents);
             $expectedGrandTotal = Money::fromCents($expectedGrandTotalCents);
 

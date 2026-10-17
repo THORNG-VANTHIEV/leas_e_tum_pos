@@ -34,7 +34,7 @@ class DashboardController extends Controller
 
         // Calculate gross revenue in integer cents
         $grossCents = 0;
-        foreach ((clone $docQuery)->where('status', '!=', DocumentStatus::Void)->pluck('grand_total') as $total) {
+        foreach ((clone $docQuery)->where('status', DocumentStatus::Finalized)->pluck('grand_total') as $total) {
             $grossCents += Money::toCents((string) $total);
         }
 

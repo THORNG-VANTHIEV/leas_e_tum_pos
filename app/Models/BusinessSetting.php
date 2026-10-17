@@ -48,6 +48,14 @@ class BusinessSetting extends Model
         return (float) ($this->print_settings['exchange_rate_khr'] ?? 4000);
     }
 
+    /**
+     * Largest discount a cashier may give without a supervisor, as a percentage of the order subtotal.
+     */
+    public function cashierMaxDiscountPercent(): int
+    {
+        return (int) ($this->entry_settings['cashier_max_discount_percent'] ?? 10);
+    }
+
     public static function current(): self
     {
         return static::firstOrCreate(

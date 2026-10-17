@@ -45,6 +45,28 @@ class SalesReportTest extends TestCase
             );
     }
 
+    public function test_held_tables_are_reported_as_open_orders_not_sales(): void
+    {
+        $this->checkout(2); // paid $5.00
+        $this->actingAs($this->admin)->post(route('invoices.hold-table'), [
+            'table_identifier' => 'តុ ០៥',
+            'items' => [['product_id' => $this->snails->id, 'quantity' => 1]], // unpaid $2.50
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get(route('reports.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('metrics.net_sales', '5.00')
+                ->where('metrics.open_orders_count', 1)
+                ->where('metrics.open_orders_value', '2.50')
+            );
+
+        $this->actingAs($this->admin)
+            ->get(route('dashboard'))
+            ->assertInertia(fn ($page) => $page->where('stats.gross_revenue', '5.00'));
+    }
+
     public function test_cashier_report_only_includes_their_own_invoices(): void
     {
         $this->checkout(2); // admin's sale, $5.00
