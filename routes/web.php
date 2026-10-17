@@ -10,6 +10,7 @@ use App\Features\Documents\Http\Controllers\DocumentPrintController;
 use App\Features\Expenses\Http\Controllers\ExpenseController;
 use App\Features\Floor\Http\Controllers\FloorTableController;
 use App\Features\Kds\Http\Controllers\KdsController;
+use App\Features\Kds\Http\Controllers\KitchenTicketController;
 use App\Features\Periods\Http\Controllers\PeriodController;
 use App\Features\Purchases\Http\Controllers\PurchaseController;
 use App\Features\Reports\Http\Controllers\ReportController;
@@ -51,6 +52,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/kds', [KdsController::class, 'index'])->name('kds.index');
     Route::post('/kds/orders/{document}/status', [KdsController::class, 'updateStatus'])->name('kds.status');
     Route::post('/kds/items/{item}/status', [KdsController::class, 'updateItemStatus'])->name('kds.items.status');
+    Route::get('/kitchen-tickets/{ticket}/print', [KitchenTicketController::class, 'print'])->name('kitchen-tickets.print');
 
     // 09. Customers & Loyalty (CRM)
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');

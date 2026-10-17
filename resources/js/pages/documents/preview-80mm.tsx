@@ -4,6 +4,7 @@ import { PageProps } from '@/types';
 import { Printer, ArrowLeft, RefreshCw, CheckCircle2, QrCode, Wifi } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
+import { useAutoPrint } from '@/components/print-queue';
 
 interface DocumentPrintProps {
     document: {
@@ -108,6 +109,9 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
             }
         );
     };
+
+    // Opened by the POS print queue right after checkout: log the print and print immediately
+    useAutoPrint(handlePrint);
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-900 py-6 px-4 selection:bg-zinc-200">

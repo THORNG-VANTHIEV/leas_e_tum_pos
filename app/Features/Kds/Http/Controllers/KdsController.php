@@ -19,7 +19,7 @@ class KdsController extends Controller
 
         $query = Document::query()
             ->with(['items.product', 'creator', 'customer'])
-            ->whereIn('status', ['finalized', 'provisional']);
+            ->visibleInKitchen();
 
         if ($statusFilter === 'active') {
             $query->whereIn('kitchen_status', ['pending', 'cooking', 'ready']);
@@ -39,7 +39,8 @@ class KdsController extends Controller
             ->map(function ($doc) {
                 return [
                     'id' => $doc->id,
-                    'document_number' => $doc->document_number,
+                    // Held dine-in orders have no invoice number until they are paid
+                    'document_number' => $doc->document_number ?? "TBL-DRAFT-{$doc->id}",
                     'reference_identifier' => $doc->reference_identifier ?: 'Takeaway',
                     'order_source' => $doc->order_source?->value ?? 'walk_in',
                     'external_order_ref' => $doc->external_order_ref,
@@ -69,10 +70,10 @@ class KdsController extends Controller
 
         // Summary counts for tabs
         $counts = [
-            'pending' => Document::whereIn('status', ['finalized', 'provisional'])->where('kitchen_status', 'pending')->count(),
-            'cooking' => Document::whereIn('status', ['finalized', 'provisional'])->where('kitchen_status', 'cooking')->count(),
-            'ready' => Document::whereIn('status', ['finalized', 'provisional'])->where('kitchen_status', 'ready')->count(),
-            'served_today' => Document::whereIn('status', ['finalized', 'provisional'])
+            'pending' => Document::visibleInKitchen()->where('kitchen_status', 'pending')->count(),
+            'cooking' => Document::visibleInKitchen()->where('kitchen_status', 'cooking')->count(),
+            'ready' => Document::visibleInKitchen()->where('kitchen_status', 'ready')->count(),
+            'served_today' => Document::visibleInKitchen()
                 ->where('kitchen_status', 'served')
                 ->whereDate('updated_at', today())
                 ->count(),
@@ -111,7 +112,7 @@ class KdsController extends Controller
             return response()->json(['success' => true, 'kitchen_status' => $status]);
         }
 
-        return back()->with('success', "បច្ចុប្បន្នភាពផ្ទះបាយ (#{$document->document_number}) បានផ្លាស់ប្ដូរទៅជា {$status}");
+        return back()->with('success', "បច្ចុប្បន្នភាពផ្ទះបាយ (#{$document->reference_identifier}) បានផ្លាស់ប្ដូរទៅជា {$status}");
     }
 
     public function updateItemStatus(Request $request, DocumentItem $item): RedirectResponse|JsonResponse

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\DocumentStatus;
 use App\Enums\OrderSource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -115,5 +116,23 @@ class Document extends Model
     public function printLogs(): HasMany
     {
         return $this->hasMany(PrintLog::class);
+    }
+
+    public function kitchenTickets(): HasMany
+    {
+        return $this->hasMany(KitchenTicket::class);
+    }
+
+    /**
+     * Orders the kitchen should see: paid orders, plus held dine-in orders already sent to the kitchen.
+     */
+    public function scopeVisibleInKitchen(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query) {
+            $query->where('status', DocumentStatus::Finalized)
+                ->orWhere(function (Builder $query) {
+                    $query->where('status', DocumentStatus::Draft)->whereHas('kitchenTickets');
+                });
+        });
     }
 }

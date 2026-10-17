@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/context/language-context';
+import { PrintQueue } from '@/components/print-queue';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -1038,6 +1039,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
             isPosPage ? 'h-screen max-h-screen overflow-hidden' : 'min-h-screen'
         }`}>
             {title && <Head title={title} />}
+            <PrintQueue />
 
             {/* Mobile Top Header (< md screens) */}
             <header className="md:hidden sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/95 backdrop-blur-xl h-14 px-4 flex items-center justify-between">

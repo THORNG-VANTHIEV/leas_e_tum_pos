@@ -87,6 +87,12 @@ export interface FlashMessages {
     error?: string | null;
     warning?: string | null;
     info?: string | null;
+    print_jobs?: PrintJobBatch | null;
+}
+
+export interface PrintJobBatch {
+    token: string;
+    jobs: { type: 'kitchen_ticket' | 'receipt'; url: string }[];
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {

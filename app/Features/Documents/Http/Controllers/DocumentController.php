@@ -21,6 +21,7 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -188,12 +189,13 @@ class DocumentController extends Controller
                     'success' => true,
                     'document' => $document,
                     'receipt_url' => route('invoices.preview.thermal', $document->id),
+                    'print_jobs' => $this->printJobs($document, withReceipt: true),
                 ]);
             }
 
             return redirect()->route('invoices.show', $document->id)
                 ->with('success', "វិក្កយបត្រ {$document->document_number} ត្រូវបានទូទាត់ជោគជ័យ!")
-                ->with('auto_print', true);
+                ->with('print_jobs', $this->printJobs($document, withReceipt: true));
         } catch (DomainException $e) {
             if ($request->wantsJson()) {
                 return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
@@ -224,10 +226,13 @@ class DocumentController extends Controller
                 return response()->json([
                     'success' => true,
                     'document' => $document,
+                    'print_jobs' => $this->printJobs($document, withReceipt: false),
                 ]);
             }
 
-            return back()->with('success', "បានរក្សាទុកការកុម្ម៉ង់សម្រាប់ {$document->reference_identifier} រួចរាល់!");
+            return back()
+                ->with('success', "បានរក្សាទុកការកុម្ម៉ង់សម្រាប់ {$document->reference_identifier} រួចរាល់!")
+                ->with('print_jobs', $this->printJobs($document, withReceipt: false));
         } catch (DomainException $e) {
             if ($request->wantsJson()) {
                 return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
@@ -289,6 +294,28 @@ class DocumentController extends Controller
         } catch (DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Slips the cashier printer should produce right away: the kitchen ticket first (if any dishes changed),
+     * then the customer receipt. The token lets the browser print each batch exactly once.
+     *
+     * @return array{token: string, jobs: array<int, array{type: string, url: string}>}
+     */
+    private function printJobs(Document $document, bool $withReceipt): array
+    {
+        $jobs = [];
+
+        $ticket = $document->relationLoaded('issuedKitchenTicket') ? $document->getRelation('issuedKitchenTicket') : null;
+        if ($ticket) {
+            $jobs[] = ['type' => 'kitchen_ticket', 'url' => route('kitchen-tickets.print', $ticket).'?autoprint=1'];
+        }
+
+        if ($withReceipt) {
+            $jobs[] = ['type' => 'receipt', 'url' => route('invoices.preview.thermal', $document->id).'?autoprint=1'];
+        }
+
+        return ['token' => (string) Str::uuid(), 'jobs' => $jobs];
     }
 
     /**

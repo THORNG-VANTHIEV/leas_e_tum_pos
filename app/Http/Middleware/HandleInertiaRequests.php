@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'business' => function () {
                 $setting = BusinessSetting::current();
+
                 return [
                     'business_name_primary' => $setting->business_name_primary,
                     'business_name_secondary' => $setting->business_name_secondary,
@@ -76,6 +77,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
                 'warning' => fn () => $request->session()->get('warning'),
                 'info' => fn () => $request->session()->get('info'),
+                'print_jobs' => fn () => $request->session()->get('print_jobs'),
             ],
             'csrf_token' => fn () => csrf_token(),
         ];

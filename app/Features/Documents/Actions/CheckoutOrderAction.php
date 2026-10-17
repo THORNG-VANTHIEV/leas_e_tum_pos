@@ -6,6 +6,7 @@ use App\Enums\DocumentStatus;
 use App\Enums\OrderSource;
 use App\Enums\PeriodStatus;
 use App\Features\Documents\Services\DocumentCalculator;
+use App\Features\Documents\Services\KitchenTicketIssuer;
 use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Period;
@@ -21,6 +22,7 @@ final class CheckoutOrderAction
     public function __construct(
         private readonly DocumentCalculator $calculator,
         private readonly AuditService $audit,
+        private readonly KitchenTicketIssuer $kitchenTickets,
     ) {}
 
     /**
@@ -130,8 +132,11 @@ final class CheckoutOrderAction
 
             // 5. Update Existing Table Draft or Insert New Finalized Document
             $existingDocId = $data['document_id'] ?? null;
+            $previousItems = [];
             if ($existingDocId) {
                 $document = Document::findOrFail($existingDocId);
+                // Dishes already sent to the kitchen when the table was held are not ticketed again
+                $previousItems = $this->kitchenTickets->snapshot($document);
                 $document->items()->delete();
 
                 $document->update([
@@ -151,7 +156,6 @@ final class CheckoutOrderAction
                     'reference_identifier' => $tableName,
                     'order_source' => $orderSource,
                     'external_order_ref' => $externalOrderRef,
-                    'kitchen_status' => 'pending',
                     'customer_id' => ! empty($data['customer_id']) ? (int) $data['customer_id'] : null,
                     'points_earned' => ! empty($data['customer_id']) ? (int) floor((float) $calc['grand_total']) : 0,
                     'note' => $data['note'] ?? null,
@@ -228,6 +232,13 @@ final class CheckoutOrderAction
                     'line_total' => $calc['line_totals'][$pos],
                 ]);
             }
+
+            // Kitchen ticket for new or added dishes; keep the kitchen's progress when nothing new was ordered
+            $ticket = $this->kitchenTickets->issue($document, $previousItems, $cashierId);
+            if ($existingDocId && $ticket?->hasAdditions()) {
+                $document->update(['kitchen_status' => 'pending']);
+            }
+            $document->setRelation('issuedKitchenTicket', $ticket);
 
             // 7. Audit Log
             $this->audit->record(
