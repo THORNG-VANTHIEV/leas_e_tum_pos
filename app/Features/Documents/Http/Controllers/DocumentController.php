@@ -8,6 +8,7 @@ use App\Enums\PeriodStatus;
 use App\Features\Documents\Actions\CheckoutOrderAction;
 use App\Features\Documents\Actions\CreateDraftDocument;
 use App\Features\Documents\Actions\HoldTableOrderAction;
+use App\Features\Documents\Actions\VoidDocumentAction;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
 use App\Models\Customer;
@@ -30,6 +31,7 @@ class DocumentController extends Controller
         protected CreateDraftDocument $createDraft,
         protected CheckoutOrderAction $checkoutOrder,
         protected HoldTableOrderAction $holdTableOrder,
+        protected VoidDocumentAction $voidDocument,
     ) {}
 
     /**
@@ -287,6 +289,24 @@ class DocumentController extends Controller
         } catch (DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Void a finalized invoice while retaining its official sequence number.
+     */
+    public function void(Request $request, Document $invoice): RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'min:3', 'max:255'],
+        ]);
+
+        try {
+            $this->voidDocument->handle($invoice->id, $validated['reason'], $request->user()->id);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', "វិក្កយបត្រ {$invoice->document_number} ត្រូវបានលុបចោល (Void) រួចរាល់។");
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Enums\ApprovalType;
 use App\Enums\DocumentStatus;
 use App\Features\Approvals\Services\ApprovalGuard;
 use App\Models\ApprovalRequest;
+use App\Models\Customer;
 use App\Models\Document;
 use App\Support\Audit\AuditService;
 use DomainException;
@@ -21,12 +22,6 @@ final class VoidDocumentAction
 
     /**
      * Atomically void a finalized document while permanently retaining official sequence.
-     *
-     * @param int $documentId
-     * @param string $reason
-     * @param int $actorId
-     * @param int|null $approvalRequestId
-     * @return Document
      */
     public function handle(int $documentId, string $reason, int $actorId, ?int $approvalRequestId = null): Document
     {
@@ -53,9 +48,22 @@ final class VoidDocumentAction
                 ]);
             }
 
+            // Reverse loyalty accrued at checkout so a voided sale earns no points or spend
+            if ($document->customer_id) {
+                $customer = Customer::query()->lockForUpdate()->find($document->customer_id);
+
+                if ($customer) {
+                    $customer->update([
+                        'loyalty_points' => max(0, (int) $customer->loyalty_points - (int) $document->points_earned),
+                        'visits_count' => max(0, (int) $customer->visits_count - 1),
+                        'total_spent_usd' => max(0, (float) $customer->total_spent_usd - (float) $document->grand_total),
+                    ]);
+                }
+            }
+
             $document->update([
                 'status' => DocumentStatus::Void,
-                'note' => trim(($document->note ?? '') . "\n[VOIDED: {$reason}]"),
+                'note' => trim(($document->note ?? '')."\n[VOIDED: {$reason}]"),
                 'lock_version' => $document->lock_version + 1,
             ]);
 

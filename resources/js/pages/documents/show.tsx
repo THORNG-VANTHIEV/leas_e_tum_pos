@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { OrderSourceBadge, isDeliveryPlatform } from '@/components/order-source';
 import {
@@ -19,6 +19,7 @@ import {
     Store,
     Utensils,
     ShieldCheck,
+    Ban,
 } from 'lucide-react';
 
 interface DocumentShowProps {
@@ -62,7 +63,23 @@ interface DocumentShowProps {
 }
 
 export default function DocumentShow({ document: doc }: DocumentShowProps) {
-    const { business } = usePage<PageProps>().props;
+    const { business, auth } = usePage<PageProps>().props;
+
+    // Only admins and supervisors may void a finalized invoice (mirrors route middleware)
+    const canVoid = doc.status === 'finalized' && ['admin', 'supervisor'].includes(auth.user?.role ?? '');
+    const [showVoidModal, setShowVoidModal] = useState(false);
+    const voidForm = useForm({ reason: '' });
+
+    const submitVoid = (e: React.FormEvent) => {
+        e.preventDefault();
+        voidForm.post(`/invoices/${doc.id}/void`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setShowVoidModal(false);
+                voidForm.reset();
+            },
+        });
+    };
 
     return (
         <AppLayout title={`Invoice ${doc.document_number || `Draft #${doc.id}`}`}>
@@ -78,6 +95,17 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                         </Link>
 
                         <div className="flex items-center gap-2">
+                            {canVoid && (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setShowVoidModal(true)}
+                                    className="border-rose-500/40 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
+                                >
+                                    <Ban className="w-4 h-4 mr-1.5" />
+                                    <span className="font-khmer">លុបចោល (Void)</span>
+                                </Button>
+                            )}
                             <Link href={`/invoices/${doc.id}/preview/80mm`}>
                                 <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300">
                                     <Printer className="w-4 h-4 mr-1.5" />
@@ -326,6 +354,72 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                     </div>
                 </Card>
             </div>
+
+            {/* Void Confirmation Modal */}
+            {showVoidModal && (
+                <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <form
+                        onSubmit={submitVoid}
+                        className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4"
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                                <Ban className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                    លុបចោលវិក្កយបត្រ {doc.document_number}?
+                                </h3>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
+                                    វិក្កយបត្រនឹងត្រូវបានសម្គាល់ថា VOID ហើយលែងរាប់ក្នុងចំណូល។ លេខវិក្កយបត្ររក្សាទុកដដែល ហើយសកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-khmer">
+                                មូលហេតុ <span className="text-rose-500">*</span>
+                            </label>
+                            <textarea
+                                value={voidForm.data.reason}
+                                onChange={(e) => voidForm.setData('reason', e.target.value)}
+                                rows={3}
+                                maxLength={255}
+                                autoFocus
+                                placeholder="ឧ. គិតលុយខុសតុ / ភ្ញៀវបោះបង់ការកម្មង់"
+                                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 font-khmer focus:outline-none focus:border-rose-500"
+                            />
+                            {voidForm.errors.reason && (
+                                <p className="text-xs text-rose-500">{voidForm.errors.reason}</p>
+                            )}
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-1">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                    setShowVoidModal(false);
+                                    voidForm.reset();
+                                    voidForm.clearErrors();
+                                }}
+                            >
+                                <span className="font-khmer">បោះបង់</span>
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="danger"
+                                size="sm"
+                                disabled={voidForm.processing || voidForm.data.reason.trim().length < 3}
+                            >
+                                <Ban className="w-4 h-4 mr-1.5" />
+                                <span className="font-khmer">បញ្ជាក់ការលុបចោល</span>
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            )}
         </AppLayout>
     );
 }

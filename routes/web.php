@@ -2,6 +2,7 @@
 
 use App\Features\Approvals\Http\Controllers\ApprovalController;
 use App\Features\Backups\Http\Controllers\BackupController;
+use App\Features\Backups\Http\Controllers\RestoreController;
 use App\Features\Catalog\Http\Controllers\CatalogController;
 use App\Features\Customers\Http\Controllers\CustomerController;
 use App\Features\Documents\Http\Controllers\DocumentController;
@@ -70,6 +71,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/invoices/checkout', [DocumentController::class, 'checkout'])->name('invoices.checkout');
     Route::post('/invoices/hold-table', [DocumentController::class, 'holdTable'])->name('invoices.hold-table');
     Route::delete('/invoices/{invoice}/cancel-table', [DocumentController::class, 'cancelTable'])->name('invoices.cancel-table');
+    Route::post('/invoices/{invoice}/void', [DocumentController::class, 'void'])->middleware('role:admin,supervisor')->name('invoices.void');
 
     // Hardware Continuous Range Print Engine (Section 12.1)
     Route::get('/invoices/print-range/preview', [DocumentPrintController::class, 'previewRange'])->name('invoices.print-range.preview');
@@ -151,8 +153,8 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         // Full Backup & Disaster Recovery (Section 11)
         Route::match(['get', 'post'], '/backup', BackupController::class)->name('backup.download');
-        Route::post('/backup/inspect', [\App\Features\Backups\Http\Controllers\RestoreController::class, 'inspect'])->name('backup.inspect');
-        Route::post('/backup/restore', [\App\Features\Backups\Http\Controllers\RestoreController::class, 'restore'])->name('backup.restore');
-        Route::post('/restore', [\App\Features\Backups\Http\Controllers\RestoreController::class, 'restore']);
+        Route::post('/backup/inspect', [RestoreController::class, 'inspect'])->name('backup.inspect');
+        Route::post('/backup/restore', [RestoreController::class, 'restore'])->name('backup.restore');
+        Route::post('/restore', [RestoreController::class, 'restore']);
     });
 });
