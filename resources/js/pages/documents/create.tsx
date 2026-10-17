@@ -170,6 +170,7 @@ export default function DocumentCreate({
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card'>('cash');
     const [amountReceived, setAmountReceived] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [checkoutError, setCheckoutError] = useState<string | null>(null);
     const [tableFilter, setTableFilter] = useState<'all' | 'occupied' | 'vacant' | 'indoor' | 'vip' | 'garden'>('all');
     const [inspectedTable, setInspectedTable] = useState<string | null>(null);
 
@@ -507,6 +508,7 @@ export default function DocumentCreate({
         if (lines.length === 0) return;
         setAmountReceived(totals.grandTotalUSD);
         setPaymentMethod('cash');
+        setCheckoutError(null);
         setIsCheckoutModalOpen(true);
     };
 
@@ -517,6 +519,7 @@ export default function DocumentCreate({
         const tableName = orderMode === 'takeaway' ? 'ខ្ចប់ (Takeaway)' : selectedTable;
 
         setIsSubmitting(true);
+        setCheckoutError(null);
         router.post(
             '/invoices/checkout',
             {
@@ -535,8 +538,9 @@ export default function DocumentCreate({
                     setIsSubmitting(false);
                     setIsCheckoutModalOpen(false);
                 },
-                onError: () => {
+                onError: (errors) => {
                     setIsSubmitting(false);
+                    setCheckoutError(Object.values(errors)[0] ?? 'មិនអាចគិតប្រាក់បានទេ។ សូមពិនិត្យព័ត៌មានម្តងទៀត។');
                 },
             }
         );
@@ -1761,6 +1765,11 @@ export default function DocumentCreate({
 
                     {/* Bottom Action Footer */}
                     <div className="shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        {checkoutError ? (
+                            <div role="alert" className="text-xs font-semibold text-rose-600 dark:text-rose-400 font-khmer">
+                                {checkoutError}
+                            </div>
+                        ) : (
                         <div className="hidden sm:flex items-center gap-3">
                             <span className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
                                 វិធីសាស្ត្រ៖ <strong className="uppercase text-slate-800 dark:text-zinc-200">{paymentMethod}</strong>
@@ -1770,6 +1779,7 @@ export default function DocumentCreate({
                                 សរុបត្រូវបង់៖ <strong className="text-amber-600 dark:text-amber-400 font-mono">${totals.grandTotalUSD}</strong> ({totals.grandTotalKHR.toLocaleString()} ៛)
                             </span>
                         </div>
+                        )}
 
                         <div className="flex items-center gap-2.5 ml-auto">
                             <button

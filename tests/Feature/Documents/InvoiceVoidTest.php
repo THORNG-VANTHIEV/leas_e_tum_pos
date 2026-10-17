@@ -102,6 +102,51 @@ class InvoiceVoidTest extends TestCase
         $this->assertSame('50.00', (string) $customer->total_spent_usd);
     }
 
+    public function test_paid_invoice_cannot_be_checked_out_again(): void
+    {
+        $invoice = $this->checkoutInvoice(['quantity' => 2]);
+        $originalNumber = $invoice->document_number;
+        $originalTotal = $invoice->grand_total;
+        $cashier = User::where('username', 'cashier1')->firstOrFail();
+
+        $this->actingAs($cashier)->post(route('invoices.checkout'), [
+            'document_id' => $invoice->id,
+            'payment_method' => 'cash',
+            'items' => [['product_id' => Product::where('sku', 'ETUM-OP-01')->firstOrFail()->id, 'quantity' => 1]],
+        ])->assertSessionHas('error');
+
+        $invoice->refresh();
+        $this->assertSame($originalNumber, $invoice->document_number);
+        $this->assertSame($originalTotal, $invoice->grand_total);
+    }
+
+    public function test_voided_invoice_cannot_be_revived_by_checkout(): void
+    {
+        $invoice = $this->checkoutInvoice();
+        $admin = User::where('username', 'admin')->firstOrFail();
+        $this->actingAs($admin)->post(route('invoices.void', $invoice), ['reason' => 'Wrong order']);
+
+        $this->actingAs($admin)->post(route('invoices.checkout'), [
+            'document_id' => $invoice->id,
+            'payment_method' => 'cash',
+            'items' => [['product_id' => Product::where('sku', 'ETUM-OP-01')->firstOrFail()->id, 'quantity' => 1]],
+        ])->assertSessionHas('error');
+
+        $this->assertSame(DocumentStatus::Void, $invoice->refresh()->status);
+    }
+
+    public function test_checkout_rejects_non_numeric_money_input(): void
+    {
+        $cashier = User::where('username', 'cashier1')->firstOrFail();
+
+        $this->actingAs($cashier)->post(route('invoices.checkout'), [
+            'payment_method' => 'cash',
+            'amount_received' => 'abc',
+            'discount_amount' => '1e3',
+            'items' => [['product_id' => Product::where('sku', 'ETUM-OP-01')->firstOrFail()->id, 'quantity' => 1]],
+        ])->assertSessionHasErrors(['amount_received', 'discount_amount']);
+    }
+
     /**
      * @param  array{customer_id?: int, quantity?: int}  $options
      */

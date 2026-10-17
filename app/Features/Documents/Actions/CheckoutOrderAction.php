@@ -134,7 +134,12 @@ final class CheckoutOrderAction
             $existingDocId = $data['document_id'] ?? null;
             $previousItems = [];
             if ($existingDocId) {
-                $document = Document::findOrFail($existingDocId);
+                $document = Document::query()->lockForUpdate()->findOrFail($existingDocId);
+
+                // Only an open table order can be settled; a paid or voided invoice must never be re-numbered or revived
+                if ($document->status !== DocumentStatus::Draft) {
+                    throw new DomainException('ការកម្មង់នេះត្រូវបានគិតប្រាក់ ឬលុបចោលរួចហើយ។ សូមផ្ទុកទំព័រ POS ឡើងវិញ។');
+                }
                 // Dishes already sent to the kitchen when the table was held are not ticketed again
                 $previousItems = $this->kitchenTickets->snapshot($document);
                 $document->items()->delete();
