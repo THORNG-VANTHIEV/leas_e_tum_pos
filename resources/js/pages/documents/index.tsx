@@ -17,6 +17,7 @@ import {
     Clock,
     FileText,
     Printer,
+    RotateCcw,
 } from 'lucide-react';
 import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 import { DocumentStatusBadge } from '@/components/document-status';
@@ -43,6 +44,9 @@ interface DocumentRecord {
     creator: { id: number; name: string; username: string };
     period: { id: number; code: string; name: string };
     items_count?: number;
+    deleted_at?: string | null;
+    delete_reason?: string | null;
+    deleter?: { id: number; name: string } | null;
 }
 
 interface IndexProps {
@@ -66,7 +70,13 @@ interface IndexProps {
 }
 
 export default function DocumentIndex({ documents, filters, active_period, cashiers }: IndexProps) {
-    const { business } = usePage<PageProps>().props;
+    const { business, auth } = usePage<PageProps>().props;
+    const canManageInvoices = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
+    const isTrashView = filters.status === 'trash';
+
+    const restoreInvoice = (id: number) => {
+        router.post(`/invoices/${id}/restore`, {}, { preserveScroll: true });
+    };
 
     const [search, setSearch] = useState(filters.search || '');
     const [status, setStatus] = useState(filters.status || '');
@@ -148,6 +158,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                 { id: 'review', label: tr('កំពុងពិនិត្យ') },
                                 { id: 'finalized', label: tr('បានគិតប្រាក់') },
                                 { id: 'void', label: 'Void' },
+                                ...(canManageInvoices ? [{ id: 'trash', label: tr('ធុងសំរាម') }] : []),
                             ].map((t) => (
                                 <button
                                     key={t.id}
@@ -203,6 +214,11 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                     ) : (
                                                         <span className="text-zinc-500 italic font-khmer">{tr('ព្រាង #')}{doc.id}</span>
                                                     )}
+                                                    {doc.deleted_at && (
+                                                        <div className="mt-0.5 text-[10px] font-normal text-rose-500 font-khmer max-w-[16rem] truncate" title={doc.delete_reason ?? ''}>
+                                                            {tr('លុបដោយ')} {doc.deleter?.name ?? '—'}: {doc.delete_reason}
+                                                        </div>
+                                                    )}
                                                 </td>
                                                 <td className="px-4 py-3 text-zinc-400">
                                                     {doc.period?.code}
@@ -242,12 +258,19 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                     {doc.creator?.username}
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    <Link href={`/invoices/${doc.id}`}>
+{isTrashView ? (
+                                                        <Button size="sm" variant="outline" onClick={() => restoreInvoice(doc.id)}>
+                                                            <RotateCcw className="w-3 h-3" />
+                                                            <span className="font-khmer">{tr('ស្ដារ')}</span>
+                                                        </Button>
+                                                    ) : (
+                                                                                                        <Link href={`/invoices/${doc.id}`}>
                                                         <Button size="sm" variant="ghost">
                                                             <span className="font-khmer">{tr('មើល')}</span>
                                                             <ArrowUpRight className="w-3 h-3" />
                                                         </Button>
                                                     </Link>
+                                                    )}
                                                 </td>
                                             </tr>
                                         );

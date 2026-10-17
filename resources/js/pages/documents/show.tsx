@@ -19,6 +19,8 @@ import {
     Utensils,
     ShieldCheck,
     Ban,
+    Pencil,
+    Trash2,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
 import { ReprintKitchenTicketButton } from '@/components/reprint-kitchen-ticket-button';
@@ -26,6 +28,8 @@ import { DocumentStatusBadge, paymentMethodLabel } from '@/components/document-s
 import { tr } from '@/locales/tr';
 
 interface DocumentShowProps {
+    can_edit?: boolean;
+    can_delete?: boolean;
     document: {
         id: number;
         provisional_order: number;
@@ -66,7 +70,7 @@ interface DocumentShowProps {
     };
 }
 
-export default function DocumentShow({ document: doc }: DocumentShowProps) {
+export default function DocumentShow({ document: doc, can_edit = false, can_delete = false }: DocumentShowProps) {
     const exchangeRate = useExchangeRate();
     const { business, auth } = usePage<PageProps>().props;
 
@@ -86,6 +90,17 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
         });
     };
 
+    // Managers may correct a paid invoice in the POS, or move it to the trash, while its period is open
+    const [showTrashModal, setShowTrashModal] = useState(false);
+    const trashForm = useForm({ reason: '' });
+
+    const submitTrash = (e: React.FormEvent) => {
+        e.preventDefault();
+        trashForm.delete(`/invoices/${doc.id}`, {
+            onSuccess: () => setShowTrashModal(false),
+        });
+    };
+
     return (
         <AppLayout title={`${tr('វិក្កយបត្រ')} ${doc.document_number || `${tr('ព្រាង #')}${doc.id}`}`}>
             <div className="max-w-3xl mx-auto space-y-6">
@@ -101,6 +116,25 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
 
                         <div className="flex items-center gap-2">
                             {doc.kitchen_tickets_count > 0 && <ReprintKitchenTicketButton documentId={doc.id} className="h-8 px-3" />}
+                            {can_edit && (
+                                <Link href={`/invoices/create?edit_invoice=${doc.id}`}>
+                                    <Button size="sm" variant="outline" className="border-sky-500/40 text-sky-600 dark:text-sky-400 hover:bg-sky-500/10">
+                                        <Pencil className="w-4 h-4 mr-1.5" />
+                                        <span className="font-khmer">{tr('កែវិក្កយបត្រ')}</span>
+                                    </Button>
+                                </Link>
+                            )}
+                            {can_delete && (
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setShowTrashModal(true)}
+                                    className="border-rose-500/40 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
+                                >
+                                    <Trash2 className="w-4 h-4 mr-1.5" />
+                                    <span className="font-khmer">{tr('ដាក់ធុងសំរាម')}</span>
+                                </Button>
+                            )}
                             {canVoid && (
                                 <Button
                                     size="sm"
@@ -408,6 +442,56 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                             >
                                 <Ban className="w-4 h-4 mr-1.5" />
                                 <span className="font-khmer">{tr('បញ្ជាក់ការលុបចោល')}</span>
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            {/* Move to trash */}
+            {showTrashModal && (
+                <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <form
+                        onSubmit={submitTrash}
+                        className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4"
+                    >
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                                <Trash2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
+                                    {tr('ដាក់វិក្កយបត្រ')} {doc.document_number} {tr('ក្នុងធុងសំរាម?')}
+                                </h3>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
+                                    {tr('វិក្កយបត្រនឹងបាត់ពីបញ្ជី របាយការណ៍ និងការបិទវេន។ លេខវិក្កយបត្រនៅដដែល ហើយ Admin/Supervisor អាចស្ដារវិញបានពីផ្ទាំង "ធុងសំរាម" ក្នុងបញ្ជីវិក្កយបត្រ។')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-khmer">
+                                {tr('មូលហេតុ')} <span className="text-rose-500">*</span>
+                            </label>
+                            <textarea
+                                value={trashForm.data.reason}
+                                onChange={(e) => trashForm.setData('reason', e.target.value)}
+                                rows={3}
+                                maxLength={255}
+                                autoFocus
+                                placeholder={tr('ឧ. វិក្កយបត្រសាកល្បង / គិតប្រាក់ស្ទួន')}
+                                className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 font-khmer focus:outline-none focus:border-rose-500"
+                            />
+                            {trashForm.errors.reason && <p className="text-xs text-rose-500">{trashForm.errors.reason}</p>}
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-1">
+                            <Button type="button" variant="outline" size="sm" onClick={() => setShowTrashModal(false)}>
+                                <span className="font-khmer">{tr('បោះបង់')}</span>
+                            </Button>
+                            <Button type="submit" variant="danger" size="sm" disabled={trashForm.processing || trashForm.data.reason.trim().length < 3}>
+                                <Trash2 className="w-4 h-4 mr-1.5" />
+                                <span className="font-khmer">{tr('ដាក់ធុងសំរាម')}</span>
                             </Button>
                         </div>
                     </form>

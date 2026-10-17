@@ -146,6 +146,23 @@ class InvoiceCorrectionTest extends TestCase
         $this->assertSame('3.50', (string) $invoice->refresh()->grand_total);
     }
 
+    public function test_pos_opens_a_paid_invoice_for_correction_only_for_managers(): void
+    {
+        $invoice = $this->checkout([[$this->clams, 2]]);
+
+        $this->actingAs($this->supervisor)->get(route('invoices.show', $invoice))
+            ->assertInertia(fn ($page) => $page->where('can_edit', true)->where('can_delete', true));
+        $this->actingAs($this->supervisor)->get(route('invoices.create', ['edit_invoice' => $invoice->id]))
+            ->assertInertia(fn ($page) => $page
+                ->where('editing_invoice.id', $invoice->id)
+                ->where('editing_invoice.items.0.quantity', 2));
+
+        $this->actingAs($this->cashier)->get(route('invoices.show', $invoice))
+            ->assertInertia(fn ($page) => $page->where('can_edit', false)->where('can_delete', false));
+        $this->actingAs($this->cashier)->get(route('invoices.create', ['edit_invoice' => $invoice->id]))
+            ->assertInertia(fn ($page) => $page->where('editing_invoice', null));
+    }
+
     /**
      * @param  array<int, array{0: Product, 1: int}>  $items
      */

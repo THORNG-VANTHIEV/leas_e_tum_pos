@@ -108,6 +108,19 @@ interface CustomerOption {
     loyalty_points: number;
 }
 
+interface EditingInvoice {
+    id: number;
+    document_number: string;
+    reference_identifier: string | null;
+    order_source: OrderSourceValue;
+    external_order_ref: string | null;
+    payment_method: 'cash' | 'khqr' | 'card' | 'app';
+    amount_received: string;
+    discount_amount: string;
+    customer_id: number | null;
+    items: OrderLine[];
+}
+
 interface CreateProps {
     period: {
         id: number;
@@ -127,6 +140,7 @@ interface CreateProps {
     customers?: CustomerOption[];
     initial_table?: string;
     exchange_rate?: number;
+    editing_invoice?: EditingInvoice | null;
 }
 
 export default function DocumentCreate({
@@ -138,6 +152,7 @@ export default function DocumentCreate({
     customers = [],
     initial_table = '',
     exchange_rate = 4000,
+    editing_invoice = null,
 }: CreateProps) {
     const { business } = usePage<PageProps>().props;
     const { language, t, getName, getSecondaryName } = useTranslation();
@@ -474,6 +489,23 @@ export default function DocumentCreate({
         }
     }, []);
 
+    // Correcting a paid invoice (managers): load its dishes, payment and source into the terminal
+    const [editReason, setEditReason] = useState('');
+    useEffect(() => {
+        if (!editing_invoice) return;
+        const isTable = !!editing_invoice.reference_identifier && tables_list.includes(editing_invoice.reference_identifier);
+        setOrderMode(isTable ? 'dine_in' : 'takeaway');
+        if (isTable && editing_invoice.reference_identifier) setSelectedTable(editing_invoice.reference_identifier);
+        setOrderSource(editing_invoice.order_source);
+        setExternalOrderRef(editing_invoice.external_order_ref ?? '');
+        setSelectedCustomerId(editing_invoice.customer_id);
+        if (parseFloat(editing_invoice.discount_amount) > 0) {
+            setDiscountType('amount');
+            setDiscountValue(editing_invoice.discount_amount);
+        }
+        setLines(editing_invoice.items);
+    }, []);
+
     // Hold / Save Dine-in Table Order
     const handleHoldTable = () => {
         if (lines.length === 0) return;
@@ -516,7 +548,11 @@ export default function DocumentCreate({
     const openCheckoutModal = () => {
         if (lines.length === 0) return;
         setAmountReceived(totals.grandTotalUSD);
-        setPaymentMethod(isDeliveryPlatform(effectiveOrderSource) ? 'app' : 'cash');
+        setPaymentMethod(
+            editing_invoice
+                ? editing_invoice.payment_method
+                : isDeliveryPlatform(effectiveOrderSource) ? 'app' : 'cash',
+        );
         setCheckoutError(null);
         setIsCheckoutModalOpen(true);
     };
@@ -525,7 +561,7 @@ export default function DocumentCreate({
     const cashReceivedUSD = parseFloat(amountReceived || '0');
     const isCashShort = paymentMethod === 'cash' && cashReceivedUSD < parseFloat(totals.grandTotalUSD);
     const cashShortUSD = Math.max(0, parseFloat(totals.grandTotalUSD) - cashReceivedUSD).toFixed(2);
-    const canConfirmCheckout = !isSubmitting && lines.length > 0 && !isCashShort;
+    const canConfirmCheckout = !isSubmitting && lines.length > 0 && !isCashShort && (!editing_invoice || editReason.trim().length >= 3);
     const paymentOptions: { id: 'cash' | 'khqr' | 'card' | 'app'; label: string; icon: typeof Coins; activeClass: string }[] = [
         { id: 'cash', label: tr('សាច់ប្រាក់'), icon: Coins, activeClass: 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-300 ring-2 ring-amber-500/20' },
         { id: 'khqr', label: 'KHQR', icon: QrCode, activeClass: 'bg-rose-500/15 border-rose-500 text-rose-700 dark:text-rose-300 ring-2 ring-rose-500/20' },
@@ -543,6 +579,31 @@ export default function DocumentCreate({
 
         setIsSubmitting(true);
         setCheckoutError(null);
+
+        if (editing_invoice) {
+            router.put(
+                `/invoices/${editing_invoice.id}`,
+                {
+                    order_source: effectiveOrderSource,
+                    external_order_ref: isDeliveryPlatform(effectiveOrderSource) ? externalOrderRef.trim() || null : null,
+                    customer_id: selectedCustomerId,
+                    payment_method: paymentMethod,
+                    amount_received: paymentMethod === 'cash' ? (amountReceived || totals.grandTotalUSD) : totals.grandTotalUSD,
+                    discount_amount: totals.discountUSD,
+                    items: lines.map((l) => ({ product_id: l.product_id, quantity: l.quantity })),
+                    reason: editReason.trim(),
+                },
+                {
+                    onError: (errors) => {
+                        setIsSubmitting(false);
+                        setCheckoutError(Object.values(errors)[0] ?? tr('មិនអាចរក្សាទុកការកែបានទេ។'));
+                    },
+                    onFinish: () => setIsSubmitting(false),
+                },
+            );
+            return;
+        }
+
         router.post(
             '/invoices/checkout',
             {
@@ -933,6 +994,20 @@ export default function DocumentCreate({
                             ? 'fixed inset-0 lg:static lg:inset-auto flex'
                             : 'hidden lg:flex'
                     }`}>
+                        {/* Correcting a paid invoice: make the mode obvious and offer a way out */}
+                        {editing_invoice && (
+                            <div className="px-3.5 py-2 bg-sky-500/15 border-b border-sky-500/30 flex items-center justify-between gap-2 text-xs font-khmer shrink-0">
+                                <span className="font-bold text-sky-700 dark:text-sky-300 truncate">
+                                    {tr('កំពុងកែវិក្កយបត្រ')} <span className="font-mono">{editing_invoice.document_number}</span>
+                                </span>
+                                <a
+                                    href={`/invoices/${editing_invoice.id}`}
+                                    className="shrink-0 px-2 py-1 rounded-lg border border-sky-500/40 text-sky-700 dark:text-sky-300 hover:bg-sky-500/10"
+                                >
+                                    {tr('បោះបង់ការកែ')}
+                                </a>
+                            </div>
+                        )}
                         {/* Cart Header */}
                         <div className="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-zinc-800 bg-zinc-900/90 backdrop-blur-md flex items-center justify-between gap-2 shrink-0">
                             <div className="flex items-center gap-2.5 min-w-0">
@@ -1187,7 +1262,7 @@ export default function DocumentCreate({
 
                             {/* Pinned Checkout & Actions Button */}
                             <div className="grid grid-cols-2 gap-2 pt-0.5">
-                                {orderMode === 'dine_in' && (
+                                {orderMode === 'dine_in' && !editing_invoice && (
                                     <Button
                                         type="button"
                                         onClick={handleHoldTable}
@@ -1294,7 +1369,7 @@ export default function DocumentCreate({
                             </div>
                             <div>
                                 <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                    {tr('គិតប្រាក់')}
+                                    {editing_invoice ? `${tr('កែវិក្កយបត្រ')} ${editing_invoice.document_number}` : tr('គិតប្រាក់')}
                                 </h2>
                                 <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
                                     <span className="font-semibold text-slate-700 dark:text-zinc-300">
@@ -1540,6 +1615,23 @@ export default function DocumentCreate({
                                         </div>
                                     )}
 
+                                    {/* Edit reason (required, kept with the invoice revision) */}
+                                    {editing_invoice && (
+                                        <div className="flex items-center gap-3 px-4 py-3 bg-sky-500/5">
+                                            <span className="w-24 shrink-0 text-xs font-bold text-sky-700 dark:text-sky-300 font-khmer">
+                                                {tr('មូលហេតុនៃការកែ')} <span className="text-rose-500">*</span>
+                                            </span>
+                                            <input
+                                                type="text"
+                                                value={editReason}
+                                                onChange={(e) => setEditReason(e.target.value)}
+                                                maxLength={255}
+                                                placeholder={tr('ឧ. ភ្ញៀវប្តូរមុខម្ហូប / បញ្ចូលវិធីបង់ខុស')}
+                                                className="flex-1 h-9 px-3 bg-white dark:bg-zinc-950 border border-sky-500/40 rounded-lg text-xs text-slate-900 dark:text-zinc-100 font-khmer focus:outline-none focus:border-sky-500"
+                                            />
+                                        </div>
+                                    )}
+
                                     {/* Customer (loyalty points) */}
                                     <div className="flex items-center gap-3 px-4 py-3">
                                         <span className="w-24 shrink-0 text-xs font-bold text-slate-600 dark:text-zinc-400 font-khmer">{tr('សមាជិក')}</span>
@@ -1662,7 +1754,7 @@ export default function DocumentCreate({
                                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-zinc-950 font-black text-xs shadow-lg shadow-amber-500/25 border border-amber-300/40 transition active:scale-[0.98] cursor-pointer font-khmer disabled:opacity-50"
                             >
                                 <Printer className="w-4 h-4" />
-                                <span>{isSubmitting ? tr('កំពុងដំណើរការ...') : tr('បញ្ជាក់ការទូទាត់ & ចេញវិក្កយបត្រ')}</span>
+                                <span>{isSubmitting ? tr('កំពុងដំណើរការ...') : editing_invoice ? tr('រក្សាទុកការកែ') : tr('បញ្ជាក់ការទូទាត់ & ចេញវិក្កយបត្រ')}</span>
                                 <kbd className="hidden sm:inline px-1.5 py-0.5 rounded bg-zinc-950/10 text-[10px] font-mono">F2</kbd>
                             </button>
                         </div>
