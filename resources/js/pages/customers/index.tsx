@@ -252,27 +252,27 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
                         <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                        <span>Gold</span>
+                        <span>មាស</span>
                     </span>
                 );
             case 'silver':
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-500/15 text-slate-800 dark:text-slate-200 border border-slate-400/40 dark:border-slate-500/40 shadow-2xs">
                         <Award className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
-                        <span>Silver</span>
+                        <span>ប្រាក់</span>
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/25 shadow-2xs">
-                        <span>Standard</span>
+                        <span>ធម្មតា</span>
                     </span>
                 );
         }
     };
 
     return (
-        <AppLayout title="Customers & Loyalty (CRM)">
+        <AppLayout title="អតិថិជន & ពិន្ទុ">
             <Head title="Customers & Loyalty (CRM) — អតិថិជន & ពិន្ទុសន្សំ" />
 
             <div className="space-y-6 pb-12">
@@ -285,7 +285,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
-                                    Customers & Loyalty (CRM)
+                                    អតិថិជន & ពិន្ទុសន្សំ
                                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 font-medium font-khmer">
                                         ប្រព័ន្ធសមាជិក
                                     </span>
@@ -394,11 +394,11 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                         {[
                             { id: 'all', label: 'ទាំងអស់ (All)', count: metrics.total_customers },
                             { id: 'vip', label: 'VIP', count: metrics.vip_customers, icon: Sparkles },
-                            { id: 'gold', label: 'Gold', count: metrics.gold_customers, icon: Award },
-                            { id: 'silver', label: 'Silver', count: metrics.silver_customers, icon: Award },
+                            { id: 'gold', label: 'មាស', count: metrics.gold_customers, icon: Award },
+                            { id: 'silver', label: 'ប្រាក់', count: metrics.silver_customers, icon: Award },
                             {
                                 id: 'standard',
-                                label: 'Standard',
+                                label: 'ធម្មតា',
                                 count: Math.max(
                                     0,
                                     metrics.total_customers -
@@ -590,7 +590,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                         <span>
                             បង្ហាញ {customers.data.length} ក្នុងចំណោម {customers.total || customers.data.length} អតិថិជន
                         </span>
-                        <span className="text-[11px] text-zinc-400">Customers CRM Register</span>
+                        <span className="text-[11px] text-zinc-400">បញ្ជីអតិថិជន</span>
                     </div>
                 </div>
 
@@ -612,7 +612,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             ចុះឈ្មោះអតិថិជនថ្មី
                                         </h2>
                                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
-                                            New Customer CRM
+                                            អតិថិជនថ្មី
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
@@ -795,7 +795,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     ប័ណ្ណសមាជិកភាពឌីជីថល (Live Preview)
                                                 </span>
                                                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
-                                                    ACTIVE
+                                                    សកម្ម
                                                 </span>
                                             </div>
 
@@ -828,7 +828,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     </div>
                                                     <div className="flex items-center justify-between text-xs text-white/70 font-mono">
                                                         <span>{createForm.phone || '012 XXX XXX'}</span>
-                                                        <span className="text-amber-400 font-bold">0 pts</span>
+                                                        <span className="text-amber-400 font-bold">0 ពិន្ទុ</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1094,7 +1094,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     ប័ណ្ណសមាជិកភាពឌីជីថល
                                                 </span>
                                                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
-                                                    VERIFIED
+                                                    បានផ្ទៀងផ្ទាត់
                                                 </span>
                                             </div>
 
@@ -1220,7 +1220,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             កែសម្រួលពិន្ទុសន្សំអតិថិជន
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            Points Adjustment
+                                            កែពិន្ទុ
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1380,7 +1380,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between border-b border-white/10 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-white/70">
-                                                        LOYALTY MEMBERSHIP CARD
+                                                        ប័ណ្ណសមាជិក
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-khmer">
                                                         {pointsCustomer.name}
@@ -1398,14 +1398,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     <span className="text-lg font-bold font-mono text-white">
                                                         {pointsCustomer.loyalty_points}
                                                     </span>
-                                                    <span className="text-[10px] text-white/40 font-mono block">pts</span>
+                                                    <span className="text-[10px] text-white/40 font-mono block">ពិន្ទុ</span>
                                                 </div>
                                                 <div className="space-y-0.5 pl-2">
                                                     <span className="text-[10px] text-amber-300 font-khmer block">ពិន្ទុក្រោយកែប្រែ</span>
                                                     <span className="text-lg font-bold font-mono text-amber-400">
                                                         {Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment)}
                                                     </span>
-                                                    <span className="text-[10px] text-amber-300/60 font-mono block">pts</span>
+                                                    <span className="text-[10px] text-amber-300/60 font-mono block">ពិន្ទុ</span>
                                                 </div>
                                             </div>
 

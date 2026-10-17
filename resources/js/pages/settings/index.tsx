@@ -411,7 +411,7 @@ export default function SettingsIndex({
     }, [showUserModal, showLocModal, archiveTarget, showRestoreConfirm, mounted]);
 
     return (
-        <AppLayout title="Master Settings Hub">
+        <AppLayout title="ការកំណត់">
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Tabs Controls */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -420,10 +420,10 @@ export default function SettingsIndex({
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
                                 <Sliders className="w-6 h-6 text-emerald-400" />
-                                <span>Master Settings Hub</span>
+                                <span>ការកំណត់ប្រព័ន្ធ</span>
                             </h1>
                             <p className="text-xs text-zinc-400 mt-1">
-                                System configuration, data entry policies, staff accounts, and append-only audit stream.
+                                ព័ត៌មានហាង ការកំណត់ការលក់ វិក្កយបត្រ បុគ្គលិក Audit និង Backup។
                             </p>
                         </div>
                     </div>
@@ -432,13 +432,13 @@ export default function SettingsIndex({
                     <div className="relative overflow-hidden">
                         <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
                             {[
-                                { id: 'business', label: 'Business Profile', icon: Store },
-                                { id: 'entry', label: 'Entry Controls', icon: Sliders },
-                                { id: 'invoice', label: 'Invoice & Print Designer', icon: Printer },
-                                { id: 'locations', label: `Locations (${locations.length})`, icon: MapPin },
-                                { id: 'users', label: `Staff & Accounts (${users.length})`, icon: Users },
-                                { id: 'audits', label: `Audit Trail (${audits.length})`, icon: Shield },
-                                { id: 'backup', label: 'Backup & Restore', icon: Database },
+                                { id: 'business', label: 'ព័ត៌មានហាង', icon: Store },
+                                { id: 'entry', label: 'ការកំណត់ការលក់', icon: Sliders },
+                                { id: 'invoice', label: 'រចនាវិក្កយបត្រ & ព្រីន', icon: Printer },
+                                { id: 'locations', label: `សាខា (${locations.length})`, icon: MapPin },
+                                { id: 'users', label: `បុគ្គលិក (${users.length})`, icon: Users },
+                                { id: 'audits', label: `Audit (${audits.length})`, icon: Shield },
+                                { id: 'backup', label: 'Backup & ស្ដារ', icon: Database },
                             ].map((tab) => {
                                 const Icon = tab.icon;
                                 const isActive = activeTab === tab.id;
@@ -466,9 +466,9 @@ export default function SettingsIndex({
                 {activeTab === 'business' && (
                     <Card className="p-6 max-w-3xl space-y-5">
                         <div>
-                            <h2 className="text-base font-bold text-white">Business Profile & Letterhead</h2>
+                            <h2 className="text-base font-bold text-white">ព័ត៌មានហាង & ក្បាលវិក្កយបត្រ</h2>
                             <p className="text-xs text-zinc-400">
-                                Displayed on customer receipts, thermal 80mm prints, and A5 invoices.
+                                បង្ហាញលើវិក្កយបត្រ 80mm និង A5។
                             </p>
                         </div>
 
@@ -497,14 +497,14 @@ export default function SettingsIndex({
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Input
                                     id="phone"
-                                    label="Telephone / Contact"
+                                    label="លេខទូរស័ព្ទ"
                                     value={businessForm.data.phone}
                                     onChange={(e) => businessForm.setData('phone', e.target.value)}
                                     error={businessForm.errors.phone}
                                 />
                                 <Input
                                     id="tax_identifier"
-                                    label="VAT / Tax Identification Number (TIN)"
+                                    label="លេខអត្តសញ្ញាណកម្មសារពើពន្ធ (VAT TIN)"
                                     value={businessForm.data.tax_identifier}
                                     onChange={(e) =>
                                         businessForm.setData('tax_identifier', e.target.value)
@@ -516,7 +516,7 @@ export default function SettingsIndex({
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <Input
                                     id="currency_code"
-                                    label="Currency Code"
+                                    label="កូដរូបិយប័ណ្ណ"
                                     value={businessForm.data.currency_code}
                                     onChange={(e) =>
                                         businessForm.setData('currency_code', e.target.value)
@@ -525,7 +525,7 @@ export default function SettingsIndex({
                                 />
                                 <Input
                                     id="currency_symbol"
-                                    label="Currency Symbol"
+                                    label="និមិត្តសញ្ញារូបិយប័ណ្ណ"
                                     value={businessForm.data.currency_symbol}
                                     onChange={(e) =>
                                         businessForm.setData('currency_symbol', e.target.value)
@@ -534,7 +534,7 @@ export default function SettingsIndex({
                                 />
                                 <Input
                                     id="timezone"
-                                    label="System Timezone"
+                                    label="តំបន់ម៉ោង"
                                     value={businessForm.data.timezone}
                                     onChange={(e) => businessForm.setData('timezone', e.target.value)}
                                     error={businessForm.errors.timezone}
@@ -543,7 +543,7 @@ export default function SettingsIndex({
 
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-medium text-zinc-400">
-                                    Primary Address
+                                    អាសយដ្ឋាន
                                 </label>
                                 <textarea
                                     value={businessForm.data.address_primary}
@@ -557,7 +557,7 @@ export default function SettingsIndex({
 
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-medium text-zinc-400">
-                                    Receipt Footer Note
+                                    ឃ្លាខាងក្រោមវិក្កយបត្រ
                                 </label>
                                 <input
                                     type="text"
@@ -572,7 +572,7 @@ export default function SettingsIndex({
                             <div className="flex justify-end pt-2">
                                 <Button type="submit" disabled={businessForm.processing}>
                                     <Save className="w-4 h-4" />
-                                    <span>Save Business Settings</span>
+                                    <span>រក្សាទុកព័ត៌មានហាង</span>
                                 </Button>
                             </div>
                         </form>
@@ -584,10 +584,10 @@ export default function SettingsIndex({
                     <Card className="p-6 max-w-2xl space-y-6">
                         <div>
                             <h2 className="text-base font-bold text-white">
-                                Strict Financial & Entry Controls
+                                ការកំណត់ការលក់
                             </h2>
                             <p className="text-xs text-zinc-400">
-                                Invariant INV-03: Controls whether source total variance reconciliation is strictly enforced before saving.
+                                កំណត់ថាតើត្រូវផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាសកម្មង់ មុនរក្សាទុក ឬអត់។
                             </p>
                         </div>
 
@@ -599,10 +599,10 @@ export default function SettingsIndex({
                                         htmlFor="require_source_total"
                                         className="text-sm font-semibold text-zinc-200 cursor-pointer block"
                                     >
-                                        Require Physical Source-Total Reconciliation
+                                        តម្រូវឱ្យផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាស
                                     </label>
                                     <p className="text-xs text-zinc-400">
-                                        When enabled, cashier must enter old POS / paper slip total. If calculated total does not match with $0.00 variance, saving and finalization is blocked.
+                                        ពេលបើក អ្នកគិតប្រាក់ត្រូវបញ្ចូលសរុបពីក្រដាសកម្មង់។ បើមិនស្មើនឹងសរុបរបស់ប្រព័ន្ធ មិនអាចរក្សាទុក ឬបិទបញ្ជីបានទេ។
                                     </p>
                                 </div>
                                 <Switch
@@ -623,10 +623,10 @@ export default function SettingsIndex({
                                         htmlFor="show_event_time"
                                         className="text-sm font-semibold text-zinc-200 cursor-pointer block"
                                     >
-                                        Record Event Sale Time
+                                        កត់ត្រាម៉ោងលក់
                                     </label>
                                     <p className="text-xs text-zinc-400">
-                                        Includes exact time picker on high-speed entry tray to establish chronological sorting for sequence stamping.
+                                        បង្ហាញប្រអប់ជ្រើសម៉ោងពេលបញ្ចូលការលក់ ដើម្បីតម្រៀបវិក្កយបត្រតាមពេលវេលា។
                                     </p>
                                 </div>
                                 <Switch
@@ -643,7 +643,7 @@ export default function SettingsIndex({
                             <div className="flex justify-end pt-2">
                                 <Button type="submit" disabled={entryForm.processing}>
                                     <Save className="w-4 h-4" />
-                                    <span>Save Policy Settings</span>
+                                    <span>រក្សាទុកការកំណត់</span>
                                 </Button>
                             </div>
                         </form>
@@ -660,14 +660,14 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-white">Branch Locations</h2>
+                                <h2 className="text-base font-bold text-white">សាខា</h2>
                                 <p className="text-xs text-zinc-400">
-                                    Store branches and physical dining halls. Non-admin users are scoped to assigned branches.
+                                    សាខា ឬបន្ទប់បរិភោគរបស់ហាង។ បុគ្គលិកដែលមិនមែន Admin ឃើញតែសាខាដែលបានកំណត់ឱ្យ។
                                 </p>
                             </div>
                             <Button size="sm" onClick={openNewLocation}>
                                 <Plus className="w-4 h-4" />
-                                <span>Add Location</span>
+                                <span>បន្ថែមសាខា</span>
                             </Button>
                         </div>
 
@@ -681,7 +681,7 @@ export default function SettingsIndex({
                                                     {loc.code}
                                                 </span>
                                                 <Badge variant={loc.is_active ? 'emerald' : 'zinc'}>
-                                                    {loc.is_active ? 'Active' : 'Inactive'}
+                                                    {loc.is_active ? 'កំពុងប្រើ' : 'បិទ'}
                                                 </Badge>
                                             </div>
                                             <h3 className="text-sm font-bold text-white mt-1">
@@ -729,7 +729,7 @@ export default function SettingsIndex({
                                                     {editingLocId ? 'កែប្រែសាខាហាង' : 'បង្កើតសាខាហាងថ្មី'}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase">
-                                                    MULTI-BRANCH ENGINE
+                                                    សាខា
                                                 </span>
                                             </div>
                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
@@ -808,7 +808,7 @@ export default function SettingsIndex({
                                                             <input
                                                                 type="text"
                                                                 required
-                                                                placeholder="e.g. Riverside Branch"
+                                                                placeholder="ឧ. សាខាមាត់ទន្លេ"
                                                                 value={locForm.data.name_primary}
                                                                 onChange={(e) => locForm.setData('name_primary', e.target.value)}
                                                                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
@@ -909,7 +909,7 @@ export default function SettingsIndex({
                                                         <div className="flex items-center gap-2">
                                                             <Sparkles className="w-4 h-4 text-amber-500" />
                                                             <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 font-mono">
-                                                                Branch Terminal Passport
+                                                                ព័ត៌មានសាខា
                                                             </span>
                                                         </div>
                                                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
@@ -951,7 +951,7 @@ export default function SettingsIndex({
                                                     <div className="space-y-2 text-xs">
                                                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
                                                             <span className="text-slate-500 dark:text-zinc-400 font-khmer">បុគ្គលិកដំបូង (Staff Assignment)</span>
-                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">0 Users</span>
+                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">0 នាក់</span>
                                                         </div>
                                                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
                                                             <span className="text-slate-500 dark:text-zinc-400 font-khmer">ម៉ាស៊ីន POS & ថតលុយ</span>
@@ -1024,14 +1024,14 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-white">Staff & Access Control</h2>
+                                <h2 className="text-base font-bold text-white">បុគ្គលិក & សិទ្ធិ</h2>
                                 <p className="text-xs text-zinc-400">
-                                    Role-based permissions (Admin, Cashier, Supervisor) and server-enforced self-protection guards.
+                                    សិទ្ធិតាមតួនាទី (Admin, Supervisor, Cashier)។ អ្នកមិនអាចបិទគណនីខ្លួនឯង ឬ Admin ចុងក្រោយបានទេ។
                                 </p>
                             </div>
                             <Button size="sm" onClick={openNewUser}>
                                 <Plus className="w-4 h-4" />
-                                <span>Create Staff Account</span>
+                                <span>បង្កើតគណនីបុគ្គលិក</span>
                             </Button>
                         </div>
 
@@ -1041,12 +1041,12 @@ export default function SettingsIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[10px]">
                                         <tr>
-                                            <th className="px-4 py-3">Operator Name</th>
-                                            <th className="px-4 py-3">Username</th>
-                                            <th className="px-4 py-3">Role</th>
-                                            <th className="px-4 py-3">Status</th>
-                                            <th className="px-4 py-3">Assigned Locations</th>
-                                            <th className="px-4 py-3 text-right">Actions</th>
+                                            <th className="px-4 py-3">ឈ្មោះ</th>
+                                            <th className="px-4 py-3">ឈ្មោះអ្នកប្រើ</th>
+                                            <th className="px-4 py-3">តួនាទី</th>
+                                            <th className="px-4 py-3">ស្ថានភាព</th>
+                                            <th className="px-4 py-3">សាខា</th>
+                                            <th className="px-4 py-3 text-right">សកម្មភាព</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -1060,7 +1060,7 @@ export default function SettingsIndex({
                                                             <span>{u.name}</span>
                                                             {isSelf && (
                                                                 <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                                                                    You
+                                                                    អ្នក
                                                                 </span>
                                                             )}
                                                         </div>
@@ -1083,11 +1083,11 @@ export default function SettingsIndex({
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         {isArchived ? (
-                                                            <Badge variant="rose">Archived</Badge>
+                                                            <Badge variant="rose">ប័ណ្ណសារ</Badge>
                                                         ) : u.is_active ? (
-                                                            <Badge variant="emerald">Active</Badge>
+                                                            <Badge variant="emerald">សកម្ម</Badge>
                                                         ) : (
-                                                            <Badge variant="zinc">Inactive</Badge>
+                                                            <Badge variant="zinc">បិទ</Badge>
                                                         )}
                                                     </td>
                                                     <td className="px-4 py-3 text-zinc-400 font-mono text-[11px]">
@@ -1101,7 +1101,7 @@ export default function SettingsIndex({
                                                                 onClick={() => restoreUser(u.id)}
                                                             >
                                                                 <RotateCcw className="w-3.5 h-3.5" />
-                                                                <span>Restore</span>
+                                                                <span>ស្ដារ</span>
                                                             </Button>
                                                         ) : (
                                                             <>
@@ -1112,7 +1112,7 @@ export default function SettingsIndex({
                                                                 className="text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10"
                                                             >
                                                                 <Pencil className="w-3.5 h-3.5" />
-                                                                <span>Edit</span>
+                                                                <span>កែ</span>
                                                             </Button>
                                                             {!isSelf && (
                                                                 <Button
@@ -1122,7 +1122,7 @@ export default function SettingsIndex({
                                                                     className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
                                                                 >
                                                                     <Archive className="w-3.5 h-3.5" />
-                                                                    <span>Archive</span>
+                                                                    <span>ដាក់ប័ណ្ណសារ</span>
                                                                 </Button>
                                                             )}
                                                             </>
@@ -1154,7 +1154,7 @@ export default function SettingsIndex({
                                                     {editingUserId ? 'កែប្រែគណនីបុគ្គលិក' : 'បង្កើតគណនីបុគ្គលិកថ្មី'}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                                                    INV-07 COMPLIANT
+                                                    កត់ត្រាក្នុង Audit
                                                 </span>
                                             </div>
                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
@@ -1220,7 +1220,7 @@ export default function SettingsIndex({
                                                                 <input
                                                                     type="text"
                                                                     required
-                                                                    placeholder="e.g. chenda.s"
+                                                                    placeholder="ឧ. chenda.s"
                                                                     value={userForm.data.username}
                                                                     onChange={(e) =>
                                                                         userForm.setData('username', e.target.value.toLowerCase().trim())
@@ -1386,7 +1386,7 @@ export default function SettingsIndex({
                                                             </h3>
                                                         </div>
                                                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                                            LIVE PREVIEW
+                                                            មើលជាមុន
                                                         </span>
                                                     </div>
 
@@ -1437,7 +1437,7 @@ export default function SettingsIndex({
                                                             </div>
                                                             <div className="text-right">
                                                                 <span className="block text-[9px] uppercase font-mono text-zinc-500">ស្ថានភាពគណនី</span>
-                                                                <span className="font-mono text-emerald-400 font-semibold">Active & Audited</span>
+                                                                <span className="font-mono text-emerald-400 font-semibold">សកម្ម</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1542,7 +1542,7 @@ export default function SettingsIndex({
                                                     ផ្អាក និងទុកជាឯកសារគណនីបុគ្គលិក
                                                 </h3>
                                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-mono">
-                                                    Deactivation Protocol
+                                                    បិទគណនី
                                                 </span>
                                             </div>
                                             <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1656,14 +1656,14 @@ export default function SettingsIndex({
                                                     <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                         <div className="space-y-0.5">
                                                             <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                                DEACTIVATION DOSSIER
+                                                                ព័ត៌មានគណនី
                                                             </span>
                                                             <h4 className="text-sm font-bold text-white font-mono">
                                                                 STAFF-{archiveTarget.id.toString().padStart(4, '0')}
                                                             </h4>
                                                         </div>
                                                         <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-xs">
-                                                            ACTION PENDING
+                                                            រង់ចាំបញ្ជាក់
                                                         </span>
                                                     </div>
 
@@ -1695,19 +1695,19 @@ export default function SettingsIndex({
                                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
                                                         <div>
                                                             <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
-                                                            <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                                            <span className="text-emerald-400 font-bold">សកម្ម</span>
                                                         </div>
                                                         <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
                                                         <div className="text-right">
                                                             <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយផ្អាក</span>
-                                                            <span className="text-rose-400 font-bold">ARCHIVED</span>
+                                                            <span className="text-rose-400 font-bold">ប័ណ្ណសារ</span>
                                                         </div>
                                                     </div>
 
                                                     {/* Security Stamp Footer */}
                                                     <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                                         <span>AUDIT: USER_DEACTIVATION</span>
-                                                        <span>PERMANENT LOGGING</span>
+                                                        <span>កត់ត្រាជាអចិន្ត្រៃយ៍</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1761,10 +1761,10 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div>
                             <h2 className="text-base font-bold text-white">
-                                Append-Only Polymorphic Audit Trail
+                                កំណត់ត្រា Audit
                             </h2>
                             <p className="text-xs text-zinc-400">
-                                Invariant INV-08: Historical events cannot be mutated or purged by normal application roles.
+                                រាល់សកម្មភាពសំខាន់ៗត្រូវបានកត់ត្រា ហើយមិនអាចកែ ឬលុបបានទេ។
                             </p>
                         </div>
 
@@ -1773,11 +1773,11 @@ export default function SettingsIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[10px]">
                                         <tr>
-                                            <th className="px-4 py-3">Timestamp</th>
-                                            <th className="px-4 py-3">Action</th>
-                                            <th className="px-4 py-3">Actor</th>
-                                            <th className="px-4 py-3">Reason / Context</th>
-                                            <th className="px-4 py-3">IP Address</th>
+                                            <th className="px-4 py-3">ពេលវេលា</th>
+                                            <th className="px-4 py-3">សកម្មភាព</th>
+                                            <th className="px-4 py-3">អ្នកធ្វើ</th>
+                                            <th className="px-4 py-3">មូលហេតុ</th>
+                                            <th className="px-4 py-3">IP</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60 font-mono text-[11px]">
@@ -1813,10 +1813,10 @@ export default function SettingsIndex({
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Database className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                                <span>Full-Data Backup and Recoverable Restore Engine</span>
+                                <span>Backup & ស្ដារទិន្នន័យ</span>
                             </h2>
                             <p className="text-xs text-zinc-400 mt-0.5">
-                                Invariant INV-04: Deterministic, staged backup archives with per-table SHA-256 checksums and automated emergency recovery points.
+                                Backup ទិន្នន័យទាំងអស់ជា file ZIP ដែលមាន SHA-256 ការពារការខូច។ ប្រព័ន្ធក៏ធ្វើ Backup ដោយស្វ័យប្រវត្តិ ម៉ោង 2 រសៀល និង 10 យប់។
                             </p>
                         </div>
 
@@ -1827,40 +1827,38 @@ export default function SettingsIndex({
                                     <div className="space-y-1">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <Download className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-                                            <span>System Backup Archive</span>
+                                            <span>ទាញយក Backup</span>
                                         </h3>
                                         <p className="text-xs text-zinc-400">
-                                            Download a complete, self-describing archive of the live POS database.
+                                            ទាញយកទិន្នន័យទាំងអស់របស់ហាងជា file មួយ។
                                         </p>
                                     </div>
                                     <Badge variant="emerald" className="text-[10px] font-mono">
-                                        Format V2.0 ZIP
+                                        ZIP V2.0
                                     </Badge>
                                 </div>
 
                                 <div className="space-y-2 rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/80 text-xs">
-                                    <h4 className="font-bold text-zinc-100 mb-2">Included 14 Authoritative Tables:</h4>
-                                    <div className="grid grid-cols-2 gap-1.5 font-mono text-[11px] text-zinc-300 font-medium">
-                                        <div>• users & accounts</div>
-                                        <div>• business_settings</div>
-                                        <div>• locations & mappings</div>
-                                        <div>• units master</div>
-                                        <div>• product_categories</div>
-                                        <div>• products catalog</div>
-                                        <div>• accounting periods</div>
-                                        <div>• documents headers</div>
-                                        <div>• document_items (snapshots)</div>
-                                        <div>• approval_requests</div>
-                                        <div>• document_revisions</div>
-                                        <div>• append-only audit_logs</div>
-                                        <div>• hardware print_logs</div>
-                                        <div>• format manifest.json</div>
+                                    <h4 className="font-bold text-zinc-100 mb-2">មានទិន្នន័យ 22 តារាង + រូបភាព៖</h4>
+                                    <div className="grid grid-cols-2 gap-1.5 text-[11px] text-zinc-300 font-medium">
+                                        <div>• បុគ្គលិក & សាខា</div>
+                                        <div>• ការកំណត់ហាង</div>
+                                        <div>• មុខទំនិញ ប្រភេទ ឯកតា</div>
+                                        <div>• វគ្គលក់</div>
+                                        <div>• វិក្កយបត្រ & មុខទំនិញ</div>
+                                        <div>• បុងចុងភៅ</div>
+                                        <div>• តុ</div>
+                                        <div>• អតិថិជន & ពិន្ទុ</div>
+                                        <div>• ចំណាយ & ថតបេឡា</div>
+                                        <div>• ការទិញចូល & អ្នកផ្គត់ផ្គង់</div>
+                                        <div>• Approval & Audit</div>
+                                        <div>• រូបភាពមុខទំនិញ & QR</div>
                                     </div>
                                 </div>
 
                                 <div className="text-xs text-zinc-300 space-y-1">
-                                    <p>• Automatically signs each table payload with SHA-256 cryptographic hashes.</p>
-                                    <p>• Logs audit trail event <code className="text-emerald-500 dark:text-emerald-400 font-mono font-bold">backup.exported</code>.</p>
+                                    <p>• តារាងនីមួយៗមាន SHA-256 ដើម្បីដឹងពេល file ខូច ឬត្រូវបានកែ។</p>
+                                    <p>• កត់ត្រាក្នុង Audit ជា <code className="text-emerald-500 dark:text-emerald-400 font-mono font-bold">backup.exported</code>.</p>
                                 </div>
 
                                 <form action="/settings/backup" method="POST" className="pt-2">
@@ -1874,7 +1872,7 @@ export default function SettingsIndex({
                                         className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-md shadow-emerald-600/20"
                                     >
                                         <Download className="w-4 h-4 mr-2" />
-                                        Download Full System Backup (.zip)
+                                        ទាញយក Backup ទាំងអស់ (.zip)
                                     </Button>
                                 </form>
                             </Card>
@@ -1885,14 +1883,14 @@ export default function SettingsIndex({
                                     <div className="space-y-1">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <UploadCloud className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                                            <span>Disaster Recovery Restore</span>
+                                            <span>ស្ដារទិន្នន័យពី Backup</span>
                                         </h3>
                                         <p className="text-xs text-zinc-400">
-                                            Restore database tables from a verified V2.0 backup archive ZIP.
+                                            ស្ដារទិន្នន័យពី file Backup ZIP V2.0។
                                         </p>
                                     </div>
                                     <Badge variant="amber" className="text-[10px] font-mono">
-                                        Atomic Transaction
+                                        ទាំងអស់ ឬគ្មានអ្វីសោះ
                                     </Badge>
                                 </div>
 
@@ -1900,17 +1898,17 @@ export default function SettingsIndex({
                                 <div className="p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/30 space-y-1.5">
                                     <div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300">
                                         <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                                        <span>Atomicity & Safety Boundary</span>
+                                        <span>ប្រយ័ត្ន៖ ទិន្នន័យបច្ចុប្បន្ននឹងត្រូវជំនួស</span>
                                     </div>
                                     <p className="text-[11.5px] leading-relaxed text-amber-950 dark:text-amber-200/90 font-medium">
-                                        Live database tables will be atomically replaced in dependency order. A pre-restore emergency snapshot will be captured to <code className="font-mono text-[10.5px] bg-amber-500/20 dark:bg-zinc-950 text-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 dark:border-zinc-800 font-semibold">storage/app/backups/recovery_points/</code> prior to replacement.
+                                        ទិន្នន័យបច្ចុប្បន្នទាំងអស់នឹងត្រូវជំនួសដោយទិន្នន័យក្នុង Backup។ មុននឹងស្ដារ ប្រព័ន្ធរក្សាទុក Backup បន្ទាន់មួយនៅ <code className="font-mono text-[10.5px] bg-amber-500/20 dark:bg-zinc-950 text-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 dark:border-zinc-800 font-semibold">storage/app/backups/recovery_points/</code>។
                                     </p>
                                 </div>
 
                                 {/* File Input */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-zinc-100 block">
-                                        Select Backup Archive File (.zip):
+                                        ជ្រើស file Backup (.zip):
                                     </label>
                                     <input
                                         id="backup-file-input"
@@ -1934,7 +1932,7 @@ export default function SettingsIndex({
                                         className="flex-1 text-xs border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700 font-semibold disabled:opacity-40"
                                     >
                                         <ShieldCheck className="w-4 h-4 mr-1.5 text-blue-500 dark:text-blue-400" />
-                                        <span>{isInspecting ? 'Inspecting...' : 'Preflight Inspect Archive'}</span>
+                                        <span>{isInspecting ? 'កំពុងពិនិត្យ...' : 'ពិនិត្យ file'}</span>
                                     </Button>
 
                                     <Button
@@ -1944,7 +1942,7 @@ export default function SettingsIndex({
                                         className="flex-1 text-xs bg-rose-600 hover:bg-rose-500 text-white font-semibold shadow-md shadow-rose-600/20 disabled:opacity-40"
                                     >
                                         <RotateCcw className="w-4 h-4 mr-1.5" />
-                                        <span>Restore Database...</span>
+                                        <span>ស្ដារទិន្នន័យ...</span>
                                     </Button>
                                 </div>
 
@@ -1961,7 +1959,7 @@ export default function SettingsIndex({
                                             <>
                                                 <div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-300">
                                                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                    <span>Preflight Integrity Verification Passed</span>
+                                                    <span>file ត្រឹមត្រូវ អាចស្ដារបាន</span>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-zinc-700 dark:text-zinc-200 font-semibold pt-1">
                                                     <div>Manifest: V{inspectResult.format_version}</div>
@@ -1977,7 +1975,7 @@ export default function SettingsIndex({
                                             <>
                                                 <div className="flex items-center gap-2 font-bold text-rose-800 dark:text-rose-300">
                                                     <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                                                    <span>Archive Verification Failed</span>
+                                                    <span>file មិនត្រឹមត្រូវ</span>
                                                 </div>
                                                 <p className="text-[11px] text-rose-900 dark:text-rose-200 font-medium">
                                                     {inspectResult.error || 'The uploaded file does not comply with V2.0 blueprint standards.'}
@@ -1993,17 +1991,17 @@ export default function SettingsIndex({
                         <Card className="p-6 border-zinc-800 bg-zinc-950/60 space-y-3 shadow-xs">
                             <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-500 dark:text-emerald-400 font-mono flex items-center gap-2">
                                 <FileArchive className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-                                <span>Specification 11: Referential Integrity Guarantees</span>
+                                <span>លំដាប់ស្ដារទិន្នន័យ (សម្រាប់អ្នកបច្ចេកទេស)</span>
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs leading-relaxed">
                                 <div className="space-y-1.5">
-                                    <h4 className="font-bold text-zinc-100">Foreign Key Safe Deletion Order:</h4>
+                                    <h4 className="font-bold text-zinc-100">លំដាប់លុប:</h4>
                                     <p className="font-mono text-[11.5px] text-zinc-300 font-medium leading-relaxed">
                                         print_logs → revisions → items → approvals → documents → periods → products → categories → units → user_locations → locations → audits → settings → users
                                     </p>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <h4 className="font-bold text-zinc-100">Parent-First Insertion Order:</h4>
+                                    <h4 className="font-bold text-zinc-100">លំដាប់បញ្ចូល:</h4>
                                     <p className="font-mono text-[11.5px] text-zinc-300 font-medium leading-relaxed">
                                         users → settings → locations → user_locations → units → categories → products → periods → documents → items → approvals → revisions → audits → print_logs
                                     </p>
@@ -2031,7 +2029,7 @@ export default function SettingsIndex({
                                             ស្ដារទិន្នន័យប្រព័ន្ធ និងជំនួសទិន្នន័យចាស់ (Database Restore & Rollback Protocol)
                                         </h2>
                                         <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                                            CRITICAL OPERATION
+                                            សំខាន់ខ្លាំង
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
@@ -2089,7 +2087,7 @@ export default function SettingsIndex({
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">2</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">លុបតាមលំដាប់ Foreign Key Safe Deletion Order (Child to Parent)</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">លុបទិន្នន័យចាស់តាមលំដាប់ (កូន → មេ)</span>
                                                 <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">print_logs → revisions → items → approvals → documents → periods → products...</span>
                                             </div>
                                         </div>
@@ -2097,7 +2095,7 @@ export default function SettingsIndex({
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">3</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បញ្ចូលតាមលំដាប់ Parent-First Insertion Order</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បញ្ចូលទិន្នន័យថ្មីតាមលំដាប់ (មេ → កូន)</span>
                                                 <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">users → settings → locations → units → categories → products → documents...</span>
                                             </div>
                                         </div>
@@ -2139,10 +2137,10 @@ export default function SettingsIndex({
                                     <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                                         <div>
                                             <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
-                                                ROLLBACK PASSPORT
+                                                ការស្ដារទិន្នន័យ
                                             </span>
                                             <h3 className="text-sm font-bold font-mono text-white">
-                                                RESTORE MANIFEST CERTIFICATE
+                                                សង្ខេប file Backup
                                             </h3>
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
@@ -2150,7 +2148,7 @@ export default function SettingsIndex({
                                                 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
                                                 : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                                         }`}>
-                                            {restoreAck ? 'EXECUTION READY' : 'AWAITING ACK'}
+                                            {restoreAck ? 'រួចរាល់' : 'រង់ចាំបញ្ជាក់'}
                                         </span>
                                     </div>
 
@@ -2183,26 +2181,26 @@ export default function SettingsIndex({
                                     {/* Inspection Summary if available */}
                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span>Preflight Integrity:</span>
+                                            <span>ការពិនិត្យ file:</span>
                                             <span className={inspectResult?.valid ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
-                                                {inspectResult?.valid ? 'VERIFIED (PASS)' : 'READY FOR RESTORE'}
+                                                {inspectResult?.valid ? 'ត្រឹមត្រូវ' : 'មិនទាន់ពិនិត្យ'}
                                             </span>
                                         </div>
                                         {inspectResult?.tables_count && (
                                             <div className="flex items-center justify-between text-zinc-400">
-                                                <span>Tables in Archive:</span>
-                                                <span className="text-white font-bold">{inspectResult.tables_count} Tables</span>
+                                                <span>ចំនួនតារាង:</span>
+                                                <span className="text-white font-bold">{inspectResult.tables_count} តារាង</span>
                                             </div>
                                         )}
                                         {inspectResult?.total_rows && (
                                             <div className="flex items-center justify-between text-zinc-400">
-                                                <span>Total Data Records:</span>
-                                                <span className="text-emerald-400 font-bold">{inspectResult.total_rows.toLocaleString()} Rows</span>
+                                                <span>ចំនួនទិន្នន័យ:</span>
+                                                <span className="text-emerald-400 font-bold">{inspectResult.total_rows.toLocaleString()} ជួរ</span>
                                             </div>
                                         )}
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span>Emergency Snapshot:</span>
-                                            <span className="text-emerald-400 font-bold">AUTOMATED (ENABLED)</span>
+                                            <span>Backup បន្ទាន់មុនស្ដារ:</span>
+                                            <span className="text-emerald-400 font-bold">ស្វ័យប្រវត្តិ</span>
                                         </div>
                                     </div>
 
@@ -2210,12 +2208,12 @@ export default function SettingsIndex({
                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
                                         <div>
                                             <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
-                                            <span className="text-emerald-400 font-bold">LIVE DATABASE</span>
+                                            <span className="text-emerald-400 font-bold">ទិន្នន័យបច្ចុប្បន្ន</span>
                                         </div>
                                         <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
                                         <div className="text-right">
                                             <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយស្ដារ</span>
-                                            <span className="text-rose-400 font-bold">RESTORED SNAPSHOT</span>
+                                            <span className="text-rose-400 font-bold">ទិន្នន័យពី Backup</span>
                                         </div>
                                     </div>
                                 </div>
@@ -2223,7 +2221,7 @@ export default function SettingsIndex({
                                 {/* Security Stamp Footer */}
                                 <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                     <span>AUDIT: DB_RESTORE_ROLLBACK</span>
-                                    <span>SPEC-11 ENFORCED</span>
+                                    <span>កត់ត្រាក្នុង Audit</span>
                                 </div>
                             </div>
                         </div>

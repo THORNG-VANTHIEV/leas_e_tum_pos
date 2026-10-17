@@ -162,7 +162,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         }
     }, [collapsed]);
 
-    const { language, setLanguage, toggleLanguage, t, getName, getSecondaryName } = useTranslation();
+    const { language, t, getName, getSecondaryName } = useTranslation();
 
     const toggleTheme = () => {
         setIsDark((prev) => !prev);
@@ -963,7 +963,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
                             userMenuOpen ? 'text-white bg-zinc-800' : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80'
                         }`}
-                        title="Options"
+                        title="ជម្រើស"
                     >
                         <MoreVertical className="w-4 h-4" />
                     </button>
@@ -1009,33 +1009,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         </button>
                     </div>
 
-                    {/* Right: Modern 2-Language Segmented Switch [ ខ្មែរ | EN ] */}
-                    <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 shadow-xs">
-                        <button
-                            type="button"
-                            onClick={() => setLanguage('km')}
-                            className={`px-2.5 py-1 text-xs rounded-md transition-all cursor-pointer font-khmer ${
-                                language === 'km'
-                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm'
-                                    : 'text-zinc-400 hover:text-zinc-200 font-medium'
-                            }`}
-                            title="ប្តូរទៅ ភាសាខ្មែរ"
-                        >
-                            ខ្មែរ
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setLanguage('en')}
-                            className={`px-2.5 py-1 text-xs rounded-md transition-all cursor-pointer font-sans ${
-                                language === 'en'
-                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm'
-                                    : 'text-zinc-400 hover:text-zinc-200 font-medium'
-                            }`}
-                            title="Switch to English"
-                        >
-                            EN
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1055,7 +1028,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         type="button"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
-                        aria-label="Toggle Navigation"
+                        aria-label="បើក/បិទម៉ឺនុយ"
                     >
                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
@@ -1090,7 +1063,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         variant="ghost"
                         size="sm"
                         onClick={handleLogout}
-                        title="Log Out"
+                        title="ចាកចេញ"
                         className="text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 h-8 w-8 cursor-pointer"
                     >
                         <LogOut className="w-4 h-4" />
@@ -1208,7 +1181,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <div className="mt-3 flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900/90 border border-zinc-800/80 text-xs text-zinc-400">
                             <div className="flex items-center gap-2 min-w-0">
                                 <Store className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                                <span className="truncate text-[11px] text-zinc-300">Main Dining Hall</span>
+                                <span className="truncate text-[11px] text-zinc-300">ហាងមេ</span>
                             </div>
                             <span className="font-mono text-[10px] text-zinc-400 shrink-0 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-750">
                                 LOC-01
@@ -1225,8 +1198,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 >
                     {!collapsed && (
                         <div className="px-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold flex items-center justify-between">
-                            <span>Navigation</span>
-                            <span className="font-khmer text-zinc-400">ម៉ឺនុយ</span>
+                            <span className="font-khmer">ម៉ឺនុយ</span>
                         </div>
                     )}
                     {renderNavLinks(collapsed)}
@@ -1299,16 +1271,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             {getInitials(user?.name)}
                         </div>
 
-                        {/* Compact Language Toggle (KM / EN) */}
-                        <button
-                            type="button"
-                            onClick={toggleLanguage}
-                            title={language === 'km' ? 'ប្តូរទៅ English' : 'Switch to ខ្មែរ'}
-                            className="w-8 h-8 rounded-lg text-xs font-bold text-amber-400 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors font-mono border border-zinc-800"
-                        >
-                            {language === 'km' ? 'ខ្មែរ' : 'EN'}
-                        </button>
-
                         {/* Compact Moon / Sun Toggle */}
                         <button
                             id="collapsed-theme-toggle-btn"
@@ -1339,7 +1301,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <button
                             type="button"
                             onClick={() => setHelpModalOpen(true)}
-                            title="Help & Shortcuts"
+                            title="ជំនួយ & ផ្លូវកាត់"
                             className="w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors"
                         >
                             <HelpCircle className="w-4 h-4" />
@@ -1464,7 +1426,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                             ផ្លូវកាត់ក្តារចុចសំខាន់ៗ (Core POS Keyboard Shortcuts)
                                         </h4>
                                     </div>
-                                    <span className="text-[10px] font-mono text-zinc-400">GLOBAL SHORTCUTS</span>
+                                    <span className="text-[10px] font-mono text-zinc-400">F2 • Esc • Ctrl+B</span>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1574,14 +1536,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                                     <div>
                                         <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
-                                            SYSTEM PASSPORT
+                                            ព័ត៌មានប្រព័ន្ធ
                                         </span>
                                         <h3 className="text-sm font-bold font-mono text-white">
-                                            POS REFERENCE DOSSIER
+                                            LEASHAL ETUM POS
                                         </h3>
                                     </div>
                                     <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                                        ONLINE & READY
+                                        ដំណើរការ
                                     </span>
                                 </div>
 
@@ -1589,7 +1551,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-4">
                                     <div className="flex items-center justify-between text-zinc-400">
                                         <span className="font-khmer">កំណែប្រព័ន្ធ (Version)៖</span>
-                                        <span className="text-amber-400 font-bold">V2.0 Blueprint</span>
+                                        <span className="text-amber-400 font-bold">V2.0</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-400">
                                         <span className="font-khmer">ឈ្មោះហាង (Business)៖</span>
@@ -1608,19 +1570,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 {/* Security Invariants Status */}
                                 <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
                                     <div className="text-[10px] text-zinc-400 uppercase font-sans font-bold mb-1">
-                                        Security Invariants Enforcement
+                                        ការការពារទិន្នន័យ
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>INV-01 (Immutable Invoices):</span>
-                                        <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                        <span>វិក្កយបត្រមិនអាចកែបាន:</span>
+                                        <span className="text-emerald-400 font-bold">បើក</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>INV-04 (SHA-256 Backups):</span>
-                                        <span className="text-emerald-400 font-bold">ACTIVE</span>
+                                        <span>Backup មាន SHA-256:</span>
+                                        <span className="text-emerald-400 font-bold">បើក</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>INV-07 (Append-Only Audit):</span>
-                                        <span className="text-emerald-400 font-bold">100% RETAINED</span>
+                                        <span>Audit មិនអាចលុបបាន:</span>
+                                        <span className="text-emerald-400 font-bold">បើក</span>
                                     </div>
                                 </div>
 
@@ -1638,8 +1600,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
                             {/* Security Stamp Footer */}
                             <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
-                                <span>REFERENCE: POS_SYSTEM_HELP</span>
-                                <span>SPEC-14 HOTKEYS</span>
+                                <span>ជំនួយប្រព័ន្ធ</span>
+                                <span>F2 = POS</span>
                             </div>
                         </div>
                     </div>

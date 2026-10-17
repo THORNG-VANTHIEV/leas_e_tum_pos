@@ -247,7 +247,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
     const chairLayout = getChairLayout(addForm.shape, addForm.capacity);
 
     return (
-        <AppLayout title="Floor & Tables">
+        <AppLayout title="តុ & កន្លែងអង្គុយ">
             <Head title="Floor & Tables — ប្លង់តុ & ការគ្រប់គ្រងតុ" />
 
             <div className="space-y-6 pb-12">
@@ -260,7 +260,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    Floor & Tables
+                                    តុ & កន្លែងអង្គុយ
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
                                         ប្លង់តុ
                                     </span>
@@ -573,7 +573,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             {editingTableId ? 'កែប្រែព័ត៌មានតុ' : 'បន្ថែមតុថ្មីក្នុងប្លង់'}
                                         </h2>
                                         <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                            {editingTableId ? 'EDIT TABLE' : 'NEW FLOOR TABLE'}
+                                            {editingTableId ? 'កែតុ' : 'តុថ្មី'}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
@@ -661,7 +661,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                         type="text"
                                                         required
                                                         list="zone-list"
-                                                        placeholder="Main Dining / VIP Room / Outdoor"
+                                                        placeholder="ឧ. ខាងក្នុង / បន្ទប់ VIP / ខាងក្រៅ"
                                                         value={addForm.zone}
                                                         onChange={(e) => setAddForm({ ...addForm, zone: e.target.value })}
                                                         className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"

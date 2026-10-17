@@ -189,7 +189,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    Kitchen Display (KDS)
+                                    ផ្ទះបាយ (KDS)
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
                                         ផ្ទាំងផ្ទះបាយ
                                     </span>

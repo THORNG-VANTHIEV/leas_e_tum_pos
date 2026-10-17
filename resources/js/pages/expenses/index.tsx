@@ -303,7 +303,7 @@ export default function ExpensesIndex({
     };
 
     return (
-        <AppLayout title="Cash & Expenses">
+        <AppLayout title="ចំណាយ & ថតបេឡា">
             <Head title="Cash & Expenses — ចំណាយ & ថតបេឡា" />
 
             <div className="space-y-6 pb-12">
@@ -316,7 +316,7 @@ export default function ExpensesIndex({
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    Cash & Expenses
+                                    ចំណាយ & ថតបេឡា
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">
                                         ចំណាយ & ថតបេឡា
                                     </span>
@@ -543,7 +543,7 @@ export default function ExpensesIndex({
                                                             {item.payment_method === 'cash_drawer'
                                                                 ? 'ថតបេឡា (Cash)'
                                                                 : item.payment_method === 'petty_cash'
-                                                                ? 'Petty Cash'
+                                                                ? 'ប្រាក់ចំណាយតូចតាច'
                                                                 : item.payment_method}
                                                         </td>
                                                         <td className="py-3 px-4 text-zinc-400">
@@ -683,7 +683,7 @@ export default function ExpensesIndex({
                                             {editingExpenseId ? 'កែប្រែចំណាយ' : 'កត់ត្រាចំណាយប្រតិបត្តិការថ្មី'}
                                         </h2>
                                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
-                                            {editingExpenseId ? `Edit Expense #${editingExpenseId}` : 'New Expense'}
+                                            {editingExpenseId ? `កែចំណាយ #${editingExpenseId}` : 'ចំណាយថ្មី'}
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
@@ -1139,7 +1139,7 @@ export default function ExpensesIndex({
                                             កត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡា
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            Cash Drawer Operation
+                                            ដាក់/ដកលុយពីថតបេឡា
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1363,7 +1363,7 @@ export default function ExpensesIndex({
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        CASH DRAWER VOUCHER
+                                                        ប័ណ្ណថតបេឡា
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         LOG-DRAWER
@@ -1414,7 +1414,7 @@ export default function ExpensesIndex({
                                             {/* Voucher Footer */}
                                             <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                                 <span>AUDIT: DRAWER_TRANSACTION</span>
-                                                <span>STATUS: READY</span>
+                                                <span>រួចរាល់</span>
                                             </div>
                                         </div>
                                     </div>

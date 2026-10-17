@@ -562,7 +562,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        AUTHORIZATION PASSPORT
+                                                        ការអនុម័ត
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         SEC-{selectedApproval.id.toString().padStart(6, '0')}
@@ -575,7 +575,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                             : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
                                                     }`}
                                                 >
-                                                    {isApproving ? 'READY TO AUTHORIZE' : 'REJECTION PENDING'}
+                                                    {isApproving ? 'រួចរាល់អនុម័ត' : 'រង់ចាំបដិសេធ'}
                                                 </span>
                                             </div>
 
@@ -650,7 +650,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                             <Clock className="w-4 h-4 shrink-0 animate-pulse" />
                                                             <span>សុពលភាពអនុវត្ត៖ 30 នាទី</span>
                                                         </div>
-                                                        <span className="font-mono text-[10px] text-emerald-300">One-Time Token</span>
+                                                        <span className="font-mono text-[10px] text-emerald-300">ប្រើបានតែម្តង</span>
                                                     </div>
                                                 ) : (
                                                     <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between text-xs">
@@ -658,7 +658,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                             <XCircle className="w-4 h-4 shrink-0" />
                                                             <span>ស្ថានភាព៖ បដិសេធចោល</span>
                                                         </div>
-                                                        <span className="font-mono text-[10px] text-rose-300">Deny Access</span>
+                                                        <span className="font-mono text-[10px] text-rose-300">បដិសេធ</span>
                                                     </div>
                                                 )}
                                             </div>

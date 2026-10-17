@@ -51,7 +51,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
         default_format: (currentPrint.default_format as '80mm' | 'a5') || '80mm',
         show_logo: currentPrint.show_logo ?? true,
         show_business_name: currentPrint.show_business_name ?? true,
-        header_title_en: currentPrint.header_title_en || 'COMMERCIAL INVOICE',
+        header_title_en: currentPrint.header_title_en || 'INVOICE',
         header_title_km: currentPrint.header_title_km || 'វិក្កយបត្រ',
         header_subtitle:
             currentPrint.header_subtitle || 'Official Sales Receipt & Tax Invoice',
@@ -158,9 +158,9 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
             default_format: '80mm',
             show_logo: true,
             show_business_name: true,
-            header_title_en: 'COMMERCIAL INVOICE',
+            header_title_en: 'INVOICE',
             header_title_km: 'វិក្កយបត្រ',
-            header_subtitle: 'Official Sales Receipt & Tax Invoice',
+            header_subtitle: 'វិក្កយបត្រលក់ / Sales Receipt',
             show_address: true,
             show_phone: true,
             show_vat_tin: true,
@@ -185,7 +185,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
             footer_text: 'Thank you for dining with us! សូមអរគុណ!',
             policy_note: 'Goods sold are not returnable • ទំនិញទិញហើយមិនអាចប្តូរវិញបានទេ',
             show_qr_payment: true,
-            qr_payment_text: 'Scan to Pay / KHQR',
+            qr_payment_text: 'ស្កេនដើម្បីបង់ / Scan to Pay',
             qr_code_image: '',
             qr_bank_name: 'Bakong KHQR • Cambodia FastPay',
             qr_account_name: '',
@@ -304,10 +304,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                 <div>
                     <h2 className="text-lg font-bold text-white flex items-center gap-2">
                         <Printer className="w-5 h-5 text-emerald-400" />
-                        <span>Invoice & Receipt Template Designer</span>
+                        <span>រចនាវិក្កយបត្រ & ព្រីន</span>
                     </h2>
                     <p className="text-xs text-zinc-400 mt-1">
-                        Customize visual fields, headers, currency display, KHQR, and policies for both 80mm thermal receipts and A5 invoices with real-time live preview.
+                        កំណត់អ្វីដែលបង្ហាញលើវិក្កយបត្រ 80mm និង A5 ហើយមើលលទ្ធផលភ្លាមៗនៅខាងស្ដាំ។
                     </p>
                 </div>
 
@@ -320,7 +320,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                         className="text-xs"
                     >
                         <RotateCcw className="w-3.5 h-3.5" />
-                        <span>Reset Defaults</span>
+                        <span>កំណត់ដើមវិញ</span>
                     </Button>
                     <Button
                         type="button"
@@ -330,7 +330,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                         className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-md shadow-emerald-950 text-xs"
                     >
                         <Save className="w-3.5 h-3.5" />
-                        <span>{form.processing ? 'Saving...' : 'Save Template Settings'}</span>
+                        <span>{form.processing ? 'កំពុងរក្សាទុក...' : 'រក្សាទុក'}</span>
                     </Button>
                 </div>
             </div>
@@ -338,7 +338,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
             {saveSuccessNotice && (
                 <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center gap-2.5 text-xs text-emerald-400">
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>Invoice layout & print settings updated successfully! All future print requests will use this design.</span>
+                    <span>បានរក្សាទុក! ការព្រីនបន្ទាប់នឹងប្រើការរចនានេះ។</span>
                 </div>
             )}
 
@@ -352,16 +352,16 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center gap-2">
                                 <Receipt className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Paper Format & Row Spacing
+                                    ក្រដាស & គម្លាតជួរ
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 1/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 1/6</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
-                                    Default POS Print Format
+                                    ទម្រង់ព្រីនលំនាំដើម
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
                                     <button
@@ -377,7 +377,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         }`}
                                     >
                                         <Printer className="w-3.5 h-3.5" />
-                                        <span>80mm Thermal</span>
+                                        <span>ក្រដាស 80mm</span>
                                     </button>
 
                                     <button
@@ -393,14 +393,14 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         }`}
                                     >
                                         <FileText className="w-3.5 h-3.5" />
-                                        <span>A5 Invoice</span>
+                                        <span>វិក្កយបត្រ A5</span>
                                     </button>
                                 </div>
                             </div>
 
                             <div>
                                 <label className="text-xs font-semibold text-zinc-300 block mb-1.5">
-                                    Items Table Spacing / Row Density
+                                    គម្លាតជួរមុខទំនិញ
                                 </label>
                                 <div className="grid grid-cols-3 gap-1.5">
                                     {(['compact', 'normal', 'spacious'] as const).map((density) => (
@@ -428,10 +428,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center gap-2">
                                 <Building2 className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Header & Letterhead
+                                    ក្បាលវិក្កយបត្រ
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 2/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 2/6</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -447,23 +447,23 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 label="English Title / ចំណងជើងភាសាអង់គ្លេស"
                                 value={form.data.header_title_en}
                                 onChange={(e) => form.setData('header_title_en', e.target.value)}
-                                placeholder="COMMERCIAL INVOICE"
+                                placeholder="INVOICE"
                             />
                         </div>
 
                         <Input
                             id="header_subtitle"
-                            label="Header Subtitle / Tagline"
+                            label="ចំណងជើងរង"
                             value={form.data.header_subtitle}
                             onChange={(e) => form.setData('header_subtitle', e.target.value)}
-                            placeholder="Official Sales Receipt & Tax Invoice"
+                            placeholder="វិក្កយបត្រលក់ / Sales Receipt"
                         />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Brand Logo</span>
-                                    <p className="text-[10px] text-zinc-400">Display circular store emblem</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញឡូហ្គោ</span>
+                                    <p className="text-[10px] text-zinc-400">ឡូហ្គោរាងមូលរបស់ហាង</p>
                                 </div>
                                 <Switch
                                     id="show_logo"
@@ -475,8 +475,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Business Name</span>
-                                    <p className="text-[10px] text-zinc-400">Header primary & secondary titles</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញឈ្មោះហាង</span>
+                                    <p className="text-[10px] text-zinc-400">ឈ្មោះខ្មែរ និងអង់គ្លេស</p>
                                 </div>
                                 <Switch
                                     id="show_business_name"
@@ -488,8 +488,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Store Address</span>
-                                    <p className="text-[10px] text-zinc-400">Print branch / store physical address</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញអាសយដ្ឋាន</span>
+                                    <p className="text-[10px] text-zinc-400">អាសយដ្ឋានហាង</p>
                                 </div>
                                 <Switch
                                     id="show_address"
@@ -501,8 +501,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Phone Number</span>
-                                    <p className="text-[10px] text-zinc-400">Print store contact telephone</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញលេខទូរស័ព្ទ</span>
+                                    <p className="text-[10px] text-zinc-400">លេខទំនាក់ទំនងហាង</p>
                                 </div>
                                 <Switch
                                     id="show_phone"
@@ -514,8 +514,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show VAT / Tax Identifier</span>
-                                    <p className="text-[10px] text-zinc-400">Print official GDT / TIN number</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញលេខ VAT TIN</span>
+                                    <p className="text-[10px] text-zinc-400">លេខអត្តសញ្ញាណកម្មសារពើពន្ធ</p>
                                 </div>
                                 <Switch
                                     id="show_vat_tin"
@@ -533,17 +533,17 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Transaction & Customer Metadata
+                                    ព័ត៌មានការលក់ & អតិថិជន
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 3/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 3/6</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Cashier Name</span>
-                                    <p className="text-[10px] text-zinc-400">Attributing cashier/operator</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញឈ្មោះអ្នកគិតប្រាក់</span>
+                                    <p className="text-[10px] text-zinc-400">អ្នកដែលគិតប្រាក់</p>
                                 </div>
                                 <Switch
                                     id="show_cashier"
@@ -555,8 +555,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Table / Ref ID</span>
-                                    <p className="text-[10px] text-zinc-400">Display table number or order tag</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញលេខតុ</span>
+                                    <p className="text-[10px] text-zinc-400">លេខតុ ឬស្លាកការកម្មង់</p>
                                 </div>
                                 <Switch
                                     id="show_table_ref"
@@ -568,8 +568,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Guest Count (Pax)</span>
-                                    <p className="text-[10px] text-zinc-400">Total dining guests on slip</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញចំនួនភ្ញៀវ</span>
+                                    <p className="text-[10px] text-zinc-400">ចំនួនភ្ញៀវសរុប</p>
                                 </div>
                                 <Switch
                                     id="show_guest_count"
@@ -581,8 +581,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Date & Timestamp</span>
-                                    <p className="text-[10px] text-zinc-400">Date and chronological event time</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញកាលបរិច្ឆេទ & ម៉ោង</span>
+                                    <p className="text-[10px] text-zinc-400">ថ្ងៃ និងម៉ោងលក់</p>
                                 </div>
                                 <Switch
                                     id="show_datetime"
@@ -594,8 +594,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Customer Details</span>
-                                    <p className="text-[10px] text-zinc-400">Customer name & phone on A5</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញព័ត៌មានអតិថិជន</span>
+                                    <p className="text-[10px] text-zinc-400">ឈ្មោះ & លេខទូរស័ព្ទ (A5)</p>
                                 </div>
                                 <Switch
                                     id="show_customer_info"
@@ -607,8 +607,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Barcode / Order Code</span>
-                                    <p className="text-[10px] text-zinc-400">Scannable 1D barcode on slip</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញបាកូដ</span>
+                                    <p className="text-[10px] text-zinc-400">បាកូដលើវិក្កយបត្រ</p>
                                 </div>
                                 <Switch
                                     id="show_barcode"
@@ -626,17 +626,17 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center gap-2">
                                 <Sliders className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Items & Column Display
+                                    មុខទំនិញ & ជួរឈរ
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 4/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 4/6</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Khmer Item Name</span>
-                                    <p className="text-[10px] text-zinc-400">Secondary Khmer menu description</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញឈ្មោះមុខទំនិញជាខ្មែរ</span>
+                                    <p className="text-[10px] text-zinc-400">ឈ្មោះទីពីរ (ខ្មែរ)</p>
                                 </div>
                                 <Switch
                                     id="show_item_khmer_name"
@@ -648,8 +648,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Unit of Measure</span>
-                                    <p className="text-[10px] text-zinc-400">E.g., Can, Plate, Pax, Bottle</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញឯកតា</span>
+                                    <p className="text-[10px] text-zinc-400">ឧ. កំប៉ុង ចាន ដប</p>
                                 </div>
                                 <Switch
                                     id="show_item_unit"
@@ -661,8 +661,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show SKU / Item Code</span>
-                                    <p className="text-[10px] text-zinc-400">Inventory SKU identifier</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញលេខកូដ SKU</span>
+                                    <p className="text-[10px] text-zinc-400">លេខកូដមុខទំនិញ</p>
                                 </div>
                                 <Switch
                                     id="show_item_sku"
@@ -674,8 +674,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Quantity Column</span>
-                                    <p className="text-[10px] text-zinc-400">Numerical units purchased</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញចំនួន</span>
+                                    <p className="text-[10px] text-zinc-400">ចំនួនដែលទិញ</p>
                                 </div>
                                 <Switch
                                     id="show_item_quantity"
@@ -687,23 +687,23 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                         </div>
                     </Card>
 
-                    {/* 5. Totals, Tax & Dual Currency */}
+                    {/* 5. សរុប ពន្ធ & រូបិយប័ណ្ណពីរ */}
                     <Card className="p-4 sm:p-5 space-y-4">
                         <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                             <div className="flex items-center gap-2">
                                 <DollarSign className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Totals, Tax & Dual Currency
+                                    សរុប ពន្ធ & រូបិយប័ណ្ណពីរ
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 5/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 5/6</span>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Subtotal</span>
-                                    <p className="text-[10px] text-zinc-400">Pre-discount item subtotal</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញសរុបរង</span>
+                                    <p className="text-[10px] text-zinc-400">សរុបមុនបញ្ចុះតម្លៃ</p>
                                 </div>
                                 <Switch
                                     id="show_subtotal"
@@ -715,8 +715,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Tax (VAT) Breakdown</span>
-                                    <p className="text-[10px] text-zinc-400">Separate tax line item</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញពន្ធ (VAT)</span>
+                                    <p className="text-[10px] text-zinc-400">ជួរពន្ធដាច់ដោយឡែក</p>
                                 </div>
                                 <Switch
                                     id="show_tax"
@@ -728,8 +728,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Discount Line</span>
-                                    <p className="text-[10px] text-zinc-400">Promotions or VIP discount deduction</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញបញ្ចុះតម្លៃ</span>
+                                    <p className="text-[10px] text-zinc-400">ប្រូម៉ូសិន ឬបញ្ចុះតម្លៃ VIP</p>
                                 </div>
                                 <Switch
                                     id="show_discount"
@@ -741,8 +741,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Dual Currency (KHR ៛)</span>
-                                    <p className="text-[10px] text-zinc-400">Riel equivalent on totals</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញប្រាក់រៀល (៛)</span>
+                                    <p className="text-[10px] text-zinc-400">សរុបជាប្រាក់រៀល</p>
                                 </div>
                                 <Switch
                                     id="show_dual_currency"
@@ -774,8 +774,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Payment Mode & Tendered</span>
-                                    <p className="text-[10px] text-zinc-400">E.g. CASH $30.00 / KHQR</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញវិធីបង់ & ប្រាក់ទទួល</span>
+                                    <p className="text-[10px] text-zinc-400">ឧ. សាច់ប្រាក់ $30.00 / KHQR</p>
                                 </div>
                                 <Switch
                                     id="show_payment_method"
@@ -787,8 +787,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                             <div className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800/80">
                                 <div className="space-y-0.5">
-                                    <span className="text-xs font-semibold text-zinc-200">Show Change Amount</span>
-                                    <p className="text-[10px] text-zinc-400">Change returned in USD and KHR</p>
+                                    <span className="text-xs font-semibold text-zinc-200">បង្ហាញប្រាក់អាប់</span>
+                                    <p className="text-[10px] text-zinc-400">ប្រាក់អាប់ជាដុល្លារ និងរៀល</p>
                                 </div>
                                 <Switch
                                     id="show_change"
@@ -806,10 +806,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             <div className="flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-emerald-400" />
                                 <h3 className="text-sm font-bold text-zinc-100">
-                                    Footer, Terms, KHQR & Wi-Fi
+                                    ខាងក្រោម, KHQR & Wi-Fi
                                 </h3>
                             </div>
-                            <span className="text-[11px] font-mono text-zinc-400">Section 6/6</span>
+                            <span className="text-[11px] font-mono text-zinc-400">ផ្នែក 6/6</span>
                         </div>
 
                         <div>
@@ -840,10 +840,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <QrCode className="w-4 h-4 text-rose-400" />
                                     <div>
                                         <span className="text-xs font-semibold text-zinc-200">
-                                            Show KHQR / Payment QR Code
+                                            បង្ហាញ KHQR / QR បង់ប្រាក់
                                         </span>
                                         <p className="text-[10px] text-zinc-400">
-                                            Prints scannable Bakong / KHQR code box on bottom of receipt
+                                            ព្រីន QR Bakong / KHQR នៅខាងក្រោមវិក្កយបត្រ
                                         </p>
                                     </div>
                                 </div>
@@ -890,10 +890,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="text-xs font-bold text-white truncate">
-                                                        Real Bank QR Loaded
+                                                        បានដាក់ QR ធនាគារ
                                                     </div>
                                                     <p className="text-[10px] text-zinc-400 truncate">
-                                                        Displayed on customer invoices & receipts
+                                                        បង្ហាញលើវិក្កយបត្ររបស់ភ្ញៀវ
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-2">
                                                         <Button
@@ -933,7 +933,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                                 {isUploadingQr ? (
                                                     <div className="flex flex-col items-center justify-center py-1">
                                                         <Loader2 className="w-6 h-6 text-amber-400 animate-spin mb-1.5" />
-                                                        <span className="text-xs text-zinc-300 font-medium">Uploading QR Code image...</span>
+                                                        <span className="text-xs text-zinc-300 font-medium">កំពុង upload រូប QR...</span>
                                                     </div>
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center py-1">
@@ -941,10 +941,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                                             <Upload className="w-4 h-4" />
                                                         </div>
                                                         <div className="text-xs font-semibold text-zinc-200 group-hover:text-white">
-                                                            Upload Bank QR Code / រូបភាព KHQR
+                                                            ដាក់ QR ធនាគារ Code / រូបភាព KHQR
                                                         </div>
                                                         <div className="text-[10px] text-zinc-400 mt-0.5">
-                                                            Click or drag screenshot from ABA, ACLEDA, or Bakong (PNG, JPG, WEBP)
+                                                            ចុច ឬអូសរូប QR ពី ABA, ACLEDA ឬ Bakong (PNG, JPG, WEBP)
                                                         </div>
                                                     </div>
                                                 )}
@@ -961,15 +961,15 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                                         <Input
                                             id="qr_payment_text"
-                                            label="QR Header Label"
+                                            label="ចំណងជើង QR"
                                             value={form.data.qr_payment_text}
                                             onChange={(e) => form.setData('qr_payment_text', e.target.value)}
-                                            placeholder="SCAN TO PAY / KHQR"
+                                            placeholder="ស្កេនដើម្បីបង់ / Scan to Pay"
                                         />
 
                                         <Input
                                             id="qr_bank_name"
-                                            label="Bank / Subtitle Note"
+                                            label="ធនាគារ / ចំណាំ"
                                             value={form.data.qr_bank_name}
                                             onChange={(e) => form.setData('qr_bank_name', e.target.value)}
                                             placeholder="Bakong KHQR • Cambodia FastPay"
@@ -979,7 +979,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <Input
                                             id="qr_account_name"
-                                            label="Account Name (Optional)"
+                                            label="ឈ្មោះគណនី (មិនចាំបាច់)"
                                             value={form.data.qr_account_name}
                                             onChange={(e) => form.setData('qr_account_name', e.target.value)}
                                             placeholder="LEASHAL ETUM"
@@ -987,7 +987,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                                         <Input
                                             id="qr_account_number"
-                                            label="Account Number (Optional)"
+                                            label="លេខគណនី (មិនចាំបាច់)"
                                             value={form.data.qr_account_number}
                                             onChange={(e) => form.setData('qr_account_number', e.target.value)}
                                             placeholder="000 123 456"
@@ -1004,10 +1004,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <Wifi className="w-4 h-4 text-sky-400" />
                                     <div>
                                         <span className="text-xs font-semibold text-zinc-200">
-                                            Show Guest Wi-Fi Information
+                                            បង្ហាញ Wi-Fi សម្រាប់ភ្ញៀវ
                                         </span>
                                         <p className="text-[10px] text-zinc-400">
-                                            Convenient Wi-Fi access credentials for guests
+                                            ឈ្មោះ Wi-Fi និងលេខសម្ងាត់សម្រាប់ភ្ញៀវ
                                         </p>
                                     </div>
                                 </div>
@@ -1045,7 +1045,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 <UserCheck className="w-4 h-4 text-emerald-400" />
                                 <div>
                                     <span className="text-xs font-semibold text-zinc-200">
-                                        Show Signature & Stamp Blocks (A5)
+                                        បង្ហាញកន្លែងហត្ថលេខា (A5)
                                     </span>
                                     <p className="text-[10px] text-zinc-400">
                                         Official Cashier & Customer signature lines on A5
@@ -1069,7 +1069,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             onClick={handleResetDefaults}
                         >
                             <RotateCcw className="w-4 h-4" />
-                            <span>Reset</span>
+                            <span>កំណត់ដើមវិញ</span>
                         </Button>
                         <Button
                             type="submit"
@@ -1077,7 +1077,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                             className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium shadow-md shadow-emerald-950"
                         >
                             <Save className="w-4 h-4" />
-                            <span>{form.processing ? 'Saving...' : 'Save All Invoice Settings'}</span>
+                            <span>{form.processing ? 'កំពុងរក្សាទុក...' : 'រក្សាទុកការកំណត់វិក្កយបត្រ'}</span>
                         </Button>
                     </div>
                 </form>
@@ -1098,7 +1098,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 }`}
                             >
                                 <Printer className="w-3.5 h-3.5" />
-                                <span>80mm Thermal</span>
+                                <span>ក្រដាស 80mm</span>
                             </button>
                             <button
                                 type="button"
@@ -1110,7 +1110,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 }`}
                             >
                                 <FileText className="w-3.5 h-3.5" />
-                                <span>A5 Invoice</span>
+                                <span>វិក្កយបត្រ A5</span>
                             </button>
                         </div>
 
@@ -1121,7 +1121,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 onClick={() =>
                                     setPreviewZoom((prev) => (prev > 70 ? prev - 10 : prev))
                                 }
-                                title="Zoom Out"
+                                title="បង្រួម"
                                 className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"
                             >
                                 <ZoomOut className="w-3.5 h-3.5" />
@@ -1134,7 +1134,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 onClick={() =>
                                     setPreviewZoom((prev) => (prev < 120 ? prev + 10 : prev))
                                 }
-                                title="Zoom In"
+                                title="ពង្រីក"
                                 className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"
                             >
                                 <ZoomIn className="w-3.5 h-3.5" />
@@ -1144,10 +1144,10 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                 size="sm"
                                 onClick={handleTestPrint}
                                 className="bg-zinc-800 hover:bg-zinc-700 text-white font-medium border border-zinc-700 ml-1 text-xs"
-                                title="Trigger physical print test"
+                                title="ព្រីនសាកល្បង"
                             >
                                 <Printer className="w-3.5 h-3.5 mr-1 text-emerald-400" />
-                                <span>Test Print</span>
+                                <span>ព្រីនសាកល្បង</span>
                             </Button>
                         </div>
                     </div>
@@ -1232,35 +1232,35 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     {/* Metadata Details */}
                                     <div className="space-y-0.5 text-[10px] pb-2 border-b border-dashed border-zinc-400">
                                         <div className="flex justify-between">
-                                            <span className="text-zinc-600">INVOICE NO:</span>
+                                            <span className="text-zinc-600">លេខវិក្កយបត្រ / NO:</span>
                                             <span className="font-bold">INV-2026-0042</span>
                                         </div>
 
                                         {form.data.show_datetime && (
                                             <div className="flex justify-between">
-                                                <span className="text-zinc-600">DATE & TIME:</span>
+                                                <span className="text-zinc-600">កាលបរិច្ឆេទ / DATE:</span>
                                                 <span>2026-10-14 12:45 PM</span>
                                             </div>
                                         )}
 
                                         {form.data.show_table_ref && (
                                             <div className="flex justify-between">
-                                                <span className="text-zinc-600">TABLE / REF:</span>
-                                                <span className="font-bold">Table VIP-02</span>
+                                                <span className="text-zinc-600">តុ / TABLE:</span>
+                                                <span className="font-bold">VIP-02</span>
                                             </div>
                                         )}
 
                                         {form.data.show_cashier && (
                                             <div className="flex justify-between">
-                                                <span className="text-zinc-600">CASHIER:</span>
+                                                <span className="text-zinc-600">អ្នកគិតប្រាក់ / CASHIER:</span>
                                                 <span>{auth.user?.name || 'Sok Dara'}</span>
                                             </div>
                                         )}
 
                                         {form.data.show_guest_count && (
                                             <div className="flex justify-between">
-                                                <span className="text-zinc-600">GUEST PAX:</span>
-                                                <span>4 Guests</span>
+                                                <span className="text-zinc-600">ភ្ញៀវ / GUESTS:</span>
+                                                <span>4</span>
                                             </div>
                                         )}
 
@@ -1290,8 +1290,8 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     {/* Line Items Table */}
                                     <div className="space-y-1.5 pb-2 border-b border-dashed border-zinc-400">
                                         <div className="flex justify-between text-[10px] font-bold text-zinc-800 pb-0.5 border-b border-zinc-300">
-                                            <span>ITEM / DESCRIPTION</span>
-                                            <span>AMOUNT</span>
+                                            <span>មុខទំនិញ / ITEM</span>
+                                            <span>ទឹកប្រាក់ / AMOUNT</span>
                                         </div>
 
                                         {sampleItems.map((item) => (
@@ -1339,21 +1339,21 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <div className="space-y-1 text-[11px] pb-2 border-b border-dashed border-zinc-400">
                                         {form.data.show_subtotal && (
                                             <div className="flex justify-between">
-                                                <span>SUBTOTAL:</span>
+                                                <span>សរុបរង / SUBTOTAL:</span>
                                                 <span>${subtotal.toFixed(2)}</span>
                                             </div>
                                         )}
 
                                         {form.data.show_discount && discount > 0 && (
                                             <div className="flex justify-between text-zinc-600 text-[10px]">
-                                                <span>DISCOUNT (VIP Promo):</span>
+                                                <span>បញ្ចុះតម្លៃ / DISCOUNT:</span>
                                                 <span>-${discount.toFixed(2)}</span>
                                             </div>
                                         )}
 
                                         {form.data.show_tax && (
                                             <div className="flex justify-between text-zinc-600 text-[10px]">
-                                                <span>VAT / TAX (10%):</span>
+                                                <span>ពន្ធ / TAX (10%):</span>
                                                 <span>${tax.toFixed(2)}</span>
                                             </div>
                                         )}
@@ -1372,7 +1372,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                                         {form.data.show_payment_method && (
                                             <div className="flex justify-between text-[10px] text-zinc-600 pt-0.5">
-                                                <span>PAID (CASH):</span>
+                                                <span>ប្រាក់ទទួល / PAID (សាច់ប្រាក់ / Cash):</span>
                                                 <span>${amountReceived.toFixed(2)}</span>
                                             </div>
                                         )}
@@ -1410,7 +1410,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                             ) : (
                                                 <div className="w-20 h-20 mx-auto bg-white p-1 border-2 border-dashed border-zinc-300 rounded flex flex-col items-center justify-center text-zinc-400">
                                                     <QrCode className="w-6 h-6 stroke-1 text-zinc-400" />
-                                                    <span className="text-[7px] text-zinc-400 mt-0.5 font-medium">Upload Bank QR</span>
+                                                    <span className="text-[7px] text-zinc-400 mt-0.5 font-medium">ដាក់ QR ធនាគារ</span>
                                                 </div>
                                             )}
                                             <div className="text-[8px] text-zinc-600 font-sans font-medium">
@@ -1431,7 +1431,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         <div className="p-1.5 rounded border border-dashed border-zinc-300 text-[10px] text-center space-y-0.5">
                                             <div className="font-bold text-zinc-800 flex items-center justify-center gap-1">
                                                 <Wifi className="w-3 h-3 text-sky-600" />
-                                                <span>FREE GUEST WI-FI</span>
+                                                <span>វ៉ាយហ្វាយ / FREE WI-FI</span>
                                             </div>
                                             <div className="text-zinc-600">
                                                 Network: <span className="font-bold">{form.data.wifi_ssid}</span> | Pass:{' '}
@@ -1526,19 +1526,19 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                             )}
                                             <div className="pt-1 text-[10px] space-y-0.5 font-mono">
                                                 <div>
-                                                    <span className="text-zinc-500">INVOICE: </span>
+                                                    <span className="text-zinc-500">លេខវិក្កយបត្រ / NO: </span>
                                                     <span className="font-bold text-zinc-950">INV-2026-0042</span>
                                                 </div>
                                                 {form.data.show_datetime && (
                                                     <div>
-                                                        <span className="text-zinc-500">DATE: </span>
+                                                        <span className="text-zinc-500">កាលបរិច្ឆេទ / DATE: </span>
                                                         <span>2026-10-14 12:45 PM</span>
                                                     </div>
                                                 )}
                                                 {form.data.show_table_ref && (
                                                     <div>
-                                                        <span className="text-zinc-500">TABLE/REF: </span>
-                                                        <span className="font-bold">Table VIP-02</span>
+                                                        <span className="text-zinc-500">តុ / TABLE: </span>
+                                                        <span className="font-bold">VIP-02</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -1550,7 +1550,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         {form.data.show_cashier && (
                                             <div>
                                                 <span className="text-zinc-500 block text-[9px] uppercase font-mono">
-                                                    Cashier
+                                                    អ្នកគិតប្រាក់ / Cashier
                                                 </span>
                                                 <span className="font-semibold text-zinc-900">
                                                     {auth.user?.name || 'Sok Dara'}
@@ -1561,16 +1561,16 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         {form.data.show_guest_count && (
                                             <div>
                                                 <span className="text-zinc-500 block text-[9px] uppercase font-mono">
-                                                    Guest Pax
+                                                    ភ្ញៀវ / Guests
                                                 </span>
-                                                <span className="font-semibold text-zinc-900">4 Guests</span>
+                                                <span className="font-semibold text-zinc-900">4 នាក់</span>
                                             </div>
                                         )}
 
                                         {form.data.show_customer_info && (
                                             <div>
                                                 <span className="text-zinc-500 block text-[9px] uppercase font-mono">
-                                                    Customer (VIP)
+                                                    អតិថិជន / Customer
                                                 </span>
                                                 <span className="font-semibold text-zinc-900">ឯកឧត្តម សុខ ចាន់ដារ៉ា</span>
                                             </div>
@@ -1583,21 +1583,21 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                             <thead>
                                                 <tr className="bg-zinc-100 text-zinc-900 text-[10px] font-bold border-b border-zinc-800 uppercase font-mono">
                                                     <th className="p-1.5 border-r border-zinc-300 w-8 text-center">#</th>
-                                                    <th className="p-1.5 border-r border-zinc-300">Description / មុខទំនិញ</th>
+                                                    <th className="p-1.5 border-r border-zinc-300">មុខទំនិញ / Description</th>
                                                     {form.data.show_item_unit && (
                                                         <th className="p-1.5 border-r border-zinc-300 w-12 text-center">
-                                                            Unit
+                                                            ឯកតា
                                                         </th>
                                                     )}
                                                     {form.data.show_item_quantity && (
                                                         <th className="p-1.5 border-r border-zinc-300 w-12 text-center">
-                                                            Qty
+                                                            ចំនួន
                                                         </th>
                                                     )}
                                                     <th className="p-1.5 border-r border-zinc-300 w-16 text-right">
-                                                        Price
+                                                        តម្លៃ
                                                     </th>
-                                                    <th className="p-1.5 w-16 text-right">Total</th>
+                                                    <th className="p-1.5 w-16 text-right">សរុប</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-zinc-200 text-[10px]">
@@ -1706,24 +1706,24 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                         <div className="w-48 space-y-1 border border-zinc-300 p-2.5 rounded bg-zinc-50/70 font-mono text-[10px]">
                                             {form.data.show_subtotal && (
                                                 <div className="flex justify-between text-zinc-600">
-                                                    <span>Subtotal:</span>
+                                                    <span>សរុបរង / Subtotal:</span>
                                                     <span>${subtotal.toFixed(2)}</span>
                                                 </div>
                                             )}
                                             {form.data.show_discount && (
                                                 <div className="flex justify-between text-zinc-600">
-                                                    <span>Discount:</span>
+                                                    <span>បញ្ចុះតម្លៃ / Discount:</span>
                                                     <span>-${discount.toFixed(2)}</span>
                                                 </div>
                                             )}
                                             {form.data.show_tax && (
                                                 <div className="flex justify-between text-zinc-600">
-                                                    <span>Tax (10%):</span>
+                                                    <span>ពន្ធ / Tax (10%):</span>
                                                     <span>${tax.toFixed(2)}</span>
                                                 </div>
                                             )}
                                             <div className="flex justify-between items-baseline text-xs font-bold text-zinc-950 pt-1 border-t border-zinc-300">
-                                                <span>Grand Total:</span>
+                                                <span>សរុប / Total:</span>
                                                 <div className="text-right">
                                                     <div>${grandTotal.toFixed(2)}</div>
                                                     {form.data.show_dual_currency && (
@@ -1735,13 +1735,13 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                             </div>
                                             {form.data.show_payment_method && (
                                                 <div className="flex justify-between text-zinc-600 pt-0.5 border-t border-zinc-200">
-                                                    <span>Tendered:</span>
+                                                    <span>ប្រាក់ទទួល / Paid:</span>
                                                     <span>${amountReceived.toFixed(2)}</span>
                                                 </div>
                                             )}
                                             {form.data.show_change && (
                                                 <div className="flex justify-between font-bold text-zinc-900">
-                                                    <span>Change:</span>
+                                                    <span>ប្រាក់អាប់ / Change:</span>
                                                     <span>${changeAmount.toFixed(2)}</span>
                                                 </div>
                                             )}
@@ -1763,11 +1763,11 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
 
                                             <div className="text-center space-y-6">
                                                 <div className="font-semibold text-zinc-800">
-                                                    Customer / អ្នកទទួល
+                                                    អតិថិជន / Customer
                                                 </div>
                                                 <div className="border-b border-zinc-400 w-32 mx-auto" />
                                                 <div className="text-[9px] text-zinc-500 font-mono">
-                                                    Signature & Date
+                                                    ហត្ថលេខា & កាលបរិច្ឆេទ
                                                 </div>
                                             </div>
                                         </div>

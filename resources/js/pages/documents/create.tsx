@@ -996,7 +996,7 @@ export default function DocumentCreate({
                                     {/* Micro Shortcuts Badge */}
                                     <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400 font-mono">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        <span>Terminal Ready • Press [F2] for Checkout</span>
+                                        <span>រួចរាល់ • ចុច [F2] ដើម្បីគិតប្រាក់</span>
                                     </div>
                                 </div>
                             ) : (
@@ -1037,7 +1037,7 @@ export default function DocumentCreate({
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, -1)}
                                                     className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
-                                                    title="Decrease"
+                                                    title="បន្ថយ"
                                                 >
                                                     <Minus className="w-3.5 h-3.5" />
                                                 </button>
@@ -1048,7 +1048,7 @@ export default function DocumentCreate({
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, 1)}
                                                     className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
-                                                    title="Increase"
+                                                    title="បន្ថែម"
                                                 >
                                                     <Plus className="w-3.5 h-3.5" />
                                                 </button>
@@ -1069,7 +1069,7 @@ export default function DocumentCreate({
                                                 type="button"
                                                 onClick={() => removeLine(item.product_id)}
                                                 className="pos-cart-remove-btn text-zinc-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition cursor-pointer shrink-0"
-                                                title="Remove"
+                                                title="ដកចេញ"
                                             >
                                                 <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             </button>
@@ -1085,7 +1085,7 @@ export default function DocumentCreate({
                             <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap sm:flex-nowrap">
                                 <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
                                     <span>{t('pos.discount_label')}</span>
-                                    <span className="text-[10px] text-zinc-500 font-mono uppercase">Discount</span>
+                                    <span className="text-[10px] text-zinc-500 font-mono uppercase">បញ្ចុះតម្លៃ</span>
                                 </span>
                                 <div className="pos-discount-bar flex items-center gap-0.5 sm:gap-1 bg-zinc-800 p-0.5 sm:p-1 rounded-xl border border-zinc-700/80 shrink-0">
                                     {[
@@ -1264,7 +1264,7 @@ export default function DocumentCreate({
                                         ផ្ទាំងគិតប្រាក់ & ចេញវិក្កយបត្រ (POS Checkout)
                                     </h2>
                                     <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                                        DUAL-CURRENCY
+                                        ដុល្លារ & រៀល
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
@@ -1407,7 +1407,7 @@ export default function DocumentCreate({
                                                 <Coins className="w-5 h-5" />
                                             </div>
                                             <span className="font-bold">សាច់ប្រាក់ (Cash)</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">USD & KHR</span>
+                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">ដុល្លារ & រៀល</span>
                                         </button>
 
                                         <button
@@ -1443,7 +1443,7 @@ export default function DocumentCreate({
                                                 <CreditCard className="w-5 h-5" />
                                             </div>
                                             <span className="font-bold">កាតធនាគារ (Card)</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">POS Terminal</span>
+                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">ម៉ាស៊ីនកាត</span>
                                         </button>
 
                                         {/* Delivery apps collect the money and pay the shop later: not cash in the drawer */}
@@ -1538,7 +1538,7 @@ export default function DocumentCreate({
                                             </span>
                                             <div className="flex flex-wrap gap-2">
                                                 {[
-                                                    { label: 'Exact ($)', val: totals.grandTotalUSD },
+                                                    { label: 'គ្រប់ចំនួន ($)', val: totals.grandTotalUSD },
                                                     { label: '$5', val: '5.00' },
                                                     { label: '$10', val: '10.00' },
                                                     { label: '$20', val: '20.00' },
@@ -1689,7 +1689,7 @@ export default function DocumentCreate({
                                             </h3>
                                         </div>
                                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                            LIVE BILL
+                                            វិក្កយបត្រ
                                         </span>
                                     </div>
 
@@ -1847,7 +1847,7 @@ export default function DocumentCreate({
                                         តារាងប្លង់តុ និងការគ្រប់គ្រងភ្ញៀវ (Floor & Table Management Suite)
                                     </h2>
                                     <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                        DINE-IN DISPATCH
+                                        ញ៉ាំនៅហាង
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
@@ -1951,7 +1951,7 @@ export default function DocumentCreate({
                                                                 </h4>
                                                                 {isCurrentSelected && (
                                                                     <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                                                                        ACTIVE
+                                                                        កំពុងប្រើ
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -2038,7 +2038,7 @@ export default function DocumentCreate({
                                                         ព័ត៌មានតុ
                                                     </h3>
                                                     <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block">
-                                                        Table Details
+                                                        ព័ត៌មានតុ
                                                     </span>
                                                 </div>
                                             </div>

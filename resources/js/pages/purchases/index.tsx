@@ -617,13 +617,13 @@ export default function PurchasesIndex({
                             <table className="w-full table-fixed text-left text-xs border-collapse">
                                 <thead>
                                     <tr className="border-b border-zinc-800/80 bg-zinc-950/60 text-zinc-400 font-mono text-[11px] uppercase">
-                                        <th className="py-3 px-3 sm:px-4 w-[14%] whitespace-nowrap">Purchase #</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[14%] whitespace-nowrap">លេខការទិញ</th>
                                         <th className="py-3 px-3 sm:px-4 w-[20%]">Supplier / អ្នកផ្គត់ផ្គង់</th>
                                         <th className="py-3 px-3 sm:px-4 w-[11%] whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
                                         <th className="py-3 px-3 sm:px-4 w-[26%]">Items / ទំនិញ</th>
                                         <th className="py-3 px-3 sm:px-4 w-[11%] text-right whitespace-nowrap">Total ($ / ៛)</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[12%] text-center whitespace-nowrap">Status</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[6%] text-center whitespace-nowrap">Actions</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[12%] text-center whitespace-nowrap">ស្ថានភាព</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[6%] text-center whitespace-nowrap">សកម្មភាព</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/40 text-zinc-300">
@@ -634,7 +634,7 @@ export default function PurchasesIndex({
                                                     <Truck className="w-8 h-8 text-zinc-600" />
                                                     <p className="font-khmer text-sm">មិនមានទិន្នន័យការទិញចូលទេ</p>
                                                     <p className="text-xs font-mono text-zinc-600">
-                                                        No purchase records found matching your filters.
+                                                        រកមិនឃើញការទិញចូលទេ។
                                                     </p>
                                                 </div>
                                             </td>
@@ -756,7 +756,7 @@ export default function PurchasesIndex({
                                                                         )
                                                                     }
                                                                     className="h-7 w-7 p-0 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg inline-flex items-center justify-center cursor-pointer"
-                                                                    title="Mark Received"
+                                                                    title="បានទទួលទំនិញ"
                                                                 >
                                                                     <Check className="w-3.5 h-3.5" />
                                                                 </Button>
@@ -840,7 +840,7 @@ export default function PurchasesIndex({
                                                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                                                 }`}
                                             >
-                                                {supplier.is_active ? 'Active' : 'Inactive'}
+                                                {supplier.is_active ? 'សកម្ម' : 'បិទ'}
                                             </Badge>
                                         </div>
 
@@ -927,7 +927,7 @@ export default function PurchasesIndex({
                                                 {editingPurchase ? `កែប្រែការទិញចូល #${editingPurchase.purchase_number}` : 'កត់ត្រាការទិញចូលស្តុកថ្មី'}
                                             </h3>
                                             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                                {editingPurchase ? 'Edit Purchase' : 'New Purchase Order'}
+                                                {editingPurchase ? 'កែការទិញចូល' : 'ការទិញចូលថ្មី'}
                                             </span>
                                         </div>
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1126,12 +1126,12 @@ export default function PurchasesIndex({
                                                 <table className="w-full text-left text-xs border-collapse">
                                                     <thead className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900/95 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 font-mono text-[11px] uppercase whitespace-nowrap">
                                                         <tr>
-                                                            <th className="py-2.5 px-3 w-48">Catalog Product</th>
+                                                            <th className="py-2.5 px-3 w-48">មុខទំនិញ</th>
                                                             <th className="py-2.5 px-3">Item Name / ឈ្មោះទំនិញ *</th>
                                                             <th className="py-2.5 px-3 w-28">Unit / ឯកតា</th>
                                                             <th className="py-2.5 px-3 w-24">Qty / ចំនួន</th>
                                                             <th className="py-2.5 px-3 w-28">Cost / ថ្លៃដើម ($)</th>
-                                                            <th className="py-2.5 px-3 text-right w-28">Total ($)</th>
+                                                            <th className="py-2.5 px-3 text-right w-28">សរុប ($)</th>
                                                             <th className="py-2.5 px-3 w-10 text-center"></th>
                                                         </tr>
                                                     </thead>
@@ -1451,7 +1451,7 @@ export default function PurchasesIndex({
                                                 : 'បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី'}
                                         </h2>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
-                                            {editingSupplier ? 'Edit Supplier' : 'New Vendor Partner'}
+                                            {editingSupplier ? 'កែអ្នកផ្គត់ផ្គង់' : 'អ្នកផ្គត់ផ្គង់ថ្មី'}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1667,7 +1667,7 @@ export default function PurchasesIndex({
                                             <div className="flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-teal-500" />
                                                 <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
-                                                    Vendor Credential Passport
+                                                    ព័ត៌មានអ្នកផ្គត់ផ្គង់
                                                 </span>
                                             </div>
                                             <Badge

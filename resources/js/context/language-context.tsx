@@ -21,14 +21,9 @@ const dictionaries: Record<Language, TranslationDict> = {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [language, setLanguageState] = useState<Language>(() => {
-        if (typeof window !== 'undefined') {
-            const stored = localStorage.getItem('pos_language');
-            if (stored === 'en' || stored === 'EN') return 'en';
-            if (stored === 'km' || stored === 'KM') return 'km';
-        }
-        return 'km'; // Default to Khmer as requested
-    });
+    // The POS is Khmer-first: the language switch was removed, so always start in Khmer
+    // (ignores an old 'en' choice left in localStorage from the earlier switch)
+    const [language, setLanguageState] = useState<Language>('km');
 
     useEffect(() => {
         if (typeof window !== 'undefined') {

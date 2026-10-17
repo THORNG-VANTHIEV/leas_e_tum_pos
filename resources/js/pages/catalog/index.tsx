@@ -432,7 +432,7 @@ export default function CatalogIndex({
 
     return (
         <AppLayout title="Items, Units & Categories / មុខទំនិញ និងឯកតា">
-            <Head title="Items & Units Catalog" />
+            <Head title="មុខទំនិញ & ឯកតា" />
 
             <div className="space-y-6 pb-16">
                 {/* Fixed / Sticky Header & Tabs Switcher */}
@@ -445,7 +445,7 @@ export default function CatalogIndex({
                                     <span className="p-2.5 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-2xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
                                         <Package className="w-5 h-5 stroke-[2.5]" />
                                     </span>
-                                    <span>Items & Units Catalog</span>
+                                    <span>មុខទំនិញ & ឯកតា</span>
                                 </h1>
                                 <Badge variant="emerald" className="text-xs">
                                     មុខទំនិញ & ឯកតា
@@ -663,13 +663,13 @@ export default function CatalogIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3 whitespace-nowrap">SKU</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">លេខកូដ</th>
                                             <th className="px-4 py-3 whitespace-nowrap">Product Name / ឈ្មោះមុខទំនិញ</th>
                                             <th className="px-4 py-3 whitespace-nowrap">Category / ប្រភេទ</th>
                                             <th className="px-4 py-3 whitespace-nowrap">Unit / ឯកតា</th>
                                             <th className="px-4 py-3 text-right whitespace-nowrap">Unit Price / តម្លៃ</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -746,18 +746,18 @@ export default function CatalogIndex({
                                                             <button
                                                                 onClick={() => handleToggleProduct(p)}
                                                                 disabled={!canManageCatalog}
-                                                                title="Click to toggle status"
+                                                                title="ចុចដើម្បីបើក/បិទ"
                                                                 className="cursor-pointer"
                                                             >
                                                                 {p.is_active ? (
                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                        Active
+                                                                        កំពុងលក់
                                                                     </span>
                                                                 ) : (
                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                        Inactive
+                                                                        បិទ
                                                                     </span>
                                                                 )}
                                                             </button>
@@ -771,7 +771,7 @@ export default function CatalogIndex({
                                                                 className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                             >
                                                                 <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                                Edit
+                                                                កែ
                                                             </Button>
                                                             )}
                                                         </td>
@@ -803,7 +803,7 @@ export default function CatalogIndex({
                                             <th className="px-4 py-3 whitespace-nowrap">Secondary Name / ឈ្មោះអង់គ្លេស</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -847,12 +847,12 @@ export default function CatalogIndex({
                                                         {u.is_active ? (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                Active
+                                                                កំពុងប្រើ
                                                             </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                Inactive
+                                                                បិទ
                                                             </span>
                                                         )}
                                                     </button>
@@ -866,7 +866,7 @@ export default function CatalogIndex({
                                                         className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                        Edit
+                                                        កែ
                                                     </Button>
                                                     )}
                                                 </td>
@@ -877,7 +877,7 @@ export default function CatalogIndex({
                             </div>
                             <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
                                 <span>បង្ហាញ {units.length} ឯកតារង្វាស់សរុប</span>
-                                <span className="text-zinc-500 text-[11px]">Units of Measurement</span>
+                                <span className="text-zinc-500 text-[11px]">ឯកតា</span>
                             </div>
                         </Card>
                     </div>
@@ -897,7 +897,7 @@ export default function CatalogIndex({
                                             <th className="px-4 py-3 whitespace-nowrap">Type / ប្រភេទ</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
                                             <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">Actions</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -939,12 +939,12 @@ export default function CatalogIndex({
                                                         {c.is_active ? (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                Active
+                                                                កំពុងប្រើ
                                                             </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                Inactive
+                                                                បិទ
                                                             </span>
                                                         )}
                                                     </button>
@@ -958,7 +958,7 @@ export default function CatalogIndex({
                                                         className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                        Edit
+                                                        កែ
                                                     </Button>
                                                     )}
                                                 </td>
@@ -969,7 +969,7 @@ export default function CatalogIndex({
                             </div>
                             <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
                                 <span>បង្ហាញ {categories.length} ប្រភេទមុខទំនិញសរុប</span>
-                                <span className="text-zinc-500 text-[11px]">Item Categories</span>
+                                <span className="text-zinc-500 text-[11px]">ប្រភេទ</span>
                             </div>
                         </Card>
                     </div>
@@ -995,7 +995,7 @@ export default function CatalogIndex({
                                             {editingProduct ? 'កែប្រែព័ត៌មានមុខទំនិញ' : 'បន្ថែមមុខទំនិញថ្មី'}
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            {editingProduct ? 'Edit Product' : 'New Product'}
+                                            {editingProduct ? 'កែមុខទំនិញ' : 'មុខទំនិញថ្មី'}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1052,7 +1052,7 @@ export default function CatalogIndex({
                                                     type="text"
                                                     value={productForm.data.name_secondary}
                                                     onChange={(e) => productForm.setData('name_secondary', e.target.value)}
-                                                    placeholder="e.g. Sun-dried Clams Original"
+                                                    placeholder="ឧ. លៀសហាលដើម"
                                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                 />
                                             </div>
@@ -1328,7 +1328,7 @@ export default function CatalogIndex({
                                                         <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-khmer">
                                                             កំពុងផ្ទុកឡើងរូបភាពពីកុំព្យូទ័រ...
                                                         </span>
-                                                        <span className="text-xs text-zinc-400 font-mono">Uploading image, please wait...</span>
+                                                        <span className="text-xs text-zinc-400 font-mono">កំពុង upload រូបភាព សូមរង់ចាំ...</span>
                                                     </div>
                                                 ) : (
                                                     <>
@@ -1435,7 +1435,7 @@ export default function CatalogIndex({
                                         {editingUnit ? 'កែប្រែឯកតាគិតទំនិញ' : 'បន្ថែមឯកតាគិតថ្មី'}
                                     </h3>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-mono">
-                                        {editingUnit ? 'Edit Unit' : 'New Unit of Measurement'}
+                                        {editingUnit ? 'កែឯកតា' : 'ឯកតាថ្មី'}
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1473,7 +1473,7 @@ export default function CatalogIndex({
                                             type="text"
                                             value={unitForm.data.code}
                                             onChange={(e) => unitForm.setData('code', e.target.value)}
-                                            placeholder="e.g. CAN, PLATE, SET, BOTTLE"
+                                            placeholder="ឧ. CAN, PLATE, SET, BOTTLE"
                                             className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                                             required
                                         />
@@ -1518,7 +1518,7 @@ export default function CatalogIndex({
                                                 type="text"
                                                 value={unitForm.data.name_secondary}
                                                 onChange={(e) => unitForm.setData('name_secondary', e.target.value)}
-                                                placeholder="e.g. Plate, Can, Bottle, Glass"
+                                                placeholder="ឧ. Plate, Can, Bottle, Glass"
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                                             />
                                         </div>
@@ -1567,7 +1567,7 @@ export default function CatalogIndex({
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-mono">
-                                                Unit Display Simulation
+                                                មើលឯកតាជាមុន
                                             </span>
                                         </div>
                                         <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
@@ -1674,7 +1674,7 @@ export default function CatalogIndex({
                                         {editingCategory ? 'កែប្រែប្រភេទមុខទំនិញ' : 'បន្ថែមប្រភេទមុខទំនិញថ្មី'}
                                     </h3>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
-                                        {editingCategory ? 'Edit Category' : 'New POS Category'}
+                                        {editingCategory ? 'កែប្រភេទ' : 'ប្រភេទថ្មី'}
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1747,7 +1747,7 @@ export default function CatalogIndex({
                                                 type="text"
                                                 value={categoryForm.data.code}
                                                 onChange={(e) => categoryForm.setData('code', e.target.value)}
-                                                placeholder="e.g. SOUPS, CLAMS, BEV"
+                                                placeholder="ឧ. SOUPS, CLAMS, BEV"
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                                 required
                                             />
@@ -1779,7 +1779,7 @@ export default function CatalogIndex({
                                             type="text"
                                             value={categoryForm.data.name_secondary}
                                             onChange={(e) => categoryForm.setData('name_secondary', e.target.value)}
-                                            placeholder="e.g. Clams & Seafood"
+                                            placeholder="ឧ. លៀស & គ្រឿងសមុទ្រ"
                                             className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                         />
                                     </div>
@@ -1826,7 +1826,7 @@ export default function CatalogIndex({
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="w-4 h-4 text-teal-500" />
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
-                                                POS Menu Tab Preview
+                                                មើលផ្ទាំងម៉ឺនុយ POS ជាមុន
                                             </span>
                                         </div>
                                         <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20 uppercase">

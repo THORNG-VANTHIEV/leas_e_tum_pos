@@ -119,7 +119,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                     ត្រួតពិនិត្យ និងបិទបញ្ជីគណនេយ្យ
                                 </h1>
                                 <Badge variant="amber" className="font-mono text-[10px] uppercase">
-                                    Review (Entry Frozen)
+                                    កំពុងពិនិត្យ (ឈប់លក់)
                                 </Badge>
                             </div>
                             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 font-khmer">
@@ -386,14 +386,14 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        BATCH SEQUENCE CERTIFICATE
+                                                        សង្ខេបការបិទបញ្ជី
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         PERIOD-{period.code}
                                                     </h4>
                                                 </div>
                                                 <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs">
-                                                    STAMPING READY
+                                                    រួចរាល់
                                                 </span>
                                             </div>
 

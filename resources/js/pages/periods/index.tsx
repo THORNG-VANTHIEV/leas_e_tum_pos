@@ -129,7 +129,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
     };
 
     return (
-        <AppLayout title="Accounting Periods Lifecycle">
+        <AppLayout title="វគ្គលក់">
             <div className="space-y-6">
                 {/* Fixed / Sticky Header */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -138,17 +138,17 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                             <div className="flex items-center gap-2.5">
                                 <Calendar className="w-6 h-6 text-emerald-400" />
                                 <h1 className="text-2xl font-bold tracking-tight text-white">
-                                    Batch Accounting Periods
+                                    វគ្គលក់ & ការបិទបញ្ជី
                                 </h1>
                             </div>
                             <p className="text-xs text-zinc-400 mt-1">
-                                Invariant INV-05: Accounting periods control draft entry and freeze before gapless sequence allocation.
+                                បើកវគ្គដើម្បីលក់ ដាក់ពិនិត្យ រួចបិទបញ្ជីដើម្បីផ្ដល់លេខវិក្កយបត្រផ្លូវការតាមលំដាប់ ដោយមិនរំលងលេខ។
                             </p>
                         </div>
 
                         <Button size="sm" onClick={() => setShowCreateModal(true)}>
                             <Plus className="w-4 h-4" />
-                            <span>Create Draft Period</span>
+                            <span>បង្កើតវគ្គថ្មី</span>
                         </Button>
                     </div>
                 </div>
@@ -194,15 +194,15 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                     {/* Counters */}
                                     <div className="grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-zinc-950/70 border border-zinc-800/80 font-mono text-[11px] text-center">
                                         <div>
-                                            <div className="text-zinc-500 text-[10px]">TOTAL</div>
+                                            <div className="text-zinc-500 text-[10px]">សរុប</div>
                                             <div className="font-bold text-white">{p.total_docs}</div>
                                         </div>
                                         <div>
-                                            <div className="text-amber-400 text-[10px]">DRAFTS</div>
+                                            <div className="text-amber-400 text-[10px]">ព្រាង</div>
                                             <div className="font-bold text-amber-300">{p.draft_docs}</div>
                                         </div>
                                         <div>
-                                            <div className="text-emerald-400 text-[10px]">STAMPED</div>
+                                            <div className="text-emerald-400 text-[10px]">មានលេខ</div>
                                             <div className="font-bold text-emerald-300">
                                                 #{p.last_sequence_no}
                                             </div>
@@ -220,7 +220,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             onClick={() => handleActivate(p.id)}
                                         >
                                             <CheckCircle2 className="w-3.5 h-3.5" />
-                                            <span>Activate for Entry</span>
+                                            <span>បើកសម្រាប់លក់</span>
                                         </Button>
                                     )}
 
@@ -239,7 +239,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                     {p.status === 'review' && (
                                         <Link href={`/periods/${p.id}/review`} className="w-full">
                                             <Button size="sm" variant="primary" className="w-full">
-                                                <span>Review & Finalize</span>
+                                                <span>ពិនិត្យ & បិទបញ្ជី</span>
                                                 <ArrowUpRight className="w-3.5 h-3.5" />
                                             </Button>
                                         </Link>
@@ -523,7 +523,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                     </h3>
                                                 </div>
                                                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                                    LIVE PREVIEW
+                                                    មើលជាមុន
                                                 </span>
                                             </div>
 
@@ -539,7 +539,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                         </span>
                                                     </div>
                                                     <span className="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                                                        DRAFT PENDING
+                                                        ព្រាង
                                                     </span>
                                                 </div>
 
