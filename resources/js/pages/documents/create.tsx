@@ -170,6 +170,8 @@ export default function DocumentCreate({
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'khqr' | 'card'>('cash');
     const [amountReceived, setAmountReceived] = useState<string>('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tableFilter, setTableFilter] = useState<'all' | 'occupied' | 'vacant' | 'indoor' | 'vip' | 'garden'>('all');
+    const [inspectedTable, setInspectedTable] = useState<string | null>(null);
 
     // Scroll lock for modals
     useEffect(() => {
@@ -1782,142 +1784,389 @@ export default function DocumentCreate({
                 document.body
             )}
 
-            {/* Active Tables Overview Modal */}
+            {/* Active Tables Overview Full-Workspace Suite */}
             {mounted && isTablesModalOpen && createPortal(
                 <div
-                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150"
+                    className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,16rem)] z-50 flex flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden select-none animate-in fade-in duration-150 h-screen"
                     onWheel={(e) => e.stopPropagation()}
                 >
-                    <div className="bg-zinc-900 border border-zinc-700/80 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl shadow-black/80 text-zinc-100 animate-in zoom-in-95 duration-150">
-                        {/* Header */}
-                        <div className="p-5 sm:p-6 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/60">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                                    <Utensils className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 font-khmer">
-                                        តារាងតុទាំងអស់ក្នុងហាង
-                                        <span className="text-[11px] font-normal text-zinc-400 font-mono">(Table Layout)</span>
-                                    </h3>
-                                    <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 font-khmer">
-                                        <span className="inline-flex items-center gap-1 text-amber-400 font-semibold">
-                                            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                                            {activeTablesCount} តុ កំពុងទទួលភ្ញៀវ
-                                        </span>
-                                        <span>•</span>
-                                        <span>{tables_list.length} តុសរុប</span>
-                                    </p>
-                                </div>
+                    {/* Header Bar */}
+                    <div className="h-16 px-6 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-xs">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 shrink-0">
+                                <Utensils className="w-5 h-5" />
                             </div>
-                            <button
-                                onClick={() => setIsTablesModalOpen(false)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-semibold text-zinc-200 hover:bg-zinc-800 hover:text-white transition-all cursor-pointer font-khmer"
-                            >
-                                <ArrowLeft className="w-3.5 h-3.5" />
-                                <span>ត្រឡប់ក្រោយ</span>
-                            </button>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
+                                        តារាងប្លង់តុ និងការគ្រប់គ្រងភ្ញៀវ (Floor & Table Management Suite)
+                                    </h2>
+                                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                        DINE-IN DISPATCH
+                                    </span>
+                                </div>
+                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                    <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                        {activeTablesCount} តុ កំពុងទទួលភ្ញៀវ (Occupied)
+                                    </span>
+                                    <span>•</span>
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                                        {tables_list.length - activeTablesCount} តុទំនេរ (Vacant)
+                                    </span>
+                                    <span>•</span>
+                                    <span>{tables_list.length} តុសរុប (Total)</span>
+                                </p>
+                            </div>
                         </div>
 
-                        {/* Tables Grid */}
-                        <div className="p-6 max-h-[60vh] overflow-y-auto">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5">
-                                {tables_list.map((tbl) => {
-                                    const activeDoc = active_tables.find((t) => t.table_identifier === tbl);
-                                    const isCurrentSelected = orderMode === 'dine_in' && selectedTable === tbl;
+                        <button
+                            type="button"
+                            onClick={() => setIsTablesModalOpen(false)}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>ត្រឡប់ក្រោយ</span>
+                        </button>
+                    </div>
 
-                                    return (
-                                        <div
-                                            key={tbl}
-                                            onClick={() => {
-                                                if (activeDoc) {
-                                                    handleSelectActiveTable(activeDoc);
-                                                } else {
-                                                    setOrderMode('dine_in');
-                                                    setSelectedTable(tbl);
-                                                    setCurrentDraftId(null);
-                                                    setIsTablesModalOpen(false);
-                                                }
-                                            }}
-                                            className={`p-4 rounded-2xl border flex flex-col justify-between transition-all select-none cursor-pointer group hover:scale-[1.02] ${
-                                                activeDoc
-                                                    ? 'bg-gradient-to-b from-amber-500/15 to-amber-500/5 border-amber-500/40 text-zinc-100 shadow-md shadow-amber-500/10 hover:border-amber-400'
-                                                    : 'bg-zinc-950/70 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:bg-zinc-900/80'
-                                            } ${isCurrentSelected ? 'ring-2 ring-amber-400 shadow-amber-500/20' : ''}`}
-                                        >
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div>
-                                                    <h4 className="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">
-                                                        {tbl}
-                                                    </h4>
-                                                    <span className={`inline-flex items-center gap-1 text-[10px] font-semibold mt-0.5 font-khmer ${
-                                                        activeDoc ? 'text-amber-400' : 'text-emerald-400'
-                                                    }`}>
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${
-                                                            activeDoc ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'
-                                                        }`} />
-                                                        {activeDoc ? 'មានភ្ញៀវ' : 'ទំនេរ'}
-                                                    </span>
+                    {/* Content Area - 2 Columns */}
+                    {(() => {
+                        const filteredTables = tables_list.filter((tbl) => {
+                            const isOccupied = active_tables.some((t) => t.table_identifier === tbl);
+                            if (tableFilter === 'occupied') return isOccupied;
+                            if (tableFilter === 'vacant') return !isOccupied;
+                            if (tableFilter === 'indoor') return tbl.includes('តុ') && !tbl.includes('សួន');
+                            if (tableFilter === 'vip') return tbl.toLowerCase().includes('vip');
+                            if (tableFilter === 'garden') return tbl.includes('សួន') || tbl.toLowerCase().includes('garden');
+                            return true;
+                        });
+
+                        const focusedTableName = inspectedTable || (orderMode === 'dine_in' ? selectedTable : null) || tables_list[0] || 'តុ 01';
+                        const activeFocusedTable = active_tables.find((t) => t.table_identifier === focusedTableName);
+                        const isFocusedOccupied = !!activeFocusedTable;
+                        const floorTotalUSD = active_tables.reduce((sum, t) => sum + parseFloat(t.grand_total || '0'), 0);
+                        const floorTotalKHR = Math.round(floorTotalUSD * 4100);
+
+                        return (
+                            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+                                {/* Left Column: Zone Filters & Table Cards Grid */}
+                                <div className="w-full lg:w-7/12 p-6 lg:p-8 space-y-5 overflow-y-auto">
+                                    {/* Filter Pills */}
+                                    <div className="flex flex-wrap items-center gap-2 pb-1">
+                                        {[
+                                            { id: 'all', label: `តុទាំងអស់ (${tables_list.length})` },
+                                            { id: 'occupied', label: `កំពុងទទួលភ្ញៀវ (${activeTablesCount})` },
+                                            { id: 'vacant', label: `តុទំនេរ (${tables_list.length - activeTablesCount})` },
+                                            { id: 'indoor', label: 'សាលធំ (Indoor)' },
+                                            { id: 'vip', label: 'បន្ទប់ VIP' },
+                                            { id: 'garden', label: 'សួនក្រៅ (Outdoor)' },
+                                        ].map((tab) => (
+                                            <button
+                                                key={tab.id}
+                                                type="button"
+                                                onClick={() => setTableFilter(tab.id as any)}
+                                                className={`px-3 py-1.5 rounded-xl text-xs font-bold font-khmer transition-all cursor-pointer ${
+                                                    tableFilter === tab.id
+                                                        ? 'bg-amber-500 text-zinc-950 shadow-sm shadow-amber-500/20'
+                                                        : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                                                }`}
+                                            >
+                                                {tab.label}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Tables Grid */}
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+                                        {filteredTables.map((tbl) => {
+                                            const activeDoc = active_tables.find((t) => t.table_identifier === tbl);
+                                            const isCurrentSelected = orderMode === 'dine_in' && selectedTable === tbl;
+                                            const isInspected = focusedTableName === tbl;
+
+                                            return (
+                                                <div
+                                                    key={tbl}
+                                                    onClick={() => {
+                                                        setInspectedTable(tbl);
+                                                    }}
+                                                    className={`p-4 rounded-2xl border flex flex-col justify-between transition-all select-none cursor-pointer group hover:scale-[1.01] ${
+                                                        activeDoc
+                                                            ? 'bg-gradient-to-b from-amber-500/10 to-amber-500/5 border-amber-500/40 text-zinc-900 dark:text-zinc-100 shadow-xs hover:border-amber-400'
+                                                            : 'bg-white dark:bg-zinc-900/90 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-700 shadow-xs'
+                                                    } ${isInspected ? 'ring-2 ring-amber-500 shadow-md shadow-amber-500/15' : ''} ${
+                                                        isCurrentSelected ? 'border-amber-500' : ''
+                                                    }`}
+                                                >
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <h4 className="font-bold text-sm text-zinc-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                                                                    {tbl}
+                                                                </h4>
+                                                                {isCurrentSelected && (
+                                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                                                                        ACTIVE
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <span className={`inline-flex items-center gap-1 text-[10px] font-semibold mt-1 font-khmer ${
+                                                                activeDoc ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-emerald-600 dark:text-emerald-400'
+                                                            }`}>
+                                                                <span className={`w-1.5 h-1.5 rounded-full ${
+                                                                    activeDoc ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+                                                                }`} />
+                                                                {activeDoc ? 'មានភ្ញៀវ' : 'ទំនេរ'}
+                                                            </span>
+                                                        </div>
+                                                        <div className={`p-2 rounded-xl ${
+                                                            activeDoc
+                                                                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-300'
+                                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
+                                                        }`}>
+                                                            <Utensils className="w-4 h-4" />
+                                                        </div>
+                                                    </div>
+
+                                                    {activeDoc ? (
+                                                        <div className="space-y-2 pt-2 border-t border-amber-500/20">
+                                                            <div className="flex items-baseline justify-between">
+                                                                <span className="font-mono font-black text-base text-amber-600 dark:text-amber-400">
+                                                                    ${parseFloat(activeDoc.grand_total).toFixed(2)}
+                                                                </span>
+                                                                <span className="text-[10.5px] text-zinc-500 dark:text-zinc-400 font-khmer">
+                                                                    {activeDoc.items.length} មុខ
+                                                                </span>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-1.5 pt-1" onClick={(e) => e.stopPropagation()}>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleSelectActiveTable(activeDoc)}
+                                                                    className="flex-1 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs shadow-xs transition cursor-pointer font-khmer flex items-center justify-center gap-1"
+                                                                >
+                                                                    <span>បើកតុ</span>
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleCancelTable(activeDoc.id)}
+                                                                    className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-rose-500 hover:bg-rose-500/20 transition cursor-pointer"
+                                                                    title="លុបចោលតុ"
+                                                                >
+                                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                                                            <button
+                                                                type="button"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setOrderMode('dine_in');
+                                                                    setSelectedTable(tbl);
+                                                                    setCurrentDraftId(null);
+                                                                    setIsTablesModalOpen(false);
+                                                                }}
+                                                                className="w-full py-1.5 text-center text-[11px] font-bold text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition font-khmer bg-zinc-50 dark:bg-zinc-800/50 hover:bg-emerald-500/10 rounded-lg cursor-pointer"
+                                                            >
+                                                                ជ្រើសរើសតុនេះ
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className={`p-2 rounded-xl ${
-                                                    activeDoc ? 'bg-amber-500/20 text-amber-300' : 'bg-zinc-800 text-zinc-500'
-                                                }`}>
-                                                    <Utensils className="w-4 h-4" />
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Right Column: Live Floor Passport & Table Dossier */}
+                                <div className="w-full lg:w-5/12 p-6 lg:p-8 bg-zinc-900 border-l border-zinc-800 text-zinc-100 flex flex-col justify-between overflow-y-auto">
+                                    <div className="space-y-5">
+                                        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+                                            <div>
+                                                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
+                                                    FLOOR PASSPORT & REAL-TIME DISPATCH
+                                                </span>
+                                                <h3 className="text-sm font-bold font-mono text-white">
+                                                    TABLE STATUS DOSSIER
+                                                </h3>
+                                            </div>
+                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
+                                                isFocusedOccupied
+                                                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                                                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                            }`}>
+                                                {isFocusedOccupied ? 'OCCUPIED • កំពុងទទួលភ្ញៀវ' : 'VACANT • តុទំនេរ'}
+                                            </span>
+                                        </div>
+
+                                        {/* Focused Table Card */}
+                                        <div className="p-4 rounded-2xl bg-black/40 border border-zinc-800 space-y-3 font-mono text-xs">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <span className="text-[10px] text-zinc-400 font-khmer block">តុដែលកំពុងមើល (Selected)</span>
+                                                    <h3 className="text-lg font-bold text-white font-khmer">{focusedTableName}</h3>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="text-[10px] text-zinc-400 font-khmer block">តំបន់ (Zone)</span>
+                                                    <span className="text-amber-400 font-bold font-khmer">
+                                                        {focusedTableName.toLowerCase().includes('vip')
+                                                            ? 'បន្ទប់ VIP'
+                                                            : focusedTableName.includes('សួន')
+                                                            ? 'សួនក្រៅ'
+                                                            : 'សាលធំ'}
+                                                    </span>
                                                 </div>
                                             </div>
 
-                                            {activeDoc ? (
-                                                <div className="space-y-2.5 pt-2 border-t border-amber-500/20">
-                                                    <div>
-                                                        <div className="font-mono font-black text-base text-amber-400">
-                                                            ${parseFloat(activeDoc.grand_total).toFixed(2)}
-                                                        </div>
-                                                        <div className="text-[11px] text-zinc-400 font-khmer">
-                                                            {activeDoc.items.length} មុខ • {activeDoc.created_at}
-                                                        </div>
+                                            {isFocusedOccupied && activeFocusedTable ? (
+                                                <div className="space-y-3 pt-3 border-t border-zinc-800">
+                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
+                                                        <span>លេខកូដវិក្កយបត្រ៖</span>
+                                                        <span className="text-amber-400 font-bold">#TBL-DRAFT-{activeFocusedTable.id}</span>
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
+                                                        <span>ពេលអង្គុយ៖</span>
+                                                        <span className="text-zinc-200">{activeFocusedTable.created_at}</span>
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-zinc-400 text-xs">
+                                                        <span>ទឹកប្រាក់សរុប៖</span>
+                                                        <span className="text-emerald-400 font-bold text-sm">
+                                                            ${parseFloat(activeFocusedTable.grand_total).toFixed(2)}
+                                                        </span>
                                                     </div>
 
-                                                    <div className="flex items-center gap-1.5 pt-1" onClick={(e) => e.stopPropagation()}>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleSelectActiveTable(activeDoc)}
-                                                            className="flex-1 py-1.5 rounded-lg bg-amber-500 text-zinc-950 font-bold text-xs hover:bg-amber-400 transition cursor-pointer font-khmer"
-                                                        >
-                                                            បើកតុ
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleCancelTable(activeDoc.id)}
-                                                            className="p-1.5 rounded-lg bg-zinc-800 text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
-                                                            title="លុបចោលតុ"
-                                                        >
-                                                            <Trash2 className="w-3.5 h-3.5" />
-                                                        </button>
+                                                    {/* Ordered Items Preview */}
+                                                    <div className="pt-2 border-t border-zinc-800/80">
+                                                        <span className="text-[10px] text-zinc-400 uppercase font-sans font-bold block mb-1.5">
+                                                            មុខម្ហូបដែលបានកុម្ម៉ង់ ({activeFocusedTable.items.length} មុខ)៖
+                                                        </span>
+                                                        <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
+                                                            {activeFocusedTable.items.map((item, idx) => (
+                                                                <div key={idx} className="flex items-center justify-between py-1 border-b border-zinc-800/40 text-[11px]">
+                                                                    <div className="min-w-0 pr-2">
+                                                                        <span className="text-zinc-200 font-khmer truncate block">
+                                                                            {item.name_primary}
+                                                                        </span>
+                                                                        <span className="text-[10px] text-zinc-500 font-mono">
+                                                                            x{item.quantity} • ${parseFloat(item.unit_price).toFixed(2)}
+                                                                        </span>
+                                                                    </div>
+                                                                    <span className="font-mono text-zinc-300 font-bold shrink-0">
+                                                                        ${parseFloat(item.line_total).toFixed(2)}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="pt-2 border-t border-zinc-800/80">
-                                                    <div className="text-[11px] text-zinc-400 py-1 text-center font-medium group-hover:text-zinc-200 transition-colors font-khmer">
-                                                        ចុចដើម្បីជ្រើសរើសតុ
+                                                <div className="py-4 text-center space-y-2 pt-3 border-t border-zinc-800">
+                                                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                                                        <Check className="w-5 h-5" />
                                                     </div>
+                                                    <p className="text-xs text-zinc-300 font-khmer">
+                                                        តុនេះទំនេរ រួចរាល់សម្រាប់ទទួលភ្ញៀវថ្មីភ្លាមៗ
+                                                    </p>
+                                                    <p className="text-[10px] text-zinc-500 font-khmer">
+                                                        ចុចលើប៊ូតុងខាងក្រោមដើម្បីកំណត់តុនេះសម្រាប់វិក្កយបត្របច្ចុប្បន្ន
+                                                    </p>
                                                 </div>
                                             )}
                                         </div>
-                                    );
-                                })}
+
+                                        {/* Floor Capacity & Analytics Summary */}
+                                        <div className="p-4 rounded-2xl bg-black/40 border border-zinc-800 space-y-2.5 text-xs font-mono">
+                                            <div className="flex items-center justify-between text-zinc-400">
+                                                <span>Occupancy Rate:</span>
+                                                <span className="text-amber-400 font-bold">
+                                                    {Math.round((activeTablesCount / (tables_list.length || 1)) * 100)}%
+                                                </span>
+                                            </div>
+                                            <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                                <div
+                                                    className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-300"
+                                                    style={{ width: `${Math.round((activeTablesCount / (tables_list.length || 1)) * 100)}%` }}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between text-zinc-400 pt-1">
+                                                <span>Active Floor Sales:</span>
+                                                <span className="text-emerald-400 font-bold">
+                                                    ${floorTotalUSD.toFixed(2)} ({floorTotalKHR.toLocaleString()} ៛)
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Dining Rules Card */}
+                                        <div className="p-3.5 rounded-xl bg-zinc-800/60 border border-zinc-700/80 space-y-1.5 text-xs">
+                                            <div className="font-bold text-amber-400 font-khmer flex items-center gap-1.5">
+                                                <Sparkles className="w-4 h-4" />
+                                                <span>យន្តការកុម្ម៉ង់អាហារ (Order Persistence)</span>
+                                            </div>
+                                            <p className="text-zinc-300 font-khmer text-[11px] leading-relaxed">
+                                                រាល់តុដែលបានផ្អាកទុក (Hold Table) នឹងរក្សាទុកទំនិញក្នុងប្រព័ន្ធ Database ដោយស្វ័យប្រវត្តិតាមគោលការណ៍ INV-01។
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Security Stamp Footer */}
+                                    <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
+                                        <span>AUDIT: FLOOR_TABLE_DISPATCH</span>
+                                        <span>SPEC-08 ENFORCED</span>
+                                    </div>
+                                </div>
                             </div>
+                        );
+                    })()}
+
+                    {/* Footer Bar */}
+                    <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-sm">
+                        <div className="text-xs text-zinc-500 font-khmer hidden sm:flex items-center gap-2">
+                            <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
+                                Esc
+                            </kbd>
+                            <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
                         </div>
 
-                        {/* Footer */}
-                        <div className="p-4 sm:p-5 border-t border-zinc-800 bg-zinc-950/60 flex items-center justify-end">
-                            <Button
+                        <div className="flex items-center gap-3 ml-auto">
+                            <button
                                 type="button"
-                                variant="outline"
                                 onClick={() => setIsTablesModalOpen(false)}
-                                className="h-10 px-5 rounded-xl border-zinc-700 bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition font-medium text-xs cursor-pointer font-khmer"
+                                className="px-5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                             >
-                                បិទ
-                            </Button>
+                                បោះបង់
+                            </button>
+
+                            {(() => {
+                                const focusedTableName = inspectedTable || (orderMode === 'dine_in' ? selectedTable : null) || tables_list[0] || 'តុ 01';
+                                const activeFocusedTable = active_tables.find((t) => t.table_identifier === focusedTableName);
+
+                                return activeFocusedTable ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSelectActiveTable(activeFocusedTable)}
+                                        className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
+                                    >
+                                        <Utensils className="w-4 h-4" />
+                                        <span>បើកវិក្កយបត្រ {focusedTableName}</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOrderMode('dine_in');
+                                            setSelectedTable(focusedTableName);
+                                            setCurrentDraftId(null);
+                                            setIsTablesModalOpen(false);
+                                        }}
+                                        className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold font-khmer shadow-sm hover:shadow-emerald-600/20 transition-all cursor-pointer flex items-center gap-2"
+                                    >
+                                        <Check className="w-4 h-4" />
+                                        <span>ជ្រើសរើស {focusedTableName}</span>
+                                    </button>
+                                );
+                            })()}
                         </div>
                     </div>
                 </div>,
