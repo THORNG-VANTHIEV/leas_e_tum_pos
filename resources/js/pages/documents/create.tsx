@@ -1124,7 +1124,7 @@ export default function DocumentCreate({
                             <div className="space-y-1.5 text-xs text-zinc-400 px-1 font-mono">
                                 <div className="flex justify-between items-center">
                                     <span className="text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
-                                    <span className="text-zinc-100 font-bold">
+                                    <span className="text-zinc-100 font-bold font-mono">
                                         ${totals.subtotalUSD} <span className="text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} {tr('៛)')}</span>
                                     </span>
                                 </div>
@@ -1752,7 +1752,7 @@ export default function DocumentCreate({
 
                                             <div className="pt-2 border-t border-slate-300 dark:border-zinc-700 flex items-center justify-between text-base font-black text-slate-900 dark:text-white">
                                                 <span className="font-khmer">{tr('សរុប (TOTAL DUE)')}</span>
-                                                <span className="text-amber-600 dark:text-amber-400">${totals.grandTotalUSD}</span>
+                                                <span className="text-amber-600 dark:text-amber-400 font-mono">${totals.grandTotalUSD}</span>
                                             </div>
                                             <div className="flex items-center justify-end text-xs font-bold text-emerald-600 dark:text-emerald-400">
                                                 <span>{tr('៛')} {totals.grandTotalKHR.toLocaleString()}</span>

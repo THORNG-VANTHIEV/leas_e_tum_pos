@@ -20,6 +20,14 @@
     line-height: 1.6;
 }
 
+/* Amounts and codes keep monospace digits (e.g. $120.14) in both Khmer and English;
+   Khmer letters inside them fall back to Kantumruy Pro */
+.font-mono,
+:lang(km) .font-mono,
+[class*="font-khmer"].font-mono {
+    font-family: 'JetBrains Mono', 'Kantumruy Pro', 'Battambang', monospace;
+}
+
 .font-khmer.leading-tight,
 .font-khmer.leading-snug,
 .font-khmer.leading-none,
