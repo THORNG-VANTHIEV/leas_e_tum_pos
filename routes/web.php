@@ -43,7 +43,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
     // 03. Floor & Tables Visual Management
     Route::get('/tables', [FloorTableController::class, 'index'])->name('tables.index');
-    Route::post('/tables', [FloorTableController::class, 'store'])->name('tables.store');
+    Route::post('/tables', [FloorTableController::class, 'store'])->middleware('role:admin,supervisor')->name('tables.store');
     Route::patch('/tables/{table}/status', [FloorTableController::class, 'updateStatus'])->name('tables.status');
     Route::patch('/tables/{table}', [FloorTableController::class, 'update'])->middleware('role:admin,supervisor')->name('tables.update');
     Route::delete('/tables/{table}', [FloorTableController::class, 'destroy'])->middleware('role:admin,supervisor')->name('tables.destroy');
@@ -59,7 +59,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::patch('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::post('/customers/{customer}/toggle', [CustomerController::class, 'toggle'])->name('customers.toggle');
-    Route::post('/customers/{customer}/adjust-points', [CustomerController::class, 'adjustPoints'])->name('customers.adjust-points');
+    Route::post('/customers/{customer}/adjust-points', [CustomerController::class, 'adjustPoints'])->middleware('role:admin,supervisor')->name('customers.adjust-points');
     Route::get('/customers/lookup', [CustomerController::class, 'lookup'])->name('customers.lookup');
 
     // 10. Cash & Operating Expenses
@@ -107,18 +107,22 @@ Route::middleware(['auth', 'active'])->group(function () {
     // Items, Units & Categories Catalog Management
     Route::prefix('catalog')->name('catalog.')->group(function () {
         Route::get('/', [CatalogController::class, 'index'])->name('index');
-        Route::post('/upload-image', [CatalogController::class, 'uploadImage'])->name('upload-image');
-        Route::post('/products', [CatalogController::class, 'storeProduct'])->name('products.store');
-        Route::patch('/products/{product}', [CatalogController::class, 'updateProduct'])->name('products.update');
-        Route::post('/products/{product}/toggle', [CatalogController::class, 'toggleProduct'])->name('products.toggle');
 
-        Route::post('/units', [CatalogController::class, 'storeUnit'])->name('units.store');
-        Route::patch('/units/{unit}', [CatalogController::class, 'updateUnit'])->name('units.update');
-        Route::post('/units/{unit}/toggle', [CatalogController::class, 'toggleUnit'])->name('units.toggle');
+        // Prices and menu structure: managers only
+        Route::middleware('role:admin,supervisor')->group(function () {
+            Route::post('/upload-image', [CatalogController::class, 'uploadImage'])->name('upload-image');
+            Route::post('/products', [CatalogController::class, 'storeProduct'])->name('products.store');
+            Route::patch('/products/{product}', [CatalogController::class, 'updateProduct'])->name('products.update');
+            Route::post('/products/{product}/toggle', [CatalogController::class, 'toggleProduct'])->name('products.toggle');
 
-        Route::post('/categories', [CatalogController::class, 'storeCategory'])->name('categories.store');
-        Route::patch('/categories/{category}', [CatalogController::class, 'updateCategory'])->name('categories.update');
-        Route::post('/categories/{category}/toggle', [CatalogController::class, 'toggleCategory'])->name('categories.toggle');
+            Route::post('/units', [CatalogController::class, 'storeUnit'])->name('units.store');
+            Route::patch('/units/{unit}', [CatalogController::class, 'updateUnit'])->name('units.update');
+            Route::post('/units/{unit}/toggle', [CatalogController::class, 'toggleUnit'])->name('units.toggle');
+
+            Route::post('/categories', [CatalogController::class, 'storeCategory'])->name('categories.store');
+            Route::patch('/categories/{category}', [CatalogController::class, 'updateCategory'])->name('categories.update');
+            Route::post('/categories/{category}/toggle', [CatalogController::class, 'toggleCategory'])->name('categories.toggle');
+        });
     });
 
     // Purchases & Suppliers Management Hub

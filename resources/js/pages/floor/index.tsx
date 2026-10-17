@@ -272,6 +272,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                         </div>
 
                         <div className="flex items-center gap-2">
+                            {canManageTables && (
                             <button
                                 onClick={handleOpenAddModal}
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer font-bold"
@@ -279,6 +280,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 <PlusCircle className="w-4 h-4" />
                                 <span>បន្ថែមតុថ្មី</span>
                             </button>
+                            )}
                         </div>
                     </div>
                 </div>

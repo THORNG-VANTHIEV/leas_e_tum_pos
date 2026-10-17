@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import {
@@ -106,6 +107,9 @@ const TIER_CONFIG: Record<
 };
 
 export default function CustomersIndex({ customers, metrics, filters }: CustomersProps) {
+    // Manual point adjustments are manager-only (mirrors route middleware)
+    const { auth } = usePage<PageProps>().props;
+    const canAdjustPoints = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
     const exchangeRate = useExchangeRate();
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
@@ -512,6 +516,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     <span className="font-extrabold text-amber-600 dark:text-amber-400 font-mono text-sm">
                                                         {c.loyalty_points.toLocaleString()}
                                                     </span>
+                                                    {canAdjustPoints && (
                                                     <button
                                                         onClick={() => {
                                                             setPointsCustomer(c);
@@ -523,6 +528,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                         <Coins className="w-3 h-3 text-amber-500" />
                                                         <span>+/-</span>
                                                     </button>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap font-mono">

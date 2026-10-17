@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 import {
     Package,
     Plus,
@@ -92,6 +93,9 @@ export default function CatalogIndex({
     units,
     exchange_rate,
 }: CatalogProps) {
+    // Prices and menu structure are manager-only (mirrors route middleware)
+    const { auth } = usePage<PageProps>().props;
+    const canManageCatalog = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
     const [activeTab, setActiveTab] = useState<TabType>(() => {
         if (typeof window !== 'undefined') {
             const saved = sessionStorage.getItem('catalog_active_tab') as TabType;
@@ -453,7 +457,7 @@ export default function CatalogIndex({
                         </div>
 
                         <div className="flex items-center gap-2">
-                            {activeTab === 'products' && (
+                            {canManageCatalog && activeTab === 'products' && (
                                 <Button
                                     onClick={openAddProductModal}
                                     className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-amber-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
@@ -462,7 +466,7 @@ export default function CatalogIndex({
                                     New Product / បន្ថែមមុខទំនិញ
                                 </Button>
                             )}
-                            {activeTab === 'units' && (
+                            {canManageCatalog && activeTab === 'units' && (
                                 <Button
                                     onClick={openAddUnitModal}
                                     className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-emerald-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
@@ -471,7 +475,7 @@ export default function CatalogIndex({
                                     New Unit / បន្ថែមឯកតា
                                 </Button>
                             )}
-                            {activeTab === 'categories' && (
+                            {canManageCatalog && activeTab === 'categories' && (
                                 <Button
                                     onClick={openAddCategoryModal}
                                     className="bg-teal-500 hover:bg-teal-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-teal-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
@@ -741,6 +745,7 @@ export default function CatalogIndex({
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             <button
                                                                 onClick={() => handleToggleProduct(p)}
+                                                                disabled={!canManageCatalog}
                                                                 title="Click to toggle status"
                                                                 className="cursor-pointer"
                                                             >
@@ -758,6 +763,7 @@ export default function CatalogIndex({
                                                             </button>
                                                         </td>
                                                         <td className="px-4 py-3 text-right whitespace-nowrap">
+                                                            {canManageCatalog && (
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
@@ -767,6 +773,7 @@ export default function CatalogIndex({
                                                                 <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                                 Edit
                                                             </Button>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 );
@@ -834,6 +841,7 @@ export default function CatalogIndex({
                                                 <td className="px-4 py-3 text-center">
                                                     <button
                                                         onClick={() => handleToggleUnit(u)}
+                                                                disabled={!canManageCatalog}
                                                         className="cursor-pointer"
                                                     >
                                                         {u.is_active ? (
@@ -850,6 +858,7 @@ export default function CatalogIndex({
                                                     </button>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
+                                                    {canManageCatalog && (
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -859,6 +868,7 @@ export default function CatalogIndex({
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                         Edit
                                                     </Button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
@@ -923,6 +933,7 @@ export default function CatalogIndex({
                                                 <td className="px-4 py-3 text-center">
                                                     <button
                                                         onClick={() => handleToggleCategory(c)}
+                                                                disabled={!canManageCatalog}
                                                         className="cursor-pointer"
                                                     >
                                                         {c.is_active ? (
@@ -939,6 +950,7 @@ export default function CatalogIndex({
                                                     </button>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
+                                                    {canManageCatalog && (
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -948,6 +960,7 @@ export default function CatalogIndex({
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                         Edit
                                                     </Button>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}
