@@ -23,6 +23,7 @@ import {
     Database,
 } from 'lucide-react';
 import { tr } from '@/locales/tr';
+import { BackLink } from '@/components/back-link';
 
 interface ReviewDocument {
     id: number;
@@ -105,15 +106,15 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                 {/* Header Toolbar */}
                 <div className="pb-3 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <Link href="/settings/periods">
+                        <BackLink fallbackHref="/settings/periods">
                             <button
                                 type="button"
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold font-khmer shadow-xs transition-all cursor-pointer"
                             >
                                 <ArrowLeft className="w-4 h-4 text-emerald-500" />
-                                <span>{tr('បញ្ជីការិយបរិច្ឆេទ')}</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
-                        </Link>
+                        </BackLink>
                         <div>
                             <div className="flex items-center gap-2.5">
                                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white font-khmer">

@@ -27,6 +27,7 @@ import { useExchangeRate } from '@/components/currency';
 import { ReprintKitchenTicketButton } from '@/components/reprint-kitchen-ticket-button';
 import { DocumentStatusBadge, paymentMethodLabel } from '@/components/document-status';
 import { tr } from '@/locales/tr';
+import { BackLink } from '@/components/back-link';
 
 interface DocumentShowProps {
     can_edit?: boolean;
@@ -109,10 +110,10 @@ export default function DocumentShow({ document: doc, can_edit = false, can_dele
                 {/* Fixed / Sticky Actions Toolbar: print first, corrections tucked into the "more" menu */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 shadow-xs">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <Link href="/invoices" className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-300 hover:text-white font-khmer whitespace-nowrap">
+                        <BackLink fallbackHref="/invoices" className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-300 hover:text-white font-khmer whitespace-nowrap">
                             <ArrowLeft className="w-4 h-4" />
-                            <span>{tr('បញ្ជីវិក្កយបត្រ')}</span>
-                        </Link>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
+                        </BackLink>
 
                         <div className="flex items-center gap-2">
                             {/* Print */}

@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { useExchangeRate } from '@/components/currency';
 import { tr } from '@/locales/tr';
+import { BackLink } from '@/components/back-link';
 
 interface DocumentItem {
     id: number;
@@ -177,12 +178,12 @@ export default function PreviewRange({
             <div className="no-print max-w-5xl mx-auto mb-6 space-y-4 sticky top-2 z-30">
                 <div className="flex flex-wrap items-center justify-between gap-3 bg-zinc-900/90 p-4 rounded-2xl border border-zinc-800 backdrop-blur-md shadow-2xl">
                     <div className="flex items-center gap-3">
-                        <Link href="/invoices">
+                        <BackLink fallbackHref="/invoices">
                             <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                                 <ArrowLeft className="w-4 h-4 mr-1.5" />
-                                <span className="font-khmer">{tr('បញ្ជីវិក្កយបត្រ')}</span>
+                                <span className="font-khmer">{tr('ត្រឡប់ក្រោយ')}</span>
                             </Button>
-                        </Link>
+                        </BackLink>
                         <div className="h-5 w-[1px] bg-zinc-800" />
                         <div>
                             <h1 className="text-sm font-bold text-white flex items-center gap-2">

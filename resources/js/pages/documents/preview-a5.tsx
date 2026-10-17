@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { paymentMethodLabel } from '@/components/document-status';
 import { tr } from '@/locales/tr';
+import { BackLink } from '@/components/back-link';
 
 interface DocumentPrintProps {
     document: {
@@ -143,12 +144,12 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
 
             {/* Top Toolbar (Hidden when printing) */}
             <div className="no-print max-w-2xl mx-auto mb-6 flex items-center justify-between gap-3 bg-zinc-900/90 p-3 rounded-xl border border-zinc-800 backdrop-blur-md shadow-xl">
-                <Link href={`/invoices/${doc.id}`}>
+                <BackLink fallbackHref={`/invoices/${doc.id}`}>
                     <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                         <ArrowLeft className="w-4 h-4 mr-1.5" />
-                        <span className="font-khmer">{tr('វិក្កយបត្រ')}</span>
+                        <span className="font-khmer">{tr('ត្រឡប់ក្រោយ')}</span>
                     </Button>
-                </Link>
+                </BackLink>
 
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-zinc-400 font-khmer">{tr('ក្រដាស A5')}</span>
