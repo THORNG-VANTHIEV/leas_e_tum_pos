@@ -176,6 +176,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
   2. Verify that the local server is listening on `http://127.0.0.1:8000` and Vite is ready.
   3. Inform the user that the project is running and ready for coding.
 
+# Shop Mode vs Development (ហាង និងការសរសេរកូដ)
+
+- **Development** (`php artisan dev`, `.env`): http://127.0.0.1:8000, database `leashal_etum_dev` (test data). Use this for all coding and testing.
+- **Shop / production** (Desktop icons "បើកហាង" / "បិទហាង", `.env.production`): http://localhost:8080, database `leashal_etum_pos` (real sales), processes `php -S localhost:8080` and `php artisan schedule:work` started with `APP_ENV=production`.
+- During "taking a break", **never stop the shop processes** (port 8080, `schedule:work`) — the shop may be selling.
+- Never run destructive commands (`migrate:fresh`, `db:seed`, `pos:reset-sales`) with `APP_ENV=production` unless the user explicitly asks.
+
 # Git Commit & Push Policy (ច្បាប់ Git Commit & Push)
 
 - **Do NOT push code automatically to GitHub (`git push`)**:
