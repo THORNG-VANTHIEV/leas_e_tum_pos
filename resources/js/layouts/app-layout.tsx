@@ -92,6 +92,18 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         });
     });
     const [flashVisible, setFlashVisible] = useState<boolean>(true);
+
+    // Show each new flash message briefly: success 3 s, errors a little longer so they can be read
+    useEffect(() => {
+        if (!flash?.success && !flash?.error && !flash?.warning) {
+            return;
+        }
+
+        setFlashVisible(true);
+        const timer = window.setTimeout(() => setFlashVisible(false), flash?.error ? 6000 : 3000);
+
+        return () => window.clearTimeout(timer);
+    }, [flash]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
     const [collapsed, setCollapsed] = useState<boolean>(() => {
         if (typeof window !== 'undefined') {
