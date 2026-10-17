@@ -20,6 +20,7 @@ import {
     ShieldCheck,
     Ban,
     Pencil,
+    MoreHorizontal,
     Trash2,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
@@ -92,6 +93,7 @@ export default function DocumentShow({ document: doc, can_edit = false, can_dele
 
     // Managers may correct a paid invoice in the POS, or move it to the trash, while its period is open
     const [showTrashModal, setShowTrashModal] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
     const trashForm = useForm({ reason: '' });
 
     const submitTrash = (e: React.FormEvent) => {
@@ -104,65 +106,98 @@ export default function DocumentShow({ document: doc, can_edit = false, can_dele
     return (
         <AppLayout title={`${tr('វិក្កយបត្រ')} ${doc.document_number || `${tr('ព្រាង #')}${doc.id}`}`}>
             <div className="max-w-3xl mx-auto space-y-6">
-                {/* Fixed / Sticky Actions Toolbar */}
+                {/* Fixed / Sticky Actions Toolbar: print first, corrections tucked into the "more" menu */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 shadow-xs">
-                    <div className="flex items-center justify-between gap-4">
-                        <Link href="/invoices">
-                            <Button variant="ghost" size="sm">
-                                <ArrowLeft className="w-4 h-4" />
-                                <span className="font-khmer">{tr('ត្រឡប់ទៅបញ្ជីវិក្កយបត្រ')}</span>
-                            </Button>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <Link href="/invoices" className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-300 hover:text-white font-khmer whitespace-nowrap">
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>{tr('បញ្ជីវិក្កយបត្រ')}</span>
                         </Link>
 
                         <div className="flex items-center gap-2">
-                            {doc.kitchen_tickets_count > 0 && <ReprintKitchenTicketButton documentId={doc.id} className="h-8 px-3" />}
+                            {/* Print */}
+                            <div className="inline-flex rounded-xl border border-zinc-700 overflow-hidden">
+                                <Link
+                                    href={`/invoices/${doc.id}/preview/80mm`}
+                                    className="inline-flex items-center gap-1.5 h-9 px-3 text-xs font-semibold text-zinc-200 hover:bg-zinc-800 whitespace-nowrap"
+                                >
+                                    <Printer className="w-4 h-4 text-emerald-400" />
+                                    <span>80mm</span>
+                                </Link>
+                                <Link
+                                    href={`/invoices/${doc.id}/preview/a5`}
+                                    className="inline-flex items-center gap-1.5 h-9 px-3 text-xs font-semibold text-zinc-200 hover:bg-zinc-800 border-l border-zinc-700 whitespace-nowrap"
+                                >
+                                    <FileText className="w-4 h-4 text-sky-400" />
+                                    <span>A5</span>
+                                </Link>
+                            </div>
+
                             {can_edit && (
-                                <Link href={`/invoices/create?edit_invoice=${doc.id}`}>
-                                    <Button size="sm" variant="outline" className="border-sky-500/40 text-sky-600 dark:text-sky-400 hover:bg-sky-500/10">
-                                        <Pencil className="w-4 h-4 mr-1.5" />
-                                        <span className="font-khmer">{tr('កែវិក្កយបត្រ')}</span>
-                                    </Button>
+                                <Link
+                                    href={`/invoices/create?edit_invoice=${doc.id}`}
+                                    className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl border border-sky-500/40 text-xs font-semibold text-sky-600 dark:text-sky-400 hover:bg-sky-500/10 font-khmer whitespace-nowrap"
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                    <span>{tr('កែ')}</span>
                                 </Link>
                             )}
-                            {can_delete && (
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => setShowTrashModal(true)}
-                                    className="border-rose-500/40 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
-                                >
-                                    <Trash2 className="w-4 h-4 mr-1.5" />
-                                    <span className="font-khmer">{tr('ដាក់ធុងសំរាម')}</span>
-                                </Button>
+
+                            {/* More actions */}
+                            {(doc.kitchen_tickets_count > 0 || canVoid || can_delete) && (
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowMoreMenu((open) => !open)}
+                                        className="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-700 text-zinc-300 hover:bg-zinc-800 cursor-pointer"
+                                        title={tr('សកម្មភាពផ្សេងទៀត')}
+                                    >
+                                        <MoreHorizontal className="w-4 h-4" />
+                                    </button>
+                                    {showMoreMenu && (
+                                        <>
+                                            <div className="fixed inset-0 z-30" onClick={() => setShowMoreMenu(false)} />
+                                            <div className="absolute right-0 mt-2 z-40 w-56 p-1.5 rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl">
+                                                {doc.kitchen_tickets_count > 0 && <ReprintKitchenTicketButton documentId={doc.id} variant="menu" />}
+                                                {canVoid && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setShowMoreMenu(false);
+                                                            setShowVoidModal(true);
+                                                        }}
+                                                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs text-rose-500 hover:bg-rose-500/10 font-khmer cursor-pointer"
+                                                    >
+                                                        <Ban className="w-3.5 h-3.5" />
+                                                        <span>{tr('លុបចោល (Void)')}</span>
+                                                    </button>
+                                                )}
+                                                {can_delete && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setShowMoreMenu(false);
+                                                            setShowTrashModal(true);
+                                                        }}
+                                                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs text-rose-500 hover:bg-rose-500/10 font-khmer cursor-pointer"
+                                                    >
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                        <span>{tr('ដាក់ធុងសំរាម')}</span>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
                             )}
-                            {canVoid && (
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => setShowVoidModal(true)}
-                                    className="border-rose-500/40 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
-                                >
-                                    <Ban className="w-4 h-4 mr-1.5" />
-                                    <span className="font-khmer">{tr('លុបចោល (Void)')}</span>
-                                </Button>
-                            )}
-                            <Link href={`/invoices/${doc.id}/preview/80mm`}>
-                                <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300">
-                                    <Printer className="w-4 h-4 mr-1.5" />
-                                    <span className="font-khmer">{tr('វិក្កយបត្រ 80mm')}</span>
-                                </Button>
-                            </Link>
-                            <Link href={`/invoices/${doc.id}/preview/a5`}>
-                                <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300">
-                                    <FileText className="w-4 h-4 mr-1.5" />
-                                    <span className="font-khmer">{tr('វិក្កយបត្រ A5')}</span>
-                                </Button>
-                            </Link>
-                            <Link href="/invoices/create">
-                                <Button size="sm" variant="primary">
-                                    <Plus className="w-4 h-4 mr-1.5" />
-                                    <span className="font-khmer">{tr('កម្មង់ថ្មី (F2)')}</span>
-                                </Button>
+
+                            <Link
+                                href="/invoices/create"
+                                className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold font-khmer whitespace-nowrap shadow-sm"
+                            >
+                                <Plus className="w-4 h-4" />
+                                <span>{tr('កម្មង់ថ្មី')}</span>
+                                <kbd className="hidden sm:inline text-[10px] font-mono opacity-80">F2</kbd>
                             </Link>
                         </div>
                     </div>
