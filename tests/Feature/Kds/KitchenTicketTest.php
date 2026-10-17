@@ -130,6 +130,64 @@ class KitchenTicketTest extends TestCase
             );
     }
 
+    public function test_reprint_sends_the_latest_ticket_again_and_audits_it(): void
+    {
+        $this->holdTable([[$this->clams, 2]]);
+        $draft = Document::latest('id')->firstOrFail();
+        $this->holdTable([[$this->clams, 3]], $draft->id);
+        $latest = $draft->kitchenTickets()->latest('ticket_no')->firstOrFail();
+
+        // Another cashier on the floor reprints the open table's ticket
+        $otherCashier = User::factory()->create(['role' => 'cashier', 'is_active' => true]);
+
+        $this->actingAs($otherCashier)
+            ->post(route('kitchen-tickets.reprint', $draft))
+            ->assertSessionHas('print_jobs', fn (array $batch) => count($batch['jobs']) === 1
+                && str_contains($batch['jobs'][0]['url'], "/kitchen-tickets/{$latest->id}/print")
+                && str_contains($batch['jobs'][0]['url'], 'reprint=1'));
+
+        $this->assertSame(2, $draft->kitchenTickets()->count());
+        $this->assertDatabaseHas('audit_logs', ['action' => 'kitchen_ticket.reprinted', 'actor_id' => $otherCashier->id]);
+    }
+
+    public function test_reprinted_ticket_page_is_marked_as_reprint(): void
+    {
+        $this->holdTable([[$this->clams, 2]]);
+        $ticket = KitchenTicket::latest('id')->firstOrFail();
+
+        $this->actingAs($this->cashier)
+            ->get(route('kitchen-tickets.print', $ticket).'?reprint=1')
+            ->assertInertia(fn ($page) => $page->where('ticket.is_reprint', true));
+    }
+
+    public function test_reprint_without_any_ticket_shows_an_error(): void
+    {
+        $this->holdTable([[$this->clams, 2]]);
+        $draft = Document::latest('id')->firstOrFail();
+        $draft->kitchenTickets()->delete();
+
+        $this->actingAs($this->cashier)
+            ->post(route('kitchen-tickets.reprint', $draft))
+            ->assertSessionHas('error', 'ការកម្មង់នេះមិនទាន់មានបុងចុងភៅទេ។')
+            ->assertSessionMissing('print_jobs');
+    }
+
+    public function test_cashier_cannot_reprint_another_cashiers_paid_invoice(): void
+    {
+        $this->actingAs($this->cashier)->post(route('invoices.checkout'), [
+            'table_identifier' => 'ខ្ចប់ (Takeaway)',
+            'payment_method' => 'cash',
+            'amount_received' => 10,
+            'items' => [['product_id' => $this->clams->id, 'quantity' => 1]],
+        ]);
+        $paid = Document::latest('id')->firstOrFail();
+        $otherCashier = User::factory()->create(['role' => 'cashier', 'is_active' => true]);
+
+        $this->actingAs($otherCashier)
+            ->post(route('kitchen-tickets.reprint', $paid))
+            ->assertForbidden();
+    }
+
     /**
      * @param  array<int, array{0: Product, 1: int}>  $items
      */

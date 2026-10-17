@@ -21,6 +21,7 @@ import {
     Ban,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
+import { ReprintKitchenTicketButton } from '@/components/reprint-kitchen-ticket-button';
 import { DocumentStatusBadge, paymentMethodLabel } from '@/components/document-status';
 import { tr } from '@/locales/tr';
 
@@ -47,6 +48,7 @@ interface DocumentShowProps {
         payment_method: string;
         status: 'draft' | 'review' | 'finalized' | 'void';
         note: string | null;
+        kitchen_tickets_count: number;
         creator: { name: string; username: string };
         period: { code: string; name: string };
         items: {
@@ -98,6 +100,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                         </Link>
 
                         <div className="flex items-center gap-2">
+                            {doc.kitchen_tickets_count > 0 && <ReprintKitchenTicketButton documentId={doc.id} className="h-8 px-3" />}
                             {canVoid && (
                                 <Button
                                     size="sm"

@@ -350,7 +350,7 @@ class DocumentController extends Controller
             abort(403, __('អ្នកមិនមានសិទ្ធិមើលវិក្កយបត្ររបស់បុគ្គលិកផ្សេងទេ។'));
         }
 
-        $invoice->load(['creator:id,name,username', 'period', 'items.product']);
+        $invoice->load(['creator:id,name,username', 'period', 'items.product'])->loadCount('kitchenTickets');
 
         return Inertia::render('documents/show', [
             'document' => $invoice,

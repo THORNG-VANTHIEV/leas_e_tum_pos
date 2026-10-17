@@ -26,6 +26,7 @@ interface KitchenTicketPrintProps {
         external_order_ref: string | null;
         document_number: string | null;
         note: string | null;
+        is_reprint: boolean;
     };
 }
 
@@ -66,6 +67,11 @@ export default function KitchenTicketPrint({ ticket }: KitchenTicketPrintProps) 
                     <div className="text-[13px] font-bold uppercase tracking-wide">
                         <span className="font-khmer">បុងចុងភៅ</span> · KITCHEN #{ticket.ticket_no}
                     </div>
+                    {ticket.is_reprint && (
+                        <div className="border-2 border-black bg-black text-white px-2 py-0.5 text-[13px] font-black font-khmer">
+                            *** ព្រីនឡើងវិញ / REPRINT ***
+                        </div>
+                    )}
                     {isAddOn && (
                         <div className="inline-block border-2 border-black px-2 text-[13px] font-black font-khmer">
                             កម្មង់បន្ថែម (ADD-ON)

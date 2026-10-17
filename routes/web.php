@@ -54,6 +54,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/kds/orders/{document}/status', [KdsController::class, 'updateStatus'])->name('kds.status');
     Route::post('/kds/items/{item}/status', [KdsController::class, 'updateItemStatus'])->name('kds.items.status');
     Route::get('/kitchen-tickets/{ticket}/print', [KitchenTicketController::class, 'print'])->name('kitchen-tickets.print');
+    Route::post('/invoices/{document}/kitchen-ticket/reprint', [KitchenTicketController::class, 'reprint'])->name('kitchen-tickets.reprint');
 
     // 09. Customers & Loyalty (CRM)
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');

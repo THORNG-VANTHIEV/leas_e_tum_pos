@@ -46,6 +46,7 @@ import {
     Tag,
 } from 'lucide-react';
 import { tr } from '@/locales/tr';
+import { ReprintKitchenTicketButton } from '@/components/reprint-kitchen-ticket-button';
 
 interface ProductItem {
     id: number;
@@ -1224,6 +1225,11 @@ export default function DocumentCreate({
                                     </kbd>
                                 </button>
                             </div>
+
+                            {/* Open table loaded: the kitchen slip can be printed again if it was lost */}
+                            {orderMode === 'dine_in' && currentDraftId && (
+                                <ReprintKitchenTicketButton documentId={currentDraftId} className="w-full h-9" />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -2033,6 +2039,8 @@ export default function DocumentCreate({
                                 const activeFocusedTable = active_tables.find((t) => t.table_identifier === focusedTableName);
 
                                 return activeFocusedTable ? (
+                                    <div className="flex items-center gap-2">
+                                    <ReprintKitchenTicketButton documentId={activeFocusedTable.id} className="px-4 py-2" />
                                     <button
                                         type="button"
                                         onClick={() => handleSelectActiveTable(activeFocusedTable)}
@@ -2041,6 +2049,7 @@ export default function DocumentCreate({
                                         <Utensils className="w-4 h-4" />
                                         <span>{tr('បើកវិក្កយបត្រ')} {focusedTableName}</span>
                                     </button>
+                                    </div>
                                 ) : (
                                     <button
                                         type="button"

@@ -993,6 +993,8 @@ export const enFromKm: Record<string, string> = {
     "ព្រីនជាបាច់": "Batch Print",
     "ព្រីនទាំងអស់": "Print all",
     "ព្រីនបុងចុងភៅ": "Print kitchen ticket",
+    "ព្រីនបុងចុងភៅចុងក្រោយម្តងទៀត (ពេលបុងបាត់ ឬម៉ាស៊ីនព្រីនជាប់ក្រដាស)": "Print the latest kitchen ticket again (lost slip or paper jam)",
+    "ព្រីនបុងចុងភៅម្តងទៀត": "Reprint kitchen ticket",
     "ព្រីនវិក្កយបត្រជាបាច់": "Batch Invoice Printing",
     "ព្រីនសាកល្បង": "Test print",
     "ភេសជ្ជៈ & កាហ្វេបុគ្គលិក": "Staff drinks & coffee",

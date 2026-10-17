@@ -29,6 +29,7 @@ import {
     Trash2,
 } from 'lucide-react';
 import { tr } from '@/locales/tr';
+import { ReprintKitchenTicketButton } from '@/components/reprint-kitchen-ticket-button';
 
 interface ActiveOrder {
     id: number;
@@ -458,13 +459,16 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 {/* Action Buttons */}
                                 <div className="space-y-2 pt-2 border-t border-zinc-800/80">
                                     {isOccupied && table.active_order ? (
-                                        <Link
-                                            href={`/invoices/create?table_ref=${encodeURIComponent(table.name)}`}
-                                            className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
-                                        >
-                                            <Receipt className="w-3.5 h-3.5" />
-                                            <span>{tr('បើកតុ / គិតលុយ')}</span>
-                                        </Link>
+                                        <>
+                                            <Link
+                                                href={`/invoices/create?table_ref=${encodeURIComponent(table.name)}`}
+                                                className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
+                                            >
+                                                <Receipt className="w-3.5 h-3.5" />
+                                                <span>{tr('បើកតុ / គិតលុយ')}</span>
+                                            </Link>
+                                            <ReprintKitchenTicketButton documentId={table.active_order.id} className="w-full py-1.5 px-3" />
+                                        </>
                                     ) : (
                                         <Link
                                             href={`/invoices/create?table_ref=${encodeURIComponent(table.name)}`}

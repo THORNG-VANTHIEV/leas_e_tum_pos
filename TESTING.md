@@ -7,7 +7,7 @@
 | ផ្នែក | Command | អ្វីដែលត្រូវបានតេស្ត | Run ពេលកែ |
 |---|---|---|---|
 | **POS & វិក្កយបត្រ** | `composer test:pos` | គិតប្រាក់, ផ្អាកតុ, Void, foodpanda/Grab, សិទ្ធិមើលវិក្កយបត្រ, ព្រីនជាបាច់ | `app/Features/Documents`, `pages/documents` |
-| **ផ្ទះបាយ** | `composer test:kitchen` | បុងចុងភៅ (មុខថ្មី/បោះបង់), KDS | `KitchenTicketIssuer`, `app/Features/Kds`, `pages/kds`, `pages/kitchen-tickets` |
+| **ផ្ទះបាយ** | `composer test:kitchen` | បុងចុងភៅ (មុខថ្មី/បោះបង់, ព្រីនឡើងវិញ), KDS | `KitchenTicketIssuer`, `app/Features/Kds`, `pages/kds`, `pages/kitchen-tickets` |
 | **តុ** | `composer test:floor` | បង្កើត/កែ/លុបតុ, តុមានភ្ញៀវ | `app/Features/Floor`, `pages/floor` |
 | **មុខទំនិញ** | `composer test:catalog` | មុខទំនិញ, ឯកតា, ប្រភេទ | `app/Features/Catalog`, `pages/catalog` |
 | **ការទិញចូល** | `composer test:purchases` | ការទិញចូល, ការកែ, អ្នកផ្គត់ផ្គង់ | `app/Features/Purchases`, `pages/purchases` |
@@ -41,6 +41,7 @@
 - [ ] ដកមុខម្ហូបចេញ → បុងបង្ហាញ **✕ បោះបង់**
 - [ ] គិតប្រាក់ខ្ចប់ → បុងចុងភៅ រួចវិក្កយបត្រ 80mm ចេញតាមលំដាប់
 - [ ] គិតប្រាក់តុដែលបានផ្អាក → ចេញតែវិក្កយបត្រ (គ្មានបុងស្ទួន)
+- [ ] ចុច **ព្រីនបុងចុងភៅម្តងទៀត** (ទំព័រតុ / POS / វិក្កយបត្រ) → បុងចុងក្រោយចេញម្តងទៀត មានស្លាក **ព្រីនឡើងវិញ / REPRINT**
 - [ ] Chrome បើកជាមួយ `--kiosk-printing` → ព្រីនដោយមិនលោតផ្ទាំងសួរ
 - [ ] foodpanda / Grab → ប្រអប់ឈ្មោះ app និង ORDER # ដិតនៅលើវិក្កយបត្រ
 - [ ] ម៉ោងលើវិក្កយបត្រ = ម៉ោងនាឡិកាកម្ពុជា
