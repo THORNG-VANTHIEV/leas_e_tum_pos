@@ -458,11 +458,11 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 <div className="space-y-2 pt-2 border-t border-zinc-800/80">
                                     {isOccupied && table.active_order ? (
                                         <Link
-                                            href={`/invoices/${table.active_order.id}`}
+                                            href={`/invoices/create?table_ref=${encodeURIComponent(table.name)}`}
                                             className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
                                         >
                                             <Receipt className="w-3.5 h-3.5" />
-                                            <span>គិតលុយ / មើលវិក្កយបត្រ</span>
+                                            <span>បើកតុ / គិតលុយ</span>
                                         </Link>
                                     ) : (
                                         <Link

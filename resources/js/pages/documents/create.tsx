@@ -454,6 +454,16 @@ export default function DocumentCreate({
         setIsTablesModalOpen(false);
     };
 
+    // Opened from the floor plan (?table_ref=): resume that table's open order instead of starting an empty cart,
+    // otherwise holding the table again would replace the dishes already ordered
+    useEffect(() => {
+        if (!initial_table) return;
+        const openOrder = active_tables.find((t) => t.table_identifier === initial_table);
+        if (openOrder) {
+            handleSelectActiveTable(openOrder);
+        }
+    }, []);
+
     // Hold / Save Dine-in Table Order
     const handleHoldTable = () => {
         if (lines.length === 0) return;

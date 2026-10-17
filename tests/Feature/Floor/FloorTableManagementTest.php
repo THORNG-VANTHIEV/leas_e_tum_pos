@@ -115,6 +115,23 @@ class FloorTableManagementTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_floor_plan_shows_table_with_held_order_as_occupied(): void
+    {
+        $table = $this->createTable();
+        $this->openDraftOrderFor($table);
+        $this->travel(15)->minutes();
+        $cashier = User::where('username', 'cashier1')->firstOrFail();
+
+        $this->actingAs($cashier)
+            ->get(route('tables.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->where('tables', fn ($tables) => collect($tables)->contains(fn ($row) => $row['id'] === $table->id
+                    && $row['status'] === 'occupied'
+                    && $row['active_order']['elapsed_minutes'] === 15))
+            );
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      */

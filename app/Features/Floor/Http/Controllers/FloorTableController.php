@@ -3,9 +3,11 @@
 namespace App\Features\Floor\Http\Controllers;
 
 use App\Enums\DocumentStatus;
+use App\Enums\PeriodStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use App\Models\Location;
+use App\Models\Period;
 use App\Models\RestaurantTable;
 use App\Support\Audit\AuditService;
 use Illuminate\Http\JsonResponse;
@@ -31,8 +33,10 @@ class FloorTableController extends Controller
             $query->where('zone', $zone);
         }
 
-        // Active provisional orders to see which table has an open order in real-time
-        $activeOrders = Document::where('status', 'provisional')
+        // Open (held) table orders in any active period, matched to tables by name/code
+        $activePeriodIds = Period::where('status', PeriodStatus::Active)->pluck('id');
+        $activeOrders = Document::where('status', DocumentStatus::Draft)
+            ->whereIn('period_id', $activePeriodIds)
             ->whereNotNull('reference_identifier')
             ->with(['items', 'creator'])
             ->get()
@@ -64,7 +68,7 @@ class FloorTableController extends Controller
                     'grand_total' => (float) $matchedOrder->grand_total,
                     'item_count' => $matchedOrder->items->count(),
                     'created_at' => $matchedOrder->created_at->toIso8601String(),
-                    'elapsed_minutes' => (int) round(now()->diffInMinutes($matchedOrder->created_at)),
+                    'elapsed_minutes' => (int) $matchedOrder->created_at->diffInMinutes(now()),
                     'server_name' => $matchedOrder->creator?->name ?: 'Staff',
                 ] : null,
             ];
