@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AppLayout } from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { OrderSourceBadge, isDeliveryPlatform } from '@/components/order-source';
@@ -22,6 +21,7 @@ import {
     Ban,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
+import { DocumentStatusBadge, paymentMethodLabel } from '@/components/document-status';
 
 interface DocumentShowProps {
     document: {
@@ -84,7 +84,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
     };
 
     return (
-        <AppLayout title={`Invoice ${doc.document_number || `Draft #${doc.id}`}`}>
+        <AppLayout title={`វិក្កយបត្រ ${doc.document_number || `ព្រាង #${doc.id}`}`}>
             <div className="max-w-3xl mx-auto space-y-6">
                 {/* Fixed / Sticky Actions Toolbar */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 shadow-xs">
@@ -92,7 +92,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                         <Link href="/invoices">
                             <Button variant="ghost" size="sm">
                                 <ArrowLeft className="w-4 h-4" />
-                                <span>Back to Register</span>
+                                <span className="font-khmer">ត្រឡប់ទៅបញ្ជីវិក្កយបត្រ</span>
                             </Button>
                         </Link>
 
@@ -111,19 +111,19 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                             <Link href={`/invoices/${doc.id}/preview/80mm`}>
                                 <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300">
                                     <Printer className="w-4 h-4 mr-1.5" />
-                                    <span>80mm Slip</span>
+                                    <span className="font-khmer">វិក្កយបត្រ 80mm</span>
                                 </Button>
                             </Link>
                             <Link href={`/invoices/${doc.id}/preview/a5`}>
                                 <Button size="sm" variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300">
                                     <FileText className="w-4 h-4 mr-1.5" />
-                                    <span>A5 Invoice</span>
+                                    <span className="font-khmer">វិក្កយបត្រ A5</span>
                                 </Button>
                             </Link>
                             <Link href="/invoices/create">
                                 <Button size="sm" variant="primary">
                                     <Plus className="w-4 h-4 mr-1.5" />
-                                    <span>New Order (F2)</span>
+                                    <span className="font-khmer">កម្មង់ថ្មី (F2)</span>
                                 </Button>
                             </Link>
                         </div>
@@ -149,30 +149,19 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                                 </div>
                             </div>
                             <div className="text-xs text-zinc-500 mt-2">
-                                {business.address_primary} • Tel: {business.phone}
+                                {business.address_primary} • ទូរស័ព្ទ: {business.phone}
                             </div>
                         </div>
 
                         <div className="text-right space-y-1">
-                            <Badge
-                                variant={
-                                    doc.status === 'finalized'
-                                        ? 'emerald'
-                                        : doc.status === 'void'
-                                        ? 'rose'
-                                        : 'amber'
-                                }
-                                className="uppercase font-mono text-xs px-3 py-1"
-                            >
-                                {doc.status === 'draft' ? 'Draft Document' : doc.status}
-                            </Badge>
+                            <DocumentStatusBadge status={doc.status} />
                             <div className="font-mono text-xs text-zinc-400">
                                 {doc.document_number ? (
                                     <span className="text-emerald-400 font-bold text-sm">
                                         {doc.document_number}
                                     </span>
                                 ) : (
-                                    <span>Draft #{doc.id} (Order #{doc.provisional_order})</span>
+                                    <span className="font-khmer">ព្រាង #{doc.id} (ការកម្មង់ #{doc.provisional_order})</span>
                                 )}
                             </div>
                         </div>
@@ -181,48 +170,48 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                     {/* Metadata Strip */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 rounded-xl bg-zinc-100/90 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 text-xs font-mono">
                         <div>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Period</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-khmer font-semibold">វគ្គ</span>
                             <span className="text-zinc-900 dark:text-zinc-100 font-bold">{doc.period.code}</span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Date & Time</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-khmer font-semibold">កាលបរិច្ឆេទ & ម៉ោង</span>
                             <span className="text-zinc-800 dark:text-zinc-200 font-medium">
                                 {doc.business_date} {doc.event_time}
                             </span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Table / Ref #</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-khmer font-semibold">លេខតុ</span>
                             <span className="text-emerald-600 dark:text-emerald-400 font-bold font-sans">
                                 {doc.reference_identifier || '—'}
                             </span>
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Order From</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-khmer font-semibold">កម្មង់ពី</span>
                             <OrderSourceBadge
                                 source={doc.order_source}
                                 externalRef={isDeliveryPlatform(doc.order_source) ? doc.external_order_ref : null}
                             />
                         </div>
                         <div>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block uppercase font-sans font-semibold">Cashier</span>
+                            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-khmer font-semibold">អ្នកគិតប្រាក់</span>
                             <span className="text-zinc-800 dark:text-zinc-200 font-medium">{doc.creator.username}</span>
                         </div>
                     </div>
 
                     {/* Immutable Line Items Table */}
                     <div className="space-y-3">
-                        <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center justify-between pb-1 border-b border-zinc-800">
-                            <span>Snapshot Line Items</span>
-                            <span className="text-teal-400 font-mono">{doc.unit_count} guests total</span>
+                        <div className="text-xs font-bold text-zinc-400 font-khmer flex items-center justify-between pb-1 border-b border-zinc-800">
+                            <span>មុខទំនិញ</span>
+                            <span className="text-teal-400">ភ្ញៀវ {doc.unit_count} នាក់</span>
                         </div>
 
                         <table className="w-full text-left text-xs">
-                            <thead className="text-[10px] font-mono uppercase text-zinc-500 border-b border-zinc-800/80">
+                            <thead className="text-[11px] font-khmer text-zinc-500 border-b border-zinc-800/80">
                                 <tr>
-                                    <th className="py-2">Item Description (Snapshot)</th>
-                                    <th className="py-2 text-center">Qty</th>
-                                    <th className="py-2 text-right">Price</th>
-                                    <th className="py-2 text-right">Line Total</th>
+                                    <th className="py-2">មុខទំនិញ</th>
+                                    <th className="py-2 text-center">ចំនួន</th>
+                                    <th className="py-2 text-right">តម្លៃ</th>
+                                    <th className="py-2 text-right">សរុប</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800/60 font-mono text-[11px]">
@@ -259,12 +248,12 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                     <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                         {/* Reconciliation Pill */}
                         <div className="space-y-2 text-xs max-w-sm">
-                            <span className="text-[10px] uppercase font-mono text-zinc-500 block">
-                                Invariant Reconciliation
+                            <span className="text-[11px] font-khmer text-zinc-500 block">
+                                ផ្ទៀងផ្ទាត់ជាមួយក្រដាសកម្មង់
                             </span>
                             <div className="p-3 rounded-lg bg-zinc-100/90 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 space-y-1">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-zinc-600 dark:text-zinc-400">Physical Source Total:</span>
+                                    <span className="text-zinc-600 dark:text-zinc-400 font-khmer">សរុបតាមក្រដាស:</span>
                                     <span className="font-mono font-bold text-zinc-900 dark:text-white">
                                         {business.currency_symbol}
                                         {doc.source_total}
@@ -274,10 +263,10 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                                     {doc.source_total_verified ? (
                                         <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                                              <CheckCircle2 className="w-3.5 h-3.5" />
-                                             <span>Strictly Balanced ($0.00 Variance)</span>
+                                             <span className="font-khmer">ត្រូវគ្នា (ខុសគ្នា $0.00)</span>
                                         </span>
                                     ) : (
-                                        <span className="text-zinc-500 dark:text-zinc-400">Not independently verified</span>
+                                        <span className="text-zinc-500 dark:text-zinc-400 font-khmer">មិនទាន់ផ្ទៀងផ្ទាត់</span>
                                     )}
                                 </div>
                             </div>
@@ -286,7 +275,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                         {/* Financial Calculation Column */}
                         <div className="w-full sm:w-64 space-y-2 text-xs">
                             <div className="flex items-center justify-between text-zinc-400">
-                                <span>Subtotal</span>
+                                <span className="font-khmer">សរុបរង</span>
                                 <span className="font-mono text-zinc-200">
                                     {business.currency_symbol}
                                     {doc.subtotal}
@@ -295,7 +284,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
 
                             {parseFloat(doc.discount_amount) > 0 && (
                                 <div className="flex items-center justify-between text-zinc-400">
-                                    <span>Discount</span>
+                                    <span className="font-khmer">បញ្ចុះតម្លៃ</span>
                                     <span className="font-mono text-rose-400">
                                         -{business.currency_symbol}
                                         {doc.discount_amount}
@@ -305,7 +294,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
 
                             <div className="flex items-center justify-between text-base font-bold text-white pt-2 border-t border-zinc-800">
                                 <div>
-                                    <span>Grand Total</span>
+                                    <span className="font-khmer">សរុបរួម</span>
                                     <div className="text-[11px] font-normal text-zinc-400 font-khmer">
                                         សរុបជាប្រាក់រៀល
                                     </div>
@@ -323,14 +312,14 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
 
                             <div className="pt-2 border-t border-zinc-800/60 space-y-1.5 text-zinc-400">
                                 <div className="flex items-center justify-between">
-                                    <span>Tendered ({doc.payment_method})</span>
+                                    <span className="font-khmer">ប្រាក់ទទួល ({paymentMethodLabel(doc.payment_method)})</span>
                                     <span className="font-mono text-zinc-200">
                                         {business.currency_symbol}
                                         {doc.amount_received}
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between font-semibold text-emerald-400">
-                                    <span>Change Given / ប្រាក់អាប់</span>
+                                    <span className="font-khmer">ប្រាក់អាប់</span>
                                     <div className="text-right">
                                         <span className="font-mono">
                                             {business.currency_symbol}
@@ -349,9 +338,9 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
 
                     {/* Receipt Footer */}
                     <div className="text-center pt-4 border-t border-zinc-800/80 text-xs text-zinc-500 space-y-1">
-                        <div>{business.document_footer || 'Thank you for dining with us!'}</div>
+                        <div>{business.document_footer || 'សូមអរគុណ! Thank you for dining with us!'}</div>
                         <div className="text-[10px] font-mono text-zinc-600">
-                            Immutable Snapshot Recorded • Integer-Cents Persistence
+                            <span className="font-khmer">ទិន្នន័យវិក្កយបត្រត្រូវបានរក្សាទុក មិនអាចកែប្រែបាន</span>
                         </div>
                     </div>
                 </Card>
