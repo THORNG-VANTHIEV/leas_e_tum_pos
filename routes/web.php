@@ -7,6 +7,7 @@ use App\Features\Catalog\Http\Controllers\CatalogController;
 use App\Features\Customers\Http\Controllers\CustomerController;
 use App\Features\Documents\Http\Controllers\DocumentController;
 use App\Features\Documents\Http\Controllers\DocumentPrintController;
+use App\Features\Documents\Http\Controllers\InvoiceCorrectionController;
 use App\Features\Expenses\Http\Controllers\ExpenseController;
 use App\Features\Floor\Http\Controllers\FloorTableController;
 use App\Features\Kds\Http\Controllers\KdsController;
@@ -85,6 +86,11 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/invoices/hold-table', [DocumentController::class, 'holdTable'])->name('invoices.hold-table');
     Route::delete('/invoices/{invoice}/cancel-table', [DocumentController::class, 'cancelTable'])->name('invoices.cancel-table');
     Route::post('/invoices/{invoice}/void', [DocumentController::class, 'void'])->middleware('role:admin,supervisor')->name('invoices.void');
+    Route::middleware('role:admin,supervisor')->group(function () {
+        Route::put('/invoices/{invoice}', [InvoiceCorrectionController::class, 'update'])->name('invoices.update');
+        Route::delete('/invoices/{invoice}', [InvoiceCorrectionController::class, 'destroy'])->name('invoices.destroy');
+        Route::post('/invoices/{invoice}/restore', [InvoiceCorrectionController::class, 'restore'])->withTrashed()->name('invoices.restore');
+    });
 
     // Hardware Continuous Range Print Engine (Section 12.1)
     Route::get('/invoices/print-range/preview', [DocumentPrintController::class, 'previewRange'])->name('invoices.print-range.preview');

@@ -56,8 +56,11 @@ class DocumentController extends Controller
             });
         }
 
-        // Status filter
-        if ($status = $request->input('status')) {
+        // Status filter; the trash tab (managers only) lists deleted invoices instead
+        $status = $request->input('status');
+        if ($status === 'trash' && $user->canViewAllRecords()) {
+            $query->onlyTrashed()->with('deleter:id,name');
+        } elseif ($status) {
             $query->where('status', $status);
         }
 
@@ -159,6 +162,7 @@ class DocumentController extends Controller
             'tables_list' => $tablesList,
             'customers' => $customers,
             'initial_table' => $request->query('table_ref', ''),
+            'editing_invoice' => $this->editableInvoice($request),
             'exchange_rate' => BusinessSetting::current()->khrExchangeRate(),
         ]);
     }
@@ -259,7 +263,7 @@ class DocumentController extends Controller
 
         $tableName = $invoice->reference_identifier ?? "តុ #{$invoice->id}";
         $invoice->items()->delete();
-        $invoice->delete();
+        $invoice->forceDelete();
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
@@ -296,6 +300,45 @@ class DocumentController extends Controller
         } catch (DomainException $e) {
             return back()->withInput()->with('error', __($e->getMessage()));
         }
+    }
+
+    /**
+     * Paid invoice opened in the POS for correction (?edit_invoice=), managers only.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function editableInvoice(Request $request): ?array
+    {
+        $invoiceId = $request->integer('edit_invoice');
+        if (! $invoiceId || ! $request->user()->canViewAllRecords()) {
+            return null;
+        }
+
+        $invoice = Document::with(['items', 'period'])->find($invoiceId);
+        if (! $invoice || $invoice->status !== DocumentStatus::Finalized || $invoice->period?->status === PeriodStatus::Closed) {
+            return null;
+        }
+
+        return [
+            'id' => $invoice->id,
+            'document_number' => $invoice->document_number,
+            'reference_identifier' => $invoice->reference_identifier,
+            'order_source' => $invoice->order_source?->value ?? 'walk_in',
+            'external_order_ref' => $invoice->external_order_ref,
+            'payment_method' => $invoice->payment_method,
+            'amount_received' => (string) $invoice->amount_received,
+            'discount_amount' => (string) $invoice->discount_amount,
+            'customer_id' => $invoice->customer_id,
+            'items' => $invoice->items->whereNotNull('product_id')->map(fn ($item) => [
+                'product_id' => $item->product_id,
+                'name_primary' => $item->product_name_primary_snapshot,
+                'name_secondary' => $item->product_name_secondary_snapshot,
+                'unit_name' => $item->unit_snapshot,
+                'unit_price' => (string) $item->unit_price,
+                'quantity' => $item->quantity,
+                'is_primary_package' => (bool) $item->is_primary_package_snapshot,
+            ])->values()->all(),
+        ];
     }
 
     /**
@@ -352,8 +395,15 @@ class DocumentController extends Controller
 
         $invoice->load(['creator:id,name,username', 'period', 'items.product'])->loadCount('kitchenTickets');
 
+        // Managers may correct or delete paid invoices while their sales period is still open
+        $canCorrect = $user->canViewAllRecords()
+            && in_array($invoice->status, [DocumentStatus::Finalized, DocumentStatus::Void], true)
+            && $invoice->period?->status !== PeriodStatus::Closed;
+
         return Inertia::render('documents/show', [
             'document' => $invoice,
+            'can_edit' => $canCorrect && $invoice->status === DocumentStatus::Finalized,
+            'can_delete' => $canCorrect,
         ]);
     }
 }

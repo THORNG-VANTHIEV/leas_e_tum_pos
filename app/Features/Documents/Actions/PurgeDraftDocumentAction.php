@@ -48,7 +48,7 @@ final class PurgeDraftDocumentAction
                 ->update(['document_id' => null]);
 
             $document->items()->delete();
-            $document->delete();
+            $document->forceDelete();
 
             $this->audit->record(
                 'document.draft_purged',

@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'period_id',
@@ -50,6 +51,8 @@ class Document extends Model
         'points_earned',
         'points_redeemed',
         'lock_version',
+        'deleted_by',
+        'delete_reason',
     ];
 
     protected $casts = [
@@ -77,6 +80,11 @@ class Document extends Model
         'entry_settings_snapshot' => 'array',
         'finalized_at' => 'datetime',
     ];
+
+    public function deleter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
 
     public function period(): BelongsTo
     {
