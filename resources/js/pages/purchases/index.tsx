@@ -40,6 +40,7 @@ import {
     Tag,
     Pencil,
 } from 'lucide-react';
+import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 
 interface Supplier {
     id: number;
@@ -114,6 +115,8 @@ interface PurchasesProps {
         active_suppliers_count: number;
         total_purchases_count: number;
     };
+    filters: { cashier_id: number | null };
+    cashiers: CashierOption[];
 }
 
 type TabType = 'purchases' | 'suppliers';
@@ -134,6 +137,8 @@ export default function PurchasesIndex({
     units,
     exchange_rate,
     metrics,
+    filters,
+    cashiers,
 }: PurchasesProps) {
     const [activeTab, setActiveTab] = useState<TabType>('purchases');
     const [searchQuery, setSearchQuery] = useState('');
@@ -439,6 +444,7 @@ export default function PurchasesIndex({
                         </div>
 
                         <div className="flex items-center gap-2.5">
+                            <CashierFilter cashiers={cashiers} value={filters.cashier_id} />
                             <Button
                                 onClick={() => openSupplierModal()}
                                 variant="outline"

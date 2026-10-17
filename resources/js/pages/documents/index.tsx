@@ -18,6 +18,7 @@ import {
     FileText,
     Printer,
 } from 'lucide-react';
+import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 
 interface DocumentRecord {
     id: number;
@@ -52,7 +53,9 @@ interface IndexProps {
     filters: {
         search?: string;
         status?: string;
+        cashier_id?: string;
     };
+    cashiers: CashierOption[];
     active_period: {
         id: number;
         code: string;
@@ -60,7 +63,7 @@ interface IndexProps {
     } | null;
 }
 
-export default function DocumentIndex({ documents, filters, active_period }: IndexProps) {
+export default function DocumentIndex({ documents, filters, active_period, cashiers }: IndexProps) {
     const { business } = usePage<PageProps>().props;
 
     const [search, setSearch] = useState(filters.search || '');
@@ -72,6 +75,7 @@ export default function DocumentIndex({ documents, filters, active_period }: Ind
             {
                 search: search || undefined,
                 status: newStatus !== undefined ? newStatus : status || undefined,
+                cashier_id: filters.cashier_id || undefined,
             },
             { preserveState: true, preserveScroll: true }
         );
@@ -100,6 +104,11 @@ export default function DocumentIndex({ documents, filters, active_period }: Ind
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <CashierFilter
+                                cashiers={cashiers}
+                                value={filters.cashier_id}
+                                query={{ search: search || undefined, status: status || undefined }}
+                            />
                             <Link href="/invoices/print-range">
                                 <Button variant="outline" size="md" className="border-zinc-700 hover:border-zinc-600 text-zinc-200">
                                     <Printer className="w-4 h-4 mr-1.5 text-emerald-400" />

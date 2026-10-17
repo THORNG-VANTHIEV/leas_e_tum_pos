@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,5 +53,17 @@ class Purchase extends Model
     public function items(): HasMany
     {
         return $this->hasMany(PurchaseItem::class);
+    }
+
+    /**
+     * Cashiers see only what they recorded; managers everything, optionally one cashier.
+     */
+    public function scopeVisibleTo(Builder $query, User $user, ?int $cashierId = null): Builder
+    {
+        if (! $user->canViewAllRecords()) {
+            return $query->where('created_by', $user->id);
+        }
+
+        return $cashierId ? $query->where('created_by', $cashierId) : $query;
     }
 }

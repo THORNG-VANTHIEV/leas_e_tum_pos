@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Supplier;
 use App\Models\Unit;
+use App\Models\User;
 use App\Support\Audit\AuditService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -29,7 +30,12 @@ class PurchaseController extends Controller
      */
     public function index(Request $request): Response
     {
-        $purchases = Purchase::with(['supplier', 'creator', 'items'])
+        $user = $request->user();
+        $cashierId = $request->integer('cashier_id') ?: null;
+        // Cashiers see only purchases they recorded; managers everyone (optionally one cashier)
+        $visiblePurchases = fn () => Purchase::query()->visibleTo($user, $cashierId);
+
+        $purchases = $visiblePurchases()->with(['supplier', 'creator', 'items'])
             ->latest('purchase_date')
             ->latest('id')
             ->paginate(25)
@@ -52,8 +58,8 @@ class PurchaseController extends Controller
         $exchangeRate = $business->khrExchangeRate();
 
         // Calculate summary metrics
-        $totalPurchasesUsd = (float) Purchase::where('status', '!=', 'cancelled')->sum('total_amount');
-        $thisMonthPurchasesUsd = (float) Purchase::where('status', '!=', 'cancelled')
+        $totalPurchasesUsd = (float) $visiblePurchases()->where('status', '!=', 'cancelled')->sum('total_amount');
+        $thisMonthPurchasesUsd = (float) $visiblePurchases()->where('status', '!=', 'cancelled')
             ->whereBetween('purchase_date', [
                 Carbon::now()->startOfMonth()->toDateString(),
                 Carbon::now()->endOfMonth()->toDateString(),
@@ -61,7 +67,7 @@ class PurchaseController extends Controller
             ->sum('total_amount');
 
         $activeSuppliersCount = Supplier::where('is_active', true)->count();
-        $totalPurchasesCount = Purchase::count();
+        $totalPurchasesCount = $visiblePurchases()->count();
 
         return Inertia::render('purchases/index', [
             'purchases' => $purchases,
@@ -75,6 +81,8 @@ class PurchaseController extends Controller
                 'active_suppliers_count' => $activeSuppliersCount,
                 'total_purchases_count' => $totalPurchasesCount,
             ],
+            'filters' => ['cashier_id' => $cashierId],
+            'cashiers' => $user->canViewAllRecords() ? User::filterOptions() : [],
         ]);
     }
 

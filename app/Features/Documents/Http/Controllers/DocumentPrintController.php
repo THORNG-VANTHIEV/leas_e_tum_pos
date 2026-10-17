@@ -63,6 +63,7 @@ class DocumentPrintController extends Controller
         ]);
 
         $query = Document::query()
+            ->visibleTo($request->user())
             ->where('status', DocumentStatus::Finalized)
             ->whereNotNull('sequence_no');
 
@@ -84,8 +85,8 @@ class DocumentPrintController extends Controller
 
         $periods = Period::orderByDesc('id')->get(['id', 'code', 'name', 'status']);
 
-        $minSeq = Document::where('status', DocumentStatus::Finalized)->min('sequence_no') ?? 1;
-        $maxSeq = Document::where('status', DocumentStatus::Finalized)->max('sequence_no') ?? 1;
+        $minSeq = Document::visibleTo($request->user())->where('status', DocumentStatus::Finalized)->min('sequence_no') ?? 1;
+        $maxSeq = Document::visibleTo($request->user())->where('status', DocumentStatus::Finalized)->max('sequence_no') ?? 1;
 
         return Inertia::render('documents/preview-range', [
             'documents' => $documents,
@@ -163,6 +164,7 @@ class DocumentPrintController extends Controller
         ]);
 
         $query = Document::query()
+            ->visibleTo($request->user())
             ->where('status', DocumentStatus::Finalized)
             ->whereNotNull('sequence_no');
 

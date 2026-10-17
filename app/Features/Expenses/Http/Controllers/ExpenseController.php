@@ -8,6 +8,7 @@ use App\Models\BusinessSetting;
 use App\Models\CashDrawerLog;
 use App\Models\Expense;
 use App\Models\Period;
+use App\Models\User;
 use App\Support\Audit\AuditService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,8 +27,16 @@ class ExpenseController extends Controller
         $category = $request->query('category');
         $dateFrom = $request->query('date_from');
         $dateTo = $request->query('date_to');
+        $user = $request->user();
+        $cashierId = $request->integer('cashier_id') ?: null;
 
-        $query = Expense::query()->with(['creator', 'period']);
+        // Cashiers see only what they recorded; managers everyone (optionally one cashier)
+        $visibleExpenses = fn () => Expense::query()->visibleTo($user, $cashierId);
+        $visibleDrawerLogs = fn () => CashDrawerLog::query()
+            ->when(! $user->canViewAllRecords(), fn ($q) => $q->where('user_id', $user->id))
+            ->when($user->canViewAllRecords() && $cashierId, fn ($q) => $q->where('user_id', $cashierId));
+
+        $query = $visibleExpenses()->with(['creator', 'period']);
 
         if ($category && $category !== 'all') {
             $query->where('category', $category);
@@ -46,30 +55,30 @@ class ExpenseController extends Controller
         $activePeriod = Period::where('status', 'active')->first();
 
         // Cash drawer logs for current active period or recent
-        $drawerLogs = CashDrawerLog::with('user')
+        $drawerLogs = $visibleDrawerLogs()->with('user')
             ->when($activePeriod, fn ($q) => $q->where('period_id', $activePeriod->id))
             ->orderByDesc('id')
             ->take(20)
             ->get();
 
         // Metrics
-        $totalUsd = (float) Expense::sum('amount_usd');
-        $totalKhr = (int) Expense::sum('amount_khr');
+        $totalUsd = (float) $visibleExpenses()->sum('amount_usd');
+        $totalKhr = (int) $visibleExpenses()->sum('amount_khr');
 
-        $todayUsd = (float) Expense::whereDate('expense_date', today())->sum('amount_usd');
-        $todayKhr = (int) Expense::whereDate('expense_date', today())->sum('amount_khr');
+        $todayUsd = (float) $visibleExpenses()->whereDate('expense_date', today())->sum('amount_usd');
+        $todayKhr = (int) $visibleExpenses()->whereDate('expense_date', today())->sum('amount_khr');
 
         // Drawer movement today
-        $todayDropsUsd = (float) CashDrawerLog::where('type', 'cash_drop')
+        $todayDropsUsd = (float) $visibleDrawerLogs()->where('type', 'cash_drop')
             ->whereDate('created_at', today())
             ->sum('amount_usd');
 
-        $todayCashInUsd = (float) CashDrawerLog::where('type', 'cash_in')
+        $todayCashInUsd = (float) $visibleDrawerLogs()->where('type', 'cash_in')
             ->whereDate('created_at', today())
             ->sum('amount_usd');
 
         // Category breakdown
-        $categoryBreakdown = Expense::selectRaw('category, sum(amount_usd) as total_usd, count(*) as count')
+        $categoryBreakdown = $visibleExpenses()->selectRaw('category, sum(amount_usd) as total_usd, count(*) as count')
             ->groupBy('category')
             ->get()
             ->keyBy('category');
@@ -95,7 +104,9 @@ class ExpenseController extends Controller
                 'category' => $category ?? 'all',
                 'date_from' => $dateFrom ?? '',
                 'date_to' => $dateTo ?? '',
+                'cashier_id' => $cashierId,
             ],
+            'cashiers' => $user->canViewAllRecords() ? User::filterOptions() : [],
         ]);
     }
 
@@ -236,19 +247,21 @@ class ExpenseController extends Controller
         return back()->with('success', 'បានកត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡាបានជោគជ័យ');
     }
 
-    public function exportCsv(): StreamedResponse
+    public function exportCsv(Request $request): StreamedResponse
     {
+        $user = $request->user();
+
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="expenses_export_'.date('Ymd_His').'.csv"',
         ];
 
-        return response()->stream(function () {
+        return response()->stream(function () use ($user) {
             $handle = fopen('php://output', 'w');
             fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
             fputcsv($handle, ['ID', 'កាលបរិច្ឆេទ', 'ប្រភេទចំណាយ', 'ចំណងជើង', 'ចំនួនទឹកប្រាក់ USD', 'ចំនួនទឹកប្រាក់ KHR', 'វិធីទូទាត់', 'អ្នកទទួល', 'លេខបុង']);
 
-            Expense::orderByDesc('expense_date')->chunk(200, function ($rows) use ($handle) {
+            Expense::query()->visibleTo($user)->orderByDesc('expense_date')->chunk(200, function ($rows) use ($handle) {
                 foreach ($rows as $row) {
                     fputcsv($handle, [
                         $row->id,

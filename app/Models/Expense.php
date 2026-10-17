@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,5 +39,17 @@ class Expense extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Cashiers see only what they recorded; managers everything, optionally one cashier.
+     */
+    public function scopeVisibleTo(Builder $query, User $user, ?int $cashierId = null): Builder
+    {
+        if (! $user->canViewAllRecords()) {
+            return $query->where('created_by', $user->id);
+        }
+
+        return $cashierId ? $query->where('created_by', $cashierId) : $query;
     }
 }

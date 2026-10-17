@@ -19,6 +19,7 @@ import {
     Clock,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
+import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 
 interface DashboardProps {
     stats: {
@@ -46,9 +47,11 @@ interface DashboardProps {
             created_at: string;
         }[];
     } | null;
+    cashiers: CashierOption[];
+    filters: { cashier_id: number | null };
 }
 
-export default function Dashboard({ stats, system_metrics }: DashboardProps) {
+export default function Dashboard({ stats, system_metrics, cashiers, filters }: DashboardProps) {
     const exchangeRate = useExchangeRate();
     const { auth, business } = usePage<PageProps>().props;
     const user = auth.user;
@@ -64,8 +67,12 @@ export default function Dashboard({ stats, system_metrics }: DashboardProps) {
                                 <h1 className="text-2xl font-bold tracking-tight text-white">
                                     Operational Dashboard
                                 </h1>
-                                <Badge variant={user?.role === 'admin' ? 'emerald' : 'sky'}>
-                                    {user?.role === 'admin' ? 'Store-Wide View' : 'Terminal View'}
+                                <Badge variant={cashiers.length > 0 ? 'emerald' : 'sky'}>
+                                    {cashiers.length === 0
+                                        ? 'ការលក់របស់ខ្ញុំ (My Sales)'
+                                        : filters.cashier_id
+                                          ? `@${cashiers.find((c) => c.id === Number(filters.cashier_id))?.username ?? ''}`
+                                          : 'Store-Wide View'}
                                 </Badge>
                             </div>
                             <p className="text-xs text-zinc-400 mt-1">
@@ -75,6 +82,7 @@ export default function Dashboard({ stats, system_metrics }: DashboardProps) {
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <CashierFilter cashiers={cashiers} value={filters.cashier_id} />
                             {user?.role === 'admin' && (
                                 <Link href="/settings">
                                     <Button variant="secondary" size="sm">

@@ -17,6 +17,7 @@ use App\Models\Period;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\RestaurantTable;
+use App\Models\User;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -41,10 +42,10 @@ class DocumentController extends Controller
     public function index(Request $request): Response
     {
         $user = $request->user();
-        $isAdmin = $user->isAdmin();
+        $cashierId = $request->integer('cashier_id') ?: null;
 
         $query = Document::with(['creator:id,name,username', 'period:id,code,name', 'items'])
-            ->when(! $isAdmin, fn ($q) => $q->where('created_by', $user->id));
+            ->visibleTo($user, $cashierId);
 
         // Search by reference #, doc #
         if ($search = $request->input('search')) {
@@ -71,7 +72,8 @@ class DocumentController extends Controller
 
         return Inertia::render('documents/index', [
             'documents' => $documents,
-            'filters' => $request->only(['search', 'status']),
+            'filters' => $request->only(['search', 'status', 'cashier_id']),
+            'cashiers' => $user->canViewAllRecords() ? User::filterOptions() : [],
             'active_period' => $activePeriod ? [
                 'id' => $activePeriod->id,
                 'code' => $activePeriod->code,

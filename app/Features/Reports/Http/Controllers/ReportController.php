@@ -30,12 +30,8 @@ class ReportController extends Controller
         $selectedCashierId = $request->query('cashier_id');
 
         // Scoping per Section 13.4: Cashiers see strictly their own documents
-        $baseQuery = Document::query()->with(['creator', 'period']);
-        if (! $user->isAdmin()) {
-            $baseQuery->where('created_by', $user->id);
-        } elseif ($selectedCashierId) {
-            $baseQuery->where('created_by', $selectedCashierId);
-        }
+        $cashierFilter = $selectedCashierId ? (int) $selectedCashierId : null;
+        $baseQuery = Document::query()->with(['creator', 'period'])->visibleTo($user, $cashierFilter);
 
         if ($selectedPeriodId) {
             $baseQuery->where('period_id', $selectedPeriodId);
@@ -93,7 +89,8 @@ class ReportController extends Controller
 
         // Cashier breakdown aggregation
         $cashierBreakdown = [];
-        $groupedByCashier = $validDocs->groupBy('created_by');
+        // Attribute each sale to the cashier who took the payment
+        $groupedByCashier = $validDocs->groupBy(fn (Document $doc) => $doc->ownerId());
 
         foreach ($groupedByCashier as $cashierId => $docs) {
             $cashierName = $docs->first()->creator->name ?? 'Unknown';
@@ -128,7 +125,7 @@ class ReportController extends Controller
         }
 
         // Financial P&L: Expenses Query
-        $expenseQuery = Expense::query()->with('creator');
+        $expenseQuery = Expense::query()->with('creator')->visibleTo($user, $cashierFilter);
         if ($selectedPeriodId) {
             $expenseQuery->where('period_id', $selectedPeriodId);
         }
@@ -153,7 +150,7 @@ class ReportController extends Controller
         })->values();
 
         // Financial P&L: Purchases Query
-        $purchaseQuery = Purchase::query()->with('supplier')->where('status', '!=', 'cancelled');
+        $purchaseQuery = Purchase::query()->with('supplier')->where('status', '!=', 'cancelled')->visibleTo($user, $cashierFilter);
         if ($selectedPeriodId) {
             $purchaseQuery->where('period_id', $selectedPeriodId);
         }
@@ -187,9 +184,7 @@ class ReportController extends Controller
         ];
 
         $periods = Period::orderByDesc('id')->get(['id', 'code', 'name', 'status']);
-        $cashiers = $user->isAdmin()
-            ? User::where('role', '!=', 'super_admin')->get(['id', 'name', 'username'])
-            : [];
+        $cashiers = $user->canViewAllRecords() ? User::filterOptions() : [];
 
         // Paginated or latest 50 documents for register preview
         $documents = $baseQuery->orderByDesc('id')->limit(100)->get();
@@ -237,12 +232,8 @@ class ReportController extends Controller
         $endDate = $request->query('end_date');
         $selectedCashierId = $request->query('cashier_id');
 
-        $query = Document::query()->with(['creator', 'period']);
-        if (! $user->isAdmin()) {
-            $query->where('created_by', $user->id);
-        } elseif ($selectedCashierId) {
-            $query->where('created_by', $selectedCashierId);
-        }
+        $query = Document::query()->with(['creator', 'period'])
+            ->visibleTo($user, $selectedCashierId ? (int) $selectedCashierId : null);
 
         if ($selectedPeriodId) {
             $query->where('period_id', $selectedPeriodId);

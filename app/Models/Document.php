@@ -124,6 +124,39 @@ class Document extends Model
     }
 
     /**
+     * Documents belonging to a cashier: settled by them, or still open orders they started.
+     */
+    public function scopeOwnedBy(Builder $query, int $userId): Builder
+    {
+        return $query->where(function (Builder $query) use ($userId) {
+            $query->where('finalized_by', $userId)
+                ->orWhere(function (Builder $query) use ($userId) {
+                    $query->whereNull('finalized_by')->where('created_by', $userId);
+                });
+        });
+    }
+
+    /**
+     * What a user may see in lists and totals: cashiers their own; managers everything, optionally one cashier.
+     */
+    public function scopeVisibleTo(Builder $query, User $user, ?int $cashierId = null): Builder
+    {
+        if (! $user->canViewAllRecords()) {
+            return $query->ownedBy($user->id);
+        }
+
+        return $cashierId ? $query->ownedBy($cashierId) : $query;
+    }
+
+    /**
+     * The cashier a sale is attributed to (who took the payment, or who opened an unpaid order).
+     */
+    public function ownerId(): int
+    {
+        return (int) ($this->finalized_by ?? $this->created_by);
+    }
+
+    /**
      * Orders the kitchen should see: paid orders, plus held dine-in orders already sent to the kitchen.
      */
     public function scopeVisibleInKitchen(Builder $query): Builder

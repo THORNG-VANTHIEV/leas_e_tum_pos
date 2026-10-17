@@ -24,9 +24,9 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $isAdmin = $user->isAdmin();
+        $cashierId = $request->integer('cashier_id') ?: null;
 
-        $docQuery = Document::query()
-            ->when(! $isAdmin, fn ($q) => $q->where('created_by', $user->id));
+        $docQuery = Document::query()->visibleTo($user, $cashierId);
 
         $documentsCount = (clone $docQuery)->count();
         $unitCount = (clone $docQuery)->sum('unit_count');
@@ -77,6 +77,8 @@ class DashboardController extends Controller
             'stats' => $stats,
             'system_metrics' => $systemMetrics,
             'business' => BusinessSetting::current(),
+            'cashiers' => $user->canViewAllRecords() ? User::filterOptions() : [],
+            'filters' => ['cashier_id' => $cashierId],
         ]);
     }
 }

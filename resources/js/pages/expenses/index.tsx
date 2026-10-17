@@ -33,6 +33,7 @@ import {
     Pencil,
     Trash2,
 } from 'lucide-react';
+import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 
 interface ExpenseItem {
     id: number;
@@ -82,7 +83,9 @@ interface ExpensesProps {
         category: string;
         date_from: string;
         date_to: string;
+        cashier_id: number | null;
     };
+    cashiers: CashierOption[];
 }
 
 const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
@@ -114,6 +117,7 @@ export default function ExpensesIndex({
     exchangeRate,
     metrics,
     filters,
+    cashiers,
 }: ExpensesProps) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => {
@@ -258,6 +262,7 @@ export default function ExpensesIndex({
             category: selectedCategory,
             date_from: dateFrom,
             date_to: dateTo,
+            cashier_id: filters.cashier_id || undefined,
         }, { preserveState: true });
     };
 
@@ -323,6 +328,7 @@ export default function ExpensesIndex({
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <CashierFilter cashiers={cashiers} value={filters.cashier_id} query={{ category: filters.category, date_from: filters.date_from || undefined, date_to: filters.date_to || undefined }} />
                             <button
                                 onClick={() => setShowDrawerModal(true)}
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition-all cursor-pointer"

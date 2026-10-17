@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
@@ -58,12 +59,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Admins and supervisors see every cashier's records (and may filter by cashier); cashiers only their own.
+     */
+    public function canViewAllRecords(): bool
+    {
+        return $this->isAdmin() || $this->isSupervisor();
+    }
+
+    /**
+     * Staff a manager can filter lists and totals by.
+     *
+     * @return Collection<int, array{id: int, name: string, username: string}>
+     */
+    public static function filterOptions(): Collection
+    {
+        return static::query()->orderBy('name')->get(['id', 'name', 'username'])
+            ->map(fn (self $user) => ['id' => $user->id, 'name' => $user->name, 'username' => $user->username]);
+    }
+
+    /**
      * Managers can open any invoice (e.g. to reprint or void it); cashiers only orders they opened or settled.
      */
     public function canViewInvoice(Document $document): bool
     {
-        return $this->isAdmin()
-            || $this->isSupervisor()
+        return $this->canViewAllRecords()
             || $document->created_by === $this->id
             || $document->finalized_by === $this->id;
     }

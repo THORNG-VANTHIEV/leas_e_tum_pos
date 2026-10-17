@@ -129,7 +129,8 @@ export default function ReportsIndex({
 }: ReportsPageProps) {
     const exchangeRate = useExchangeRate();
     const { auth, business } = usePage<PageProps>().props;
-    const isAdmin = auth.user?.role === 'admin';
+    // Admins and supervisors see every cashier and can filter by one (mirrors User::canViewAllRecords)
+    const canViewAll = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
 
     const [activeTab, setActiveTab] = useState<'sales' | 'pnl'>('sales');
     const [periodId, setPeriodId] = useState(filters.period_id || '');
@@ -189,7 +190,7 @@ export default function ReportsIndex({
                                         Operational Reports & Sales Register
                                     </h1>
                                     <p className="text-xs text-zinc-400">
-                                        {isAdmin
+                                        {canViewAll
                                             ? 'Store-wide financial aggregation & cashier audit'
                                             : 'Personal cashier sales breakdown & register history'}
                                     </p>
@@ -236,7 +237,7 @@ export default function ReportsIndex({
                         {/* Form Controls Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
                             {/* Period */}
-                            <div className={`${isAdmin ? 'lg:col-span-3' : 'lg:col-span-4'} space-y-1.5`}>
+                            <div className={`${canViewAll ? 'lg:col-span-3' : 'lg:col-span-4'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Clock className="w-3 h-3 text-teal-500" />
                                     <span>Period / វគ្គ</span>
@@ -258,7 +259,7 @@ export default function ReportsIndex({
                             </div>
 
                             {/* From Date */}
-                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
+                            <div className={`${canViewAll ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Calendar className="w-3 h-3 text-teal-500" />
                                     <span>From / ចាប់ពីថ្ងៃ</span>
@@ -274,7 +275,7 @@ export default function ReportsIndex({
                             </div>
 
                             {/* To Date */}
-                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
+                            <div className={`${canViewAll ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Calendar className="w-3 h-3 text-teal-500" />
                                     <span>To / ដល់ថ្ងៃ</span>
@@ -290,7 +291,7 @@ export default function ReportsIndex({
                             </div>
 
                             {/* Cashier (Admin Only) */}
-                            {isAdmin && (
+                            {canViewAll && (
                                 <div className="lg:col-span-3 space-y-1.5">
                                     <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                         <Users className="w-3 h-3 text-teal-500" />
@@ -314,7 +315,7 @@ export default function ReportsIndex({
                             )}
 
                             {/* Action Buttons */}
-                            <div className={`${isAdmin ? 'lg:col-span-2' : 'lg:col-span-2'} flex items-center gap-2 pt-1 sm:pt-0`}>
+                            <div className={`${canViewAll ? 'lg:col-span-2' : 'lg:col-span-2'} flex items-center gap-2 pt-1 sm:pt-0`}>
                                 <Button
                                     size="sm"
                                     onClick={handleApplyFilters}
@@ -487,7 +488,7 @@ export default function ReportsIndex({
                 )}
 
                 {/* Cashier Breakdown Table (Admin Only) */}
-                {isAdmin && cashierBreakdown.length > 0 && (
+                {canViewAll && cashierBreakdown.length > 0 && (
                     <div className="space-y-3">
                         <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
                             Cashier Performance & Shift Reconciliation
