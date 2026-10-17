@@ -36,7 +36,7 @@ interface InvoiceDesignerProps {
 }
 
 export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) => {
-    const { auth } = usePage<PageProps>().props;
+    const { auth, business } = usePage<PageProps>().props;
     const currentPrint = settings.print_settings || {};
 
     const [activePreviewFormat, setActivePreviewFormat] = useState<'80mm' | 'a5'>(
@@ -1182,9 +1182,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     {/* Brand / Header */}
                                     <div className="text-center space-y-1 pb-2 border-b border-dashed border-zinc-400">
                                         {form.data.show_logo && (
-                                            <div className="w-10 h-10 mx-auto rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs mb-1">
-                                                LE
-                                            </div>
+                                            <img src={business.logo_url} alt="" className="w-12 h-12 mx-auto rounded-full object-cover grayscale contrast-125 mb-1" />
                                         )}
 
                                         {form.data.show_business_name && (
@@ -1479,9 +1477,7 @@ export const InvoiceDesigner: React.FC<InvoiceDesignerProps> = ({ settings }) =>
                                     <div className="flex items-start justify-between pb-3 border-b-2 border-zinc-900 gap-4">
                                         <div className="space-y-1">
                                             {form.data.show_logo && (
-                                                <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-xs mb-1">
-                                                    LE
-                                                </div>
+                                                <img src={business.logo_url} alt="" className="w-12 h-12 rounded-full object-cover" />
                                             )}
 
                                             {form.data.show_business_name && (

@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+        <link rel="apple-touch-icon" href="/images/brand/logo-192.png">
         <title inertia>{{ config('app.name', 'លៀសហាល អ៉ីទុម POS') }}</title>
 
         <!-- Inter, Kantumruy Pro and Khmer Fonts for POS Typography Engine -->

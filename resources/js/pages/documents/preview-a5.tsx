@@ -179,9 +179,7 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                             </div>
                         )}
                         {showLogo && (
-                            <div className="w-10 h-10 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs mb-1">
-                                LE
-                            </div>
+                            <img src={business.logo_url} alt="" className="w-16 h-16 rounded-full object-cover mb-1" />
                         )}
                         {showBusinessName && (
                             <>

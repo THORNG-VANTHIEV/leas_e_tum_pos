@@ -1073,9 +1073,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
                     <Link href="/dashboard" className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center">
-                            <ReceiptText className="w-4 h-4 text-zinc-950 stroke-[2.5]" />
-                        </div>
+                        <img src={business.logo_url} alt="" className="w-7 h-7 rounded-full object-cover shrink-0" />
                         <span className="font-bold text-sm text-white font-khmer truncate max-w-[150px] leading-normal py-0.5">
                             {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
                         </span>
@@ -1122,9 +1120,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <div>
                             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                                 <div className="flex items-center gap-2.5">
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center">
-                                        <ReceiptText className="w-4 h-4 text-zinc-950 stroke-[2.5]" />
-                                    </div>
+                                    <img src={business.logo_url} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
                                     <div className="flex flex-col">
                                         <span className="font-bold text-sm text-white font-khmer">
                                             {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}
@@ -1172,9 +1168,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             title={`${business.business_name_primary || 'លៀសហាល អ៉ីទុម'} V2.0`}
                             className="group"
                         >
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-                                <ReceiptText className="w-5 h-5 text-zinc-950 stroke-[2.5]" />
-                            </div>
+                            <img src={business.logo_url} alt="" className="w-10 h-10 rounded-full object-cover shadow-md group-hover:scale-105 transition-transform" />
                         </Link>
                         <button
                             id="sidebar-expand-btn"
@@ -1190,9 +1184,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                     <div className="p-4 border-b border-zinc-800/80">
                         <div className="flex items-center justify-between gap-2">
                             <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0 group">
-                                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform shrink-0">
-                                    <ReceiptText className="w-5 h-5 text-zinc-950 stroke-[2.5]" />
-                                </div>
+                                <img src={business.logo_url} alt="" className="w-10 h-10 rounded-full object-cover shadow-md group-hover:scale-105 transition-transform shrink-0" />
                                 <div className="flex flex-col justify-center min-w-0 flex-1">
                                     <span className="font-bold text-white text-sm font-khmer leading-snug py-0.5 whitespace-nowrap">
                                         {business.business_name_primary || 'លៀសហាល អ៉ីទុម'}

@@ -4,7 +4,7 @@ import { PageProps } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { ReceiptText, Lock, User as UserIcon, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Lock, User as UserIcon, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 import { tr } from '@/locales/tr';
 
 export default function Login({ show_demo_accounts = false }: { show_demo_accounts?: boolean }) {
@@ -40,9 +40,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
             <div className="w-full max-w-md relative z-10 space-y-6 page-transition">
                 {/* Logo & Header */}
                 <div className="text-center space-y-2">
-                    <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 shadow-2xl shadow-emerald-500/25 mb-2">
-                        <ReceiptText className="w-8 h-8 text-zinc-950 stroke-[2.5]" />
-                    </div>
+                    <img src={business?.logo_url ?? '/images/brand/logo-192.png'} alt="" className="w-28 h-28 mx-auto rounded-full object-cover shadow-2xl shadow-orange-500/25 mb-2" />
                     <h1 className="text-2xl font-bold tracking-tight text-white font-khmer">
                         {business?.business_name_primary || 'លៀសហាល អ៉ីទុម'}
                     </h1>

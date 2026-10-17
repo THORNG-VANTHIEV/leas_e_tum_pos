@@ -58,6 +58,7 @@ class HandleInertiaRequests extends Middleware
                 return [
                     'business_name_primary' => $setting->business_name_primary,
                     'business_name_secondary' => $setting->business_name_secondary,
+                    'logo_url' => asset($setting->logo_path ?: 'images/brand/logo.jpg'),
                     'address_primary' => $setting->address_primary,
                     'phone' => $setting->phone,
                     'tax_identifier' => $setting->tax_identifier,

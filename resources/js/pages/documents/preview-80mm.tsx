@@ -185,9 +185,7 @@ export default function Preview80mm({ document: doc }: DocumentPrintProps) {
                         </div>
                     )}
                     {showLogo && (
-                        <div className="w-9 h-9 mx-auto rounded-full bg-black text-white flex items-center justify-center font-bold text-xs mb-1">
-                            LE
-                        </div>
+                        <img src={business.logo_url} alt="" className="w-16 h-16 mx-auto rounded-full object-cover grayscale contrast-125 mb-1" />
                     )}
                     {showBusinessName && (
                         <>

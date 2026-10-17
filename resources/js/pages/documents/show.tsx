@@ -140,9 +140,7 @@ export default function DocumentShow({ document: doc }: DocumentShowProps) {
                     <div className="flex items-start justify-between">
                         <div>
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                                    <ReceiptText className="w-5 h-5" />
-                                </div>
+                                <img src={business.logo_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" />
                                 <div>
                                     <h1 className="text-xl font-bold tracking-tight text-white">
                                         {business.business_name_primary}
