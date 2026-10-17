@@ -21,10 +21,6 @@ final class FinalizePeriodDocuments
 
     /**
      * Atomically finalize period and assign gapless contiguous sequential numbers.
-     *
-     * @param int $periodId
-     * @param int $adminId
-     * @return Period
      */
     public function handle(int $periodId, int $adminId): Period
     {
@@ -40,6 +36,23 @@ final class FinalizePeriodDocuments
                 'require_source_total',
                 true
             );
+
+            // Tables held at the POS but not paid yet cannot become official invoices; name them so staff can settle them
+            $unpaidOrders = Document::query()
+                ->where('period_id', $period->id)
+                ->where('status', DocumentStatus::Draft)
+                ->where('payment_method', 'cash')
+                ->whereColumn('amount_received', '<', 'grand_total')
+                ->orderBy('id')
+                ->get(['id', 'reference_identifier', 'grand_total']);
+
+            if ($unpaidOrders->isNotEmpty()) {
+                $list = $unpaidOrders
+                    ->map(fn (Document $order) => ($order->reference_identifier ?: "#{$order->id}")." (\${$order->grand_total})")
+                    ->implode(', ');
+
+                throw new DomainException("មិនអាចបិទវគ្គបានទេ៖ មានការកម្មង់មិនទាន់គិតប្រាក់ — {$list}។ សូមគិតប្រាក់ ឬលុបចោលនៅ POS មុនសិន។");
+            }
 
             $documents = Document::query()
                 ->where('period_id', $period->id)
