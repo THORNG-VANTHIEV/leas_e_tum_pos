@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { useExchangeRate } from '@/components/currency';
+import { tr } from '@/locales/tr';
 
 interface DocumentItem {
     id: number;
@@ -128,7 +129,7 @@ export default function PreviewRange({
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-100 py-6 px-4 selection:bg-emerald-500/30 selection:text-emerald-300">
-            <Head title={`ព្រីនជាបាច់ (${documents.length} វិក្កយបត្រ)`} />
+            <Head title={`${tr('ព្រីនជាបាច់')} (${documents.length})`} />
 
             {/* Hardware Print Stylesheets for Continuous Multi-Document Rolls and A5 Pages */}
             <style>{`
@@ -179,17 +180,17 @@ export default function PreviewRange({
                         <Link href="/invoices">
                             <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                                 <ArrowLeft className="w-4 h-4 mr-1.5" />
-                                <span className="font-khmer">បញ្ជីវិក្កយបត្រ</span>
+                                <span className="font-khmer">{tr('បញ្ជីវិក្កយបត្រ')}</span>
                             </Button>
                         </Link>
                         <div className="h-5 w-[1px] bg-zinc-800" />
                         <div>
                             <h1 className="text-sm font-bold text-white flex items-center gap-2">
                                 <Layers className="w-4 h-4 text-emerald-400" />
-                                <span className="font-khmer">ព្រីនវិក្កយបត្រជាបាច់</span>
+                                <span className="font-khmer">{tr('ព្រីនវិក្កយបត្រជាបាច់')}</span>
                             </h1>
                             <p className="text-xs text-zinc-400 font-khmer">
-                                លេខ #{range.start_sequence} ដល់ #{range.end_sequence} (វិក្កយបត្រ {documents.length} សន្លឹក)
+                                {tr('លេខ')} #{range.start_sequence} {tr('ដល់')} #{range.end_sequence} ({documents.length} {tr('សន្លឹក')})
                             </p>
                         </div>
                     </div>
@@ -229,7 +230,7 @@ export default function PreviewRange({
                             className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-950/50 cursor-pointer"
                         >
                             <Printer className="w-4 h-4 mr-1.5" />
-                            <span className="font-khmer">{isPrinting ? 'កំពុងកត់ត្រា...' : `ព្រីនទាំងអស់ (${documents.length})`}</span>
+                            <span className="font-khmer">{isPrinting ? tr('កំពុងកត់ត្រា...') : `${tr('ព្រីនទាំងអស់')} (${documents.length})`}</span>
                         </Button>
                     </div>
                 </div>
@@ -241,7 +242,7 @@ export default function PreviewRange({
                 >
                     <div className="flex flex-wrap items-center gap-3">
                         <div className="flex items-center gap-2">
-                            <span className="text-zinc-400 font-khmer">ពីលេខ:</span>
+                            <span className="text-zinc-400 font-khmer">{tr('ពីលេខ:')}</span>
                             <Input
                                 type="number"
                                 min={1}
@@ -251,7 +252,7 @@ export default function PreviewRange({
                             />
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-zinc-400 font-khmer">ដល់លេខ:</span>
+                            <span className="text-zinc-400 font-khmer">{tr('ដល់លេខ:')}</span>
                             <Input
                                 type="number"
                                 min={1}
@@ -262,13 +263,13 @@ export default function PreviewRange({
                         </div>
                         {periods.length > 0 && (
                             <div className="flex items-center gap-2">
-                                <span className="text-zinc-400 font-khmer">វគ្គ:</span>
+                                <span className="text-zinc-400 font-khmer">{tr('វគ្គ:')}</span>
                                 <select
                                     value={selectedPeriod}
                                     onChange={(e) => setSelectedPeriod(e.target.value)}
                                     className="h-8 bg-zinc-950 border border-zinc-700 rounded-lg px-2 text-zinc-200 text-xs focus:ring-1 focus:ring-emerald-500"
                                 >
-                                    <option value="">គ្រប់វគ្គ</option>
+                                    <option value="">{tr('គ្រប់វគ្គ')}</option>
                                     {periods.map((p) => (
                                         <option key={p.id} value={p.id}>
                                             {p.code} - {p.name}
@@ -279,16 +280,16 @@ export default function PreviewRange({
                         )}
                         <Button type="submit" variant="outline" size="sm" className="h-8 border-zinc-700 text-xs">
                             <Filter className="w-3.5 h-3.5 mr-1 text-emerald-400" />
-                            <span className="font-khmer">បង្ហាញ</span>
+                            <span className="font-khmer">{tr('បង្ហាញ')}</span>
                         </Button>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs font-mono">
                         <span className="text-zinc-400">
-                            <span className="font-khmer">មានលេខ:</span> <strong className="text-white">#{range.min_available_sequence}</strong> <span className="font-khmer">ដល់</span> <strong className="text-white">#{range.max_available_sequence}</strong>
+                            <span className="font-khmer">{tr('មានលេខ:')}</span> <strong className="text-white">#{range.min_available_sequence}</strong> <span className="font-khmer">{tr('ដល់')}</span> <strong className="text-white">#{range.max_available_sequence}</strong>
                         </span>
                         <span className="text-zinc-400">
-                            <span className="font-khmer">សរុប:</span> <strong className="text-emerald-400">${range.total_amount}</strong>
+                            <span className="font-khmer">{tr('សរុប:')}</span> <strong className="text-emerald-400">${range.total_amount}</strong>
                         </span>
                     </div>
                 </form>
@@ -298,13 +299,13 @@ export default function PreviewRange({
             {documents.length === 0 && (
                 <div className="max-w-md mx-auto my-16 p-8 text-center bg-zinc-900/40 rounded-2xl border border-zinc-800">
                     <AlertCircle className="w-10 h-10 text-amber-400 mx-auto mb-3" />
-                    <h3 className="text-base font-bold text-white mb-1 font-khmer">រកមិនឃើញវិក្កយបត្រទេ</h3>
+                    <h3 className="text-base font-bold text-white mb-1 font-khmer">{tr('រកមិនឃើញវិក្កយបត្រទេ')}</h3>
                     <p className="text-xs text-zinc-400 mb-4 font-khmer">
-                        គ្មានវិក្កយបត្រដែលបានគិតប្រាក់ ចាប់ពីលេខ #{startSeq} ដល់ #{endSeq} ទេ។
+                        {tr('គ្មានវិក្កយបត្រដែលបានគិតប្រាក់ ចាប់ពីលេខ')} #{startSeq} {tr('ដល់')} #{endSeq}
                     </p>
                     <Link href="/invoices">
                         <Button variant="outline" size="sm">
-                            <span className="font-khmer">ត្រឡប់ទៅបញ្ជីវិក្កយបត្រ</span>
+                            <span className="font-khmer">{tr('ត្រឡប់ទៅបញ្ជីវិក្កយបត្រ')}</span>
                         </Button>
                     </Link>
                 </div>

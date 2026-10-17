@@ -117,7 +117,7 @@ class FloorTableController extends Controller
             'is_active' => true,
         ]);
 
-        return back()->with('success', "បានបង្កើតតុថ្មី: {$validated['name']} ({$validated['code']})");
+        return back()->with('success', __('បានបង្កើតតុថ្មី: :name (:code)', ['name' => $validated['name'], 'code' => $validated['code']]));
     }
 
     public function update(Request $request, RestaurantTable $table): RedirectResponse
@@ -135,7 +135,7 @@ class FloorTableController extends Controller
         // Open orders are linked by table name/code, so renaming would orphan them
         $isRenamed = $validated['name'] !== $table->name || $validated['code'] !== $table->code;
         if ($isRenamed && $this->hasOpenOrder($table)) {
-            return back()->with('error', "មិនអាចប្តូរឈ្មោះ ឬកូដតុ {$table->name} បានទេ ព្រោះកំពុងមានការកម្មង់បើក។");
+            return back()->with('error', __('មិនអាចប្តូរឈ្មោះ ឬកូដតុ :name បានទេ ព្រោះកំពុងមានការកម្មង់បើក។', ['name' => $table->name]));
         }
 
         $oldValues = $table->only(array_keys($validated));
@@ -151,13 +151,13 @@ class FloorTableController extends Controller
             "Updated table {$table->code}"
         );
 
-        return back()->with('success', "បានកែប្រែតុ: {$table->name} ({$table->code})");
+        return back()->with('success', __('បានកែប្រែតុ: :name (:code)', ['name' => $table->name, 'code' => $table->code]));
     }
 
     public function destroy(Request $request, RestaurantTable $table): RedirectResponse
     {
         if ($this->hasOpenOrder($table)) {
-            return back()->with('error', "មិនអាចលុបតុ {$table->name} បានទេ ព្រោះកំពុងមានការកម្មង់បើក។");
+            return back()->with('error', __('មិនអាចលុបតុ :name បានទេ ព្រោះកំពុងមានការកម្មង់បើក។', ['name' => $table->name]));
         }
 
         // Deactivate rather than delete so historical invoices keep their table reference meaningful
@@ -173,7 +173,7 @@ class FloorTableController extends Controller
             "Removed table {$table->code} from the floor plan"
         );
 
-        return back()->with('success', "បានលុបតុ {$table->name} ចេញពីប្លង់។");
+        return back()->with('success', __('បានលុបតុ :name ចេញពីប្លង់។', ['name' => $table->name]));
     }
 
     private function hasOpenOrder(RestaurantTable $table): bool
@@ -196,6 +196,6 @@ class FloorTableController extends Controller
             return response()->json(['success' => true, 'status' => $validated['status']]);
         }
 
-        return back()->with('success', "ស្ថានភាពតុ {$table->name} ត្រូវបានកែប្រែទៅជា {$validated['status']}");
+        return back()->with('success', __('ស្ថានភាពតុ :name ត្រូវបានកែប្រែទៅជា :status', ['name' => $table->name, 'status' => $validated['status']]));
     }
 }

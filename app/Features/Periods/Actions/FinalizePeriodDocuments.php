@@ -28,7 +28,7 @@ final class FinalizePeriodDocuments
             $period = Period::query()->lockForUpdate()->findOrFail($periodId);
 
             if ($period->status !== PeriodStatus::Review && $period->status !== PeriodStatus::Active) {
-                throw new DomainException('អាចបិទបញ្ជីបានតែវគ្គដែលកំពុងបើក ឬកំពុងពិនិត្យប៉ុណ្ណោះ។');
+                throw new DomainException(__('អាចបិទបញ្ជីបានតែវគ្គដែលកំពុងបើក ឬកំពុងពិនិត្យប៉ុណ្ណោះ។'));
             }
 
             $requireSource = (bool) data_get(
@@ -51,7 +51,7 @@ final class FinalizePeriodDocuments
                     ->map(fn (Document $order) => ($order->reference_identifier ?: "#{$order->id}")." (\${$order->grand_total})")
                     ->implode(', ');
 
-                throw new DomainException("មិនអាចបិទវគ្គបានទេ៖ មានការកម្មង់មិនទាន់គិតប្រាក់ — {$list}។ សូមគិតប្រាក់ ឬលុបចោលនៅ POS មុនសិន។");
+                throw new DomainException(__('មិនអាចបិទវគ្គបានទេ៖ មានការកម្មង់មិនទាន់គិតប្រាក់ — :list។ សូមគិតប្រាក់ ឬលុបចោលនៅ POS មុនសិន។', ['list' => $list]));
             }
 
             $documents = Document::query()
@@ -66,18 +66,18 @@ final class FinalizePeriodDocuments
                 ->get();
 
             if ($documents->isEmpty() && $period->last_sequence_no === 0) {
-                throw new DomainException('មិនអាចបិទបញ្ជីវគ្គដែលគ្មានវិក្កយបត្របានទេ។');
+                throw new DomainException(__('មិនអាចបិទបញ្ជីវគ្គដែលគ្មានវិក្កយបត្របានទេ។'));
             }
 
             // 1. Authoritative recalculation and verification of each document
             foreach ($documents as $document) {
                 if ($document->document_number !== null) {
-                    throw new DomainException('វិក្កយបត្រដែលមានលេខរួចហើយ មិនអាចដាក់លេខម្តងទៀតបានទេ។');
+                    throw new DomainException(__('វិក្កយបត្រដែលមានលេខរួចហើយ មិនអាចដាក់លេខម្តងទៀតបានទេ។'));
                 }
 
                 $items = $document->items()->orderBy('line_position')->get();
                 if ($items->isEmpty()) {
-                    throw new DomainException("វិក្កយបត្រ #{$document->id} គ្មានមុខទំនិញ។");
+                    throw new DomainException(__('វិក្កយបត្រ #:id គ្មានមុខទំនិញ។', ['id' => $document->id]));
                 }
 
                 $calculated = $this->calculator->calculate(
@@ -95,12 +95,12 @@ final class FinalizePeriodDocuments
 
                 foreach (['subtotal', 'tax_amount', 'discount_amount', 'grand_total', 'amount_received', 'change_amount'] as $field) {
                     if (Money::toCents((string) $document->{$field}) !== Money::toCents($calculated[$field])) {
-                        throw new DomainException("{$field} របស់វិក្កយបត្រ #{$document->id} មិនត្រូវនឹងការគណនារបស់ប្រព័ន្ធ។");
+                        throw new DomainException(__(':field របស់វិក្កយបត្រ #:id មិនត្រូវនឹងការគណនារបស់ប្រព័ន្ធ។', ['field' => $field, 'id' => $document->id]));
                     }
                 }
 
                 if ($requireSource && ! $document->source_total_verified) {
-                    throw new DomainException("វិក្កយបត្រ #{$document->id} ត្រូវផ្ទៀងផ្ទាត់សរុបតាមក្រដាសសិន មុននឹងបិទបញ្ជី។");
+                    throw new DomainException(__('វិក្កយបត្រ #:id ត្រូវផ្ទៀងផ្ទាត់សរុបតាមក្រដាសសិន មុននឹងបិទបញ្ជី។', ['id' => $document->id]));
                 }
             }
 

@@ -24,6 +24,7 @@ import {
     ChevronRight,
     CalendarDays,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface PeriodRecord {
     id: number;
@@ -129,7 +130,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
     };
 
     return (
-        <AppLayout title="វគ្គលក់">
+        <AppLayout title={tr("វគ្គលក់")}>
             <div className="space-y-6">
                 {/* Fixed / Sticky Header */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -138,17 +139,17 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                             <div className="flex items-center gap-2.5">
                                 <Calendar className="w-6 h-6 text-emerald-400" />
                                 <h1 className="text-2xl font-bold tracking-tight text-white">
-                                    វគ្គលក់ & ការបិទបញ្ជី
+                                    {tr('វគ្គលក់ & ការបិទបញ្ជី')}
                                 </h1>
                             </div>
                             <p className="text-xs text-zinc-400 mt-1">
-                                បើកវគ្គដើម្បីលក់ ដាក់ពិនិត្យ រួចបិទបញ្ជីដើម្បីផ្ដល់លេខវិក្កយបត្រផ្លូវការតាមលំដាប់ ដោយមិនរំលងលេខ។
+                                {tr('បើកវគ្គដើម្បីលក់ ដាក់ពិនិត្យ រួចបិទបញ្ជីដើម្បីផ្ដល់លេខវិក្កយបត្រផ្លូវការតាមលំដាប់ ដោយមិនរំលងលេខ។')}
                             </p>
                         </div>
 
                         <Button size="sm" onClick={() => setShowCreateModal(true)}>
                             <Plus className="w-4 h-4" />
-                            <span>បង្កើតវគ្គថ្មី</span>
+                            <span>{tr('បង្កើតវគ្គថ្មី')}</span>
                         </Button>
                     </div>
                 </div>
@@ -194,15 +195,15 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                     {/* Counters */}
                                     <div className="grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-zinc-950/70 border border-zinc-800/80 font-mono text-[11px] text-center">
                                         <div>
-                                            <div className="text-zinc-500 text-[10px]">សរុប</div>
+                                            <div className="text-zinc-500 text-[10px]">{tr('សរុប')}</div>
                                             <div className="font-bold text-white">{p.total_docs}</div>
                                         </div>
                                         <div>
-                                            <div className="text-amber-400 text-[10px]">ព្រាង</div>
+                                            <div className="text-amber-400 text-[10px]">{tr('ព្រាង')}</div>
                                             <div className="font-bold text-amber-300">{p.draft_docs}</div>
                                         </div>
                                         <div>
-                                            <div className="text-emerald-400 text-[10px]">មានលេខ</div>
+                                            <div className="text-emerald-400 text-[10px]">{tr('មានលេខ')}</div>
                                             <div className="font-bold text-emerald-300">
                                                 #{p.last_sequence_no}
                                             </div>
@@ -220,7 +221,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             onClick={() => handleActivate(p.id)}
                                         >
                                             <CheckCircle2 className="w-3.5 h-3.5" />
-                                            <span>បើកសម្រាប់លក់</span>
+                                            <span>{tr('បើកសម្រាប់លក់')}</span>
                                         </Button>
                                     )}
 
@@ -239,7 +240,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                     {p.status === 'review' && (
                                         <Link href={`/periods/${p.id}/review`} className="w-full">
                                             <Button size="sm" variant="primary" className="w-full">
-                                                <span>ពិនិត្យ & បិទបញ្ជី</span>
+                                                <span>{tr('ពិនិត្យ & បិទបញ្ជី')}</span>
                                                 <ArrowUpRight className="w-3.5 h-3.5" />
                                             </Button>
                                         </Link>
@@ -271,14 +272,14 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            បង្កើតវគ្គគណនេយ្យថ្មី
+                                            {tr('បង្កើតវគ្គគណនេយ្យថ្មី')}
                                         </h2>
                                         <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                                             INV-05 & INV-02
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                        Create Accounting Period & Sequence Stamping — លៀសហាល អ៉ីទុម POS
+                                        {tr('Create Accounting Period & Sequence Stamping — លៀសហាល អ៉ីទុម POS')}
                                     </p>
                                 </div>
                             </div>
@@ -289,7 +290,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                 <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
                                     (Esc)
                                 </span>
@@ -307,14 +308,14 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                 <Building2 className="w-4 h-4 text-amber-500" />
                                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    ព័ត៌មានទូទៅនៃវគ្គគណនេយ្យ (Period General Information)
+                                                    {tr('ព័ត៌មានទូទៅនៃវគ្គគណនេយ្យ (Period General Information)')}
                                                 </h3>
                                             </div>
 
                                             <div className="space-y-4">
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                        សាខាអនុវត្ត (Branch Location) *
+                                                        {tr('សាខាអនុវត្ត (Branch Location) *')}
                                                     </label>
                                                     <select
                                                         value={createForm.data.location_id}
@@ -335,12 +336,12 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                     <div>
                                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                            កូដសម្គាល់វគ្គ (Period Code) *
+                                                            {tr('កូដសម្គាល់វគ្គ (Period Code) *')}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             required
-                                                            placeholder="ឧ. P01 ឬ P02"
+                                                            placeholder={tr("ឧ. P01 ឬ P02")}
                                                             value={createForm.data.code}
                                                             onChange={(e) => createForm.setData('code', e.target.value.toUpperCase().trim())}
                                                             className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
@@ -352,12 +353,12 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
 
                                                     <div>
                                                         <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                            ឈ្មោះវគ្គ / បរិយាយ (Period Name) *
+                                                            {tr('ឈ្មោះវគ្គ / បរិយាយ (Period Name) *')}
                                                         </label>
                                                         <input
                                                             type="text"
                                                             required
-                                                            placeholder="ឧ. វគ្គគណនេយ្យខែតុលា ២០២៦"
+                                                            placeholder={tr("ឧ. វគ្គគណនេយ្យខែតុលា ២០២៦")}
                                                             value={createForm.data.name}
                                                             onChange={(e) => createForm.setData('name', e.target.value)}
                                                             className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
@@ -376,18 +377,18 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                 <div className="flex items-center gap-2">
                                                     <CalendarDays className="w-4 h-4 text-amber-500" />
                                                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                        កាលបរិច្ឆេទប្រតិបត្តិការ (Operating Date Range) *
+                                                        {tr('កាលបរិច្ឆេទប្រតិបត្តិការ (Operating Date Range) *')}
                                                     </h3>
                                                 </div>
                                                 <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                                    {durationDays} ថ្ងៃ (Days)
+                                                    {durationDays} {tr('ថ្ងៃ (Days)')}
                                                 </span>
                                             </div>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                        ថ្ងៃចាប់ផ្ដើម (Start Date) *
+                                                        {tr('ថ្ងៃចាប់ផ្ដើម (Start Date) *')}
                                                     </label>
                                                     <input
                                                         type="date"
@@ -403,7 +404,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                        ថ្ងៃបញ្ចប់ (End Date) *
+                                                        {tr('ថ្ងៃបញ្ចប់ (End Date) *')}
                                                     </label>
                                                     <input
                                                         type="date"
@@ -421,15 +422,15 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             {/* Quick Presets */}
                                             <div>
                                                 <span className="block text-[11px] text-slate-500 dark:text-zinc-400 font-khmer mb-2">
-                                                    រយៈពេលកំណត់រហ័ស (Quick Duration Presets)៖
+                                                    {tr('រយៈពេលកំណត់រហ័ស (Quick Duration Presets)៖')}
                                                 </span>
                                                 <div className="flex flex-wrap gap-2">
                                                     {[
-                                                        { label: '+7 ថ្ងៃ (1 សប្ដាហ៍)', days: 7 },
-                                                        { label: '+15 ថ្ងៃ (កន្លះខែ)', days: 15 },
-                                                        { label: '+30 ថ្ងៃ (1 ខែ)', days: 30 },
-                                                        { label: '+60 ថ្ងៃ (2 ខែ)', days: 60 },
-                                                        { label: '+90 ថ្ងៃ (1 ត្រីមាស)', days: 90 },
+                                                        { label: tr('+7 ថ្ងៃ (1 សប្ដាហ៍)'), days: 7 },
+                                                        { label: tr('+15 ថ្ងៃ (កន្លះខែ)'), days: 15 },
+                                                        { label: tr('+30 ថ្ងៃ (1 ខែ)'), days: 30 },
+                                                        { label: tr('+60 ថ្ងៃ (2 ខែ)'), days: 60 },
+                                                        { label: tr('+90 ថ្ងៃ (1 ត្រីមាស)'), days: 90 },
                                                     ].map((preset) => (
                                                         <button
                                                             key={preset.days}
@@ -449,14 +450,14 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                 <Hash className="w-4 h-4 text-amber-500" />
                                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    ការកំណត់លេខរៀងវិក្កយបត្រ (Sequential Invoicing Setup)
+                                                    {tr('ការកំណត់លេខរៀងវិក្កយបត្រ (Sequential Invoicing Setup)')}
                                                 </h3>
                                             </div>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                        បុព្វបទលេខវិក្កយបត្រ (Document Prefix) *
+                                                        {tr('បុព្វបទលេខវិក្កយបត្រ (Document Prefix) *')}
                                                     </label>
                                                     <input
                                                         type="text"
@@ -489,7 +490,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                        លេខរៀងចាប់ផ្ដើម (Starting Sequence #) *
+                                                        {tr('លេខរៀងចាប់ផ្ដើម (Starting Sequence #) *')}
                                                     </label>
                                                     <input
                                                         type="number"
@@ -501,7 +502,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm font-mono font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
                                                     />
                                                     <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1.5 font-khmer">
-                                                        ជាទូទៅកំណត់ចាប់ផ្ដើមពីលេខ 1 សម្រាប់វគ្គថ្មី
+                                                        {tr('ជាទូទៅកំណត់ចាប់ផ្ដើមពីលេខ 1 សម្រាប់វគ្គថ្មី')}
                                                     </p>
                                                     {createForm.errors.starting_sequence && (
                                                         <p className="text-[11px] text-rose-500 mt-1">{createForm.errors.starting_sequence}</p>
@@ -519,11 +520,11 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                 <div className="flex items-center gap-2">
                                                     <Sparkles className="w-4 h-4 text-amber-500" />
                                                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                        ទិដ្ឋភាពវគ្គគណនេយ្យ (Period Passport)
+                                                        {tr('ទិដ្ឋភាពវគ្គគណនេយ្យ (Period Passport)')}
                                                     </h3>
                                                 </div>
                                                 <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                                    មើលជាមុន
+                                                    {tr('មើលជាមុន')}
                                                 </span>
                                             </div>
 
@@ -539,7 +540,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                         </span>
                                                     </div>
                                                     <span className="text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                                                        ព្រាង
+                                                        {tr('ព្រាង')}
                                                     </span>
                                                 </div>
 
@@ -548,24 +549,24 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                         {createForm.data.code || 'P01'}
                                                     </div>
                                                     <h4 className="text-sm font-bold text-white truncate font-khmer">
-                                                        {createForm.data.name || 'ឈ្មោះវគ្គគណនេយ្យ'}
+                                                        {createForm.data.name || tr('ឈ្មោះវគ្គគណនេយ្យ')}
                                                     </h4>
                                                     <p className="text-xs text-zinc-400 font-khmer">
-                                                        សាខា៖ <strong className="text-zinc-200">{selectedLocation?.name_primary || 'Main Branch'}</strong> ({selectedLocation?.code})
+                                                        {tr('សាខា៖')} <strong className="text-zinc-200">{selectedLocation?.name_primary || 'Main Branch'}</strong> ({selectedLocation?.code})
                                                     </p>
                                                 </div>
 
                                                 <div className="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800/80 space-y-2 mb-4">
                                                     <div className="flex items-center justify-between text-[11px] text-zinc-400">
-                                                        <span>កាលបរិច្ឆេទដំណើរការ</span>
+                                                        <span>{tr('កាលបរិច្ឆេទដំណើរការ')}</span>
                                                         <span className="font-mono text-zinc-200">
                                                             {createForm.data.start_date || 'YYYY-MM-DD'} → {createForm.data.end_date || 'YYYY-MM-DD'}
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-1 border-t border-zinc-800/60">
-                                                        <span>រយៈពេលសរុប</span>
+                                                        <span>{tr('រយៈពេលសរុប')}</span>
                                                         <span className="font-semibold text-emerald-400 font-mono">
-                                                            {durationDays} ថ្ងៃប្រតិបត្តិការ
+                                                            {durationDays} {tr('ថ្ងៃប្រតិបត្តិការ')}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -573,19 +574,19 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                 {/* Live Invoicing Sequence Numbers Simulation */}
                                                 <div>
                                                     <span className="block text-[10px] font-mono uppercase text-zinc-400 mb-2">
-                                                        ទម្រង់លេខវិក្កយបត្របន្តបន្ទាប់ (Gapless Numbering):
+                                                        {tr('ទម្រង់លេខវិក្កយបត្របន្តបន្ទាប់ (Gapless Numbering):')}
                                                     </span>
                                                     <div className="space-y-1.5 font-mono text-xs">
                                                         <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-emerald-300">
-                                                            <span className="text-zinc-500 text-[10px]">វិក្កយបត្រទី ១</span>
+                                                            <span className="text-zinc-500 text-[10px]">{tr('វិក្កយបត្រទី ១')}</span>
                                                             <span className="font-bold">{getSampleSequence(0)}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-emerald-300/80">
-                                                            <span className="text-zinc-500 text-[10px]">វិក្កយបត្រទី ២</span>
+                                                            <span className="text-zinc-500 text-[10px]">{tr('វិក្កយបត្រទី ២')}</span>
                                                             <span className="font-bold">{getSampleSequence(1)}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-emerald-300/60">
-                                                            <span className="text-zinc-500 text-[10px]">វិក្កយបត្រទី ៣</span>
+                                                            <span className="text-zinc-500 text-[10px]">{tr('វិក្កយបត្រទី ៣')}</span>
                                                             <span className="font-bold">{getSampleSequence(2)}</span>
                                                         </div>
                                                     </div>
@@ -598,7 +599,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                 <Shield className="w-4 h-4 text-amber-500" />
                                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    វដ្ដជីវិតវគ្គគណនេយ្យ (Period Lifecycle)
+                                                    {tr('វដ្ដជីវិតវគ្គគណនេយ្យ (Period Lifecycle)')}
                                                 </h3>
                                             </div>
 
@@ -606,19 +607,19 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                             <div className="grid grid-cols-4 gap-1.5 text-center text-[10px] font-mono">
                                                 <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold">
                                                     1. DRAFT
-                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">បង្កើតព្រាង</span>
+                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">{tr('បង្កើតព្រាង')}</span>
                                                 </div>
                                                 <div className="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-400">
                                                     2. ACTIVE
-                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">លក់ & កត់ត្រា</span>
+                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">{tr('លក់ & កត់ត្រា')}</span>
                                                 </div>
                                                 <div className="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-400">
                                                     3. REVIEW
-                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">ចាក់សោពិនិត្យ</span>
+                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">{tr('ចាក់សោពិនិត្យ')}</span>
                                                 </div>
                                                 <div className="p-2 rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-400">
                                                     4. CLOSED
-                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">បិទ & ចុះលេខ</span>
+                                                    <span className="block text-[9px] font-normal font-khmer mt-0.5">{tr('បិទ & ចុះលេខ')}</span>
                                                 </div>
                                             </div>
 
@@ -626,13 +627,13 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                                 <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300 font-khmer flex items-start gap-2">
                                                     <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                                                     <span>
-                                                        <strong>Invariant INV-05:</strong> វគ្គគណនេយ្យគ្រប់គ្រងការចេញវិក្កយបត្រ Draft និងត្រូវចាក់សោបង្កក មុនពេលប្រព័ន្ធចុះលេខរៀងវិក្កយបត្រផ្លូវការ។
+                                                        <strong>Invariant INV-05:</strong> {tr('វគ្គគណនេយ្យគ្រប់គ្រងការចេញវិក្កយបត្រ Draft និងត្រូវចាក់សោបង្កក មុនពេលប្រព័ន្ធចុះលេខរៀងវិក្កយបត្រផ្លូវការ។')}
                                                     </span>
                                                 </div>
                                                 <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-700 dark:text-emerald-300 font-khmer flex items-start gap-2">
                                                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                                     <span>
-                                                        <strong>Invariant INV-02:</strong> លេខវិក្កយបត្រមិនអាចរំលង (Gapless) និងមិនអាចកែប្រែបានឡើយ ក្រោយពេល Finalize ជោគជ័យ។
+                                                        <strong>Invariant INV-02:</strong> {tr('លេខវិក្កយបត្រមិនអាចរំលង (Gapless) និងមិនអាចកែប្រែបានឡើយ ក្រោយពេល Finalize ជោគជ័យ។')}
                                                     </span>
                                                 </div>
                                             </div>
@@ -645,7 +646,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                             <div className="shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
                                 <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
                                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                    <span>វគ្គគណនេយ្យថ្មីនឹងស្ថិតក្នុងស្ថានភាព Draft រហូតដល់អ្នកគ្រប់គ្រងចុច Activate</span>
+                                    <span>{tr('វគ្គគណនេយ្យថ្មីនឹងស្ថិតក្នុងស្ថានភាព Draft រហូតដល់អ្នកគ្រប់គ្រងចុច Activate')}</span>
                                 </div>
 
                                 <div className="flex items-center gap-2.5 ml-auto">
@@ -654,7 +655,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                         onClick={() => setShowCreateModal(false)}
                                         className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
                                     <button
                                         type="submit"
@@ -662,7 +663,7 @@ export default function PeriodsIndex({ periods, locations }: PeriodsPageProps) {
                                         className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all cursor-pointer font-khmer disabled:opacity-50"
                                     >
                                         <Calendar className="w-4 h-4" />
-                                        <span>{createForm.processing ? 'កំពុងបង្កើត...' : 'រក្សាទុកវគ្គគណនេយ្យ'}</span>
+                                        <span>{createForm.processing ? tr('កំពុងបង្កើត...') : tr('រក្សាទុកវគ្គគណនេយ្យ')}</span>
                                     </button>
                                 </div>
                             </div>

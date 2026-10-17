@@ -41,6 +41,7 @@ import {
     Pencil,
 } from 'lucide-react';
 import { CashierFilter, CashierOption } from '@/components/cashier-filter';
+import { tr } from '@/locales/tr';
 
 interface Supplier {
     id: number;
@@ -215,7 +216,7 @@ export default function PurchasesIndex({
             {
                 product_id: '',
                 item_name: '',
-                unit_name: 'កំប៉ុង',
+                unit_name: tr('កំប៉ុង'),
                 quantity: 1,
                 unit_cost: 0,
                 notes: '',
@@ -229,7 +230,7 @@ export default function PurchasesIndex({
             {
                 product_id: '',
                 item_name: '',
-                unit_name: 'កំប៉ុង',
+                unit_name: tr('កំប៉ុង'),
                 quantity: 1,
                 unit_cost: 0,
                 notes: '',
@@ -422,7 +423,7 @@ export default function PurchasesIndex({
     });
 
     return (
-        <AppLayout title="Purchases & Suppliers — លៀសហាល អ៉ីទុម">
+        <AppLayout title={tr("Purchases & Suppliers — លៀសហាល អ៉ីទុម")}>
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Quick Actions */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -434,10 +435,10 @@ export default function PurchasesIndex({
                                 </div>
                                 <div>
                                     <h1 className="text-xl sm:text-2xl font-bold text-white font-khmer leading-snug py-0.5">
-                                        ការទិញចូល & អ្នកផ្គត់ផ្គង់
+                                        {tr('ការទិញចូល & អ្នកផ្គត់ផ្គង់')}
                                     </h1>
                                     <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                                        Purchases, Inventory Inbound & Supplier Relations • Rate: $1 = {exchange_rate.toLocaleString()} ៛
+                                        Purchases, Inventory Inbound & Supplier Relations • Rate: $1 = {exchange_rate.toLocaleString()} {tr('៛')}
                                     </p>
                                 </div>
                             </div>
@@ -451,14 +452,14 @@ export default function PurchasesIndex({
                                 className="bg-zinc-900 border-zinc-700/80 hover:bg-zinc-800 text-zinc-200 text-xs gap-1.5 cursor-pointer shadow-sm"
                             >
                                 <Users className="w-4 h-4 text-emerald-400" />
-                                <span>អ្នកផ្គត់ផ្គង់ (Supplier)</span>
+                                <span>{tr('អ្នកផ្គត់ផ្គង់ (Supplier)')}</span>
                             </Button>
                             <Button
                                 onClick={openNewPurchase}
                                 className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
                             >
                                 <Plus className="w-4 h-4 stroke-[3]" />
-                                <span>កត់ត្រាទិញចូល (New Purchase)</span>
+                                <span>{tr('កត់ត្រាទិញចូល (New Purchase)')}</span>
                             </Button>
                         </div>
                     </div>
@@ -468,7 +469,7 @@ export default function PurchasesIndex({
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Total Purchases / ចំណាយសរុប</span>
+                            <span>{tr('Total Purchases / ចំណាយសរុប')}</span>
                             <DollarSign className="w-4 h-4 text-amber-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
@@ -481,7 +482,7 @@ export default function PurchasesIndex({
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>This Month / ទិញខែនេះ</span>
+                            <span>{tr('This Month / ទិញខែនេះ')}</span>
                             <Calendar className="w-4 h-4 text-emerald-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
@@ -494,27 +495,27 @@ export default function PurchasesIndex({
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Active Suppliers / អ្នកផ្គត់ផ្គង់</span>
+                            <span>{tr('Active Suppliers / អ្នកផ្គត់ផ្គង់')}</span>
                             <Users className="w-4 h-4 text-teal-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.active_suppliers_count}
                         </div>
                         <div className="text-xs text-teal-400/90 font-khmer mt-1">
-                            {suppliers.length} ដៃគូផ្គត់ផ្គង់សរុប
+                            {suppliers.length} {tr('ដៃគូផ្គត់ផ្គង់សរុប')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Purchase Bills / វិក្កយបត្រ</span>
+                            <span>{tr('Purchase Bills / វិក្កយបត្រ')}</span>
                             <Receipt className="w-4 h-4 text-purple-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.total_purchases_count}
                         </div>
                         <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                            បានកត់ត្រាក្នុងប្រព័ន្ធ
+                            {tr('បានកត់ត្រាក្នុងប្រព័ន្ធ')}
                         </div>
                     </Card>
                 </div>
@@ -534,7 +535,7 @@ export default function PurchasesIndex({
                                 }`}
                             >
                                 <Receipt className="w-3.5 h-3.5" />
-                                <span>វិក្កយបត្រទិញចូល ({purchases.total})</span>
+                                <span>{tr('វិក្កយបត្រទិញចូល (')}{purchases.total})</span>
                             </button>
                             <button
                                 type="button"
@@ -546,7 +547,7 @@ export default function PurchasesIndex({
                                 }`}
                             >
                                 <Users className="w-3.5 h-3.5" />
-                                <span>អ្នកផ្គត់ផ្គង់ ({suppliers.length})</span>
+                                <span>{tr('អ្នកផ្គត់ផ្គង់ (')}{suppliers.length})</span>
                             </button>
                         </div>
 
@@ -558,8 +559,8 @@ export default function PurchasesIndex({
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={
                                     activeTab === 'purchases'
-                                        ? 'ស្វែងរកលេខប័ណ្ណ, ឈ្មោះទំនិញ...'
-                                        : 'ស្វែងរកឈ្មោះ, លេខទូរស័ព្ទ...'
+                                        ? tr('ស្វែងរកលេខប័ណ្ណ, ឈ្មោះទំនិញ...')
+                                        : tr('ស្វែងរកឈ្មោះ, លេខទូរស័ព្ទ...')
                                 }
                                 className="pl-9 h-9 bg-zinc-950/90 border-zinc-800 text-xs text-white rounded-xl placeholder:text-zinc-500"
                             />
@@ -587,10 +588,10 @@ export default function PurchasesIndex({
                                 onChange={(e) => setStatusFilter(e.target.value)}
                                 className="bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-300 focus:outline-none focus:border-amber-500 cursor-pointer"
                             >
-                                <option value="all">ស្ថានភាពទាំងអស់ (All Status)</option>
-                                <option value="received">ទទួលបានរួច (Received)</option>
-                                <option value="pending">រង់ចាំ (Pending)</option>
-                                <option value="cancelled">បានលុបចោល (Cancelled)</option>
+                                <option value="all">{tr('ស្ថានភាពទាំងអស់ (All Status)')}</option>
+                                <option value="received">{tr('ទទួលបានរួច (Received)')}</option>
+                                <option value="pending">{tr('រង់ចាំ (Pending)')}</option>
+                                <option value="cancelled">{tr('បានលុបចោល (Cancelled)')}</option>
                             </select>
 
                             {/* Supplier filter */}
@@ -599,7 +600,7 @@ export default function PurchasesIndex({
                                 onChange={(e) => setSupplierFilter(e.target.value)}
                                 className="bg-zinc-950 border border-zinc-800 rounded-lg px-2.5 py-1 text-xs text-zinc-300 focus:outline-none focus:border-amber-500 cursor-pointer max-w-[200px] truncate"
                             >
-                                <option value="all">អ្នកផ្គត់ផ្គង់ទាំងអស់ (All Suppliers)</option>
+                                <option value="all">{tr('អ្នកផ្គត់ផ្គង់ទាំងអស់ (All Suppliers)')}</option>
                                 {suppliers.map((s) => (
                                     <option key={s.id} value={s.id.toString()}>
                                         {s.name}
@@ -617,13 +618,13 @@ export default function PurchasesIndex({
                             <table className="w-full table-fixed text-left text-xs border-collapse">
                                 <thead>
                                     <tr className="border-b border-zinc-800/80 bg-zinc-950/60 text-zinc-400 font-mono text-[11px] uppercase">
-                                        <th className="py-3 px-3 sm:px-4 w-[14%] whitespace-nowrap">លេខការទិញ</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[20%]">Supplier / អ្នកផ្គត់ផ្គង់</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[11%] whitespace-nowrap">Date / កាលបរិច្ឆេទ</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[26%]">Items / ទំនិញ</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[11%] text-right whitespace-nowrap">Total ($ / ៛)</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[12%] text-center whitespace-nowrap">ស្ថានភាព</th>
-                                        <th className="py-3 px-3 sm:px-4 w-[6%] text-center whitespace-nowrap">សកម្មភាព</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[14%] whitespace-nowrap">{tr('លេខការទិញ')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[20%]">{tr('Supplier / អ្នកផ្គត់ផ្គង់')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[11%] whitespace-nowrap">{tr('Date / កាលបរិច្ឆេទ')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[26%]">{tr('Items / ទំនិញ')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[11%] text-right whitespace-nowrap">{tr('Total ($ / ៛)')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[12%] text-center whitespace-nowrap">{tr('ស្ថានភាព')}</th>
+                                        <th className="py-3 px-3 sm:px-4 w-[6%] text-center whitespace-nowrap">{tr('សកម្មភាព')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/40 text-zinc-300">
@@ -632,9 +633,9 @@ export default function PurchasesIndex({
                                             <td colSpan={7} className="py-12 text-center text-zinc-500">
                                                 <div className="flex flex-col items-center justify-center gap-2">
                                                     <Truck className="w-8 h-8 text-zinc-600" />
-                                                    <p className="font-khmer text-sm">មិនមានទិន្នន័យការទិញចូលទេ</p>
+                                                    <p className="font-khmer text-sm">{tr('មិនមានទិន្នន័យការទិញចូលទេ')}</p>
                                                     <p className="text-xs font-mono text-zinc-600">
-                                                        រកមិនឃើញការទិញចូលទេ។
+                                                        {tr('រកមិនឃើញការទិញចូលទេ។')}
                                                     </p>
                                                 </div>
                                             </td>
@@ -662,7 +663,7 @@ export default function PurchasesIndex({
                                                         <div className="font-semibold text-white font-khmer truncate" title={purchase.supplier?.name || ''}>
                                                             {purchase.supplier?.name || (
                                                                 <span className="text-zinc-500 font-sans italic">
-                                                                    ទូទៅ (Walk-in / Cash)
+                                                                    {tr('ទូទៅ (Walk-in / Cash)')}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -681,7 +682,7 @@ export default function PurchasesIndex({
                                                         <div className="flex items-center gap-2 min-w-0">
                                                             <span className="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-zinc-800/90 text-amber-300 border border-zinc-700/70 font-mono text-xs font-semibold shadow-xs">
                                                                 <Package className="w-3.5 h-3.5 text-amber-400" />
-                                                                <span>{purchase.items.length} មុខ</span>
+                                                                <span>{purchase.items.length} {tr('មុខ')}</span>
                                                             </span>
                                                             <span
                                                                 className="text-zinc-300 truncate text-xs font-khmer min-w-0"
@@ -728,7 +729,7 @@ export default function PurchasesIndex({
                                                                 variant="outline"
                                                                 onClick={() => setViewPurchaseModal(purchase)}
                                                                 className="h-7 w-7 p-0 rounded-lg border-zinc-700 bg-zinc-800/90 text-zinc-300 hover:text-white hover:bg-zinc-700 hover:border-zinc-600 inline-flex items-center justify-center cursor-pointer shadow-sm transition"
-                                                                title="មើលប័ណ្ណលម្អិត / View Purchase Bill"
+                                                                title={tr("មើលប័ណ្ណលម្អិត / View Purchase Bill")}
                                                             >
                                                                 <Eye className="w-3.5 h-3.5 text-amber-400" />
                                                             </Button>
@@ -739,7 +740,7 @@ export default function PurchasesIndex({
                                                                     variant="ghost"
                                                                     onClick={() => openEditPurchase(purchase)}
                                                                     className="h-7 w-7 p-0 text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10 rounded-lg inline-flex items-center justify-center cursor-pointer"
-                                                                    title="កែប្រែ (Edit)"
+                                                                    title={tr("កែប្រែ (Edit)")}
                                                                 >
                                                                     <Pencil className="w-3.5 h-3.5" />
                                                                 </Button>
@@ -756,7 +757,7 @@ export default function PurchasesIndex({
                                                                         )
                                                                     }
                                                                     className="h-7 w-7 p-0 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg inline-flex items-center justify-center cursor-pointer"
-                                                                    title="បានទទួលទំនិញ"
+                                                                    title={tr("បានទទួលទំនិញ")}
                                                                 >
                                                                     <Check className="w-3.5 h-3.5" />
                                                                 </Button>
@@ -805,14 +806,14 @@ export default function PurchasesIndex({
                         {filteredSuppliers.length === 0 ? (
                             <div className="col-span-full py-12 text-center text-zinc-500 bg-zinc-900/40 rounded-2xl border border-zinc-800">
                                 <Users className="w-8 h-8 text-zinc-600 mx-auto mb-2" />
-                                <p className="font-khmer text-sm">មិនមានអ្នកផ្គត់ផ្គង់ត្រូវតាមការស្វែងរកទេ</p>
+                                <p className="font-khmer text-sm">{tr('មិនមានអ្នកផ្គត់ផ្គង់ត្រូវតាមការស្វែងរកទេ')}</p>
                                 <Button
                                     onClick={() => openSupplierModal()}
                                     variant="outline"
                                     className="mt-3 text-xs bg-zinc-900 border-zinc-700 gap-1.5"
                                 >
                                     <Plus className="w-3.5 h-3.5" />
-                                    <span>បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី</span>
+                                    <span>{tr('បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី')}</span>
                                 </Button>
                             </div>
                         ) : (
@@ -829,7 +830,7 @@ export default function PurchasesIndex({
                                                 </h3>
                                                 {supplier.contact_person && (
                                                     <div className="text-xs text-zinc-400 mt-0.5">
-                                                        តំណាង: {supplier.contact_person}
+                                                        {tr('តំណាង:')} {supplier.contact_person}
                                                     </div>
                                                 )}
                                             </div>
@@ -840,7 +841,7 @@ export default function PurchasesIndex({
                                                         : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                                                 }`}
                                             >
-                                                {supplier.is_active ? 'សកម្ម' : 'បិទ'}
+                                                {supplier.is_active ? tr('សកម្ម') : tr('បិទ')}
                                             </Badge>
                                         </div>
 
@@ -871,14 +872,14 @@ export default function PurchasesIndex({
 
                                     <div className="pt-3 mt-3 border-t border-zinc-800/60 flex items-center justify-between text-xs">
                                         <div className="font-mono text-[11px] text-zinc-500">
-                                            ទិញបាន: <span className="text-white font-bold">{supplier.purchases_count || 0}</span> លើក
+                                            {tr('ទិញបាន:')} <span className="text-white font-bold">{supplier.purchases_count || 0}</span> {tr('លើក')}
                                         </div>
 
                                         <div className="flex items-center gap-1.5">
                                             <button
                                                 type="button"
                                                 onClick={() => handleToggleSupplier(supplier.id)}
-                                                title={supplier.is_active ? 'ផ្អាកដំណើរការ' : 'បើកដំណើរការ'}
+                                                title={supplier.is_active ? tr('ផ្អាកដំណើរការ') : tr('បើកដំណើរការ')}
                                                 className={`p-1.5 rounded-lg border transition-colors ${
                                                     supplier.is_active
                                                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'
@@ -898,7 +899,7 @@ export default function PurchasesIndex({
                                                 className="h-8 px-2.5 text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs gap-1 cursor-pointer"
                                             >
                                                 <Edit2 className="w-3.5 h-3.5 text-amber-400" />
-                                                <span>កែប្រែ</span>
+                                                <span>{tr('កែប្រែ')}</span>
                                             </Button>
                                         </div>
                                     </div>
@@ -924,14 +925,14 @@ export default function PurchasesIndex({
                                     <div>
                                         <div className="flex items-center gap-2">
                                             <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                                {editingPurchase ? `កែប្រែការទិញចូល #${editingPurchase.purchase_number}` : 'កត់ត្រាការទិញចូលស្តុកថ្មី'}
+                                                {editingPurchase ? `${tr('កែប្រែការទិញចូល')} #${editingPurchase.purchase_number}` : tr('កត់ត្រាការទិញចូលស្តុកថ្មី')}
                                             </h3>
                                             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                                {editingPurchase ? 'កែការទិញចូល' : 'ការទិញចូលថ្មី'}
+                                                {editingPurchase ? tr('កែការទិញចូល') : tr('ការទិញចូលថ្មី')}
                                             </span>
                                         </div>
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                            បញ្ចូលព័ត៌មានអ្នកផ្គត់ផ្គង់ កាលបរិច្ឆេទ និងបញ្ជីមុខទំនិញទិញចូលស្តុក POS
+                                            {tr('បញ្ចូលព័ត៌មានអ្នកផ្គត់ផ្គង់ កាលបរិច្ឆេទ និងបញ្ជីមុខទំនិញទិញចូលស្តុក POS')}
                                         </p>
                                     </div>
                                 </div>
@@ -939,10 +940,10 @@ export default function PurchasesIndex({
                                     type="button"
                                     onClick={() => setPurchaseModalOpen(false)}
                                     className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                    title="ត្រឡប់ក្រោយ (Esc)"
+                                    title={tr("ត្រឡប់ក្រោយ (Esc)")}
                                 >
                                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
-                                    <span>ត្រឡប់ក្រោយ</span>
+                                    <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                 </button>
                             </div>
 
@@ -955,20 +956,20 @@ export default function PurchasesIndex({
                                         <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-[#cbd5e1] dark:border-zinc-800/80 space-y-3 shrink-0">
                                             <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                 <Receipt className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>ព័ត៌មានការទិញ / Order Info</span>
+                                                <span>{tr('ព័ត៌មានការទិញ / Order Info')}</span>
                                             </div>
 
                                             <div className="space-y-2.5">
                                                 <div>
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                        អ្នកផ្គត់ផ្គង់ (Supplier)
+                                                        {tr('អ្នកផ្គត់ផ្គង់ (Supplier)')}
                                                     </label>
                                                     <select
                                                         value={purchaseForm.data.supplier_id}
                                                         onChange={(e) => purchaseForm.setData('supplier_id', e.target.value)}
                                                         className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 font-khmer transition-all cursor-pointer"
                                                     >
-                                                        <option value="">ទូទៅ / គ្មាន (Walk-in Cash Purchase)</option>
+                                                        <option value="">{tr('ទូទៅ / គ្មាន (Walk-in Cash Purchase)')}</option>
                                                         {suppliers.map((s) => (
                                                             <option key={s.id} value={s.id}>
                                                                 {s.name} {s.phone ? `(${s.phone})` : ''}
@@ -980,7 +981,7 @@ export default function PurchasesIndex({
                                                 <div className="grid grid-cols-2 gap-2.5">
                                                     <div>
                                                         <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                            កាលបរិច្ឆេទ (Date) <span className="text-rose-500">*</span>
+                                                            {tr('កាលបរិច្ឆេទ (Date)')} <span className="text-rose-500">*</span>
                                                         </label>
                                                         <input
                                                             type="date"
@@ -992,41 +993,41 @@ export default function PurchasesIndex({
                                                     </div>
                                                     <div>
                                                         <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                            ស្ថានភាព (Status)
+                                                            {tr('ស្ថានភាព (Status)')}
                                                         </label>
                                                         <select
                                                             value={purchaseForm.data.status}
                                                             onChange={(e) => purchaseForm.setData('status', e.target.value as any)}
                                                             className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-2.5 py-1.5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-amber-500 font-khmer transition-all cursor-pointer"
                                                         >
-                                                            <option value="received">ទទួលបានរួច (Received)</option>
-                                                            <option value="pending">កំពុងរង់ចាំ (Pending)</option>
+                                                            <option value="received">{tr('ទទួលបានរួច (Received)')}</option>
+                                                            <option value="pending">{tr('កំពុងរង់ចាំ (Pending)')}</option>
                                                         </select>
                                                     </div>
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                        លេខប័ណ្ណយោង / វិក្កយបត្រ (Ref #)
+                                                        {tr('លេខប័ណ្ណយោង / វិក្កយបត្រ (Ref #)')}
                                                     </label>
                                                     <input
                                                         type="text"
                                                         value={purchaseForm.data.reference_note}
                                                         onChange={(e) => purchaseForm.setData('reference_note', e.target.value)}
-                                                        placeholder="ឧ. INV-KK-9021 ឬ CP-DO-4821"
+                                                        placeholder={tr("ឧ. INV-KK-9021 ឬ CP-DO-4821")}
                                                         className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 transition-all"
                                                     />
                                                 </div>
 
                                                 <div>
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                        កំណត់សម្គាល់ (Notes)
+                                                        {tr('កំណត់សម្គាល់ (Notes)')}
                                                     </label>
                                                     <input
                                                         type="text"
                                                         value={purchaseForm.data.notes}
                                                         onChange={(e) => purchaseForm.setData('notes', e.target.value)}
-                                                        placeholder="ឧ. ចូលស្តុកទូកកក ឬ ឃ្លាំងស្ងួត"
+                                                        placeholder={tr("ឧ. ចូលស្តុកទូកកក ឬ ឃ្លាំងស្ងួត")}
                                                         className="w-full h-9 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 font-khmer focus:outline-none focus:border-amber-500 transition-all"
                                                     />
                                                 </div>
@@ -1037,13 +1038,13 @@ export default function PurchasesIndex({
                                         <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-[#cbd5e1] dark:border-zinc-800/80 space-y-3 shrink-0">
                                             <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                 <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
-                                                <span>សង្ខេបហិរញ្ញវត្ថុ / Financial Summary</span>
+                                                <span>{tr('សង្ខេបហិរញ្ញវត្ថុ / Financial Summary')}</span>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-2.5">
                                                 <div>
                                                     <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1 font-khmer">
-                                                        បញ្ចុះតម្លៃ / Discount ($)
+                                                        {tr('បញ្ចុះតម្លៃ / Discount ($)')}
                                                     </label>
                                                     <input
                                                         type="number"
@@ -1056,7 +1057,7 @@ export default function PurchasesIndex({
                                                 </div>
                                                 <div>
                                                     <label className="block text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 mb-1 font-khmer">
-                                                        ពន្ធ / Tax ($)
+                                                        {tr('ពន្ធ / Tax ($)')}
                                                     </label>
                                                     <input
                                                         type="number"
@@ -1071,13 +1072,13 @@ export default function PurchasesIndex({
 
                                             <div className="pt-2 border-t border-zinc-200/80 dark:border-zinc-800/80 space-y-1.5">
                                                 <div className="flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 font-khmer">
-                                                    <span>សរុបដើមគ្រា (Subtotal):</span>
+                                                    <span>{tr('សរុបដើមគ្រា (Subtotal):')}</span>
                                                     <span className="font-mono font-semibold text-zinc-900 dark:text-white">${formSubtotal.toFixed(2)}</span>
                                                 </div>
                                                 <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
                                                     <div>
                                                         <span className="text-xs font-bold text-amber-700 dark:text-amber-300 font-khmer block">
-                                                            ទឹកប្រាក់សរុប (Grand Total)
+                                                            {tr('ទឹកប្រាក់សរុប (Grand Total)')}
                                                         </span>
                                                         <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono">
                                                             ≈ {formatKhr(formTotal)}
@@ -1101,10 +1102,10 @@ export default function PurchasesIndex({
                                                 </div>
                                                 <div>
                                                     <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer block">
-                                                        មុខទំនិញទិញចូល (Inbound Line Items)
+                                                        {tr('មុខទំនិញទិញចូល (Inbound Line Items)')}
                                                     </span>
                                                     <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                        មានសរុប {purchaseForm.data.items.length} មុខទំនិញ
+                                                        {tr('មានសរុប')} {purchaseForm.data.items.length} {tr('មុខទំនិញ')}
                                                     </span>
                                                 </div>
                                             </div>
@@ -1116,7 +1117,7 @@ export default function PurchasesIndex({
                                                 className="h-8 px-3 text-xs bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer rounded-xl gap-1.5 shadow-sm shadow-amber-500/20 cursor-pointer"
                                             >
                                                 <Plus className="w-3.5 h-3.5" />
-                                                <span>បន្ថែមជួរទំនិញ (Add Row)</span>
+                                                <span>{tr('បន្ថែមជួរទំនិញ (Add Row)')}</span>
                                             </Button>
                                         </div>
 
@@ -1126,12 +1127,12 @@ export default function PurchasesIndex({
                                                 <table className="w-full text-left text-xs border-collapse">
                                                     <thead className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900/95 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 font-mono text-[11px] uppercase whitespace-nowrap">
                                                         <tr>
-                                                            <th className="py-2.5 px-3 w-48">មុខទំនិញ</th>
-                                                            <th className="py-2.5 px-3">Item Name / ឈ្មោះទំនិញ *</th>
-                                                            <th className="py-2.5 px-3 w-28">Unit / ឯកតា</th>
-                                                            <th className="py-2.5 px-3 w-24">Qty / ចំនួន</th>
-                                                            <th className="py-2.5 px-3 w-28">Cost / ថ្លៃដើម ($)</th>
-                                                            <th className="py-2.5 px-3 text-right w-28">សរុប ($)</th>
+                                                            <th className="py-2.5 px-3 w-48">{tr('មុខទំនិញ')}</th>
+                                                            <th className="py-2.5 px-3">{tr('Item Name / ឈ្មោះទំនិញ *')}</th>
+                                                            <th className="py-2.5 px-3 w-28">{tr('Unit / ឯកតា')}</th>
+                                                            <th className="py-2.5 px-3 w-24">{tr('Qty / ចំនួន')}</th>
+                                                            <th className="py-2.5 px-3 w-28">{tr('Cost / ថ្លៃដើម ($)')}</th>
+                                                            <th className="py-2.5 px-3 text-right w-28">{tr('សរុប ($)')}</th>
                                                             <th className="py-2.5 px-3 w-10 text-center"></th>
                                                         </tr>
                                                     </thead>
@@ -1147,7 +1148,7 @@ export default function PurchasesIndex({
                                                                             onChange={(e) => updateLineItem(idx, 'product_id', e.target.value)}
                                                                             className="w-full h-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2 text-xs text-zinc-900 dark:text-zinc-300 focus:outline-none focus:border-amber-500 cursor-pointer truncate"
                                                                         >
-                                                                            <option value="">-- រើសមុខទំនិញ --</option>
+                                                                            <option value="">{tr('-- រើសមុខទំនិញ --')}</option>
                                                                             {products.map((p) => (
                                                                                 <option key={p.id} value={p.id}>
                                                                                     {p.name_primary}
@@ -1162,7 +1163,7 @@ export default function PurchasesIndex({
                                                                             type="text"
                                                                             value={item.item_name}
                                                                             onChange={(e) => updateLineItem(idx, 'item_name', e.target.value)}
-                                                                            placeholder="ឈ្មោះទំនិញ..."
+                                                                            placeholder={tr("ឈ្មោះទំនិញ...")}
                                                                             className="w-full h-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500"
                                                                             required
                                                                         />
@@ -1174,7 +1175,7 @@ export default function PurchasesIndex({
                                                                             type="text"
                                                                             value={item.unit_name}
                                                                             onChange={(e) => updateLineItem(idx, 'unit_name', e.target.value)}
-                                                                            placeholder="កំប៉ុង, ចាន..."
+                                                                            placeholder={tr("កំប៉ុង, ចាន...")}
                                                                             className="w-full h-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg px-2.5 text-xs text-zinc-900 dark:text-white font-khmer focus:outline-none focus:border-amber-500"
                                                                         />
                                                                     </td>
@@ -1217,7 +1218,7 @@ export default function PurchasesIndex({
                                                                             onClick={() => removeLineItem(idx)}
                                                                             disabled={purchaseForm.data.items.length <= 1}
                                                                             className="p-1 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 disabled:opacity-20 disabled:hover:text-zinc-400 disabled:hover:bg-transparent cursor-pointer transition-colors"
-                                                                            title="លុបជួរនេះ"
+                                                                            title={tr("លុបជួរនេះ")}
                                                                         >
                                                                             <Trash2 className="w-4 h-4" />
                                                                         </button>
@@ -1235,7 +1236,7 @@ export default function PurchasesIndex({
                                 {/* Modal Actions Footer */}
                                 <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/60 flex items-center justify-between shrink-0">
                                     <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer hidden sm:block">
-                                        * សូមពិនិត្យបញ្ជីមុខទំនិញ និងថ្លៃដើមឱ្យបានត្រឹមត្រូវមុននឹងចុចកត់ត្រាចូលស្តុក
+                                        {tr('* សូមពិនិត្យបញ្ជីមុខទំនិញ និងថ្លៃដើមឱ្យបានត្រឹមត្រូវមុននឹងចុចកត់ត្រាចូលស្តុក')}
                                     </div>
                                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                                         <Button
@@ -1244,7 +1245,7 @@ export default function PurchasesIndex({
                                             onClick={() => setPurchaseModalOpen(false)}
                                             className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-9 px-4 cursor-pointer"
                                         >
-                                            បោះបង់ (Cancel)
+                                            {tr('បោះបង់ (Cancel)')}
                                         </Button>
                                         <Button
                                             type="submit"
@@ -1252,7 +1253,7 @@ export default function PurchasesIndex({
                                             className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer text-xs rounded-xl h-9 px-5 shadow-md shadow-amber-500/20 inline-flex items-center gap-2 cursor-pointer"
                                         >
                                             <Truck className="w-4 h-4" />
-                                            <span>{purchaseForm.processing ? 'កំពុងរក្សាទុក...' : editingPurchase ? 'រក្សាទុកការកែប្រែ (Save)' : 'កត់ត្រាទិញចូលស្តុក (Save)'}</span>
+                                            <span>{purchaseForm.processing ? tr('កំពុងរក្សាទុក...') : editingPurchase ? tr('រក្សាទុកការកែប្រែ (Save)') : tr('កត់ត្រាទិញចូលស្តុក (Save)')}</span>
                                         </Button>
                                     </div>
                                 </div>
@@ -1286,17 +1287,17 @@ export default function PurchasesIndex({
                                         </Badge>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                        ព័ត៌មានលម្អិតប័ណ្ណទិញចូលទំនិញ
+                                        {tr('ព័ត៌មានលម្អិតប័ណ្ណទិញចូលទំនិញ')}
                                     </p>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => setViewPurchaseModal(null)}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-khmer font-medium transition-colors shadow-xs cursor-pointer"
-                                    title="ត្រឡប់ក្រោយ (Esc)"
+                                    title={tr("ត្រឡប់ក្រោយ (Esc)")}
                                 >
                                     <ArrowLeft className="w-3.5 h-3.5" />
-                                    <span>ត្រឡប់ក្រោយ</span>
+                                    <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                 </button>
                             </div>
 
@@ -1304,9 +1305,9 @@ export default function PurchasesIndex({
                             <div className="p-6 space-y-5 overflow-y-auto">
                                 <div className="grid grid-cols-2 gap-4 text-xs bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                                     <div>
-                                        <span className="text-zinc-500 block mb-0.5 font-khmer">អ្នកផ្គត់ផ្គង់:</span>
+                                        <span className="text-zinc-500 block mb-0.5 font-khmer">{tr('អ្នកផ្គត់ផ្គង់:')}</span>
                                         <span className="font-bold text-zinc-900 dark:text-white font-khmer">
-                                            {viewPurchaseModal.supplier?.name || 'ទូទៅ (Walk-in Cash)'}
+                                            {viewPurchaseModal.supplier?.name || tr('ទូទៅ (Walk-in Cash)')}
                                         </span>
                                         {viewPurchaseModal.supplier?.phone && (
                                             <span className="block font-mono text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -1316,7 +1317,7 @@ export default function PurchasesIndex({
                                     </div>
 
                                     <div>
-                                        <span className="text-zinc-500 block mb-0.5 font-khmer">កាលបរិច្ឆេទ & យោង:</span>
+                                        <span className="text-zinc-500 block mb-0.5 font-khmer">{tr('កាលបរិច្ឆេទ & យោង:')}</span>
                                         <span className="font-mono text-zinc-700 dark:text-zinc-300 block">
                                             Date: {formatDateOnly(viewPurchaseModal.purchase_date)}
                                         </span>
@@ -1333,10 +1334,10 @@ export default function PurchasesIndex({
                                     <table className="w-full text-left text-xs border-collapse">
                                         <thead>
                                             <tr className="bg-zinc-100 dark:bg-zinc-900/80 text-zinc-600 dark:text-zinc-400 font-mono text-[11px] uppercase border-b border-zinc-200 dark:border-zinc-800">
-                                                <th className="py-2.5 px-3">មុខទំនិញ (Item)</th>
-                                                <th className="py-2.5 px-3 text-center">ចំនួន (Qty)</th>
-                                                <th className="py-2.5 px-3 text-right">ថ្លៃឯកតា (Cost)</th>
-                                                <th className="py-2.5 px-3 text-right">សរុប (Total)</th>
+                                                <th className="py-2.5 px-3">{tr('មុខទំនិញ (Item)')}</th>
+                                                <th className="py-2.5 px-3 text-center">{tr('ចំនួន (Qty)')}</th>
+                                                <th className="py-2.5 px-3 text-right">{tr('ថ្លៃឯកតា (Cost)')}</th>
+                                                <th className="py-2.5 px-3 text-right">{tr('សរុប (Total)')}</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300">
@@ -1396,7 +1397,7 @@ export default function PurchasesIndex({
                                                 className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs gap-1 cursor-pointer"
                                             >
                                                 <CheckCircle2 className="w-3.5 h-3.5" />
-                                                <span>ដាក់ជា ទទួលបានរួច (Mark Received)</span>
+                                                <span>{tr('ដាក់ជា ទទួលបានរួច (Mark Received)')}</span>
                                             </Button>
                                         )}
                                         {viewPurchaseModal.status !== 'cancelled' && (
@@ -1412,7 +1413,7 @@ export default function PurchasesIndex({
                                                 className="border-rose-300 dark:border-rose-800/80 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-xs gap-1 cursor-pointer"
                                             >
                                                 <XCircle className="w-3.5 h-3.5" />
-                                                <span>លុបចោលប័ណ្ណ (Cancel Bill)</span>
+                                                <span>{tr('លុបចោលប័ណ្ណ (Cancel Bill)')}</span>
                                             </Button>
                                         )}
                                     </div>
@@ -1422,7 +1423,7 @@ export default function PurchasesIndex({
                                         onClick={() => setViewPurchaseModal(null)}
                                         className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs cursor-pointer"
                                     >
-                                        បិទ (Close)
+                                        {tr('បិទ (Close)')}
                                     </Button>
                                 </div>
                             </div>
@@ -1447,17 +1448,17 @@ export default function PurchasesIndex({
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
                                             {editingSupplier
-                                                ? 'កែប្រែព័ត៌មានអ្នកផ្គត់ផ្គង់'
-                                                : 'បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី'}
+                                                ? tr('កែប្រែព័ត៌មានអ្នកផ្គត់ផ្គង់')
+                                                : tr('បន្ថែមអ្នកផ្គត់ផ្គង់ថ្មី')}
                                         </h2>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
-                                            {editingSupplier ? 'កែអ្នកផ្គត់ផ្គង់' : 'អ្នកផ្គត់ផ្គង់ថ្មី'}
+                                            {editingSupplier ? tr('កែអ្នកផ្គត់ផ្គង់') : tr('អ្នកផ្គត់ផ្គង់ថ្មី')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
                                         {editingSupplier
                                             ? editingSupplier.name
-                                            : 'បង្កើត និងកត់ត្រាប្រវត្តិដៃគូផ្គត់ផ្គង់ទំនិញ គ្រឿងទេស និងគ្រឿងសមុទ្រសម្រាប់ស្តុក'}
+                                            : tr('បង្កើត និងកត់ត្រាប្រវត្តិដៃគូផ្គត់ផ្គង់ទំនិញ គ្រឿងទេស និងគ្រឿងសមុទ្រសម្រាប់ស្តុក')}
                                     </p>
                                 </div>
                             </div>
@@ -1465,10 +1466,10 @@ export default function PurchasesIndex({
                                 type="button"
                                 onClick={() => setSupplierModalOpen(false)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-teal-600 dark:text-teal-400" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -1481,17 +1482,17 @@ export default function PurchasesIndex({
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <Building2 className="w-4 h-4 text-teal-500" />
-                                            <span>ព័ត៌មានដេប៉ូ & អាជីវកម្មផ្គត់ផ្គង់ / Vendor Profile</span>
+                                            <span>{tr('ព័ត៌មានដេប៉ូ & អាជីវកម្មផ្គត់ផ្គង់ / Vendor Profile')}</span>
                                         </div>
 
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះដេប៉ូ / ក្រុមហ៊ុនផ្គត់ផ្គង់ (Supplier Name) <span className="text-rose-500">*</span>
+                                                {tr('ឈ្មោះដេប៉ូ / ក្រុមហ៊ុនផ្គត់ផ្គង់ (Supplier Name)')} <span className="text-rose-500">*</span>
                                             </label>
                                             <Input
                                                 value={supplierForm.data.name}
                                                 onChange={(e) => supplierForm.setData('name', e.target.value)}
-                                                placeholder="ឧ. ដេប៉ូលៀស & គ្រឿងសមុទ្រ កោះកុង"
+                                                placeholder={tr("ឧ. ដេប៉ូលៀស & គ្រឿងសមុទ្រ កោះកុង")}
                                                 className="h-10 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-sm font-semibold text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
                                                 required
                                             />
@@ -1500,15 +1501,15 @@ export default function PurchasesIndex({
                                         {/* Supply Categories Quick Suggestion */}
                                         <div>
                                             <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                                ប្រភេទមុខទំនិញផ្គត់ផ្គង់ចម្បង (Supply Category)
+                                                {tr('ប្រភេទមុខទំនិញផ្គត់ផ្គង់ចម្បង (Supply Category)')}
                                             </label>
                                             <div className="flex flex-wrap gap-1.5">
                                                 {[
-                                                    'លៀសហាលស្រស់ & គ្រឿងសមុទ្រ',
-                                                    'ភេសជ្ជៈ & ទឹកក្រូច',
-                                                    'សាច់គោ & សាច់មាន់',
-                                                    'បន្លែស្រស់ & គ្រឿងទេស',
-                                                    'សម្ភារវេចខ្ចប់ & ថង់',
+                                                    tr('លៀសហាលស្រស់ & គ្រឿងសមុទ្រ'),
+                                                    tr('ភេសជ្ជៈ & ទឹកក្រូច'),
+                                                    tr('សាច់គោ & សាច់មាន់'),
+                                                    tr('បន្លែស្រស់ & គ្រឿងទេស'),
+                                                    tr('សម្ភារវេចខ្ចប់ & ថង់'),
                                                 ].map((cat) => {
                                                     const isSelected = supplierForm.data.notes.includes(cat);
                                                     return (
@@ -1551,13 +1552,13 @@ export default function PurchasesIndex({
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <Users className="w-4 h-4 text-teal-500" />
-                                            <span>ព័ត៌មានទំនាក់ទំនង & ទីតាំង / Contact & Address</span>
+                                            <span>{tr('ព័ត៌មានទំនាក់ទំនង & ទីតាំង / Contact & Address')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    អ្នកទំនាក់ទំនង (Contact Person)
+                                                    {tr('អ្នកទំនាក់ទំនង (Contact Person)')}
                                                 </label>
                                                 <div className="relative">
                                                     <Input
@@ -1565,7 +1566,7 @@ export default function PurchasesIndex({
                                                         onChange={(e) =>
                                                             supplierForm.setData('contact_person', e.target.value)
                                                         }
-                                                        placeholder="ឧ. អ្នកស្រី ចាន់ណា"
+                                                        placeholder={tr("ឧ. អ្នកស្រី ចាន់ណា")}
                                                         className="h-9.5 pl-8.5 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
                                                     />
                                                     <Users className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1574,7 +1575,7 @@ export default function PurchasesIndex({
 
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    លេខទូរស័ព្ទ (Phone Number)
+                                                    {tr('លេខទូរស័ព្ទ (Phone Number)')}
                                                 </label>
                                                 <div className="relative">
                                                     <Input
@@ -1592,7 +1593,7 @@ export default function PurchasesIndex({
 
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                អាសយដ្ឋាន / ទីតាំងដេប៉ូ (Depot Address)
+                                                {tr('អាសយដ្ឋាន / ទីតាំងដេប៉ូ (Depot Address)')}
                                             </label>
                                             <div className="relative">
                                                 <Input
@@ -1600,7 +1601,7 @@ export default function PurchasesIndex({
                                                     onChange={(e) =>
                                                         supplierForm.setData('address', e.target.value)
                                                     }
-                                                    placeholder="ឧ. ផ្សារអូរឫស្សី, រាជធានីភ្នំពេញ..."
+                                                    placeholder={tr("ឧ. ផ្សារអូរឫស្សី, រាជធានីភ្នំពេញ...")}
                                                     className="h-9.5 pl-8.5 bg-zinc-50 dark:bg-zinc-950 border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl focus:border-teal-500"
                                                 />
                                                 <MapPin className="w-4 h-4 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1609,7 +1610,7 @@ export default function PurchasesIndex({
 
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                កំណត់សម្គាល់បន្ថែម (Notes & Delivery Schedule)
+                                                {tr('កំណត់សម្គាល់បន្ថែម (Notes & Delivery Schedule)')}
                                             </label>
                                             <textarea
                                                 value={supplierForm.data.notes}
@@ -1617,7 +1618,7 @@ export default function PurchasesIndex({
                                                     supplierForm.setData('notes', e.target.value)
                                                 }
                                                 rows={2}
-                                                placeholder="ឧ. ដឹកជញ្ជូនរៀងរាល់ព្រឹកម៉ោង ៦:០០, លក្ខខណ្ឌទូទាត់ប្រចាំសប្តាហ៍..."
+                                                placeholder={tr("ឧ. ដឹកជញ្ជូនរៀងរាល់ព្រឹកម៉ោង ៦:០០, លក្ខខណ្ឌទូទាត់ប្រចាំសប្តាហ៍...")}
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 text-xs text-zinc-900 dark:text-white rounded-xl p-2.5 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none font-khmer"
                                             />
                                         </div>
@@ -1635,10 +1636,10 @@ export default function PurchasesIndex({
                                             </div>
                                             <div>
                                                 <h4 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ស្ថានភាពដៃគូផ្គត់ផ្គង់ (Active Partner)
+                                                    {tr('ស្ថានភាពដៃគូផ្គត់ផ្គង់ (Active Partner)')}
                                                 </h4>
                                                 <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                    អនុញ្ញាតឱ្យជ្រើសរើសក្នុងបញ្ជីបញ្ជាទិញទំនិញចូលស្តុក (PO)
+                                                    {tr('អនុញ្ញាតឱ្យជ្រើសរើសក្នុងបញ្ជីបញ្ជាទិញទំនិញចូលស្តុក (PO)')}
                                                 </p>
                                             </div>
                                         </div>
@@ -1667,14 +1668,14 @@ export default function PurchasesIndex({
                                             <div className="flex items-center gap-2">
                                                 <Sparkles className="w-4 h-4 text-teal-500" />
                                                 <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
-                                                    ព័ត៌មានអ្នកផ្គត់ផ្គង់
+                                                    {tr('ព័ត៌មានអ្នកផ្គត់ផ្គង់')}
                                                 </span>
                                             </div>
                                             <Badge
                                                 variant={supplierForm.data.is_active ? 'emerald' : 'zinc'}
                                                 className="font-khmer text-[10px]"
                                             >
-                                                {supplierForm.data.is_active ? '● កំពុងសកម្ម' : '○ ផ្អាកដំណើរការ'}
+                                                {supplierForm.data.is_active ? tr('● កំពុងសកម្ម') : tr('○ ផ្អាកដំណើរការ')}
                                             </Badge>
                                         </div>
 
@@ -1688,25 +1689,25 @@ export default function PurchasesIndex({
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <h3 className="text-sm font-bold text-zinc-900 dark:text-white font-khmer truncate">
-                                                        {supplierForm.data.name || 'ឈ្មោះអ្នកផ្គត់ផ្គង់ / ដេប៉ូ'}
+                                                        {supplierForm.data.name || tr('ឈ្មោះអ្នកផ្គត់ផ្គង់ / ដេប៉ូ')}
                                                     </h3>
                                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer truncate">
                                                         {supplierForm.data.contact_person
-                                                            ? `តំណាង: ${supplierForm.data.contact_person}`
-                                                            : 'មិនទាន់មានអ្នកទំនាក់ទំនង'}
+                                                            ? `${tr('តំណាង:')} ${supplierForm.data.contact_person}`
+                                                            : tr('មិនទាន់មានអ្នកទំនាក់ទំនង')}
                                                     </p>
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60 text-xs">
                                                 <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                                                    <div className="text-[10px] text-zinc-400 font-khmer">លេខទូរស័ព្ទ</div>
+                                                    <div className="text-[10px] text-zinc-400 font-khmer">{tr('លេខទូរស័ព្ទ')}</div>
                                                     <div className="font-mono font-bold text-zinc-900 dark:text-white truncate">
                                                         {supplierForm.data.phone || '---'}
                                                     </div>
                                                 </div>
                                                 <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
-                                                    <div className="text-[10px] text-zinc-400 font-khmer">ទីតាំងដេប៉ូ</div>
+                                                    <div className="text-[10px] text-zinc-400 font-khmer">{tr('ទីតាំងដេប៉ូ')}</div>
                                                     <div className="text-zinc-900 dark:text-white font-khmer truncate text-[11px]">
                                                         {supplierForm.data.address || '---'}
                                                     </div>
@@ -1717,10 +1718,10 @@ export default function PurchasesIndex({
                                         {/* Supply Categories & Notes Breakdown */}
                                         <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800/80 space-y-2">
                                             <div className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 font-khmer">
-                                                ទំនិញផ្គត់ផ្គង់ & កំណត់សម្គាល់ (Supply & Terms):
+                                                {tr('ទំនិញផ្គត់ផ្គង់ & កំណត់សម្គាល់ (Supply & Terms):')}
                                             </div>
                                             <p className="text-xs text-zinc-600 dark:text-zinc-400 font-khmer leading-relaxed">
-                                                {supplierForm.data.notes || 'មិនទាន់មានកំណត់សម្គាល់បន្ថែម...'}
+                                                {supplierForm.data.notes || tr('មិនទាន់មានកំណត់សម្គាល់បន្ថែម...')}
                                             </p>
                                         </div>
 
@@ -1728,10 +1729,10 @@ export default function PurchasesIndex({
                                         <div className="p-3.5 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-800 dark:text-teal-300 space-y-1.5">
                                             <div className="font-bold flex items-center gap-1.5 font-khmer">
                                                 <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                                                <span>ការតភ្ជាប់ស្តុកស្វ័យប្រវត្តិ (Inventory Sync)</span>
+                                                <span>{tr('ការតភ្ជាប់ស្តុកស្វ័យប្រវត្តិ (Inventory Sync)')}</span>
                                             </div>
                                             <p className="text-[11px] text-teal-700/90 dark:text-teal-300/80 leading-relaxed font-khmer">
-                                                រាល់ពេលបង្កើតប័ណ្ណទិញចូលស្តុក (Purchase Orders) អ្នកអាចជ្រើសរើសដេប៉ូនេះដោយផ្ទាល់ដើម្បីកត់ត្រាតម្លៃដើមទំនិញ និងរបាយការណ៍សវនកម្ម។
+                                                {tr('រាល់ពេលបង្កើតប័ណ្ណទិញចូលស្តុក (Purchase Orders) អ្នកអាចជ្រើសរើសដេប៉ូនេះដោយផ្ទាល់ដើម្បីកត់ត្រាតម្លៃដើមទំនិញ និងរបាយការណ៍សវនកម្ម។')}
                                             </p>
                                         </div>
                                     </div>
@@ -1742,7 +1743,7 @@ export default function PurchasesIndex({
                             <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
                                 <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                                    <span>{editingSupplier ? 'កំពុងកែសម្រួលព័ត៌មានអ្នកផ្គត់ផ្គង់' : 'កំពុងបង្កើតអ្នកផ្គត់ផ្គង់ថ្មី'}</span>
+                                    <span>{editingSupplier ? tr('កំពុងកែសម្រួលព័ត៌មានអ្នកផ្គត់ផ្គង់') : tr('កំពុងបង្កើតអ្នកផ្គត់ផ្គង់ថ្មី')}</span>
                                 </div>
                                 <div className="flex items-center gap-2.5">
                                     <Button
@@ -1751,7 +1752,7 @@ export default function PurchasesIndex({
                                         onClick={() => setSupplierModalOpen(false)}
                                         className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                     >
-                                        បោះបង់ (Cancel)
+                                        {tr('បោះបង់ (Cancel)')}
                                     </Button>
                                     <Button
                                         type="submit"
@@ -1759,11 +1760,11 @@ export default function PurchasesIndex({
                                         className="bg-teal-600 hover:bg-teal-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-teal-600/20 cursor-pointer flex items-center gap-2"
                                     >
                                         {supplierForm.processing ? (
-                                            'កំពុងរក្សាទុក...'
+                                            tr('កំពុងរក្សាទុក...')
                                         ) : (
                                             <>
                                                 <Check className="w-4 h-4" />
-                                                <span>{editingSupplier ? 'កែប្រែអ្នកផ្គត់ផ្គង់' : 'រក្សាទុកអ្នកផ្គត់ផ្គង់'}</span>
+                                                <span>{editingSupplier ? tr('កែប្រែអ្នកផ្គត់ផ្គង់') : tr('រក្សាទុកអ្នកផ្គត់ផ្គង់')}</span>
                                             </>
                                         )}
                                     </Button>

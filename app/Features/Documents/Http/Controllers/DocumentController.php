@@ -196,14 +196,14 @@ class DocumentController extends Controller
             }
 
             return redirect()->route('invoices.show', $document->id)
-                ->with('success', "វិក្កយបត្រ {$document->document_number} ត្រូវបានទូទាត់ជោគជ័យ!")
+                ->with('success', __('វិក្កយបត្រ :document_number ត្រូវបានទូទាត់ជោគជ័យ!', ['document_number' => $document->document_number]))
                 ->with('print_jobs', $this->printJobs($document, withReceipt: true));
         } catch (DomainException $e) {
             if ($request->wantsJson()) {
-                return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
+                return response()->json(['success' => false, 'error' => __($e->getMessage())], 422);
             }
 
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', __($e->getMessage()));
         }
     }
 
@@ -233,14 +233,14 @@ class DocumentController extends Controller
             }
 
             return back()
-                ->with('success', "បានរក្សាទុកការកុម្ម៉ង់សម្រាប់ {$document->reference_identifier} រួចរាល់!")
+                ->with('success', __('បានរក្សាទុកការកុម្ម៉ង់សម្រាប់ :reference_identifier រួចរាល់!', ['reference_identifier' => $document->reference_identifier]))
                 ->with('print_jobs', $this->printJobs($document, withReceipt: false));
         } catch (DomainException $e) {
             if ($request->wantsJson()) {
-                return response()->json(['success' => false, 'error' => $e->getMessage()], 422);
+                return response()->json(['success' => false, 'error' => __($e->getMessage())], 422);
             }
 
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', __($e->getMessage()));
         }
     }
 
@@ -250,7 +250,7 @@ class DocumentController extends Controller
     public function cancelTable(Request $request, Document $invoice): RedirectResponse|JsonResponse
     {
         if ($invoice->status !== DocumentStatus::Draft) {
-            $msg = 'អាចលុបចោលបានតែការកុម្ម៉ង់ដែលមិនទាន់គិតលុយ (Draft) ប៉ុណ្ណោះ។';
+            $msg = __('អាចលុបចោលបានតែការកុម្ម៉ង់ដែលមិនទាន់គិតលុយ (Draft) ប៉ុណ្ណោះ។');
 
             return $request->wantsJson()
                 ? response()->json(['success' => false, 'error' => $msg], 422)
@@ -265,7 +265,7 @@ class DocumentController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return back()->with('success', "បានលុបការកុម្ម៉ង់ {$tableName} ដោយជោគជ័យ។");
+        return back()->with('success', __('បានលុបការកុម្ម៉ង់ :tableName ដោយជោគជ័យ។', ['tableName' => $tableName]));
     }
 
     /**
@@ -292,9 +292,9 @@ class DocumentController extends Controller
             $document = $this->createDraft->handle($validated, $request->user()->id);
 
             return redirect()->route('invoices.show', $document->id)
-                ->with('success', "បានរក្សាទុកការកម្មង់ #{$document->id} (តុ {$document->reference_identifier})។");
+                ->with('success', __('បានរក្សាទុកការកម្មង់ #:id (តុ :reference_identifier)។', ['id' => $document->id, 'reference_identifier' => $document->reference_identifier]));
         } catch (DomainException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', __($e->getMessage()));
         }
     }
 
@@ -332,10 +332,10 @@ class DocumentController extends Controller
         try {
             $this->voidDocument->handle($invoice->id, $validated['reason'], $request->user()->id);
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', __($e->getMessage()));
         }
 
-        return back()->with('success', "វិក្កយបត្រ {$invoice->document_number} ត្រូវបានលុបចោល (Void) រួចរាល់។");
+        return back()->with('success', __('វិក្កយបត្រ :document_number ត្រូវបានលុបចោល (Void) រួចរាល់។', ['document_number' => $invoice->document_number]));
     }
 
     /**
@@ -347,7 +347,7 @@ class DocumentController extends Controller
 
         // Cashier ownership scoping
         if (! $user->canViewInvoice($invoice)) {
-            abort(403, 'អ្នកមិនមានសិទ្ធិមើលវិក្កយបត្ររបស់បុគ្គលិកផ្សេងទេ។');
+            abort(403, __('អ្នកមិនមានសិទ្ធិមើលវិក្កយបត្ររបស់បុគ្គលិកផ្សេងទេ។'));
         }
 
         $invoice->load(['creator:id,name,username', 'period', 'items.product']);

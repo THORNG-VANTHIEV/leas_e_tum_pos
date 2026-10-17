@@ -22,6 +22,7 @@ import {
     FileCheck2,
     Database,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface ReviewDocument {
     id: number;
@@ -99,7 +100,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
     const lastDocNumber = documents.length > 0 ? `${period.document_prefix}-${period.code}-${String(lastSeq).padStart(4, '0')}` : '—';
 
     return (
-        <AppLayout title={`ត្រួតពិនិត្យ និងបិទបញ្ជី ${period.code}`}>
+        <AppLayout title={`${tr('ត្រួតពិនិត្យ និងបិទបញ្ជី')} ${period.code}`}>
             <div className="space-y-6">
                 {/* Header Toolbar */}
                 <div className="pb-3 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -110,20 +111,20 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-semibold font-khmer shadow-xs transition-all cursor-pointer"
                             >
                                 <ArrowLeft className="w-4 h-4 text-emerald-500" />
-                                <span>បញ្ជីការិយបរិច្ឆេទ</span>
+                                <span>{tr('បញ្ជីការិយបរិច្ឆេទ')}</span>
                             </button>
                         </Link>
                         <div>
                             <div className="flex items-center gap-2.5">
                                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white font-khmer">
-                                    ត្រួតពិនិត្យ និងបិទបញ្ជីគណនេយ្យ
+                                    {tr('ត្រួតពិនិត្យ និងបិទបញ្ជីគណនេយ្យ')}
                                 </h1>
                                 <Badge variant="amber" className="font-mono text-[10px] uppercase">
-                                    កំពុងពិនិត្យ (ឈប់លក់)
+                                    {tr('កំពុងពិនិត្យ (ឈប់លក់)')}
                                 </Badge>
                             </div>
                             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 font-khmer">
-                                ការិយបរិច្ឆេទ <span className="text-zinc-900 dark:text-white font-mono font-bold">{period.code}</span> ({period.name}) • ឯកសារព្រាងសរុប៖ {documents.length}
+                                {tr('ការិយបរិច្ឆេទ')} <span className="text-zinc-900 dark:text-white font-mono font-bold">{period.code}</span> ({period.name}{tr(') • ឯកសារព្រាងសរុប៖')} {documents.length}
                             </p>
                         </div>
                     </div>
@@ -138,7 +139,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold font-khmer shadow-sm hover:shadow-emerald-600/30 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <Lock className="w-4 h-4" />
-                        <span>បិទបញ្ជី និងបោះត្រាលេខរៀង ({documents.length} ឯកសារ)</span>
+                        <span>{tr('បិទបញ្ជី និងបោះត្រាលេខរៀង (')}{documents.length} {tr('ឯកសារ)')}</span>
                     </button>
                 </div>
 
@@ -148,10 +149,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                         <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
                         <div className="space-y-1">
                             <div className="font-bold text-sm font-khmer">
-                                មិនអាចបិទបញ្ជីបានទេ៖ មានឯកសារចំនួន {unverifiedDocs.length} មិនទាន់ផ្ទៀងផ្ទាត់សាច់ប្រាក់
+                                {tr('មិនអាចបិទបញ្ជីបានទេ៖ មានឯកសារចំនួន')} {unverifiedDocs.length} {tr('មិនទាន់ផ្ទៀងផ្ទាត់សាច់ប្រាក់')}
                             </div>
                             <p className="text-rose-300/90 font-khmer leading-relaxed">
-                                ការិយបរិច្ឆេទនេះតម្រូវឱ្យមានការផ្ទៀងផ្ទាត់ផ្ទៀងផ្ទាត់ចំនួនទឹកប្រាក់ប្រភពដើម (Source-Total Reconciliation) ជាមុនសិន។ រាល់ឯកសារព្រាងទាំងអស់ត្រូវតែមានទិន្នន័យផ្ទៀងផ្ទាត់ត្រឹមត្រូវ មុនពេលប្រព័ន្ធអាចបោះត្រាលេខរៀងវិក្កយបត្រផ្លូវការ។
+                                {tr('ការិយបរិច្ឆេទនេះតម្រូវឱ្យមានការផ្ទៀងផ្ទាត់ផ្ទៀងផ្ទាត់ចំនួនទឹកប្រាក់ប្រភពដើម (Source-Total Reconciliation) ជាមុនសិន។ រាល់ឯកសារព្រាងទាំងអស់ត្រូវតែមានទិន្នន័យផ្ទៀងផ្ទាត់ត្រឹមត្រូវ មុនពេលប្រព័ន្ធអាចបោះត្រាលេខរៀងវិក្កយបត្រផ្លូវការ។')}
                             </p>
                         </div>
                     </div>
@@ -163,10 +164,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                             </div>
                             <div>
                                 <span className="font-bold text-sm font-khmer block text-white">
-                                    ឯកសារព្រាងទាំង {documents.length} បានផ្ទៀងផ្ទាត់រួចរាល់ និងត្រៀមបោះត្រាលេខរៀងផ្លូវការ
+                                    {tr('ឯកសារព្រាងទាំង')} {documents.length} {tr('បានផ្ទៀងផ្ទាត់រួចរាល់ និងត្រៀមបោះត្រាលេខរៀងផ្លូវការ')}
                                 </span>
                                 <div className="text-[11px] text-emerald-300/80 font-mono mt-0.5">
-                                    គម្រោងលេខរៀង៖ {firstDocNumber} ដល់ {lastDocNumber}
+                                    {tr('គម្រោងលេខរៀង៖')} {firstDocNumber} {tr('ដល់')} {lastDocNumber}
                                 </div>
                             </div>
                         </div>
@@ -179,21 +180,21 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                         <table className="w-full text-left text-xs">
                             <thead className="bg-zinc-100 dark:bg-zinc-950/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 font-mono uppercase text-[10px]">
                                 <tr>
-                                    <th className="px-4 py-3 font-khmer">គម្រោងលេខផ្លូវការ</th>
-                                    <th className="px-4 py-3 font-khmer">លេខព្រាង (Draft)</th>
-                                    <th className="px-4 py-3 font-khmer">កាលបរិច្ឆេទ & ម៉ោង</th>
-                                    <th className="px-4 py-3 font-khmer">តុ / សម្គាល់</th>
-                                    <th className="px-4 py-3 font-khmer">ភ្ញៀវ</th>
-                                    <th className="px-4 py-3 font-khmer">សរុបចុងក្រោយ</th>
-                                    <th className="px-4 py-3 font-khmer">ការផ្ទៀងផ្ទាត់</th>
-                                    <th className="px-4 py-3 font-khmer">អ្នកបញ្ចូល</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('គម្រោងលេខផ្លូវការ')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('លេខព្រាង (Draft)')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('កាលបរិច្ឆេទ & ម៉ោង')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('តុ / សម្គាល់')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('ភ្ញៀវ')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('សរុបចុងក្រោយ')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('ការផ្ទៀងផ្ទាត់')}</th>
+                                    <th className="px-4 py-3 font-khmer">{tr('អ្នកបញ្ចូល')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800/60 font-mono text-[11px]">
                                 {documents.length === 0 ? (
                                     <tr>
                                         <td colSpan={8} className="py-12 text-center text-zinc-400 font-khmer">
-                                            មិនមានឯកសារព្រាងនៅក្នុងការិយបរិច្ឆេទនេះទេ
+                                            {tr('មិនមានឯកសារព្រាងនៅក្នុងការិយបរិច្ឆេទនេះទេ')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -223,9 +224,9 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     {doc.source_total_verified ? (
-                                                        <Badge variant="emerald" className="text-[10px]">ផ្ទៀងផ្ទាត់ $0.00</Badge>
+                                                        <Badge variant="emerald" className="text-[10px]">{tr('ផ្ទៀងផ្ទាត់ $0.00')}</Badge>
                                                     ) : (
-                                                        <Badge variant="rose" className="text-[10px]">មិនទាន់ផ្ទៀងផ្ទាត់</Badge>
+                                                        <Badge variant="rose" className="text-[10px]">{tr('មិនទាន់ផ្ទៀងផ្ទាត់')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400">
@@ -255,14 +256,14 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            បិទបញ្ជីគណនេយ្យ និងបោះត្រាលេខរៀងវិក្កយបត្រ
+                                            {tr('បិទបញ្ជីគណនេយ្យ និងបោះត្រាលេខរៀងវិក្កយបត្រ')}
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-mono">
                                             Period {period.code}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                        ប្រតិបត្តិការបិទបញ្ជីអចិន្ត្រៃយ៍ និងចេញលេខកូដវិក្កយបត្រជាប់គ្នាគ្មានចន្លោះ (Gapless Finalization)
+                                        {tr('ប្រតិបត្តិការបិទបញ្ជីអចិន្ត្រៃយ៍ និងចេញលេខកូដវិក្កយបត្រជាប់គ្នាគ្មានចន្លោះ (Gapless Finalization)')}
                                     </p>
                                 </div>
                             </div>
@@ -270,10 +271,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                 type="button"
                                 onClick={() => setConfirmModal(false)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-emerald-600 dark:text-emerald-400" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -286,21 +287,21 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <Database className="w-4 h-4 text-emerald-500" />
-                                            <span>ព័ត៌មានការិយបរិច្ឆេទគណនេយ្យ / Accounting Period Protocol</span>
+                                            <span>{tr('ព័ត៌មានការិយបរិច្ឆេទគណនេយ្យ / Accounting Period Protocol')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
                                             <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                                                <span className="text-[10px] text-zinc-400 font-khmer block">កូដការិយបរិច្ឆេទ</span>
+                                                <span className="text-[10px] text-zinc-400 font-khmer block">{tr('កូដការិយបរិច្ឆេទ')}</span>
                                                 <span className="font-bold text-zinc-900 dark:text-white text-sm">{period.code}</span>
                                             </div>
                                             <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                                                <span className="text-[10px] text-zinc-400 font-khmer block">បុព្វបទលេខវិក្កយបត្រ</span>
+                                                <span className="text-[10px] text-zinc-400 font-khmer block">{tr('បុព្វបទលេខវិក្កយបត្រ')}</span>
                                                 <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{period.document_prefix}</span>
                                             </div>
                                             <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-1">
-                                                <span className="text-[10px] text-zinc-400 font-khmer block">ចំនួនឯកសារព្រាង</span>
-                                                <span className="font-bold text-zinc-900 dark:text-white text-sm">{documents.length} ឯកសារ</span>
+                                                <span className="text-[10px] text-zinc-400 font-khmer block">{tr('ចំនួនឯកសារព្រាង')}</span>
+                                                <span className="font-bold text-zinc-900 dark:text-white text-sm">{documents.length} {tr('ឯកសារ')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -309,7 +310,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                            <span>ការធានាសុវត្ថិភាពតាមប្រព័ន្ធ Domain Engine</span>
+                                            <span>{tr('ការធានាសុវត្ថិភាពតាមប្រព័ន្ធ Domain Engine')}</span>
                                         </div>
 
                                         <div className="space-y-3 text-xs">
@@ -317,10 +318,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                                 <div className="space-y-0.5">
                                                     <span className="font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        បោះត្រាលេខវិក្កយបត្រជាប់គ្នាគ្មានចន្លោះ (Gapless Sequence)
+                                                        {tr('បោះត្រាលេខវិក្កយបត្រជាប់គ្នាគ្មានចន្លោះ (Gapless Sequence)')}
                                                     </span>
                                                     <p className="text-zinc-500 dark:text-zinc-400 font-khmer text-[11px] leading-relaxed">
-                                                        ប្រព័ន្ធនឹងបោះត្រាលេខរៀងវិក្កយបត្រផ្លូវការពី {firstDocNumber} រហូតដល់ {lastDocNumber} ដោយគ្មានការរំលងលេខណាមួយឡើយ។
+                                                        {tr('ប្រព័ន្ធនឹងបោះត្រាលេខរៀងវិក្កយបត្រផ្លូវការពី')} {firstDocNumber} {tr('រហូតដល់')} {lastDocNumber} {tr('ដោយគ្មានការរំលងលេខណាមួយឡើយ។')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -329,10 +330,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                                 <div className="space-y-0.5">
                                                     <span className="font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        ប្រតិបត្តិការចាក់សោទិន្នន័យ MySQL Row-Lock Transaction
+                                                        {tr('ប្រតិបត្តិការចាក់សោទិន្នន័យ MySQL Row-Lock Transaction')}
                                                     </span>
                                                     <p className="text-zinc-500 dark:text-zinc-400 font-khmer text-[11px] leading-relaxed">
-                                                        គ្រប់ឯកសារទាំងអស់ត្រូវគណនាឡើងវិញដោយស្វ័យប្រវត្តិតាមរយៈ Domain Engine ដើម្បីធានាភាពសុក្រឹត 100% នៃទិន្នន័យគណនេយ្យ។
+                                                        {tr('គ្រប់ឯកសារទាំងអស់ត្រូវគណនាឡើងវិញដោយស្វ័យប្រវត្តិតាមរយៈ Domain Engine ដើម្បីធានាភាពសុក្រឹត 100% នៃទិន្នន័យគណនេយ្យ។')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -341,10 +342,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                                 <div className="space-y-0.5">
                                                     <span className="font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        ចាក់សោការកែប្រែជាអចិន្ត្រៃយ៍ (Immutable Record Freezing)
+                                                        {tr('ចាក់សោការកែប្រែជាអចិន្ត្រៃយ៍ (Immutable Record Freezing)')}
                                                     </span>
                                                     <p className="text-zinc-500 dark:text-zinc-400 font-khmer text-[11px] leading-relaxed">
-                                                        ក្រោយការបិទបញ្ជី ការកែប្រែ ឬលុបឯកសារទាំងនេះត្រូវបានហាមឃាត់ដាច់ខាត លុះត្រាតែមានការអនុញ្ញាតពិសេសពីអ្នកគ្រប់គ្រង (Admin Exception Approval)។
+                                                        {tr('ក្រោយការបិទបញ្ជី ការកែប្រែ ឬលុបឯកសារទាំងនេះត្រូវបានហាមឃាត់ដាច់ខាត លុះត្រាតែមានការអនុញ្ញាតពិសេសពីអ្នកគ្រប់គ្រង (Admin Exception Approval)។')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -362,10 +363,10 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                             />
                                             <div className="space-y-0.5">
                                                 <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ខ្ញុំបានផ្ទៀងផ្ទាត់ និងយល់ព្រមបិទបញ្ជីជាផ្លូវការ
+                                                    {tr('ខ្ញុំបានផ្ទៀងផ្ទាត់ និងយល់ព្រមបិទបញ្ជីជាផ្លូវការ')}
                                                 </span>
                                                 <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer leading-relaxed">
-                                                    ខ្ញុំយល់ថាប្រតិបត្តិការនេះមិនអាចត្រឡប់ក្រោយវិញបានទេ ហើយរាល់ឯកសារព្រាងទាំងអស់នឹងត្រូវចាក់សោជាអចិន្ត្រៃយ៍។
+                                                    {tr('ខ្ញុំយល់ថាប្រតិបត្តិការនេះមិនអាចត្រឡប់ក្រោយវិញបានទេ ហើយរាល់ឯកសារព្រាងទាំងអស់នឹងត្រូវចាក់សោជាអចិន្ត្រៃយ៍។')}
                                                 </p>
                                             </div>
                                         </label>
@@ -386,48 +387,48 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        សង្ខេបការបិទបញ្ជី
+                                                        {tr('សង្ខេបការបិទបញ្ជី')}
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         PERIOD-{period.code}
                                                     </h4>
                                                 </div>
                                                 <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs">
-                                                    រួចរាល់
+                                                    {tr('រួចរាល់')}
                                                 </span>
                                             </div>
 
                                             {/* Batch Metrics Grid */}
                                             <div className="space-y-3 text-xs font-mono">
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">ការិយបរិច្ឆេទ៖</span>
+                                                    <span className="font-khmer">{tr('ការិយបរិច្ឆេទ៖')}</span>
                                                     <span className="text-white font-bold">{period.name}</span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">ជួរលេខវិក្កយបត្រ៖</span>
+                                                    <span className="font-khmer">{tr('ជួរលេខវិក្កយបត្រ៖')}</span>
                                                     <span className="text-emerald-400 font-semibold">
                                                         {firstSeq} → {lastSeq}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">លេខចាប់ផ្ដើម៖</span>
+                                                    <span className="font-khmer">{tr('លេខចាប់ផ្ដើម៖')}</span>
                                                     <span className="text-white font-bold">{firstDocNumber}</span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">លេខបញ្ចប់៖</span>
+                                                    <span className="font-khmer">{tr('លេខបញ្ចប់៖')}</span>
                                                     <span className="text-white font-bold">{lastDocNumber}</span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">ចំនួនភ្ញៀវសរុប៖</span>
-                                                    <span className="text-teal-400 font-bold">{totalGuests} នាក់</span>
+                                                    <span className="font-khmer">{tr('ចំនួនភ្ញៀវសរុប៖')}</span>
+                                                    <span className="text-teal-400 font-bold">{totalGuests} {tr('នាក់')}</span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">ចំណូលសរុបក្នុងបញ្ជី៖</span>
+                                                    <span className="font-khmer">{tr('ចំណូលសរុបក្នុងបញ្ជី៖')}</span>
                                                     <span className="text-emerald-400 font-bold text-sm">
                                                         {business.currency_symbol}
                                                         {totalAmount.toLocaleString()}
@@ -438,7 +439,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                             {/* Sample Stamping Preview */}
                                             <div className="rounded-xl bg-zinc-950/70 border border-zinc-800 p-3 space-y-2">
                                                 <span className="text-[11px] font-semibold text-zinc-400 font-khmer block">
-                                                    គំរូឯកសារបោះត្រាដំបូង (First 3 Documents)៖
+                                                    {tr('គំរូឯកសារបោះត្រាដំបូង (First 3 Documents)៖')}
                                                 </span>
                                                 <div className="space-y-1.5 text-[11px] font-mono">
                                                     {documents.slice(0, 3).map((doc, idx) => (
@@ -454,7 +455,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                                     ))}
                                                     {documents.length > 3 && (
                                                         <div className="text-[10px] text-zinc-500 italic pt-1 text-center font-khmer">
-                                                            ... និង {documents.length - 3} ឯកសារផ្សេងទៀត
+                                                            {tr('... និង')} {documents.length - 3} {tr('ឯកសារផ្សេងទៀត')}
                                                         </div>
                                                     )}
                                                 </div>
@@ -476,7 +477,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                     <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                         Esc
                                     </kbd>
-                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                    <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                                 </div>
 
                                 <div className="flex items-center gap-3 ml-auto">
@@ -485,7 +486,7 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                         onClick={() => setConfirmModal(false)}
                                         className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
 
                                     <button
@@ -496,8 +497,8 @@ export default function PeriodReview({ period, documents }: PeriodReviewProps) {
                                         <Lock className="w-4 h-4" />
                                         <span>
                                             {finalizeForm.processing
-                                                ? 'កំពុងបោះត្រាលេខរៀង...'
-                                                : 'បញ្ជាក់ការបិទបញ្ជី និងបោះត្រាលេខរៀង (Confirm & Stamp Sequence)'}
+                                                ? tr('កំពុងបោះត្រាលេខរៀង...')
+                                                : tr('បញ្ជាក់ការបិទបញ្ជី និងបោះត្រាលេខរៀង (Confirm & Stamp Sequence)')}
                                         </span>
                                     </button>
                                 </div>

@@ -147,7 +147,7 @@ class DocumentPrintController extends Controller
             );
         }
 
-        return back()->with('success', 'បានកត់ត្រាការព្រីន។');
+        return back()->with('success', __('បានកត់ត្រាការព្រីន។'));
     }
 
     /**
@@ -228,6 +228,6 @@ class DocumentPrintController extends Controller
             ]);
         }
 
-        return back()->with('success', "បានកត់ត្រាការព្រីនវិក្កយបត្រ {$documents->count()} សន្លឹក។");
+        return back()->with('success', __('បានកត់ត្រាការព្រីនវិក្កយបត្រ :count សន្លឹក។', ['count' => $documents->count()]));
     }
 }

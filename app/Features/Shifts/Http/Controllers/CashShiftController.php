@@ -56,7 +56,7 @@ class CashShiftController extends Controller
         $user = $request->user();
 
         if (CashShift::open()->where('user_id', $user->id)->exists()) {
-            return back()->with('error', 'អ្នកមានវេនកំពុងបើករួចហើយ។');
+            return back()->with('error', __('អ្នកមានវេនកំពុងបើករួចហើយ។'));
         }
 
         $shift = CashShift::create([
@@ -67,7 +67,7 @@ class CashShiftController extends Controller
 
         $this->audit->record('shift.opened', $shift, null, ['opening_float_usd' => $shift->opening_float_usd], null, $user->id, 'Opened cash drawer shift');
 
-        return back()->with('success', "បានបើកវេន ជាមួយលុយដើម \${$shift->opening_float_usd}");
+        return back()->with('success', __('បានបើកវេន ជាមួយលុយដើម $:opening_float_usd', ['opening_float_usd' => $shift->opening_float_usd]));
     }
 
     public function close(Request $request): RedirectResponse
@@ -81,7 +81,7 @@ class CashShiftController extends Controller
         $shift = CashShift::open()->where('user_id', $user->id)->first();
 
         if (! $shift) {
-            return back()->with('error', 'មិនមានវេនកំពុងបើកទេ។');
+            return back()->with('error', __('មិនមានវេនកំពុងបើកទេ។'));
         }
 
         $closedAt = now();
@@ -120,11 +120,11 @@ class CashShiftController extends Controller
 
         $variance = Money::fromCents($varianceCents);
         $result = match (true) {
-            $varianceCents === 0 => 'ត្រូវគ្នា',
-            $varianceCents < 0 => 'ខ្វះ $'.ltrim($variance, '-'),
-            default => "លើស \${$variance}",
+            $varianceCents === 0 => __('ត្រូវគ្នា'),
+            $varianceCents < 0 => __('ខ្វះ $').ltrim($variance, '-'),
+            default => __('លើស $:variance', ['variance' => $variance]),
         };
 
-        return back()->with('success', "បានបិទវេន៖ លុយគួរមាន \${$summary['expected_cash_usd']}, រាប់បាន \$".Money::fromCents($countedTotalCents)." — {$result}");
+        return back()->with('success', __('បានបិទវេន៖ លុយគួរមាន $:expected_cash_usd, រាប់បាន $', ['expected_cash_usd' => $summary['expected_cash_usd']]).Money::fromCents($countedTotalCents)." — {$result}");
     }
 }

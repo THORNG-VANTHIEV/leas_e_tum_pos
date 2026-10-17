@@ -142,7 +142,7 @@ class PurchaseController extends Controller
             "Recorded purchase order {$purchase->purchase_number} totaling \${$purchase->total_amount}"
         );
 
-        return back()->with('success', "បានកត់ត្រាការទិញចូល #{$purchase->purchase_number} ដោយជោគជ័យ");
+        return back()->with('success', __('បានកត់ត្រាការទិញចូល #:purchase_number ដោយជោគជ័យ', ['purchase_number' => $purchase->purchase_number]));
     }
 
     /**
@@ -151,7 +151,7 @@ class PurchaseController extends Controller
     public function update(Request $request, Purchase $purchase): RedirectResponse
     {
         if ($purchase->period?->status === PeriodStatus::Closed) {
-            return back()->with('error', 'មិនអាចកែការទិញចូលក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។');
+            return back()->with('error', __('មិនអាចកែការទិញចូលក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។'));
         }
 
         $validated = $request->validate($this->purchaseRules());
@@ -185,7 +185,7 @@ class PurchaseController extends Controller
             "Edited purchase order {$purchase->purchase_number} (now \${$purchase->total_amount})"
         );
 
-        return back()->with('success', "បានកែប្រែការទិញចូល #{$purchase->purchase_number} ដោយជោគជ័យ");
+        return back()->with('success', __('បានកែប្រែការទិញចូល #:purchase_number ដោយជោគជ័យ', ['purchase_number' => $purchase->purchase_number]));
     }
 
     /**
@@ -273,7 +273,7 @@ class PurchaseController extends Controller
             "Changed purchase {$purchase->purchase_number} status from {$oldStatus} to {$purchase->status}"
         );
 
-        return back()->with('success', "បានផ្លាស់ប្ដូរស្ថានភាពការទិញចូល #{$purchase->purchase_number} ទៅជា '{$purchase->status}'");
+        return back()->with('success', __('បានផ្លាស់ប្ដូរស្ថានភាពការទិញចូល #:purchase_number ទៅជា \':status\'', ['purchase_number' => $purchase->purchase_number, 'status' => $purchase->status]));
     }
 
     /**
@@ -306,7 +306,7 @@ class PurchaseController extends Controller
             "Created supplier '{$supplier->name}'"
         );
 
-        return back()->with('success', "បានបន្ថែមអ្នកផ្គត់ផ្គង់ '{$supplier->name}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានបន្ថែមអ្នកផ្គត់ផ្គង់ \':name\' ដោយជោគជ័យ', ['name' => $supplier->name]));
     }
 
     /**
@@ -340,7 +340,7 @@ class PurchaseController extends Controller
             "Updated supplier '{$supplier->name}'"
         );
 
-        return back()->with('success', "បានកែប្រែអ្នកផ្គត់ផ្គង់ '{$supplier->name}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានកែប្រែអ្នកផ្គត់ផ្គង់ \':name\' ដោយជោគជ័យ', ['name' => $supplier->name]));
     }
 
     /**
@@ -353,8 +353,8 @@ class PurchaseController extends Controller
             'is_active' => ! $oldState,
         ]);
 
-        $statusLabel = $supplier->is_active ? 'បើកដំណើរការ' : 'ផ្អាកដំណើរការ';
+        $statusLabel = $supplier->is_active ? __('បើកដំណើរការ') : __('ផ្អាកដំណើរការ');
 
-        return back()->with('success', "បាន{$statusLabel}អ្នកផ្គត់ផ្គង់ '{$supplier->name}'");
+        return back()->with('success', __('បាន:statusLabelអ្នកផ្គត់ផ្គង់ \':name\'', ['statusLabel' => $statusLabel, 'name' => $supplier->name]));
     }
 }

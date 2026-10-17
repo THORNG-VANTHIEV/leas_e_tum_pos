@@ -30,7 +30,7 @@ final class CreateDraftDocument
             $period = Period::findOrFail($data['period_id']);
 
             if ($period->status !== PeriodStatus::Active) {
-                throw new DomainException('អាចបង្កើតការកម្មង់បានតែក្នុងវគ្គដែលកំពុងបើកប៉ុណ្ណោះ។');
+                throw new DomainException(__('អាចបង្កើតការកម្មង់បានតែក្នុងវគ្គដែលកំពុងបើកប៉ុណ្ណោះ។'));
             }
 
             $entryPolicy = $period->entry_settings_snapshot ?? [];
@@ -39,7 +39,7 @@ final class CreateDraftDocument
             // 1. Authoritative Server-Side Product Resolution & Snapshots
             $rawItems = $data['items'] ?? [];
             if (empty($rawItems)) {
-                throw new DomainException('វិក្កយបត្រត្រូវមានមុខទំនិញយ៉ាងហោចណាស់មួយ។');
+                throw new DomainException(__('វិក្កយបត្រត្រូវមានមុខទំនិញយ៉ាងហោចណាស់មួយ។'));
             }
 
             $productIds = array_column($rawItems, 'product_id');
@@ -57,12 +57,12 @@ final class CreateDraftDocument
                 $product = $products->get($productId);
 
                 if (! $product) {
-                    throw new DomainException("មុខទំនិញ #{$productId} ត្រូវបានបិទ ឬមិនមានក្នុងប្រព័ន្ធ។");
+                    throw new DomainException(__('មុខទំនិញ #:productId ត្រូវបានបិទ ឬមិនមានក្នុងប្រព័ន្ធ។', ['productId' => $productId]));
                 }
 
                 $quantity = (int) $rawItem['quantity'];
                 if ($quantity < 1 || $quantity > 9999) {
-                    throw new DomainException('ចំនួនត្រូវនៅចន្លោះ 1 ដល់ 9999។');
+                    throw new DomainException(__('ចំនួនត្រូវនៅចន្លោះ 1 ដល់ 9999។'));
                 }
 
                 // Authoritative master price
@@ -112,7 +112,7 @@ final class CreateDraftDocument
             if ($requireSource) {
                 if (! $calc['source_total_verified'] || $calc['variance'] !== '0.00') {
                     throw new DomainException(
-                        "សរុបតាមក្រដាសមិនត្រូវនឹងប្រព័ន្ធ (ខុសគ្នា {$calc['variance']})។ ត្រូវតែស្មើគ្នាពិតប្រាកដ។"
+                        __('សរុបតាមក្រដាសមិនត្រូវនឹងប្រព័ន្ធ (ខុសគ្នា :variance)។ ត្រូវតែស្មើគ្នាពិតប្រាកដ។', ['variance' => $calc['variance']])
                     );
                 }
             }

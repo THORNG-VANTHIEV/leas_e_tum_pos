@@ -80,14 +80,14 @@ class CustomerController extends Controller
             'is_active' => true,
         ]);
 
-        return back()->with('success', "បានចុះឈ្មោះអតិថិជនថ្មី: {$validated['name']}");
+        return back()->with('success', __('បានចុះឈ្មោះអតិថិជនថ្មី: :name', ['name' => $validated['name']]));
     }
 
     public function update(Request $request, Customer $customer): RedirectResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:120',
-            'phone' => 'nullable|string|max:30|unique:customers,phone,' . $customer->id,
+            'phone' => 'nullable|string|max:30|unique:customers,phone,'.$customer->id,
             'email' => 'nullable|email|max:120',
             'address' => 'nullable|string|max:255',
             'tier' => 'required|in:standard,silver,gold,vip',
@@ -96,7 +96,7 @@ class CustomerController extends Controller
 
         $customer->update($validated);
 
-        return back()->with('success', "បានកែប្រែទិន្នន័យអតិថិជន: {$customer->name}");
+        return back()->with('success', __('បានកែប្រែទិន្នន័យអតិថិជន: :name', ['name' => $customer->name]));
     }
 
     public function adjustPoints(Request $request, Customer $customer): RedirectResponse
@@ -109,15 +109,16 @@ class CustomerController extends Controller
         $newPoints = max(0, $customer->loyalty_points + $validated['points']);
         $customer->update(['loyalty_points' => $newPoints]);
 
-        return back()->with('success', "បានកែប្រែពិន្ទុសន្សំ: {$newPoints} pts");
+        return back()->with('success', __('បានកែប្រែពិន្ទុសន្សំ: :newPoints pts', ['newPoints' => $newPoints]));
     }
 
     public function toggle(Customer $customer): RedirectResponse
     {
         $customer->update(['is_active' => ! $customer->is_active]);
 
-        $status = $customer->is_active ? 'សកម្ម' : 'អសកម្ម';
-        return back()->with('success', "ស្ថានភាពអតិថិជនត្រូវបានប្ដូរទៅជា {$status}");
+        $status = $customer->is_active ? __('សកម្ម') : __('អសកម្ម');
+
+        return back()->with('success', __('ស្ថានភាពអតិថិជនត្រូវបានប្ដូរទៅជា :status', ['status' => $status]));
     }
 
     public function lookup(Request $request): JsonResponse

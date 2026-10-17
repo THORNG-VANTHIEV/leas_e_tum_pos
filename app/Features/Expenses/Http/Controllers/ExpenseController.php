@@ -121,13 +121,13 @@ class ExpenseController extends Controller
             'created_by' => $request->user()->id,
         ]);
 
-        return back()->with('success', "បានកត់ត្រាចំណាយថ្មី: {$validated['title']} (\${$validated['amount_usd']})");
+        return back()->with('success', __('បានកត់ត្រាចំណាយថ្មី: :title ($:amount_usd)', ['title' => $validated['title'], 'amount_usd' => $validated['amount_usd']]));
     }
 
     public function update(Request $request, Expense $expense): RedirectResponse
     {
         if ($this->isInClosedPeriod($expense)) {
-            return back()->with('error', 'មិនអាចកែចំណាយក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។');
+            return back()->with('error', __('មិនអាចកែចំណាយក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។'));
         }
 
         $validated = $request->validate($this->expenseRules());
@@ -146,13 +146,13 @@ class ExpenseController extends Controller
             "Updated expense #{$expense->id}: {$expense->title}"
         );
 
-        return back()->with('success', "បានកែប្រែចំណាយ: {$expense->title}");
+        return back()->with('success', __('បានកែប្រែចំណាយ: :title', ['title' => $expense->title]));
     }
 
     public function destroy(Request $request, Expense $expense): RedirectResponse
     {
         if ($this->isInClosedPeriod($expense)) {
-            return back()->with('error', 'មិនអាចលុបចំណាយក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។');
+            return back()->with('error', __('មិនអាចលុបចំណាយក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។'));
         }
 
         $snapshot = $expense->only(['category', 'title', 'amount_usd', 'amount_khr', 'payment_method', 'paid_to', 'expense_date']);
@@ -170,7 +170,7 @@ class ExpenseController extends Controller
 
         $expense->delete();
 
-        return back()->with('success', "បានលុបចំណាយ: {$title}");
+        return back()->with('success', __('បានលុបចំណាយ: :title', ['title' => $title]));
     }
 
     /**
@@ -228,7 +228,7 @@ class ExpenseController extends Controller
 
         $activePeriod = Period::where('status', 'active')->first();
         if (! $activePeriod) {
-            return back()->with('error', 'មិនមានវេនលក់ (Period) កំពុងដំណើរការទេ');
+            return back()->with('error', __('មិនមានវេនលក់ (Period) កំពុងដំណើរការទេ'));
         }
 
         $settings = BusinessSetting::current();
@@ -244,7 +244,7 @@ class ExpenseController extends Controller
             'reason' => $validated['reason'] ?? null,
         ]);
 
-        return back()->with('success', 'បានកត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡាបានជោគជ័យ');
+        return back()->with('success', __('បានកត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡាបានជោគជ័យ'));
     }
 
     public function exportCsv(Request $request): StreamedResponse

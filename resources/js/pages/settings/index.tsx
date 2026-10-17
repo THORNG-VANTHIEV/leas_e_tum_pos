@@ -41,6 +41,7 @@ import {
     Pencil,
 } from 'lucide-react';
 import { InvoiceDesigner } from './components/invoice-designer';
+import { tr } from '@/locales/tr';
 
 interface SettingsPageProps {
     settings: {
@@ -95,42 +96,42 @@ const ROLE_CONFIG: Record<
     }
 > = {
     cashier: {
-        nameKh: 'បេឡាករ (Cashier)',
+        nameKh: tr('បេឡាករ (Cashier)'),
         color: 'text-amber-500',
         badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
         gradient: 'from-amber-900/60 via-zinc-900 to-zinc-950',
-        description: 'ដំណើរការបញ្ជាទិញ បោះពុម្ពវិក្កយបត្រ និងទូទាត់ប្រាក់ក្នុងវេន',
+        description: tr('ដំណើរការបញ្ជាទិញ បោះពុម្ពវិក្កយបត្រ និងទូទាត់ប្រាក់ក្នុងវេន'),
         permissions: [
-            'កត់ត្រាការលក់ & បោះពុម្ពវិក្កយបត្រ POS',
-            'បើក / បិទវេន និងកត់ត្រាប្រាក់ក្នុងថតបេឡា',
-            'ស្កេន KHQR & ទទួលសាច់ប្រាក់',
-            'មើលមុខម្ហូប & បញ្ជីតម្លៃបច្ចុប្បន្ន',
+            tr('កត់ត្រាការលក់ & បោះពុម្ពវិក្កយបត្រ POS'),
+            tr('បើក / បិទវេន និងកត់ត្រាប្រាក់ក្នុងថតបេឡា'),
+            tr('ស្កេន KHQR & ទទួលសាច់ប្រាក់'),
+            tr('មើលមុខម្ហូប & បញ្ជីតម្លៃបច្ចុប្បន្ន'),
         ],
     },
     supervisor: {
-        nameKh: 'ប្រធានផ្នែក (Supervisor)',
+        nameKh: tr('ប្រធានផ្នែក (Supervisor)'),
         color: 'text-sky-500',
         badge: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
         gradient: 'from-sky-950 via-zinc-900 to-zinc-950',
-        description: 'ត្រួតពិនិត្យការលក់ អនុម័តការបញ្ចុះតម្លៃ និងគ្រប់គ្រងតុ',
+        description: tr('ត្រួតពិនិត្យការលក់ អនុម័តការបញ្ចុះតម្លៃ និងគ្រប់គ្រងតុ'),
         permissions: [
-            'សិទ្ធិទាំងអស់របស់ Cashier',
-            'អនុម័តការបញ្ចុះតម្លៃ & Void / លុបមុខម្ហូប',
-            'ផ្ទេរតុ បញ្ចូលតុ និងបំបែកវិក្កយបត្រ',
-            'មើលរបាយការណ៍លក់ប្រចាំថ្ងៃ & បិទវេន',
+            tr('សិទ្ធិទាំងអស់របស់ Cashier'),
+            tr('អនុម័តការបញ្ចុះតម្លៃ & Void / លុបមុខម្ហូប'),
+            tr('ផ្ទេរតុ បញ្ចូលតុ និងបំបែកវិក្កយបត្រ'),
+            tr('មើលរបាយការណ៍លក់ប្រចាំថ្ងៃ & បិទវេន'),
         ],
     },
     admin: {
-        nameKh: 'អ្នកគ្រប់គ្រងប្រព័ន្ធ (Administrator)',
+        nameKh: tr('អ្នកគ្រប់គ្រងប្រព័ន្ធ (Administrator)'),
         color: 'text-purple-500',
         badge: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
         gradient: 'from-purple-950 via-zinc-900 to-zinc-950',
-        description: 'សិទ្ធិពេញលេញលើគ្រប់ផ្នែកនៃប្រព័ន្ធ POS និងការកំណត់',
+        description: tr('សិទ្ធិពេញលេញលើគ្រប់ផ្នែកនៃប្រព័ន្ធ POS និងការកំណត់'),
         permissions: [
-            'សិទ្ធិគ្រប់គ្រងពេញលេញ (Full System Access)',
-            'បង្កើត & កែប្រែមុខម្ហូប និងស្តុកទំនិញ',
-            'បង្កើតគណនីបុគ្គលិក & កំណត់សិទ្ធិ',
-            'គ្រប់គ្រងវគ្គគណនេយ្យ & Backup / Restore',
+            tr('សិទ្ធិគ្រប់គ្រងពេញលេញ (Full System Access)'),
+            tr('បង្កើត & កែប្រែមុខម្ហូប និងស្តុកទំនិញ'),
+            tr('បង្កើតគណនីបុគ្គលិក & កំណត់សិទ្ធិ'),
+            tr('គ្រប់គ្រងវគ្គគណនេយ្យ & Backup / Restore'),
         ],
     },
 };
@@ -411,7 +412,7 @@ export default function SettingsIndex({
     }, [showUserModal, showLocModal, archiveTarget, showRestoreConfirm, mounted]);
 
     return (
-        <AppLayout title="ការកំណត់">
+        <AppLayout title={tr("ការកំណត់")}>
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Tabs Controls */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -420,10 +421,10 @@ export default function SettingsIndex({
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
                                 <Sliders className="w-6 h-6 text-emerald-400" />
-                                <span>ការកំណត់ប្រព័ន្ធ</span>
+                                <span>{tr('ការកំណត់ប្រព័ន្ធ')}</span>
                             </h1>
                             <p className="text-xs text-zinc-400 mt-1">
-                                ព័ត៌មានហាង ការកំណត់ការលក់ វិក្កយបត្រ បុគ្គលិក Audit និង Backup។
+                                {tr('ព័ត៌មានហាង ការកំណត់ការលក់ វិក្កយបត្រ បុគ្គលិក Audit និង Backup។')}
                             </p>
                         </div>
                     </div>
@@ -432,13 +433,13 @@ export default function SettingsIndex({
                     <div className="relative overflow-hidden">
                         <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
                             {[
-                                { id: 'business', label: 'ព័ត៌មានហាង', icon: Store },
-                                { id: 'entry', label: 'ការកំណត់ការលក់', icon: Sliders },
-                                { id: 'invoice', label: 'រចនាវិក្កយបត្រ & ព្រីន', icon: Printer },
-                                { id: 'locations', label: `សាខា (${locations.length})`, icon: MapPin },
-                                { id: 'users', label: `បុគ្គលិក (${users.length})`, icon: Users },
+                                { id: 'business', label: tr('ព័ត៌មានហាង'), icon: Store },
+                                { id: 'entry', label: tr('ការកំណត់ការលក់'), icon: Sliders },
+                                { id: 'invoice', label: tr('រចនាវិក្កយបត្រ & ព្រីន'), icon: Printer },
+                                { id: 'locations', label: `${tr('សាខា')} (${locations.length})`, icon: MapPin },
+                                { id: 'users', label: `${tr('បុគ្គលិក')} (${users.length})`, icon: Users },
                                 { id: 'audits', label: `Audit (${audits.length})`, icon: Shield },
-                                { id: 'backup', label: 'Backup & ស្ដារ', icon: Database },
+                                { id: 'backup', label: tr('Backup & ស្ដារ'), icon: Database },
                             ].map((tab) => {
                                 const Icon = tab.icon;
                                 const isActive = activeTab === tab.id;
@@ -466,9 +467,9 @@ export default function SettingsIndex({
                 {activeTab === 'business' && (
                     <Card className="p-6 max-w-3xl space-y-5">
                         <div>
-                            <h2 className="text-base font-bold text-white">ព័ត៌មានហាង & ក្បាលវិក្កយបត្រ</h2>
+                            <h2 className="text-base font-bold text-white">{tr('ព័ត៌មានហាង & ក្បាលវិក្កយបត្រ')}</h2>
                             <p className="text-xs text-zinc-400">
-                                បង្ហាញលើវិក្កយបត្រ 80mm និង A5។
+                                {tr('បង្ហាញលើវិក្កយបត្រ 80mm និង A5។')}
                             </p>
                         </div>
 
@@ -476,7 +477,7 @@ export default function SettingsIndex({
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Input
                                     id="business_name_primary"
-                                    label="Primary Business Name (Khmer) / ឈ្មោះអាជីវកម្ម (ភាសាខ្មែរ)"
+                                    label={tr("Primary Business Name (Khmer) / ឈ្មោះអាជីវកម្ម (ភាសាខ្មែរ)")}
                                     value={businessForm.data.business_name_primary}
                                     onChange={(e) =>
                                         businessForm.setData('business_name_primary', e.target.value)
@@ -485,7 +486,7 @@ export default function SettingsIndex({
                                 />
                                 <Input
                                     id="business_name_secondary"
-                                    label="Secondary Business Name (English) / ឈ្មោះអាជីវកម្ម (English)"
+                                    label={tr("Secondary Business Name (English) / ឈ្មោះអាជីវកម្ម (English)")}
                                     value={businessForm.data.business_name_secondary}
                                     onChange={(e) =>
                                         businessForm.setData('business_name_secondary', e.target.value)
@@ -497,14 +498,14 @@ export default function SettingsIndex({
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Input
                                     id="phone"
-                                    label="លេខទូរស័ព្ទ"
+                                    label={tr("លេខទូរស័ព្ទ")}
                                     value={businessForm.data.phone}
                                     onChange={(e) => businessForm.setData('phone', e.target.value)}
                                     error={businessForm.errors.phone}
                                 />
                                 <Input
                                     id="tax_identifier"
-                                    label="លេខអត្តសញ្ញាណកម្មសារពើពន្ធ (VAT TIN)"
+                                    label={tr("លេខអត្តសញ្ញាណកម្មសារពើពន្ធ (VAT TIN)")}
                                     value={businessForm.data.tax_identifier}
                                     onChange={(e) =>
                                         businessForm.setData('tax_identifier', e.target.value)
@@ -516,7 +517,7 @@ export default function SettingsIndex({
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <Input
                                     id="currency_code"
-                                    label="កូដរូបិយប័ណ្ណ"
+                                    label={tr("កូដរូបិយប័ណ្ណ")}
                                     value={businessForm.data.currency_code}
                                     onChange={(e) =>
                                         businessForm.setData('currency_code', e.target.value)
@@ -525,7 +526,7 @@ export default function SettingsIndex({
                                 />
                                 <Input
                                     id="currency_symbol"
-                                    label="និមិត្តសញ្ញារូបិយប័ណ្ណ"
+                                    label={tr("និមិត្តសញ្ញារូបិយប័ណ្ណ")}
                                     value={businessForm.data.currency_symbol}
                                     onChange={(e) =>
                                         businessForm.setData('currency_symbol', e.target.value)
@@ -534,7 +535,7 @@ export default function SettingsIndex({
                                 />
                                 <Input
                                     id="timezone"
-                                    label="តំបន់ម៉ោង"
+                                    label={tr("តំបន់ម៉ោង")}
                                     value={businessForm.data.timezone}
                                     onChange={(e) => businessForm.setData('timezone', e.target.value)}
                                     error={businessForm.errors.timezone}
@@ -543,7 +544,7 @@ export default function SettingsIndex({
 
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-medium text-zinc-400">
-                                    អាសយដ្ឋាន
+                                    {tr('អាសយដ្ឋាន')}
                                 </label>
                                 <textarea
                                     value={businessForm.data.address_primary}
@@ -557,7 +558,7 @@ export default function SettingsIndex({
 
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-medium text-zinc-400">
-                                    ឃ្លាខាងក្រោមវិក្កយបត្រ
+                                    {tr('ឃ្លាខាងក្រោមវិក្កយបត្រ')}
                                 </label>
                                 <input
                                     type="text"
@@ -572,7 +573,7 @@ export default function SettingsIndex({
                             <div className="flex justify-end pt-2">
                                 <Button type="submit" disabled={businessForm.processing}>
                                     <Save className="w-4 h-4" />
-                                    <span>រក្សាទុកព័ត៌មានហាង</span>
+                                    <span>{tr('រក្សាទុកព័ត៌មានហាង')}</span>
                                 </Button>
                             </div>
                         </form>
@@ -584,10 +585,10 @@ export default function SettingsIndex({
                     <Card className="p-6 max-w-2xl space-y-6">
                         <div>
                             <h2 className="text-base font-bold text-white">
-                                ការកំណត់ការលក់
+                                {tr('ការកំណត់ការលក់')}
                             </h2>
                             <p className="text-xs text-zinc-400">
-                                កំណត់ថាតើត្រូវផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាសកម្មង់ មុនរក្សាទុក ឬអត់។
+                                {tr('កំណត់ថាតើត្រូវផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាសកម្មង់ មុនរក្សាទុក ឬអត់។')}
                             </p>
                         </div>
 
@@ -599,10 +600,10 @@ export default function SettingsIndex({
                                         htmlFor="require_source_total"
                                         className="text-sm font-semibold text-zinc-200 cursor-pointer block"
                                     >
-                                        តម្រូវឱ្យផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាស
+                                        {tr('តម្រូវឱ្យផ្ទៀងផ្ទាត់សរុបជាមួយក្រដាស')}
                                     </label>
                                     <p className="text-xs text-zinc-400">
-                                        ពេលបើក អ្នកគិតប្រាក់ត្រូវបញ្ចូលសរុបពីក្រដាសកម្មង់។ បើមិនស្មើនឹងសរុបរបស់ប្រព័ន្ធ មិនអាចរក្សាទុក ឬបិទបញ្ជីបានទេ។
+                                        {tr('ពេលបើក អ្នកគិតប្រាក់ត្រូវបញ្ចូលសរុបពីក្រដាសកម្មង់។ បើមិនស្មើនឹងសរុបរបស់ប្រព័ន្ធ មិនអាចរក្សាទុក ឬបិទបញ្ជីបានទេ។')}
                                     </p>
                                 </div>
                                 <Switch
@@ -623,10 +624,10 @@ export default function SettingsIndex({
                                         htmlFor="show_event_time"
                                         className="text-sm font-semibold text-zinc-200 cursor-pointer block"
                                     >
-                                        កត់ត្រាម៉ោងលក់
+                                        {tr('កត់ត្រាម៉ោងលក់')}
                                     </label>
                                     <p className="text-xs text-zinc-400">
-                                        បង្ហាញប្រអប់ជ្រើសម៉ោងពេលបញ្ចូលការលក់ ដើម្បីតម្រៀបវិក្កយបត្រតាមពេលវេលា។
+                                        {tr('បង្ហាញប្រអប់ជ្រើសម៉ោងពេលបញ្ចូលការលក់ ដើម្បីតម្រៀបវិក្កយបត្រតាមពេលវេលា។')}
                                     </p>
                                 </div>
                                 <Switch
@@ -643,7 +644,7 @@ export default function SettingsIndex({
                             <div className="flex justify-end pt-2">
                                 <Button type="submit" disabled={entryForm.processing}>
                                     <Save className="w-4 h-4" />
-                                    <span>រក្សាទុកការកំណត់</span>
+                                    <span>{tr('រក្សាទុកការកំណត់')}</span>
                                 </Button>
                             </div>
                         </form>
@@ -660,14 +661,14 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-white">សាខា</h2>
+                                <h2 className="text-base font-bold text-white">{tr('សាខា')}</h2>
                                 <p className="text-xs text-zinc-400">
-                                    សាខា ឬបន្ទប់បរិភោគរបស់ហាង។ បុគ្គលិកដែលមិនមែន Admin ឃើញតែសាខាដែលបានកំណត់ឱ្យ។
+                                    {tr('សាខា ឬបន្ទប់បរិភោគរបស់ហាង។ បុគ្គលិកដែលមិនមែន Admin ឃើញតែសាខាដែលបានកំណត់ឱ្យ។')}
                                 </p>
                             </div>
                             <Button size="sm" onClick={openNewLocation}>
                                 <Plus className="w-4 h-4" />
-                                <span>បន្ថែមសាខា</span>
+                                <span>{tr('បន្ថែមសាខា')}</span>
                             </Button>
                         </div>
 
@@ -681,7 +682,7 @@ export default function SettingsIndex({
                                                     {loc.code}
                                                 </span>
                                                 <Badge variant={loc.is_active ? 'emerald' : 'zinc'}>
-                                                    {loc.is_active ? 'កំពុងប្រើ' : 'បិទ'}
+                                                    {loc.is_active ? tr('កំពុងប្រើ') : tr('បិទ')}
                                                 </Badge>
                                             </div>
                                             <h3 className="text-sm font-bold text-white mt-1">
@@ -697,7 +698,7 @@ export default function SettingsIndex({
                                             size="sm"
                                             variant="ghost"
                                             onClick={() => openEditLocation(loc)}
-                                            title="កែប្រែសាខា (Edit)"
+                                            title={tr("កែប្រែសាខា (Edit)")}
                                             className="h-8 w-8 p-0 text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10"
                                         >
                                             <Pencil className="w-3.5 h-3.5" />
@@ -726,14 +727,14 @@ export default function SettingsIndex({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    {editingLocId ? 'កែប្រែសាខាហាង' : 'បង្កើតសាខាហាងថ្មី'}
+                                                    {editingLocId ? tr('កែប្រែសាខាហាង') : tr('បង្កើតសាខាហាងថ្មី')}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase">
-                                                    សាខា
+                                                    {tr('សាខា')}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                កំណត់ទីតាំងសាខា កូដសម្គាល់ និងអាសយដ្ឋានសម្រាប់បែងចែកប្រតិបត្តិការ POS និងបុគ្គលិក
+                                                {tr('កំណត់ទីតាំងសាខា កូដសម្គាល់ និងអាសយដ្ឋានសម្រាប់បែងចែកប្រតិបត្តិការ POS និងបុគ្គលិក')}
                                             </p>
                                         </div>
                                     </div>
@@ -745,10 +746,10 @@ export default function SettingsIndex({
                                             locForm.reset();
                                         }}
                                         className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm group"
-                                        title="ត្រឡប់ក្រោយ (Esc)"
+                                        title={tr("ត្រឡប់ក្រោយ (Esc)")}
                                     >
                                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
-                                        <span>ត្រឡប់ក្រោយ</span>
+                                        <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                         <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
                                             (Esc)
                                         </span>
@@ -766,18 +767,18 @@ export default function SettingsIndex({
                                                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                         <Store className="w-4 h-4 text-amber-500" />
                                                         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-zinc-200 font-khmer">
-                                                            អត្តសញ្ញាណសាខា & កូដសម្គាល់ / Branch Identity
+                                                            {tr('អត្តសញ្ញាណសាខា & កូដសម្គាល់ / Branch Identity')}
                                                         </h3>
                                                     </div>
 
                                                     <div>
                                                         <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                            កូដសម្គាល់សាខា (Location Code) <span className="text-rose-500">*</span>
+                                                            {tr('កូដសម្គាល់សាខា (Location Code)')} <span className="text-rose-500">*</span>
                                                         </label>
                                                         <input
                                                             type="text"
                                                             required
-                                                            placeholder="ឧ. LOC-02"
+                                                            placeholder={tr("ឧ. LOC-02")}
                                                             value={locForm.data.code}
                                                             onChange={(e) => locForm.setData('code', e.target.value)}
                                                             className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold uppercase text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
@@ -786,7 +787,7 @@ export default function SettingsIndex({
                                                             <p className="text-[11px] text-rose-500 mt-1 font-khmer">{locForm.errors.code}</p>
                                                         )}
                                                         <div className="flex items-center gap-1.5 mt-2">
-                                                            <span className="text-[11px] text-slate-400 font-khmer">កូដគំរូ:</span>
+                                                            <span className="text-[11px] text-slate-400 font-khmer">{tr('កូដគំរូ:')}</span>
                                                             {['LOC-02', 'LOC-03', 'BRANCH-BTK', 'BRANCH-TTP'].map((sample) => (
                                                                 <button
                                                                     key={sample}
@@ -803,12 +804,12 @@ export default function SettingsIndex({
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                         <div>
                                                             <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                                ឈ្មោះសាខាជាភាសាអង់គ្លេស (English) <span className="text-rose-500">*</span>
+                                                                {tr('ឈ្មោះសាខាជាភាសាអង់គ្លេស (English)')} <span className="text-rose-500">*</span>
                                                             </label>
                                                             <input
                                                                 type="text"
                                                                 required
-                                                                placeholder="ឧ. សាខាមាត់ទន្លេ"
+                                                                placeholder={tr("ឧ. សាខាមាត់ទន្លេ")}
                                                                 value={locForm.data.name_primary}
                                                                 onChange={(e) => locForm.setData('name_primary', e.target.value)}
                                                                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all"
@@ -819,11 +820,11 @@ export default function SettingsIndex({
                                                         </div>
                                                         <div>
                                                             <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                                ឈ្មោះសាខាជាភាសាខ្មែរ (Khmer)
+                                                                {tr('ឈ្មោះសាខាជាភាសាខ្មែរ (Khmer)')}
                                                             </label>
                                                             <input
                                                                 type="text"
-                                                                placeholder="ឧ. សាខាមាត់ទន្លេ"
+                                                                placeholder={tr("ឧ. សាខាមាត់ទន្លេ")}
                                                                 value={locForm.data.name_secondary}
                                                                 onChange={(e) => locForm.setData('name_secondary', e.target.value)}
                                                                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-khmer transition-all"
@@ -837,18 +838,18 @@ export default function SettingsIndex({
                                                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                         <MapPin className="w-4 h-4 text-amber-500" />
                                                         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-zinc-200 font-khmer">
-                                                            អាសយដ្ឋាន & ទីតាំងប្រតិបត្តិការ / Location Address
+                                                            {tr('អាសយដ្ឋាន & ទីតាំងប្រតិបត្តិការ / Location Address')}
                                                         </h3>
                                                     </div>
 
                                                     <div>
                                                         <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                            អាសយដ្ឋានជាក់ស្ដែង (Physical Address)
+                                                            {tr('អាសយដ្ឋានជាក់ស្ដែង (Physical Address)')}
                                                         </label>
                                                         <div className="relative">
                                                             <input
                                                                 type="text"
-                                                                placeholder="ឧ. ផ្លូវព្រះស៊ីសុវត្ថិ សង្កាត់ជ័យជំនះ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ..."
+                                                                placeholder={tr("ឧ. ផ្លូវព្រះស៊ីសុវត្ថិ សង្កាត់ជ័យជំនះ ខណ្ឌដូនពេញ រាជធានីភ្នំពេញ...")}
                                                                 value={locForm.data.address}
                                                                 onChange={(e) => locForm.setData('address', e.target.value)}
                                                                 className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-khmer transition-all"
@@ -860,13 +861,13 @@ export default function SettingsIndex({
                                                     {/* Quick Presets */}
                                                     <div>
                                                         <label className="block text-[11px] font-semibold text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                                            គំរូទីតាំងពេញនិយម (Quick Presets)
+                                                            {tr('គំរូទីតាំងពេញនិយម (Quick Presets)')}
                                                         </label>
                                                         <div className="flex flex-wrap gap-2">
                                                             {[
-                                                                { code: 'LOC-TK', en: 'Toul Kork Branch', kh: 'សាខាទួលគោក', addr: 'ផ្លូវ ៣១៥ សង្កាត់បឹងកក់១ ខណ្ឌទួលគោក ភ្នំពេញ' },
-                                                                { code: 'LOC-BKK', en: 'Boeung Keng Kang Branch', kh: 'សាខាបឹងកេងកង', addr: 'ផ្លូវ ៥១ កែងផ្លូវ ៣០២ បឹងកេងកង១ ភ្នំពេញ' },
-                                                                { code: 'LOC-RIV', en: 'Riverside Waterfront', kh: 'សាខាមាត់ទន្លេ', addr: 'ផ្លូវព្រះស៊ីសុវត្ថិ ដូនពេញ ភ្នំពេញ' },
+                                                                { code: 'LOC-TK', en: 'Toul Kork Branch', kh: tr('សាខាទួលគោក'), addr: tr('ផ្លូវ ៣១៥ សង្កាត់បឹងកក់១ ខណ្ឌទួលគោក ភ្នំពេញ') },
+                                                                { code: 'LOC-BKK', en: 'Boeung Keng Kang Branch', kh: tr('សាខាបឹងកេងកង'), addr: tr('ផ្លូវ ៥១ កែងផ្លូវ ៣០២ បឹងកេងកង១ ភ្នំពេញ') },
+                                                                { code: 'LOC-RIV', en: 'Riverside Waterfront', kh: tr('សាខាមាត់ទន្លេ'), addr: tr('ផ្លូវព្រះស៊ីសុវត្ថិ ដូនពេញ ភ្នំពេញ') },
                                                             ].map((preset) => (
                                                                 <button
                                                                     key={preset.code}
@@ -893,10 +894,10 @@ export default function SettingsIndex({
                                                     <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                                                     <div className="space-y-1">
                                                         <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 font-khmer">
-                                                            ប្រព័ន្ធបែងចែកទិន្នន័យសាខាដាច់ដោយឡែក (Branch Partitioning)
+                                                            {tr('ប្រព័ន្ធបែងចែកទិន្នន័យសាខាដាច់ដោយឡែក (Branch Partitioning)')}
                                                         </h4>
                                                         <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80 font-khmer leading-relaxed">
-                                                            សាខានីមួយៗនឹងមានវេនគិតលុយ (Cash Shifts) ថតលុយ និងរបាយការណ៍លក់ដាច់ដោយឡែក ប៉ុន្តែទិន្នន័យបញ្ជីមុខម្ហូប និងអតិថិជនសមាជិក (Loyalty) នឹងត្រូវបានចែករំលែករួមគ្នាក្នុងប្រព័ន្ធកណ្តាល។
+                                                            {tr('សាខានីមួយៗនឹងមានវេនគិតលុយ (Cash Shifts) ថតលុយ និងរបាយការណ៍លក់ដាច់ដោយឡែក ប៉ុន្តែទិន្នន័យបញ្ជីមុខម្ហូប និងអតិថិជនសមាជិក (Loyalty) នឹងត្រូវបានចែករំលែករួមគ្នាក្នុងប្រព័ន្ធកណ្តាល។')}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -909,7 +910,7 @@ export default function SettingsIndex({
                                                         <div className="flex items-center gap-2">
                                                             <Sparkles className="w-4 h-4 text-amber-500" />
                                                             <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-300 font-mono">
-                                                                ព័ត៌មានសាខា
+                                                                {tr('ព័ត៌មានសាខា')}
                                                             </span>
                                                         </div>
                                                         <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
@@ -930,7 +931,7 @@ export default function SettingsIndex({
 
                                                         <div>
                                                             <h3 className="text-base font-bold text-slate-900 dark:text-white font-khmer">
-                                                                {locForm.data.name_secondary || locForm.data.name_primary || 'ឈ្មោះសាខាហាង'}
+                                                                {locForm.data.name_secondary || locForm.data.name_primary || tr('ឈ្មោះសាខាហាង')}
                                                             </h3>
                                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-mono">
                                                                 {locForm.data.name_primary || 'Branch English Name'}
@@ -939,10 +940,10 @@ export default function SettingsIndex({
 
                                                         <div className="p-3 rounded-xl bg-white/70 dark:bg-zinc-950/70 border border-slate-200/60 dark:border-zinc-800/60 text-xs space-y-1 font-khmer">
                                                             <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                                                                អាសយដ្ឋានសាខា:
+                                                                {tr('អាសយដ្ឋានសាខា:')}
                                                             </div>
                                                             <p className="text-slate-700 dark:text-zinc-300 text-[11px] leading-relaxed">
-                                                                {locForm.data.address || 'មិនទាន់បានកំណត់អាសយដ្ឋានជាក់ស្តែង...'}
+                                                                {locForm.data.address || tr('មិនទាន់បានកំណត់អាសយដ្ឋានជាក់ស្តែង...')}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -950,16 +951,16 @@ export default function SettingsIndex({
                                                     {/* Terminal Readiness Specs */}
                                                     <div className="space-y-2 text-xs">
                                                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
-                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">បុគ្គលិកដំបូង (Staff Assignment)</span>
-                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">0 នាក់</span>
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">{tr('បុគ្គលិកដំបូង (Staff Assignment)')}</span>
+                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">{tr('0 នាក់')}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
-                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">ម៉ាស៊ីន POS & ថតលុយ</span>
-                                                            <span className="font-khmer font-bold text-emerald-600 dark:text-emerald-400">ស្វ័យប្រវត្ត (Auto-linked)</span>
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">{tr('ម៉ាស៊ីន POS & ថតលុយ')}</span>
+                                                            <span className="font-khmer font-bold text-emerald-600 dark:text-emerald-400">{tr('ស្វ័យប្រវត្ត (Auto-linked)')}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
-                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">រូបិយប័ណ្ណប្រតិបត្តិការ</span>
-                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">USD ($) + KHR (៛)</span>
+                                                            <span className="text-slate-500 dark:text-zinc-400 font-khmer">{tr('រូបិយប័ណ្ណប្រតិបត្តិការ')}</span>
+                                                            <span className="font-mono font-bold text-slate-900 dark:text-white">{tr('USD ($) + KHR (៛)')}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -977,12 +978,12 @@ export default function SettingsIndex({
                                                     onChange={(e) => locForm.setData('is_active', e.target.checked)}
                                                     className="w-4 h-4 accent-emerald-500"
                                                 />
-                                                <span>សាខាកំពុងដំណើរការ (Active)</span>
+                                                <span>{tr('សាខាកំពុងដំណើរការ (Active)')}</span>
                                             </label>
                                         ) : (
                                             <div className="text-xs text-slate-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
                                                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                                <span>កំពុងរៀបចំបង្កើតសាខាហាងថ្មីក្នុងប្រព័ន្ធ</span>
+                                                <span>{tr('កំពុងរៀបចំបង្កើតសាខាហាងថ្មីក្នុងប្រព័ន្ធ')}</span>
                                             </div>
                                         )}
                                         <div className="flex items-center gap-3">
@@ -994,7 +995,7 @@ export default function SettingsIndex({
                                                 }}
                                                 className="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 font-khmer transition-all cursor-pointer"
                                             >
-                                                បោះបង់ (Cancel)
+                                                {tr('បោះបង់ (Cancel)')}
                                             </button>
                                             <button
                                                 type="submit"
@@ -1002,11 +1003,11 @@ export default function SettingsIndex({
                                                 className="px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
                                             >
                                                 {locForm.processing ? (
-                                                    'កំពុងរក្សាទុក...'
+                                                    tr('កំពុងរក្សាទុក...')
                                                 ) : (
                                                     <>
                                                         <Check className="w-4 h-4" />
-                                                        <span>{editingLocId ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតសាខាហាង'}</span>
+                                                        <span>{editingLocId ? tr('រក្សាទុកការកែប្រែ') : tr('បង្កើតសាខាហាង')}</span>
                                                     </>
                                                 )}
                                             </button>
@@ -1024,14 +1025,14 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-base font-bold text-white">បុគ្គលិក & សិទ្ធិ</h2>
+                                <h2 className="text-base font-bold text-white">{tr('បុគ្គលិក & សិទ្ធិ')}</h2>
                                 <p className="text-xs text-zinc-400">
-                                    សិទ្ធិតាមតួនាទី (Admin, Supervisor, Cashier)។ អ្នកមិនអាចបិទគណនីខ្លួនឯង ឬ Admin ចុងក្រោយបានទេ។
+                                    {tr('សិទ្ធិតាមតួនាទី (Admin, Supervisor, Cashier)។ អ្នកមិនអាចបិទគណនីខ្លួនឯង ឬ Admin ចុងក្រោយបានទេ។')}
                                 </p>
                             </div>
                             <Button size="sm" onClick={openNewUser}>
                                 <Plus className="w-4 h-4" />
-                                <span>បង្កើតគណនីបុគ្គលិក</span>
+                                <span>{tr('បង្កើតគណនីបុគ្គលិក')}</span>
                             </Button>
                         </div>
 
@@ -1041,12 +1042,12 @@ export default function SettingsIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[10px]">
                                         <tr>
-                                            <th className="px-4 py-3">ឈ្មោះ</th>
-                                            <th className="px-4 py-3">ឈ្មោះអ្នកប្រើ</th>
-                                            <th className="px-4 py-3">តួនាទី</th>
-                                            <th className="px-4 py-3">ស្ថានភាព</th>
-                                            <th className="px-4 py-3">សាខា</th>
-                                            <th className="px-4 py-3 text-right">សកម្មភាព</th>
+                                            <th className="px-4 py-3">{tr('ឈ្មោះ')}</th>
+                                            <th className="px-4 py-3">{tr('ឈ្មោះអ្នកប្រើ')}</th>
+                                            <th className="px-4 py-3">{tr('តួនាទី')}</th>
+                                            <th className="px-4 py-3">{tr('ស្ថានភាព')}</th>
+                                            <th className="px-4 py-3">{tr('សាខា')}</th>
+                                            <th className="px-4 py-3 text-right">{tr('សកម្មភាព')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -1060,7 +1061,7 @@ export default function SettingsIndex({
                                                             <span>{u.name}</span>
                                                             {isSelf && (
                                                                 <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                                                                    អ្នក
+                                                                    {tr('អ្នក')}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -1083,11 +1084,11 @@ export default function SettingsIndex({
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         {isArchived ? (
-                                                            <Badge variant="rose">ប័ណ្ណសារ</Badge>
+                                                            <Badge variant="rose">{tr('ប័ណ្ណសារ')}</Badge>
                                                         ) : u.is_active ? (
-                                                            <Badge variant="emerald">សកម្ម</Badge>
+                                                            <Badge variant="emerald">{tr('សកម្ម')}</Badge>
                                                         ) : (
-                                                            <Badge variant="zinc">បិទ</Badge>
+                                                            <Badge variant="zinc">{tr('បិទ')}</Badge>
                                                         )}
                                                     </td>
                                                     <td className="px-4 py-3 text-zinc-400 font-mono text-[11px]">
@@ -1101,7 +1102,7 @@ export default function SettingsIndex({
                                                                 onClick={() => restoreUser(u.id)}
                                                             >
                                                                 <RotateCcw className="w-3.5 h-3.5" />
-                                                                <span>ស្ដារ</span>
+                                                                <span>{tr('ស្ដារ')}</span>
                                                             </Button>
                                                         ) : (
                                                             <>
@@ -1112,7 +1113,7 @@ export default function SettingsIndex({
                                                                 className="text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10"
                                                             >
                                                                 <Pencil className="w-3.5 h-3.5" />
-                                                                <span>កែ</span>
+                                                                <span>{tr('កែ')}</span>
                                                             </Button>
                                                             {!isSelf && (
                                                                 <Button
@@ -1122,7 +1123,7 @@ export default function SettingsIndex({
                                                                     className="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10"
                                                                 >
                                                                     <Archive className="w-3.5 h-3.5" />
-                                                                    <span>ដាក់ប័ណ្ណសារ</span>
+                                                                    <span>{tr('ដាក់ប័ណ្ណសារ')}</span>
                                                                 </Button>
                                                             )}
                                                             </>
@@ -1151,14 +1152,14 @@ export default function SettingsIndex({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    {editingUserId ? 'កែប្រែគណនីបុគ្គលិក' : 'បង្កើតគណនីបុគ្គលិកថ្មី'}
+                                                    {editingUserId ? tr('កែប្រែគណនីបុគ្គលិក') : tr('បង្កើតគណនីបុគ្គលិកថ្មី')}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                                                    កត់ត្រាក្នុង Audit
+                                                    {tr('កត់ត្រាក្នុង Audit')}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                Create Staff Member & Access Role — លៀសហាល អ៉ីទុម POS
+                                                {tr('Create Staff Member & Access Role — លៀសហាល អ៉ីទុម POS')}
                                             </p>
                                         </div>
                                     </div>
@@ -1172,7 +1173,7 @@ export default function SettingsIndex({
                                         className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm"
                                     >
                                         <ArrowLeft className="w-4 h-4" />
-                                        <span>ត្រឡប់ក្រោយ</span>
+                                        <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                         <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
                                             (Esc)
                                         </span>
@@ -1190,19 +1191,19 @@ export default function SettingsIndex({
                                                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                         <Users className="w-4 h-4 text-amber-500" />
                                                         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                            ព័ត៌មានអត្តសញ្ញាណបុគ្គលិក (Staff Identity)
+                                                            {tr('ព័ត៌មានអត្តសញ្ញាណបុគ្គលិក (Staff Identity)')}
                                                         </h3>
                                                     </div>
 
                                                     <div className="space-y-4">
                                                         <div>
                                                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                                ឈ្មោះពេញ (Full Name) *
+                                                                {tr('ឈ្មោះពេញ (Full Name) *')}
                                                             </label>
                                                             <input
                                                                 type="text"
                                                                 required
-                                                                placeholder="ឧ. សុខ ចិន្តា ឬ Sok Chenda"
+                                                                placeholder={tr("ឧ. សុខ ចិន្តា ឬ Sok Chenda")}
                                                                 value={userForm.data.name}
                                                                 onChange={(e) => userForm.setData('name', e.target.value)}
                                                                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-sm text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all font-khmer"
@@ -1215,12 +1216,12 @@ export default function SettingsIndex({
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                             <div>
                                                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                                    ឈ្មោះគណនីចូលប្រព័ន្ធ (Username) *
+                                                                    {tr('ឈ្មោះគណនីចូលប្រព័ន្ធ (Username) *')}
                                                                 </label>
                                                                 <input
                                                                     type="text"
                                                                     required
-                                                                    placeholder="ឧ. chenda.s"
+                                                                    placeholder={tr("ឧ. chenda.s")}
                                                                     value={userForm.data.username}
                                                                     onChange={(e) =>
                                                                         userForm.setData('username', e.target.value.toLowerCase().trim())
@@ -1234,13 +1235,13 @@ export default function SettingsIndex({
 
                                                             <div>
                                                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                                    {editingUserId ? 'ពាក្យសម្ងាត់ថ្មី (ទុកទទេ បើមិនប្តូរ)' : 'ពាក្យសម្ងាត់ដំបូង (Initial Password) *'}
+                                                                    {editingUserId ? tr('ពាក្យសម្ងាត់ថ្មី (ទុកទទេ បើមិនប្តូរ)') : tr('ពាក្យសម្ងាត់ដំបូង (Initial Password) *')}
                                                                 </label>
                                                                 <div className="relative">
                                                                     <input
                                                                         type={showPassword ? 'text' : 'password'}
                                                                         required={!editingUserId}
-                                                                        placeholder="យ៉ាងតិច ៦ តួអក្សរ"
+                                                                        placeholder={tr("យ៉ាងតិច ៦ តួអក្សរ")}
                                                                         value={userForm.data.password}
                                                                         onChange={(e) =>
                                                                             userForm.setData('password', e.target.value)
@@ -1269,11 +1270,11 @@ export default function SettingsIndex({
                                                         <div className="flex items-center gap-2">
                                                             <Shield className="w-4 h-4 text-amber-500" />
                                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                                ជ្រើសរើសតួនាទី និងសិទ្ធិអនុញ្ញាត (Role & Permissions) *
+                                                                {tr('ជ្រើសរើសតួនាទី និងសិទ្ធិអនុញ្ញាត (Role & Permissions) *')}
                                                             </h3>
                                                         </div>
                                                         <span className="text-xs text-slate-400 dark:text-zinc-500 font-khmer hidden sm:inline">
-                                                            ចុចលើកាតដើម្បីជ្រើសរើស
+                                                            {tr('ចុចលើកាតដើម្បីជ្រើសរើស')}
                                                         </span>
                                                     </div>
 
@@ -1319,12 +1320,12 @@ export default function SettingsIndex({
                                                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                         <Building2 className="w-4 h-4 text-amber-500" />
                                                         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                            សាខាអនុញ្ញាតសម្រាប់គណនីនេះ (Branch Location Assignment)
+                                                            {tr('សាខាអនុញ្ញាតសម្រាប់គណនីនេះ (Branch Location Assignment)')}
                                                         </h3>
                                                     </div>
 
                                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                        ជ្រើសរើសសាខាដែលបុគ្គលិកនេះមានសិទ្ធិចូលលក់ និងគ្រប់គ្រងវេន៖
+                                                        {tr('ជ្រើសរើសសាខាដែលបុគ្គលិកនេះមានសិទ្ធិចូលលក់ និងគ្រប់គ្រងវេន៖')}
                                                     </p>
 
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1382,11 +1383,11 @@ export default function SettingsIndex({
                                                         <div className="flex items-center gap-2">
                                                             <Sparkles className="w-4 h-4 text-amber-500" />
                                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                                ប័ណ្ណសម្គាល់បុគ្គលិកឌីជីថល (Digital Staff Badge)
+                                                                {tr('ប័ណ្ណសម្គាល់បុគ្គលិកឌីជីថល (Digital Staff Badge)')}
                                                             </h3>
                                                         </div>
                                                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                                            មើលជាមុន
+                                                            {tr('មើលជាមុន')}
                                                         </span>
                                                     </div>
 
@@ -1412,7 +1413,7 @@ export default function SettingsIndex({
                                                             </div>
                                                             <div className="min-w-0 flex-1">
                                                                 <h4 className="text-base font-bold text-white truncate font-khmer">
-                                                                    {userForm.data.name || 'ឈ្មោះបុគ្គលិក'}
+                                                                    {userForm.data.name || tr('ឈ្មោះបុគ្គលិក')}
                                                                 </h4>
                                                                 <p className="text-xs font-mono text-zinc-400 truncate">
                                                                     @{userForm.data.username || 'username'}
@@ -1425,19 +1426,19 @@ export default function SettingsIndex({
 
                                                         <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-400">
                                                             <div>
-                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">សាខាទទួលខុសត្រូវ</span>
+                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">{tr('សាខាទទួលខុសត្រូវ')}</span>
                                                                 <span className="font-semibold text-zinc-200 font-khmer">
                                                                     {userForm.data.location_ids?.length
                                                                         ? locations
                                                                               .filter((l) => userForm.data.location_ids.includes(l.id))
                                                                               .map((l) => l.code)
                                                                               .join(', ')
-                                                                        : 'គ្រប់សាខាទាំងអស់'}
+                                                                        : tr('គ្រប់សាខាទាំងអស់')}
                                                                 </span>
                                                             </div>
                                                             <div className="text-right">
-                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">ស្ថានភាពគណនី</span>
-                                                                <span className="font-mono text-emerald-400 font-semibold">សកម្ម</span>
+                                                                <span className="block text-[9px] uppercase font-mono text-zinc-500">{tr('ស្ថានភាពគណនី')}</span>
+                                                                <span className="font-mono text-emerald-400 font-semibold">{tr('សកម្ម')}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1448,7 +1449,7 @@ export default function SettingsIndex({
                                                     <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-zinc-800/80">
                                                         <KeyRound className="w-4 h-4 text-amber-500" />
                                                         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                            សិទ្ធិប្រតិបត្តិការក្នុងប្រព័ន្ធ (Permission Scope)
+                                                            {tr('សិទ្ធិប្រតិបត្តិការក្នុងប្រព័ន្ធ (Permission Scope)')}
                                                         </h3>
                                                     </div>
 
@@ -1465,7 +1466,7 @@ export default function SettingsIndex({
                                                         <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300 font-khmer flex items-start gap-2">
                                                             <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                                                             <span>
-                                                                <strong>Invariant INV-07:</strong> រាល់សកម្មភាពរបស់បុគ្គលិក (លក់, កែប្រែ, បោះពុម្ព, បិទវេន) នឹងត្រូវកត់ត្រាស្វ័យប្រវត្តិក្នង Audit Trail ដោយមិនអាចលុបបានឡើយ។
+                                                                <strong>Invariant INV-07:</strong> {tr('រាល់សកម្មភាពរបស់បុគ្គលិក (លក់, កែប្រែ, បោះពុម្ព, បិទវេន) នឹងត្រូវកត់ត្រាស្វ័យប្រវត្តិក្នង Audit Trail ដោយមិនអាចលុបបានឡើយ។')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1485,7 +1486,7 @@ export default function SettingsIndex({
                                                         onChange={(e) => userForm.setData('is_active', e.target.checked)}
                                                         className="w-4 h-4 accent-emerald-500"
                                                     />
-                                                    <span>គណនីកំពុងប្រើប្រាស់ (Active)</span>
+                                                    <span>{tr('គណនីកំពុងប្រើប្រាស់ (Active)')}</span>
                                                 </label>
                                                 {userForm.errors.is_active && (
                                                     <p className="text-[11px] text-rose-500">{userForm.errors.is_active}</p>
@@ -1494,7 +1495,7 @@ export default function SettingsIndex({
                                         ) : (
                                             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
                                                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                                <span>គណនីបុគ្គលិកថ្មីនឹងដំណើរការភ្លាមៗក្រោយបង្កើត</span>
+                                                <span>{tr('គណនីបុគ្គលិកថ្មីនឹងដំណើរការភ្លាមៗក្រោយបង្កើត')}</span>
                                             </div>
                                         )}
 
@@ -1507,7 +1508,7 @@ export default function SettingsIndex({
                                                 }}
                                                 className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                                             >
-                                                បោះបង់
+                                                {tr('បោះបង់')}
                                             </button>
                                             <button
                                                 type="submit"
@@ -1515,7 +1516,7 @@ export default function SettingsIndex({
                                                 className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all cursor-pointer font-khmer disabled:opacity-50"
                                             >
                                                 <UserPlus className="w-4 h-4" />
-                                                <span>{userForm.processing ? 'កំពុងរក្សាទុក...' : editingUserId ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតគណនីបុគ្គលិក'}</span>
+                                                <span>{userForm.processing ? tr('កំពុងរក្សាទុក...') : editingUserId ? tr('រក្សាទុកការកែប្រែ') : tr('បង្កើតគណនីបុគ្គលិក')}</span>
                                             </button>
                                         </div>
                                     </div>
@@ -1539,14 +1540,14 @@ export default function SettingsIndex({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ផ្អាក និងទុកជាឯកសារគណនីបុគ្គលិក
+                                                    {tr('ផ្អាក និងទុកជាឯកសារគណនីបុគ្គលិក')}
                                                 </h3>
                                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 font-mono">
-                                                    បិទគណនី
+                                                    {tr('បិទគណនី')}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                បុគ្គលិក៖ <strong className="text-zinc-900 dark:text-white">{archiveTarget.name}</strong> (@{archiveTarget.username}) • តួនាទី៖ <span className="font-mono uppercase font-semibold text-rose-500">{archiveTarget.role}</span>
+                                                {tr('បុគ្គលិក៖')} <strong className="text-zinc-900 dark:text-white">{archiveTarget.name}</strong> (@{archiveTarget.username}{tr(') • តួនាទី៖')} <span className="font-mono uppercase font-semibold text-rose-500">{archiveTarget.role}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -1557,10 +1558,10 @@ export default function SettingsIndex({
                                             archiveForm.reset();
                                         }}
                                         className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                        title="ត្រឡប់ក្រោយ (Esc)"
+                                        title={tr("ត្រឡប់ក្រោយ (Esc)")}
                                     >
                                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-rose-600 dark:text-rose-400" />
-                                        <span>ត្រឡប់ក្រោយ</span>
+                                        <span>{tr('ត្រឡប់ក្រោយ')}</span>
                                     </button>
                                 </div>
 
@@ -1573,10 +1574,10 @@ export default function SettingsIndex({
                                             <div className="p-4 sm:p-5 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3">
                                                 <div className="flex items-center gap-2 text-xs font-bold text-rose-800 dark:text-rose-300 font-khmer pb-1 border-b border-rose-500/20">
                                                     <AlertTriangle className="w-4 h-4 text-rose-500" />
-                                                    <span>គោលការណ៍សុវត្ថិភាព INV-07 (Append-Only Invariant)</span>
+                                                    <span>{tr('គោលការណ៍សុវត្ថិភាព INV-07 (Append-Only Invariant)')}</span>
                                                 </div>
                                                 <p className="text-xs text-rose-700 dark:text-rose-300/90 font-khmer leading-relaxed">
-                                                    គណនីបុគ្គលិកមិនត្រូវបានលុបចេញពី Database ឡើយ (Permanent Record Retention)។ ការផ្អាកនេះនឹងដកហូតសិទ្ធិចូលប្រើប្រាស់ប្រព័ន្ធ POS ភ្លាមៗ ចំណែកប្រវត្តិវិក្កយបត្រ, ការលក់, និងសវនកម្មពីមុនទាំងអស់ ត្រូវបានរក្សាទុកដដែល 100%។
+                                                    {tr('គណនីបុគ្គលិកមិនត្រូវបានលុបចេញពី Database ឡើយ (Permanent Record Retention)។ ការផ្អាកនេះនឹងដកហូតសិទ្ធិចូលប្រើប្រាស់ប្រព័ន្ធ POS ភ្លាមៗ ចំណែកប្រវត្តិវិក្កយបត្រ, ការលក់, និងសវនកម្មពីមុនទាំងអស់ ត្រូវបានរក្សាទុកដដែល 100%។')}
                                                 </p>
                                             </div>
 
@@ -1585,7 +1586,7 @@ export default function SettingsIndex({
                                                 <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                                     <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                         <FileText className="w-4 h-4 text-rose-500" />
-                                                        <span>មូលហេតុច្បាស់លាស់នៃការផ្អាក (Mandatory Archive Reason)</span>
+                                                        <span>{tr('មូលហេតុច្បាស់លាស់នៃការផ្អាក (Mandatory Archive Reason)')}</span>
                                                         <span className="text-rose-500">*</span>
                                                     </div>
                                                 </div>
@@ -1596,7 +1597,7 @@ export default function SettingsIndex({
                                                         rows={4}
                                                         value={archiveForm.data.reason}
                                                         onChange={(e) => archiveForm.setData('reason', e.target.value)}
-                                                        placeholder="ឧទាហរណ៍៖ បុគ្គលិកឈប់ពីការងារនៅថ្ងៃទី... បានផ្ទេរការងារ និងទូទាត់ប្រាក់បំណាច់ចប់សព្វគ្រប់។"
+                                                        placeholder={tr("ឧទាហរណ៍៖ បុគ្គលិកឈប់ពីការងារនៅថ្ងៃទី... បានផ្ទេរការងារ និងទូទាត់ប្រាក់បំណាច់ចប់សព្វគ្រប់។")}
                                                         className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 font-khmer transition-all"
                                                     />
                                                     {archiveForm.errors.reason && (
@@ -1608,14 +1609,14 @@ export default function SettingsIndex({
                                                 <div className="space-y-1.5 pt-1">
                                                     <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
                                                         <Sparkles className="w-3.5 h-3.5 text-rose-500" />
-                                                        <span>ជ្រើសរើសមូលហេតុគំរូរហ័ស (Quick Presets)៖</span>
+                                                        <span>{tr('ជ្រើសរើសមូលហេតុគំរូរហ័ស (Quick Presets)៖')}</span>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
                                                         {[
-                                                            'បុគ្គលិកឈប់ពីការងារ បានផ្ទេរភារកិច្ច និងទូទាត់ប្រាក់បំណាច់រួចរាល់',
-                                                            'បញ្ចប់កិច្ចសន្យាការងារស្របតាមគោលការណ៍ហាង',
-                                                            'ផ្អាកបណ្តោះអាសន្នតាមការស្នើសុំផ្ទាល់ខ្លួនរបស់បុគ្គលិក',
-                                                            'ផ្អាកសិទ្ធិដោយសារការផ្ទេរភារកិច្ច ឬផ្លាស់ប្តូរផ្នែកការងារ',
+                                                            tr('បុគ្គលិកឈប់ពីការងារ បានផ្ទេរភារកិច្ច និងទូទាត់ប្រាក់បំណាច់រួចរាល់'),
+                                                            tr('បញ្ចប់កិច្ចសន្យាការងារស្របតាមគោលការណ៍ហាង'),
+                                                            tr('ផ្អាកបណ្តោះអាសន្នតាមការស្នើសុំផ្ទាល់ខ្លួនរបស់បុគ្គលិក'),
+                                                            tr('ផ្អាកសិទ្ធិដោយសារការផ្ទេរភារកិច្ច ឬផ្លាស់ប្តូរផ្នែកការងារ'),
                                                         ].map((preset, idx) => (
                                                             <button
                                                                 key={idx}
@@ -1634,10 +1635,10 @@ export default function SettingsIndex({
                                             <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-1.5 text-xs">
                                                 <div className="flex items-center gap-2 font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                                    <span>លទ្ធភាពស្ដារឡើងវិញ (Account Restoration Option)</span>
+                                                    <span>{tr('លទ្ធភាពស្ដារឡើងវិញ (Account Restoration Option)')}</span>
                                                 </div>
                                                 <p className="text-zinc-600 dark:text-zinc-400 text-[11px] font-khmer leading-relaxed">
-                                                    អ្នកគ្រប់គ្រងប្រព័ន្ធ (Admin) អាចស្ដារគណនីនេះឱ្យដំណើរការឡើងវិញបានគ្រប់ពេលវេលាពីក្នុងបញ្ជីបុគ្គលិកដែលបានផ្អាក (Archived Staff Tab)។
+                                                    {tr('អ្នកគ្រប់គ្រងប្រព័ន្ធ (Admin) អាចស្ដារគណនីនេះឱ្យដំណើរការឡើងវិញបានគ្រប់ពេលវេលាពីក្នុងបញ្ជីបុគ្គលិកដែលបានផ្អាក (Archived Staff Tab)។')}
                                                 </p>
                                             </div>
                                         </div>
@@ -1656,37 +1657,37 @@ export default function SettingsIndex({
                                                     <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                         <div className="space-y-0.5">
                                                             <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                                ព័ត៌មានគណនី
+                                                                {tr('ព័ត៌មានគណនី')}
                                                             </span>
                                                             <h4 className="text-sm font-bold text-white font-mono">
                                                                 STAFF-{archiveTarget.id.toString().padStart(4, '0')}
                                                             </h4>
                                                         </div>
                                                         <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-xs">
-                                                            រង់ចាំបញ្ជាក់
+                                                            {tr('រង់ចាំបញ្ជាក់')}
                                                         </span>
                                                     </div>
 
                                                     {/* User Details */}
                                                     <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-3">
                                                         <div className="flex items-center justify-between text-zinc-400">
-                                                            <span className="font-khmer">ឈ្មោះបុគ្គលិក៖</span>
+                                                            <span className="font-khmer">{tr('ឈ្មោះបុគ្គលិក៖')}</span>
                                                             <span className="text-white font-bold font-khmer">{archiveTarget.name}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between text-zinc-400">
-                                                            <span className="font-khmer">ឈ្មោះគណនី (Username)៖</span>
+                                                            <span className="font-khmer">{tr('ឈ្មោះគណនី (Username)៖')}</span>
                                                             <span className="text-rose-400 font-bold">@{archiveTarget.username}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between text-zinc-400">
-                                                            <span className="font-khmer">តួនាទីបច្ចុប្បន្ន៖</span>
+                                                            <span className="font-khmer">{tr('តួនាទីបច្ចុប្បន្ន៖')}</span>
                                                             <span className="text-zinc-200 uppercase">{archiveTarget.role}</span>
                                                         </div>
                                                         <div className="flex items-center justify-between text-zinc-400">
-                                                            <span className="font-khmer">សាខាឈរជើង៖</span>
+                                                            <span className="font-khmer">{tr('សាខាឈរជើង៖')}</span>
                                                             <span className="text-emerald-400 font-khmer">
                                                                 {archiveTarget.locations && archiveTarget.locations.length > 0
                                                                     ? archiveTarget.locations.map(l => l.name_primary).join(', ')
-                                                                    : 'គ្រប់សាខា (All Locations)'}
+                                                                    : tr('គ្រប់សាខា (All Locations)')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1694,20 +1695,20 @@ export default function SettingsIndex({
                                                     {/* Transition Status */}
                                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
                                                         <div>
-                                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
-                                                            <span className="text-emerald-400 font-bold">សកម្ម</span>
+                                                            <span className="text-[10px] text-zinc-400 font-khmer block">{tr('ស្ថានភាពបច្ចុប្បន្ន')}</span>
+                                                            <span className="text-emerald-400 font-bold">{tr('សកម្ម')}</span>
                                                         </div>
                                                         <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
                                                         <div className="text-right">
-                                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយផ្អាក</span>
-                                                            <span className="text-rose-400 font-bold">ប័ណ្ណសារ</span>
+                                                            <span className="text-[10px] text-zinc-400 font-khmer block">{tr('ស្ថានភាពក្រោយផ្អាក')}</span>
+                                                            <span className="text-rose-400 font-bold">{tr('ប័ណ្ណសារ')}</span>
                                                         </div>
                                                     </div>
 
                                                     {/* Security Stamp Footer */}
                                                     <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                                         <span>AUDIT: USER_DEACTIVATION</span>
-                                                        <span>កត់ត្រាជាអចិន្ត្រៃយ៍</span>
+                                                        <span>{tr('កត់ត្រាជាអចិន្ត្រៃយ៍')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1720,7 +1721,7 @@ export default function SettingsIndex({
                                             <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                                 Esc
                                             </kbd>
-                                            <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                            <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                                         </div>
 
                                         <div className="flex items-center gap-3 ml-auto">
@@ -1732,7 +1733,7 @@ export default function SettingsIndex({
                                                 }}
                                                 className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                             >
-                                                បោះបង់
+                                                {tr('បោះបង់')}
                                             </button>
 
                                             <button
@@ -1743,8 +1744,8 @@ export default function SettingsIndex({
                                                 <Archive className="w-4 h-4" />
                                                 <span>
                                                     {archiveForm.processing
-                                                        ? 'កំពុងផ្អាកគណនី...'
-                                                        : 'បញ្ជាក់ការផ្អាកគណនីបុគ្គលិក (Execute Deactivation)'}
+                                                        ? tr('កំពុងផ្អាកគណនី...')
+                                                        : tr('បញ្ជាក់ការផ្អាកគណនីបុគ្គលិក (Execute Deactivation)')}
                                                 </span>
                                             </button>
                                         </div>
@@ -1761,10 +1762,10 @@ export default function SettingsIndex({
                     <div className="space-y-4">
                         <div>
                             <h2 className="text-base font-bold text-white">
-                                កំណត់ត្រា Audit
+                                {tr('កំណត់ត្រា Audit')}
                             </h2>
                             <p className="text-xs text-zinc-400">
-                                រាល់សកម្មភាពសំខាន់ៗត្រូវបានកត់ត្រា ហើយមិនអាចកែ ឬលុបបានទេ។
+                                {tr('រាល់សកម្មភាពសំខាន់ៗត្រូវបានកត់ត្រា ហើយមិនអាចកែ ឬលុបបានទេ។')}
                             </p>
                         </div>
 
@@ -1773,10 +1774,10 @@ export default function SettingsIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-mono uppercase text-[10px]">
                                         <tr>
-                                            <th className="px-4 py-3">ពេលវេលា</th>
-                                            <th className="px-4 py-3">សកម្មភាព</th>
-                                            <th className="px-4 py-3">អ្នកធ្វើ</th>
-                                            <th className="px-4 py-3">មូលហេតុ</th>
+                                            <th className="px-4 py-3">{tr('ពេលវេលា')}</th>
+                                            <th className="px-4 py-3">{tr('សកម្មភាព')}</th>
+                                            <th className="px-4 py-3">{tr('អ្នកធ្វើ')}</th>
+                                            <th className="px-4 py-3">{tr('មូលហេតុ')}</th>
                                             <th className="px-4 py-3">IP</th>
                                         </tr>
                                     </thead>
@@ -1813,10 +1814,10 @@ export default function SettingsIndex({
                         <div>
                             <h2 className="text-base font-bold text-white flex items-center gap-2">
                                 <Database className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
-                                <span>Backup & ស្ដារទិន្នន័យ</span>
+                                <span>{tr('Backup & ស្ដារទិន្នន័យ')}</span>
                             </h2>
                             <p className="text-xs text-zinc-400 mt-0.5">
-                                Backup ទិន្នន័យទាំងអស់ជា file ZIP ដែលមាន SHA-256 ការពារការខូច។ ប្រព័ន្ធក៏ធ្វើ Backup ដោយស្វ័យប្រវត្តិ ម៉ោង 2 រសៀល និង 10 យប់។
+                                {tr('Backup ទិន្នន័យទាំងអស់ជា file ZIP ដែលមាន SHA-256 ការពារការខូច។ ប្រព័ន្ធក៏ធ្វើ Backup ដោយស្វ័យប្រវត្តិ ម៉ោង 2 រសៀល និង 10 យប់។')}
                             </p>
                         </div>
 
@@ -1827,10 +1828,10 @@ export default function SettingsIndex({
                                     <div className="space-y-1">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <Download className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-                                            <span>ទាញយក Backup</span>
+                                            <span>{tr('ទាញយក Backup')}</span>
                                         </h3>
                                         <p className="text-xs text-zinc-400">
-                                            ទាញយកទិន្នន័យទាំងអស់របស់ហាងជា file មួយ។
+                                            {tr('ទាញយកទិន្នន័យទាំងអស់របស់ហាងជា file មួយ។')}
                                         </p>
                                     </div>
                                     <Badge variant="emerald" className="text-[10px] font-mono">
@@ -1839,26 +1840,26 @@ export default function SettingsIndex({
                                 </div>
 
                                 <div className="space-y-2 rounded-xl bg-zinc-950/70 p-4 border border-zinc-800/80 text-xs">
-                                    <h4 className="font-bold text-zinc-100 mb-2">មានទិន្នន័យ 22 តារាង + រូបភាព៖</h4>
+                                    <h4 className="font-bold text-zinc-100 mb-2">{tr('មានទិន្នន័យ 22 តារាង + រូបភាព៖')}</h4>
                                     <div className="grid grid-cols-2 gap-1.5 text-[11px] text-zinc-300 font-medium">
-                                        <div>• បុគ្គលិក & សាខា</div>
-                                        <div>• ការកំណត់ហាង</div>
-                                        <div>• មុខទំនិញ ប្រភេទ ឯកតា</div>
-                                        <div>• វគ្គលក់</div>
-                                        <div>• វិក្កយបត្រ & មុខទំនិញ</div>
-                                        <div>• បុងចុងភៅ</div>
-                                        <div>• តុ</div>
-                                        <div>• អតិថិជន & ពិន្ទុ</div>
-                                        <div>• ចំណាយ & ថតបេឡា</div>
-                                        <div>• ការទិញចូល & អ្នកផ្គត់ផ្គង់</div>
+                                        <div>{tr('• បុគ្គលិក & សាខា')}</div>
+                                        <div>{tr('• ការកំណត់ហាង')}</div>
+                                        <div>{tr('• មុខទំនិញ ប្រភេទ ឯកតា')}</div>
+                                        <div>{tr('• វគ្គលក់')}</div>
+                                        <div>{tr('• វិក្កយបត្រ & មុខទំនិញ')}</div>
+                                        <div>{tr('• បុងចុងភៅ')}</div>
+                                        <div>{tr('• តុ')}</div>
+                                        <div>{tr('• អតិថិជន & ពិន្ទុ')}</div>
+                                        <div>{tr('• ចំណាយ & ថតបេឡា')}</div>
+                                        <div>{tr('• ការទិញចូល & អ្នកផ្គត់ផ្គង់')}</div>
                                         <div>• Approval & Audit</div>
-                                        <div>• រូបភាពមុខទំនិញ & QR</div>
+                                        <div>{tr('• រូបភាពមុខទំនិញ & QR')}</div>
                                     </div>
                                 </div>
 
                                 <div className="text-xs text-zinc-300 space-y-1">
-                                    <p>• តារាងនីមួយៗមាន SHA-256 ដើម្បីដឹងពេល file ខូច ឬត្រូវបានកែ។</p>
-                                    <p>• កត់ត្រាក្នុង Audit ជា <code className="text-emerald-500 dark:text-emerald-400 font-mono font-bold">backup.exported</code>.</p>
+                                    <p>{tr('• តារាងនីមួយៗមាន SHA-256 ដើម្បីដឹងពេល file ខូច ឬត្រូវបានកែ។')}</p>
+                                    <p>{tr('• កត់ត្រាក្នុង Audit ជា')} <code className="text-emerald-500 dark:text-emerald-400 font-mono font-bold">backup.exported</code>.</p>
                                 </div>
 
                                 <form action="/settings/backup" method="POST" className="pt-2">
@@ -1872,7 +1873,7 @@ export default function SettingsIndex({
                                         className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-md shadow-emerald-600/20"
                                     >
                                         <Download className="w-4 h-4 mr-2" />
-                                        ទាញយក Backup ទាំងអស់ (.zip)
+                                        {tr('ទាញយក Backup ទាំងអស់ (.zip)')}
                                     </Button>
                                 </form>
                             </Card>
@@ -1883,14 +1884,14 @@ export default function SettingsIndex({
                                     <div className="space-y-1">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <UploadCloud className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-                                            <span>ស្ដារទិន្នន័យពី Backup</span>
+                                            <span>{tr('ស្ដារទិន្នន័យពី Backup')}</span>
                                         </h3>
                                         <p className="text-xs text-zinc-400">
-                                            ស្ដារទិន្នន័យពី file Backup ZIP V2.0។
+                                            {tr('ស្ដារទិន្នន័យពី file Backup ZIP V2.0។')}
                                         </p>
                                     </div>
                                     <Badge variant="amber" className="text-[10px] font-mono">
-                                        ទាំងអស់ ឬគ្មានអ្វីសោះ
+                                        {tr('ទាំងអស់ ឬគ្មានអ្វីសោះ')}
                                     </Badge>
                                 </div>
 
@@ -1898,17 +1899,17 @@ export default function SettingsIndex({
                                 <div className="p-3.5 rounded-xl bg-amber-500/15 border border-amber-500/30 space-y-1.5">
                                     <div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300">
                                         <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                                        <span>ប្រយ័ត្ន៖ ទិន្នន័យបច្ចុប្បន្ននឹងត្រូវជំនួស</span>
+                                        <span>{tr('ប្រយ័ត្ន៖ ទិន្នន័យបច្ចុប្បន្ននឹងត្រូវជំនួស')}</span>
                                     </div>
                                     <p className="text-[11.5px] leading-relaxed text-amber-950 dark:text-amber-200/90 font-medium">
-                                        ទិន្នន័យបច្ចុប្បន្នទាំងអស់នឹងត្រូវជំនួសដោយទិន្នន័យក្នុង Backup។ មុននឹងស្ដារ ប្រព័ន្ធរក្សាទុក Backup បន្ទាន់មួយនៅ <code className="font-mono text-[10.5px] bg-amber-500/20 dark:bg-zinc-950 text-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 dark:border-zinc-800 font-semibold">storage/app/backups/recovery_points/</code>។
+                                        {tr('ទិន្នន័យបច្ចុប្បន្នទាំងអស់នឹងត្រូវជំនួសដោយទិន្នន័យក្នុង Backup។ មុននឹងស្ដារ ប្រព័ន្ធរក្សាទុក Backup បន្ទាន់មួយនៅ')} <code className="font-mono text-[10.5px] bg-amber-500/20 dark:bg-zinc-950 text-amber-950 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 dark:border-zinc-800 font-semibold">storage/app/backups/recovery_points/</code>{tr('។')}
                                     </p>
                                 </div>
 
                                 {/* File Input */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-zinc-100 block">
-                                        ជ្រើស file Backup (.zip):
+                                        {tr('ជ្រើស file Backup (.zip):')}
                                     </label>
                                     <input
                                         id="backup-file-input"
@@ -1932,7 +1933,7 @@ export default function SettingsIndex({
                                         className="flex-1 text-xs border border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700 font-semibold disabled:opacity-40"
                                     >
                                         <ShieldCheck className="w-4 h-4 mr-1.5 text-blue-500 dark:text-blue-400" />
-                                        <span>{isInspecting ? 'កំពុងពិនិត្យ...' : 'ពិនិត្យ file'}</span>
+                                        <span>{isInspecting ? tr('កំពុងពិនិត្យ...') : tr('ពិនិត្យ file')}</span>
                                     </Button>
 
                                     <Button
@@ -1942,7 +1943,7 @@ export default function SettingsIndex({
                                         className="flex-1 text-xs bg-rose-600 hover:bg-rose-500 text-white font-semibold shadow-md shadow-rose-600/20 disabled:opacity-40"
                                     >
                                         <RotateCcw className="w-4 h-4 mr-1.5" />
-                                        <span>ស្ដារទិន្នន័យ...</span>
+                                        <span>{tr('ស្ដារទិន្នន័យ...')}</span>
                                     </Button>
                                 </div>
 
@@ -1959,7 +1960,7 @@ export default function SettingsIndex({
                                             <>
                                                 <div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-300">
                                                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                    <span>file ត្រឹមត្រូវ អាចស្ដារបាន</span>
+                                                    <span>{tr('file ត្រឹមត្រូវ អាចស្ដារបាន')}</span>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-2 text-[11px] font-mono text-zinc-700 dark:text-zinc-200 font-semibold pt-1">
                                                     <div>Manifest: V{inspectResult.format_version}</div>
@@ -1975,7 +1976,7 @@ export default function SettingsIndex({
                                             <>
                                                 <div className="flex items-center gap-2 font-bold text-rose-800 dark:text-rose-300">
                                                     <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                                                    <span>file មិនត្រឹមត្រូវ</span>
+                                                    <span>{tr('file មិនត្រឹមត្រូវ')}</span>
                                                 </div>
                                                 <p className="text-[11px] text-rose-900 dark:text-rose-200 font-medium">
                                                     {inspectResult.error || 'The uploaded file does not comply with V2.0 blueprint standards.'}
@@ -1991,17 +1992,17 @@ export default function SettingsIndex({
                         <Card className="p-6 border-zinc-800 bg-zinc-950/60 space-y-3 shadow-xs">
                             <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-500 dark:text-emerald-400 font-mono flex items-center gap-2">
                                 <FileArchive className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
-                                <span>លំដាប់ស្ដារទិន្នន័យ (សម្រាប់អ្នកបច្ចេកទេស)</span>
+                                <span>{tr('លំដាប់ស្ដារទិន្នន័យ (សម្រាប់អ្នកបច្ចេកទេស)')}</span>
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs leading-relaxed">
                                 <div className="space-y-1.5">
-                                    <h4 className="font-bold text-zinc-100">លំដាប់លុប:</h4>
+                                    <h4 className="font-bold text-zinc-100">{tr('លំដាប់លុប:')}</h4>
                                     <p className="font-mono text-[11.5px] text-zinc-300 font-medium leading-relaxed">
                                         print_logs → revisions → items → approvals → documents → periods → products → categories → units → user_locations → locations → audits → settings → users
                                     </p>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <h4 className="font-bold text-zinc-100">លំដាប់បញ្ចូល:</h4>
+                                    <h4 className="font-bold text-zinc-100">{tr('លំដាប់បញ្ចូល:')}</h4>
                                     <p className="font-mono text-[11.5px] text-zinc-300 font-medium leading-relaxed">
                                         users → settings → locations → user_locations → units → categories → products → periods → documents → items → approvals → revisions → audits → print_logs
                                     </p>
@@ -2026,16 +2027,16 @@ export default function SettingsIndex({
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
-                                            ស្ដារទិន្នន័យប្រព័ន្ធ និងជំនួសទិន្នន័យចាស់ (Database Restore & Rollback Protocol)
+                                            {tr('ស្ដារទិន្នន័យប្រព័ន្ធ និងជំនួសទិន្នន័យចាស់ (Database Restore & Rollback Protocol)')}
                                         </h2>
                                         <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                                            សំខាន់ខ្លាំង
+                                            {tr('សំខាន់ខ្លាំង')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
-                                        <span>ឯកសារ៖ <span className="font-mono text-rose-600 dark:text-rose-400 font-bold">{restoreFile?.name}</span></span>
+                                        <span>{tr('ឯកសារ៖')} <span className="font-mono text-rose-600 dark:text-rose-400 font-bold">{restoreFile?.name}</span></span>
                                         <span>•</span>
-                                        <span>ទំហំ៖ <span className="font-mono text-zinc-700 dark:text-zinc-300">{restoreFile?.size ? (restoreFile.size / 1024).toFixed(1) + ' KB' : 'N/A'}</span></span>
+                                        <span>{tr('ទំហំ៖')} <span className="font-mono text-zinc-700 dark:text-zinc-300">{restoreFile?.size ? (restoreFile.size / 1024).toFixed(1) + ' KB' : 'N/A'}</span></span>
                                     </p>
                                 </div>
                             </div>
@@ -2049,7 +2050,7 @@ export default function SettingsIndex({
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -2061,10 +2062,10 @@ export default function SettingsIndex({
                                 <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 text-rose-900 dark:text-rose-200 text-xs leading-relaxed space-y-2">
                                     <div className="flex items-center gap-2 font-bold font-khmer text-rose-700 dark:text-rose-400">
                                         <AlertTriangle className="w-4 h-4 shrink-0" />
-                                        <span>ការព្រមានកម្រិតខ្ពស់អំពីការជំនួសទិន្នន័យ (Destructive Rollback Warning)</span>
+                                        <span>{tr('ការព្រមានកម្រិតខ្ពស់អំពីការជំនួសទិន្នន័យ (Destructive Rollback Warning)')}</span>
                                     </div>
                                     <p className="font-khmer text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                                        ប្រតិបត្តិការនេះនឹងធ្វើការលុបទិន្នន័យបច្ចុប្បន្នទាំងអស់ក្នុង Database (រាប់បញ្ចូលទាំងវិក្កយបត្រថ្មីៗ ប្រតិបត្តិការថតបេឡា និងទិន្នន័យអតិថិជនចុងក្រោយ) ហើយជំនួសមកវិញដោយទិន្នន័យដែលមាននៅក្នុងឯកសារ Backup នេះ។
+                                        {tr('ប្រតិបត្តិការនេះនឹងធ្វើការលុបទិន្នន័យបច្ចុប្បន្នទាំងអស់ក្នុង Database (រាប់បញ្ចូលទាំងវិក្កយបត្រថ្មីៗ ប្រតិបត្តិការថតបេឡា និងទិន្នន័យអតិថិជនចុងក្រោយ) ហើយជំនួសមកវិញដោយទិន្នន័យដែលមាននៅក្នុងឯកសារ Backup នេះ។')}
                                     </p>
                                 </div>
 
@@ -2072,22 +2073,22 @@ export default function SettingsIndex({
                                 <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3.5 shadow-xs">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer flex items-center gap-2">
                                         <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                        <span>យន្តការសុវត្ថិភាព និងលំដាប់លំដោយស្វ័យប្រវត្តិ (Safety Guarantees & Execution Pipeline)</span>
+                                        <span>{tr('យន្តការសុវត្ថិភាព និងលំដាប់លំដោយស្វ័យប្រវត្តិ (Safety Guarantees & Execution Pipeline)')}</span>
                                     </h4>
 
                                     <div className="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400 font-khmer">
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">1</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បង្កើតចំណុចសង្គ្រោះបន្ទាន់ស្វ័យប្រវត្តិ (Pre-Restore Emergency Snapshot)</span>
-                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ប្រព័ន្ធនឹងរក្សាទុក Backup ចុងក្រោយមួយដោយស្វ័យប្រវត្តិភ្លាមៗ មុនពេលចាប់ផ្ដើមលុបទិន្នន័យ។</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">{tr('បង្កើតចំណុចសង្គ្រោះបន្ទាន់ស្វ័យប្រវត្តិ (Pre-Restore Emergency Snapshot)')}</span>
+                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('ប្រព័ន្ធនឹងរក្សាទុក Backup ចុងក្រោយមួយដោយស្វ័យប្រវត្តិភ្លាមៗ មុនពេលចាប់ផ្ដើមលុបទិន្នន័យ។')}</span>
                                             </div>
                                         </div>
 
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">2</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">លុបទិន្នន័យចាស់តាមលំដាប់ (កូន → មេ)</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">{tr('លុបទិន្នន័យចាស់តាមលំដាប់ (កូន → មេ)')}</span>
                                                 <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">print_logs → revisions → items → approvals → documents → periods → products...</span>
                                             </div>
                                         </div>
@@ -2095,7 +2096,7 @@ export default function SettingsIndex({
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">3</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">បញ្ចូលទិន្នន័យថ្មីតាមលំដាប់ (មេ → កូន)</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">{tr('បញ្ចូលទិន្នន័យថ្មីតាមលំដាប់ (មេ → កូន)')}</span>
                                                 <span className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400">users → settings → locations → units → categories → products → documents...</span>
                                             </div>
                                         </div>
@@ -2103,8 +2104,8 @@ export default function SettingsIndex({
                                         <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800/60">
                                             <div className="w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-mono font-bold text-[10px] shrink-0 mt-0.5">4</div>
                                             <div>
-                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">ផ្ទៀងផ្ទាត់ SHA-256 Checksum នៃរាល់ Table ទិន្នន័យ</span>
-                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ធានាថាទិន្នន័យមិនមានការកែប្រែ ឬខូចខាត (No File Tampering)។</span>
+                                                <span className="font-bold text-zinc-900 dark:text-zinc-200 block">{tr('ផ្ទៀងផ្ទាត់ SHA-256 Checksum នៃរាល់ Table ទិន្នន័យ')}</span>
+                                                <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('ធានាថាទិន្នន័យមិនមានការកែប្រែ ឬខូចខាត (No File Tampering)។')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -2121,10 +2122,10 @@ export default function SettingsIndex({
                                         />
                                         <div className="text-xs font-khmer">
                                             <span className="font-bold text-zinc-900 dark:text-zinc-100 block">
-                                                ខ្ញុំបញ្ជាក់ថាបានយល់ច្បាស់ និងយល់ព្រមជំនួសទិន្នន័យបច្ចុប្បន្ន (Mandatory Confirmation) *
+                                                {tr('ខ្ញុំបញ្ជាក់ថាបានយល់ច្បាស់ និងយល់ព្រមជំនួសទិន្នន័យបច្ចុប្បន្ន (Mandatory Confirmation) *')}
                                             </span>
                                             <span className="text-zinc-600 dark:text-zinc-400 text-[11px]">
-                                                ខ្ញុំយល់ថាប្រតិបត្តិការនេះមិនអាច Undo ត្រឡប់ក្រោយបានទេ ប្រសិនបើគ្មាន Emergency Snapshot។
+                                                {tr('ខ្ញុំយល់ថាប្រតិបត្តិការនេះមិនអាច Undo ត្រឡប់ក្រោយបានទេ ប្រសិនបើគ្មាន Emergency Snapshot។')}
                                             </span>
                                         </div>
                                     </label>
@@ -2137,10 +2138,10 @@ export default function SettingsIndex({
                                     <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                                         <div>
                                             <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
-                                                ការស្ដារទិន្នន័យ
+                                                {tr('ការស្ដារទិន្នន័យ')}
                                             </span>
                                             <h3 className="text-sm font-bold font-mono text-white">
-                                                សង្ខេប file Backup
+                                                {tr('សង្ខេប file Backup')}
                                             </h3>
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider ${
@@ -2148,30 +2149,30 @@ export default function SettingsIndex({
                                                 ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
                                                 : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
                                         }`}>
-                                            {restoreAck ? 'រួចរាល់' : 'រង់ចាំបញ្ជាក់'}
+                                            {restoreAck ? tr('រួចរាល់') : tr('រង់ចាំបញ្ជាក់')}
                                         </span>
                                     </div>
 
                                     {/* File Passport Details */}
                                     <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-4">
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span className="font-khmer">ឯកសារស្ដារ៖</span>
+                                            <span className="font-khmer">{tr('ឯកសារស្ដារ៖')}</span>
                                             <span className="text-white font-bold truncate max-w-[200px]">{restoreFile?.name}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span className="font-khmer">ទំហំឯកសារ៖</span>
+                                            <span className="font-khmer">{tr('ទំហំឯកសារ៖')}</span>
                                             <span className="text-zinc-200">
                                                 {restoreFile?.size ? (restoreFile.size / 1024).toFixed(1) + ' KB' : 'N/A'}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span className="font-khmer">កាលបរិច្ឆេទឯកសារ៖</span>
+                                            <span className="font-khmer">{tr('កាលបរិច្ឆេទឯកសារ៖')}</span>
                                             <span className="text-zinc-200">
                                                 {restoreFile?.lastModified ? new Date(restoreFile.lastModified).toLocaleString('km-KH') : 'N/A'}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span className="font-khmer">ទម្រង់ម៉ានីហ្វេស៖</span>
+                                            <span className="font-khmer">{tr('ទម្រង់ម៉ានីហ្វេស៖')}</span>
                                             <span className="text-amber-400">
                                                 {inspectResult?.format_version ? `V${inspectResult.format_version} Standard` : 'V2.0 Compatible'}
                                             </span>
@@ -2181,39 +2182,39 @@ export default function SettingsIndex({
                                     {/* Inspection Summary if available */}
                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span>ការពិនិត្យ file:</span>
+                                            <span>{tr('ការពិនិត្យ file:')}</span>
                                             <span className={inspectResult?.valid ? 'text-emerald-400 font-bold' : 'text-amber-400'}>
-                                                {inspectResult?.valid ? 'ត្រឹមត្រូវ' : 'មិនទាន់ពិនិត្យ'}
+                                                {inspectResult?.valid ? tr('ត្រឹមត្រូវ') : tr('មិនទាន់ពិនិត្យ')}
                                             </span>
                                         </div>
                                         {inspectResult?.tables_count && (
                                             <div className="flex items-center justify-between text-zinc-400">
-                                                <span>ចំនួនតារាង:</span>
-                                                <span className="text-white font-bold">{inspectResult.tables_count} តារាង</span>
+                                                <span>{tr('ចំនួនតារាង:')}</span>
+                                                <span className="text-white font-bold">{inspectResult.tables_count} {tr('តារាង')}</span>
                                             </div>
                                         )}
                                         {inspectResult?.total_rows && (
                                             <div className="flex items-center justify-between text-zinc-400">
-                                                <span>ចំនួនទិន្នន័យ:</span>
-                                                <span className="text-emerald-400 font-bold">{inspectResult.total_rows.toLocaleString()} ជួរ</span>
+                                                <span>{tr('ចំនួនទិន្នន័យ:')}</span>
+                                                <span className="text-emerald-400 font-bold">{inspectResult.total_rows.toLocaleString()} {tr('ជួរ')}</span>
                                             </div>
                                         )}
                                         <div className="flex items-center justify-between text-zinc-400">
-                                            <span>Backup បន្ទាន់មុនស្ដារ:</span>
-                                            <span className="text-emerald-400 font-bold">ស្វ័យប្រវត្តិ</span>
+                                            <span>{tr('Backup បន្ទាន់មុនស្ដារ:')}</span>
+                                            <span className="text-emerald-400 font-bold">{tr('ស្វ័យប្រវត្តិ')}</span>
                                         </div>
                                     </div>
 
                                     {/* Transition Status */}
                                     <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 flex items-center justify-between text-xs font-mono">
                                         <div>
-                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពបច្ចុប្បន្ន</span>
-                                            <span className="text-emerald-400 font-bold">ទិន្នន័យបច្ចុប្បន្ន</span>
+                                            <span className="text-[10px] text-zinc-400 font-khmer block">{tr('ស្ថានភាពបច្ចុប្បន្ន')}</span>
+                                            <span className="text-emerald-400 font-bold">{tr('ទិន្នន័យបច្ចុប្បន្ន')}</span>
                                         </div>
                                         <ArrowLeft className="w-4 h-4 text-rose-400 rotate-180" />
                                         <div className="text-right">
-                                            <span className="text-[10px] text-zinc-400 font-khmer block">ស្ថានភាពក្រោយស្ដារ</span>
-                                            <span className="text-rose-400 font-bold">ទិន្នន័យពី Backup</span>
+                                            <span className="text-[10px] text-zinc-400 font-khmer block">{tr('ស្ថានភាពក្រោយស្ដារ')}</span>
+                                            <span className="text-rose-400 font-bold">{tr('ទិន្នន័យពី Backup')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -2221,7 +2222,7 @@ export default function SettingsIndex({
                                 {/* Security Stamp Footer */}
                                 <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                     <span>AUDIT: DB_RESTORE_ROLLBACK</span>
-                                    <span>កត់ត្រាក្នុង Audit</span>
+                                    <span>{tr('កត់ត្រាក្នុង Audit')}</span>
                                 </div>
                             </div>
                         </div>
@@ -2232,7 +2233,7 @@ export default function SettingsIndex({
                                 <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                     Esc
                                 </kbd>
-                                <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                             </div>
 
                             <div className="flex items-center gap-3 ml-auto">
@@ -2245,7 +2246,7 @@ export default function SettingsIndex({
                                     }}
                                     className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs disabled:opacity-50"
                                 >
-                                    បោះបង់
+                                    {tr('បោះបង់')}
                                 </button>
 
                                 <button
@@ -2257,8 +2258,8 @@ export default function SettingsIndex({
                                     <Database className="w-4 h-4" />
                                     <span>
                                         {isRestoring
-                                            ? 'កំពុងស្ដារទិន្នន័យ... (Restoring Database)'
-                                            : 'យល់ព្រមជំនួសទិន្នន័យ (Execute Database Restore)'}
+                                            ? tr('កំពុងស្ដារទិន្នន័យ... (Restoring Database)')
+                                            : tr('យល់ព្រមជំនួសទិន្នន័យ (Execute Database Restore)')}
                                     </span>
                                 </button>
                             </div>

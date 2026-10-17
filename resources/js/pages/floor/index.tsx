@@ -28,6 +28,7 @@ import {
     Pencil,
     Trash2,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface ActiveOrder {
     id: number;
@@ -213,21 +214,21 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <Users className="w-3 h-3 text-amber-400 shrink-0" />
-                        មានភ្ញៀវ
+                        {tr('មានភ្ញៀវ')}
                     </span>
                 );
             case 'reserved':
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <CalendarCheck className="w-3 h-3 text-purple-400 shrink-0" />
-                        កក់ទុក
+                        {tr('កក់ទុក')}
                     </span>
                 );
             default:
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-                        ទំនេរ
+                        {tr('ទំនេរ')}
                     </span>
                 );
         }
@@ -247,8 +248,8 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
     const chairLayout = getChairLayout(addForm.shape, addForm.capacity);
 
     return (
-        <AppLayout title="តុ & កន្លែងអង្គុយ">
-            <Head title="Floor & Tables — ប្លង់តុ & ការគ្រប់គ្រងតុ" />
+        <AppLayout title={tr("តុ & កន្លែងអង្គុយ")}>
+            <Head title={tr("Floor & Tables — ប្លង់តុ & ការគ្រប់គ្រងតុ")} />
 
             <div className="space-y-6 pb-12">
                 {/* Fixed / Sticky Header */}
@@ -260,13 +261,13 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    តុ & កន្លែងអង្គុយ
+                                    {tr('តុ & កន្លែងអង្គុយ')}
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
-                                        ប្លង់តុ
+                                        {tr('ប្លង់តុ')}
                                     </span>
                                 </h1>
                                 <p className="text-xs text-zinc-400">
-                                    គ្រប់គ្រងស្ថានភាពតុ ការអង្គុយ និងការបើកវិក្កយបត្រតាមតំបន់
+                                    {tr('គ្រប់គ្រងស្ថានភាពតុ ការអង្គុយ និងការបើកវិក្កយបត្រតាមតំបន់')}
                                 </p>
                             </div>
                         </div>
@@ -278,7 +279,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer font-bold"
                             >
                                 <PlusCircle className="w-4 h-4" />
-                                <span>បន្ថែមតុថ្មី</span>
+                                <span>{tr('បន្ថែមតុថ្មី')}</span>
                             </button>
                             )}
                         </div>
@@ -289,53 +290,53 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Available Tables / តុទំនេរ</span>
+                            <span>{tr('Available Tables / តុទំនេរ')}</span>
                             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.available_tables}
                         </div>
                         <div className="text-xs text-emerald-400/90 font-khmer mt-1">
-                            {metrics.total_tables} តុសរុបក្នុងហាង
+                            {metrics.total_tables} {tr('តុសរុបក្នុងហាង')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Occupied Tables / តុមានភ្ញៀវ</span>
+                            <span>{tr('Occupied Tables / តុមានភ្ញៀវ')}</span>
                             <Users className="w-4 h-4 text-amber-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.occupied_tables}
                         </div>
                         <div className="text-xs text-amber-400/90 font-khmer mt-1">
-                            កំពុងទទួលភ្ញៀវពិសារ
+                            {tr('កំពុងទទួលភ្ញៀវពិសារ')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Reserved Tables / តុកក់ទុក</span>
+                            <span>{tr('Reserved Tables / តុកក់ទុក')}</span>
                             <CalendarCheck className="w-4 h-4 text-purple-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.reserved_tables}
                         </div>
                         <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                            មានការកក់ទុកជាមុន
+                            {tr('មានការកក់ទុកជាមុន')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Total Capacity / ចំណុះកៅអីសរុប</span>
+                            <span>{tr('Total Capacity / ចំណុះកៅអីសរុប')}</span>
                             <Armchair className="w-4 h-4 text-teal-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {metrics.total_capacity}
                         </div>
                         <div className="text-xs text-teal-400/90 font-khmer mt-1">
-                            កៅអីអង្គុយសរុបទាំងអស់
+                            {tr('កៅអីអង្គុយសរុបទាំងអស់')}
                         </div>
                     </Card>
                 </div>
@@ -350,7 +351,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            គ្រប់តំបន់ទាំងអស់ ({tables.length})
+                            {tr('គ្រប់តំបន់ទាំងអស់ (')}{tables.length})
                         </button>
                         {zones.map((z) => (
                             <button
@@ -395,7 +396,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 </span>
                                                 <div className="flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 whitespace-nowrap shrink-0">
                                                     {getShapeIcon(table.shape)}
-                                                    <span className="whitespace-nowrap">{table.capacity} កៅអី</span>
+                                                    <span className="whitespace-nowrap">{table.capacity} {tr('កៅអី')}</span>
                                                 </div>
                                             </div>
                                             <p className="text-xs font-medium text-amber-400 mt-0.5 truncate">
@@ -413,7 +414,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 <button
                                                     type="button"
                                                     onClick={() => handleOpenEditModal(table)}
-                                                    title="កែប្រែតុ (Edit)"
+                                                    title={tr("កែប្រែតុ (Edit)")}
                                                     className="p-1 rounded-md text-zinc-500 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
                                                 >
                                                     <Pencil className="w-3.5 h-3.5" />
@@ -421,7 +422,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 <button
                                                     type="button"
                                                     onClick={() => setDeletingTable(table)}
-                                                    title="លុបតុ (Delete)"
+                                                    title={tr("លុបតុ (Delete)")}
                                                     className="p-1 rounded-md text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
@@ -434,22 +435,22 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     {table.active_order ? (
                                         <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3 text-xs space-y-1">
                                             <div className="flex items-center justify-between text-amber-300 font-semibold">
-                                                <span>សរុប: ${table.active_order.grand_total.toFixed(2)}</span>
+                                                <span>{tr('សរុប: $')}{table.active_order.grand_total.toFixed(2)}</span>
                                                 <span className="font-mono text-[10px] text-zinc-400">
-                                                    {table.active_order.item_count} មុខ
+                                                    {table.active_order.item_count} {tr('មុខ')}
                                                 </span>
                                             </div>
                                             <div className="flex items-center justify-between text-[11px] text-zinc-400">
                                                 <span className="flex items-center gap-1">
                                                     <Clock className="w-3 h-3 text-amber-400" />
-                                                    {table.active_order.elapsed_minutes} នាទី
+                                                    {table.active_order.elapsed_minutes} {tr('នាទី')}
                                                 </span>
                                                 <span>{table.active_order.server_name}</span>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className="py-4 text-center text-zinc-500 text-xs border border-dashed border-zinc-800 rounded-xl mb-3">
-                                            តុទំនេរ ត្រៀមទទួលភ្ញៀវ
+                                            {tr('តុទំនេរ ត្រៀមទទួលភ្ញៀវ')}
                                         </div>
                                     )}
                                 </div>
@@ -462,7 +463,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20"
                                         >
                                             <Receipt className="w-3.5 h-3.5" />
-                                            <span>បើកតុ / គិតលុយ</span>
+                                            <span>{tr('បើកតុ / គិតលុយ')}</span>
                                         </Link>
                                     ) : (
                                         <Link
@@ -471,7 +472,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                         >
                                             <ShoppingBag className="w-4 h-4 shrink-0 text-amber-400 group-hover:scale-110 transition-transform" />
                                             <div className="flex flex-col items-center text-center">
-                                                <span className="text-xs font-semibold font-khmer leading-tight">បើកការបញ្ជាទិញ</span>
+                                                <span className="text-xs font-semibold font-khmer leading-tight">{tr('បើកការបញ្ជាទិញ')}</span>
                                                 <span className="text-[10px] text-amber-400/80 font-mono font-medium tracking-tight leading-tight">(POS Order)</span>
                                             </div>
                                         </Link>
@@ -487,7 +488,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                             }`}
                                         >
-                                            ទំនេរ
+                                            {tr('ទំនេរ')}
                                         </button>
                                         <button
                                             onClick={() => handleUpdateStatus(table.id, 'occupied')}
@@ -497,7 +498,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                             }`}
                                         >
-                                            មានភ្ញៀវ
+                                            {tr('មានភ្ញៀវ')}
                                         </button>
                                         <button
                                             onClick={() => handleUpdateStatus(table.id, 'reserved')}
@@ -507,7 +508,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                             }`}
                                         >
-                                            កក់ទុក
+                                            {tr('កក់ទុក')}
                                         </button>
                                     </div>
                                 </div>
@@ -526,10 +527,10 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 </div>
                                 <div>
                                     <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        លុបតុ {deletingTable.name} ({deletingTable.code})?
+                                        {tr('លុបតុ')} {deletingTable.name} ({deletingTable.code})?
                                     </h3>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
-                                        តុនេះនឹងលែងបង្ហាញនៅលើប្លង់ និងក្នុង POS ទៀតហើយ។ វិក្កយបត្រចាស់ៗនៅតែរក្សាឈ្មោះតុដដែល។
+                                        {tr('តុនេះនឹងលែងបង្ហាញនៅលើប្លង់ និងក្នុង POS ទៀតហើយ។ វិក្កយបត្រចាស់ៗនៅតែរក្សាឈ្មោះតុដដែល។')}
                                     </p>
                                 </div>
                             </div>
@@ -539,7 +540,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     onClick={() => setDeletingTable(null)}
                                     className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
                                 >
-                                    បោះបង់
+                                    {tr('បោះបង់')}
                                 </button>
                                 <button
                                     type="button"
@@ -547,7 +548,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer font-khmer"
                                 >
                                     <Trash2 className="w-4 h-4" />
-                                    <span>លុបតុ</span>
+                                    <span>{tr('លុបតុ')}</span>
                                 </button>
                             </div>
                         </div>
@@ -570,14 +571,14 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            {editingTableId ? 'កែប្រែព័ត៌មានតុ' : 'បន្ថែមតុថ្មីក្នុងប្លង់'}
+                                            {editingTableId ? tr('កែប្រែព័ត៌មានតុ') : tr('បន្ថែមតុថ្មីក្នុងប្លង់')}
                                         </h2>
                                         <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                            {editingTableId ? 'កែតុ' : 'តុថ្មី'}
+                                            {editingTableId ? tr('កែតុ') : tr('តុថ្មី')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                        កំណត់កូដ ឈ្មោះ ចំនួនកៅអី រូបរាង និងទីតាំងសម្រាប់តុថ្មីក្នុងភោជនីយដ្ឋាន
+                                        {tr('កំណត់កូដ ឈ្មោះ ចំនួនកៅអី រូបរាង និងទីតាំងសម្រាប់តុថ្មីក្នុងភោជនីយដ្ឋាន')}
                                     </p>
                                 </div>
                             </div>
@@ -587,10 +588,10 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                 type="button"
                                 onClick={() => setShowAddModal(false)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -607,7 +608,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     <Utensils className="w-3.5 h-3.5" />
                                                 </div>
                                                 <h3 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ព័ត៌មានអត្តសញ្ញាណតុ & ទីតាំង (Table Identity & Zone)
+                                                    {tr('ព័ត៌មានអត្តសញ្ញាណតុ & ទីតាំង (Table Identity & Zone)')}
                                                 </h3>
                                             </div>
 
@@ -615,7 +616,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             <div className="grid grid-cols-2 gap-3.5">
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        កូដតុ <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Code)</span>
+                                                        {tr('កូដតុ')} <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Code)</span>
                                                     </label>
                                                     <div className="relative">
                                                         <Hash className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
@@ -631,14 +632,14 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        ឈ្មោះតុ <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Name)</span>
+                                                        {tr('ឈ្មោះតុ')} <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Name)</span>
                                                     </label>
                                                     <div className="relative">
                                                         <Utensils className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
                                                         <input
                                                             type="text"
                                                             required
-                                                            placeholder="ឧ. តុ ១៥"
+                                                            placeholder={tr("ឧ. តុ ១៥")}
                                                             value={addForm.name}
                                                             onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
                                                             className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
@@ -651,9 +652,9 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             <div className="space-y-1.5">
                                                 <div className="flex items-center justify-between">
                                                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                        តំបន់ / ផ្នែក <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Zone)</span>
+                                                        {tr('តំបន់ / ផ្នែក')} <span className="text-rose-500">*</span> <span className="font-normal text-zinc-400">(Zone)</span>
                                                     </label>
-                                                    <span className="text-[11px] text-zinc-400 font-khmer">ជ្រើសរើស ឬវាយបញ្ចូលថ្មី</span>
+                                                    <span className="text-[11px] text-zinc-400 font-khmer">{tr('ជ្រើសរើស ឬវាយបញ្ចូលថ្មី')}</span>
                                                 </div>
                                                 <div className="relative">
                                                     <MapPin className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
@@ -661,7 +662,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                         type="text"
                                                         required
                                                         list="zone-list"
-                                                        placeholder="ឧ. ខាងក្នុង / បន្ទប់ VIP / ខាងក្រៅ"
+                                                        placeholder={tr("ឧ. ខាងក្នុង / បន្ទប់ VIP / ខាងក្រៅ")}
                                                         value={addForm.zone}
                                                         onChange={(e) => setAddForm({ ...addForm, zone: e.target.value })}
                                                         className="w-full pl-9 pr-3 h-10 bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition shadow-2xs"
@@ -703,20 +704,20 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     <Armchair className="w-3.5 h-3.5" />
                                                 </div>
                                                 <h3 className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ទម្រង់ & ចំនួនកៅអី (Table Shape & Seating Capacity)
+                                                    {tr('ទម្រង់ & ចំនួនកៅអី (Table Shape & Seating Capacity)')}
                                                 </h3>
                                             </div>
 
                                             {/* Shape Selector */}
                                             <div className="space-y-1.5">
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    រាងតុ <span className="font-normal text-zinc-400">(Table Shape)</span>
+                                                    {tr('រាងតុ')} <span className="font-normal text-zinc-400">(Table Shape)</span>
                                                 </label>
                                                 <div className="grid grid-cols-3 gap-3">
                                                     {[
-                                                        { id: 'square', label: 'ការ៉េ', sub: 'Square', icon: Square },
-                                                        { id: 'rectangle', label: 'ចតុកោណ', sub: 'Rectangle', icon: RectangleHorizontal },
-                                                        { id: 'round', label: 'រង្វង់មូល', sub: 'Round', icon: Circle },
+                                                        { id: 'square', label: tr('ការ៉េ'), sub: 'Square', icon: Square },
+                                                        { id: 'rectangle', label: tr('ចតុកោណ'), sub: 'Rectangle', icon: RectangleHorizontal },
+                                                        { id: 'round', label: tr('រង្វង់មូល'), sub: 'Round', icon: Circle },
                                                     ].map((s) => {
                                                         const Icon = s.icon;
                                                         const isSelected = addForm.shape === s.id;
@@ -743,7 +744,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                             {/* Seating Stepper & Preset Pills */}
                                             <div className="space-y-1.5">
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                                                    ចំនួនកៅអី <span className="font-normal text-zinc-400">(Seating Capacity)</span>
+                                                    {tr('ចំនួនកៅអី')} <span className="font-normal text-zinc-400">(Seating Capacity)</span>
                                                 </label>
                                                 <div className="flex items-center gap-2">
                                                     {/* Stepper */}
@@ -752,19 +753,19 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                             type="button"
                                                             onClick={() => setAddForm({ ...addForm, capacity: Math.max(1, addForm.capacity - 1) })}
                                                             className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
-                                                            title="បន្ថយ ១"
+                                                            title={tr("បន្ថយ ១")}
                                                         >
                                                             <Minus className="w-3.5 h-3.5" />
                                                         </button>
                                                         <div className="w-16 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white flex items-center justify-center gap-1">
                                                             <span>{addForm.capacity}</span>
-                                                            <span className="text-[10px] font-normal text-zinc-400 font-khmer">កៅអី</span>
+                                                            <span className="text-[10px] font-normal text-zinc-400 font-khmer">{tr('កៅអី')}</span>
                                                         </div>
                                                         <button
                                                             type="button"
                                                             onClick={() => setAddForm({ ...addForm, capacity: Math.min(50, addForm.capacity + 1) })}
                                                             className="w-10 h-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition cursor-pointer"
-                                                            title="បន្ថែម ១"
+                                                            title={tr("បន្ថែម ១")}
                                                         >
                                                             <Plus className="w-3.5 h-3.5" />
                                                         </button>
@@ -801,12 +802,12 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                     <Eye className="w-3.5 h-3.5" />
                                                 </div>
                                                 <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ទិដ្ឋភាពប្លង់ជាក់ស្តែង (Floor Preview)
+                                                    {tr('ទិដ្ឋភាពប្លង់ជាក់ស្តែង (Floor Preview)')}
                                                 </span>
                                             </div>
                                             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-khmer">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                                {editingTableId ? 'កំពុងកែប្រែ (Editing)' : 'តុថ្មី (New Table)'}
+                                                {editingTableId ? tr('កំពុងកែប្រែ (Editing)') : tr('តុថ្មី (New Table)')}
                                             </span>
                                         </div>
 
@@ -832,7 +833,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                                             {addForm.code || 'T-15'}
                                                         </span>
                                                         <span className="font-bold text-xs text-slate-900 dark:text-white px-2 truncate max-w-[130px] font-khmer">
-                                                            {addForm.name || 'តុ ១៥'}
+                                                            {addForm.name || tr('តុ ១៥')}
                                                         </span>
                                                         <span className="text-[10px] text-zinc-700 dark:text-zinc-300 flex items-center gap-1 font-mono font-medium mt-0.5">
                                                             <Users className="w-3 h-3 text-amber-600 dark:text-amber-500" />
@@ -897,31 +898,31 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
 
                                             {chairLayout.hidden > 0 && (
                                                 <span className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-khmer">
-                                                    +{chairLayout.hidden} កៅអីមិនបានបង្ហាញ
+                                                    +{chairLayout.hidden} {tr('កៅអីមិនបានបង្ហាញ')}
                                                 </span>
                                             )}
 
                                             <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-2 font-khmer">
-                                                {addForm.zone || 'គ្រប់តំបន់ទាំងអស់'}
+                                                {addForm.zone || tr('គ្រប់តំបន់ទាំងអស់')}
                                             </div>
                                         </div>
 
                                         {/* Bottom Metadata Summary in Right Column */}
                                         <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-3 gap-2.5 text-center">
                                             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">តំបន់</div>
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">{tr('តំបន់')}</div>
                                                 <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate mt-0.5">
                                                     {addForm.zone || 'N/A'}
                                                 </div>
                                             </div>
                                             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">រូបរាង</div>
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">{tr('រូបរាង')}</div>
                                                 <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mt-0.5 font-khmer">
-                                                    {addForm.shape === 'round' ? 'រង្វង់' : addForm.shape === 'rectangle' ? 'ចតុកោណ' : 'ការ៉េ'}
+                                                    {addForm.shape === 'round' ? tr('រង្វង់') : addForm.shape === 'rectangle' ? tr('ចតុកោណ') : tr('ការ៉េ')}
                                                 </div>
                                             </div>
                                             <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
-                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">កៅអី</div>
+                                                <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer">{tr('កៅអី')}</div>
                                                 <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mt-0.5">
                                                     {addForm.capacity} Pax
                                                 </div>
@@ -935,7 +936,7 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                             <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/80 flex items-center justify-between shrink-0 shadow-xs">
                                 <div className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:flex items-center gap-2 font-khmer">
                                     <span className="w-2 h-2 rounded-full bg-amber-500" />
-                                    តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត និងអាចចាប់ផ្តើមទទួលភ្ញៀវបាន
+                                    {tr('តុថ្មីនឹងបង្ហាញនៅលើប្លង់ភ្លាមៗបន្ទាប់ពីបង្កើត និងអាចចាប់ផ្តើមទទួលភ្ញៀវបាន')}
                                 </div>
                                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                                     <button
@@ -943,14 +944,14 @@ export default function FloorIndex({ tables, zones, currentZone, metrics }: Floo
                                         onClick={() => setShowAddModal(false)}
                                         className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
                                     >
-                                        បោះបង់ (Cancel)
+                                        {tr('បោះបង់ (Cancel)')}
                                     </button>
                                     <button
                                         type="submit"
                                         className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 transition cursor-pointer shadow-md shadow-amber-500/20 flex items-center gap-1.5 active:scale-[0.98] font-khmer"
                                     >
                                         <PlusCircle className="w-4 h-4" />
-                                        <span>{editingTableId ? 'រក្សាទុកការកែប្រែ (Save)' : 'បង្កើតតុថ្មី (Create Table)'}</span>
+                                        <span>{editingTableId ? tr('រក្សាទុកការកែប្រែ (Save)') : tr('បង្កើតតុថ្មី (Create Table)')}</span>
                                     </button>
                                 </div>
                             </div>

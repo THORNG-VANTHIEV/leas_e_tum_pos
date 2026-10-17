@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { currentLanguage, switchLanguage, syncLanguageCookie } from '../locales/tr';
 import { km, TranslationDict } from '../locales/km';
 import { en } from '../locales/en';
 
-export type Language = 'km' | 'en';
+export type { Language } from '../locales/tr';
+import type { Language } from '../locales/tr';
 
 interface LanguageContextType {
     language: Language;
@@ -21,23 +23,20 @@ const dictionaries: Record<Language, TranslationDict> = {
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    // The POS is Khmer-first: the language switch was removed, so always start in Khmer
-    // (ignores an old 'en' choice left in localStorage from the earlier switch)
-    const [language, setLanguageState] = useState<Language>('km');
+    // The language is read once at page load; switching reloads the page (see switchLanguage)
+    const [language] = useState<Language>(() => currentLanguage());
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('pos_language', language);
-            document.documentElement.lang = language;
-        }
+        document.documentElement.lang = language;
+        syncLanguageCookie(language);
     }, [language]);
 
     const setLanguage = (lang: Language) => {
-        setLanguageState(lang);
+        switchLanguage(lang);
     };
 
     const toggleLanguage = () => {
-        setLanguageState((prev) => (prev === 'km' ? 'en' : 'km'));
+        switchLanguage(language === 'km' ? 'en' : 'km');
     };
 
     const t = useMemo(() => {

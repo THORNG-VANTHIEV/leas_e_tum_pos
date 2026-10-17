@@ -22,7 +22,7 @@ class ActiveUserCheck
                 $request->session()->regenerateToken();
 
                 return redirect()->route('login')->withErrors([
-                    'username' => 'គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។',
+                    'username' => __('គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។'),
                 ]);
             }
         }

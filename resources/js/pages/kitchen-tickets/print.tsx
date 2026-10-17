@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import { Printer } from 'lucide-react';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { useAutoPrint } from '@/components/print-queue';
+import { tr } from '@/locales/tr';
 
 interface TicketLine {
     product_id: number;
@@ -55,7 +56,7 @@ export default function KitchenTicketPrint({ ticket }: KitchenTicketPrintProps) 
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold cursor-pointer"
                 >
                     <Printer className="w-4 h-4" />
-                    <span className="font-khmer">ព្រីនបុងចុងភៅ</span>
+                    <span className="font-khmer">{tr('ព្រីនបុងចុងភៅ')}</span>
                 </button>
             </div>
 

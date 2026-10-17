@@ -45,7 +45,7 @@ final class CheckoutOrderAction
             // 2. Resolve Products and Authoritative Prices
             $rawItems = $data['items'] ?? [];
             if (empty($rawItems)) {
-                throw new DomainException('សូមបន្ថែមមុខម្ហូបយ៉ាងហោចណាស់មួយ មុននឹងគិតប្រាក់។');
+                throw new DomainException(__('សូមបន្ថែមមុខម្ហូបយ៉ាងហោចណាស់មួយ មុននឹងគិតប្រាក់។'));
             }
 
             $productIds = array_column($rawItems, 'product_id');
@@ -63,7 +63,7 @@ final class CheckoutOrderAction
                 $product = $products->get($productId);
 
                 if (! $product) {
-                    throw new DomainException("មុខទំនិញ #{$productId} មិនមានលក់ទេ។");
+                    throw new DomainException(__('មុខទំនិញ #:productId មិនមានលក់ទេ។', ['productId' => $productId]));
                 }
 
                 $quantity = max(1, (int) ($rawItem['quantity'] ?? 1));
@@ -108,7 +108,7 @@ final class CheckoutOrderAction
                 $maxDiscount = Money::fromCents(intdiv($itemsSubtotalCents * $maxDiscountPercent, 100));
 
                 throw ValidationException::withMessages([
-                    'discount_amount' => "Cashier អាចបញ្ចុះតម្លៃបានត្រឹម {$maxDiscountPercent}% (\${$maxDiscount})។ សូមឱ្យ Supervisor ឬ Admin ធ្វើការបញ្ចុះតម្លៃលើសនេះ។",
+                    'discount_amount' => __('Cashier អាចបញ្ចុះតម្លៃបានត្រឹម :maxDiscountPercent% ($:maxDiscount)។ សូមឱ្យ Supervisor ឬ Admin ធ្វើការបញ្ចុះតម្លៃលើសនេះ។', ['maxDiscountPercent' => $maxDiscountPercent, 'maxDiscount' => $maxDiscount]),
                 ]);
             }
             $expectedGrandTotalCents = max(0, $itemsSubtotalCents - $discountCents);
@@ -144,7 +144,7 @@ final class CheckoutOrderAction
             // "Paid via app" money arrives later from the platform, so it only makes sense for delivery app orders
             if ($paymentMethod === 'app' && ! $orderSource->isDeliveryPlatform()) {
                 throw ValidationException::withMessages([
-                    'payment_method' => 'បង់តាម App ប្រើបានតែការកម្មង់ពី foodpanda, Grab, Nham24, WOWNOW ឬ App ផ្សេងៗប៉ុណ្ណោះ។',
+                    'payment_method' => __('បង់តាម App ប្រើបានតែការកម្មង់ពី foodpanda, Grab, Nham24, WOWNOW ឬ App ផ្សេងៗប៉ុណ្ណោះ។'),
                 ]);
             }
             $externalOrderRef = $orderSource->isDeliveryPlatform()
@@ -159,7 +159,7 @@ final class CheckoutOrderAction
 
                 // Only an open table order can be settled; a paid or voided invoice must never be re-numbered or revived
                 if ($document->status !== DocumentStatus::Draft) {
-                    throw new DomainException('ការកម្មង់នេះត្រូវបានគិតប្រាក់ ឬលុបចោលរួចហើយ។ សូមផ្ទុកទំព័រ POS ឡើងវិញ។');
+                    throw new DomainException(__('ការកម្មង់នេះត្រូវបានគិតប្រាក់ ឬលុបចោលរួចហើយ។ សូមផ្ទុកទំព័រ POS ឡើងវិញ។'));
                 }
                 // Dishes already sent to the kitchen when the table was held are not ticketed again
                 $previousItems = $this->kitchenTickets->snapshot($document);

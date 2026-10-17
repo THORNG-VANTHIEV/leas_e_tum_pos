@@ -25,6 +25,7 @@ import {
     ShieldAlert,
     KeyRound,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface ApprovalItem {
     id: number;
@@ -172,16 +173,16 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
     };
 
     const approvePresets = [
-        'អនុម័តសម្រាប់ការបញ្ចុះតម្លៃពិសេសអតិថិជន VIP',
-        'អនុម័តបោះបង់វិក្កយបត្រតាមការស្នើសុំជាក់ស្តែង',
-        'អនុម័តកែប្រែទិន្នន័យដោយមានការផ្ទៀងផ្ទាត់ត្រឹមត្រូវ',
+        tr('អនុម័តសម្រាប់ការបញ្ចុះតម្លៃពិសេសអតិថិជន VIP'),
+        tr('អនុម័តបោះបង់វិក្កយបត្រតាមការស្នើសុំជាក់ស្តែង'),
+        tr('អនុម័តកែប្រែទិន្នន័យដោយមានការផ្ទៀងផ្ទាត់ត្រឹមត្រូវ'),
         'Approved by administrator - Verified authentic',
     ];
 
     const rejectPresets = [
-        'បដិសេធដោយសារមិនមានឯកសារយោងគ្រប់គ្រាន់',
-        'បដិសេធ៖ ព័ត៌មានស្នើសុំមិនស្របតាមគោលការណ៍ហាង',
-        'បដិសេធ៖ តម្លៃស្នើសុំទាបជាងតម្លៃដើមផលិតផល',
+        tr('បដិសេធដោយសារមិនមានឯកសារយោងគ្រប់គ្រាន់'),
+        tr('បដិសេធ៖ ព័ត៌មានស្នើសុំមិនស្របតាមគោលការណ៍ហាង'),
+        tr('បដិសេធ៖ តម្លៃស្នើសុំទាបជាងតម្លៃដើមផលិតផល'),
         'Rejected by administrator - Insufficient justification',
     ];
 
@@ -189,7 +190,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
     const currentForm = isApproving ? approveForm : rejectForm;
 
     return (
-        <AppLayout title="ប្រព័ន្ធគ្រប់គ្រងការអនុម័តលើកលែង (Approvals Inbox)">
+        <AppLayout title={tr("ប្រព័ន្ធគ្រប់គ្រងការអនុម័តលើកលែង (Approvals Inbox)")}>
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Tabs Controls */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -202,13 +203,13 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                 </div>
                                 <div>
                                     <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-khmer flex items-center gap-2.5">
-                                        <span>ប្រព័ន្ធគ្រប់គ្រងការអនុម័តលើកលែង</span>
+                                        <span>{tr('ប្រព័ន្ធគ្រប់គ្រងការអនុម័តលើកលែង')}</span>
                                         <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-normal">
-                                            {approvals.filter((a) => a.status === 'pending').length} រង់ចាំ
+                                            {approvals.filter((a) => a.status === 'pending').length} {tr('រង់ចាំ')}
                                         </span>
                                     </h1>
                                     <p className="text-xs text-zinc-400 mt-0.5 font-khmer">
-                                        Invariant INV-06: ការអនុញ្ញាតកម្រិតរដ្ឋបាលលើប្រតិបត្តិការបញ្ចុះតម្លៃ, បោះបង់វិក្កយបត្រ និងការបើកការិយបរិច្ឆេទគណនេយ្យ
+                                        {tr('Invariant INV-06: ការអនុញ្ញាតកម្រិតរដ្ឋបាលលើប្រតិបត្តិការបញ្ចុះតម្លៃ, បោះបង់វិក្កយបត្រ និងការបើកការិយបរិច្ឆេទគណនេយ្យ')}
                                     </p>
                                 </div>
                             </div>
@@ -247,7 +248,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                 <ShieldCheck className="w-6 h-6" />
                             </div>
                             <div className="space-y-1">
-                                <h3 className="text-sm font-bold text-white font-khmer">មិនមានសំណើក្នុងស្ថានភាពនេះទេ</h3>
+                                <h3 className="text-sm font-bold text-white font-khmer">{tr('មិនមានសំណើក្នុងស្ថានភាពនេះទេ')}</h3>
                                 <p className="text-xs text-zinc-500 font-khmer">
                                     ពុំមានសំណើអនុម័តដែលត្រូវពិនិត្យក្នុងផ្នែក '{activeTab}' នោះឡើយ
                                 </p>
@@ -274,7 +275,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                             {item.document && (
                                                 <span className="text-xs text-emerald-400 font-mono px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
                                                     {item.document.document_number || `Draft #${item.document.id}`}
-                                                    {item.document.reference_identifier ? ` • តុ ${item.document.reference_identifier}` : ''}
+                                                    {item.document.reference_identifier ? ` • ${tr('តុ')} ${item.document.reference_identifier}` : ''}
                                                 </span>
                                             )}
                                         </div>
@@ -282,7 +283,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                         <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
                                             <span className="flex items-center gap-1.5">
                                                 <UserIcon className="w-3.5 h-3.5 text-zinc-500" />
-                                                <span>ស្នើសុំដោយ៖ <strong className="text-zinc-200">{item.requester.username}</strong></span>
+                                                <span>{tr('ស្នើសុំដោយ៖')} <strong className="text-zinc-200">{item.requester.username}</strong></span>
                                             </span>
                                             <span className="text-zinc-600">•</span>
                                             <span className="flex items-center gap-1 text-zinc-400">
@@ -293,7 +294,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     </div>
 
                                     <div className="text-xs text-zinc-300 rounded-xl bg-zinc-950/60 p-3.5 border border-zinc-800/60 space-y-1">
-                                        <span className="text-zinc-400 font-medium font-khmer block text-[11px]">មូលហេតុនៃការស្នើសុំ (Reason)៖</span>
+                                        <span className="text-zinc-400 font-medium font-khmer block text-[11px]">{tr('មូលហេតុនៃការស្នើសុំ (Reason)៖')}</span>
                                         <p className="text-zinc-200 italic font-sans text-xs">
                                             "{item.reason}"
                                         </p>
@@ -303,16 +304,16 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     {item.reviewed_at && (
                                         <div className="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs font-mono flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                             <div className="space-x-2">
-                                                <span className="text-zinc-500">ពិនិត្យដោយ៖</span>
+                                                <span className="text-zinc-500">{tr('ពិនិត្យដោយ៖')}</span>
                                                 <span className="text-emerald-400 font-semibold">{item.reviewer?.username || 'Admin'}</span>
                                                 <span className="text-zinc-600">|</span>
-                                                <span className="text-zinc-500">កំណត់ចំណាំ៖</span>
+                                                <span className="text-zinc-500">{tr('កំណត់ចំណាំ៖')}</span>
                                                 <span className="text-zinc-300 italic font-sans">"{item.review_note}"</span>
                                             </div>
                                             {item.expires_at && (
                                                 <div className="text-amber-400 flex items-center gap-1.5 text-[11px] shrink-0 font-mono">
                                                     <Clock className="w-3.5 h-3.5" />
-                                                    <span>ផុតកំណត់៖ {item.expires_at.replace('T', ' ').slice(0, 19)}</span>
+                                                    <span>{tr('ផុតកំណត់៖')} {item.expires_at.replace('T', ' ').slice(0, 19)}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -331,7 +332,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                             >
                                                 <XCircle className="w-3.5 h-3.5" />
-                                                <span>បដិសេធ (Reject)</span>
+                                                <span>{tr('បដិសេធ (Reject)')}</span>
                                             </button>
 
                                             <button
@@ -344,7 +345,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold font-khmer shadow-sm hover:shadow-emerald-600/30 transition-all cursor-pointer"
                                             >
                                                 <CheckCircle2 className="w-3.5 h-3.5" />
-                                                <span>ពិនិត្យ & អនុម័ត (Review & Approve)</span>
+                                                <span>{tr('ពិនិត្យ & អនុម័ត (Review & Approve)')}</span>
                                             </button>
                                         </div>
                                     )}
@@ -375,7 +376,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            {isApproving ? 'ពិនិត្យ និងយល់ព្រមអនុម័តសំណើ' : 'ពិនិត្យ និងបដិសេធសំណើលើកលែង'}
+                                            {isApproving ? tr('ពិនិត្យ និងយល់ព្រមអនុម័តសំណើ') : tr('ពិនិត្យ និងបដិសេធសំណើលើកលែង')}
                                         </h3>
                                         <span
                                             className={`px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase font-mono border ${
@@ -389,8 +390,8 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
                                         {isApproving
-                                            ? 'ផ្ដល់សិទ្ធិអនុញ្ញាត 30 នាទី សម្រាប់ប្រតិបត្តិការពិសេសនេះ'
-                                            : 'បដិសេធសំណើ និងបញ្ឈប់រាល់ការអនុញ្ញាតមិនប្រក្រតី'}
+                                            ? tr('ផ្ដល់សិទ្ធិអនុញ្ញាត 30 នាទី សម្រាប់ប្រតិបត្តិការពិសេសនេះ')
+                                            : tr('បដិសេធសំណើ និងបញ្ឈប់រាល់ការអនុញ្ញាតមិនប្រក្រតី')}
                                     </p>
                                 </div>
                             </div>
@@ -398,10 +399,10 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                 type="button"
                                 onClick={() => setSelectedApproval(null)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-emerald-600 dark:text-emerald-400" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -417,7 +418,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <KeyRound className="w-4 h-4 text-emerald-500" />
-                                            <span>ការសម្រេចចិត្ត / Decision Action</span>
+                                            <span>{tr('ការសម្រេចចិត្ត / Decision Action')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -438,14 +439,14 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                 <div className="flex items-center justify-between w-full">
                                                     <div className="flex items-center gap-2 font-bold font-khmer text-xs">
                                                         <CheckCircle2 className={`w-4 h-4 ${isApproving ? 'text-emerald-500' : 'text-zinc-400'}`} />
-                                                        <span>យល់ព្រមអនុម័ត (Approve)</span>
+                                                        <span>{tr('យល់ព្រមអនុម័ត (Approve)')}</span>
                                                     </div>
                                                     {isApproving && (
                                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                                     )}
                                                 </div>
                                                 <p className="text-[11px] font-khmer text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                                                    ផ្ដល់សិទ្ធិសុពលភាព 30 នាទី សម្រាប់ដំណើរការប្រតិបត្តិការនេះ (One-time token)
+                                                    {tr('ផ្ដល់សិទ្ធិសុពលភាព 30 នាទី សម្រាប់ដំណើរការប្រតិបត្តិការនេះ (One-time token)')}
                                                 </p>
                                             </button>
 
@@ -461,14 +462,14 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                 <div className="flex items-center justify-between w-full">
                                                     <div className="flex items-center gap-2 font-bold font-khmer text-xs">
                                                         <XCircle className={`w-4 h-4 ${!isApproving ? 'text-rose-500' : 'text-zinc-400'}`} />
-                                                        <span>បដិសេធសំណើ (Reject)</span>
+                                                        <span>{tr('បដិសេធសំណើ (Reject)')}</span>
                                                     </div>
                                                     {!isApproving && (
                                                         <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                                                     )}
                                                 </div>
                                                 <p className="text-[11px] font-khmer text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                                                    បដិសេធសំណើ និងទប់ស្កាត់រាល់ការអនុញ្ញាតមិនប្រក្រតីភ្លាមៗ
+                                                    {tr('បដិសេធសំណើ និងទប់ស្កាត់រាល់ការអនុញ្ញាតមិនប្រក្រតីភ្លាមៗ')}
                                                 </p>
                                             </button>
                                         </div>
@@ -479,11 +480,11 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                         <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                 <FileText className="w-4 h-4 text-emerald-500" />
-                                                <span>កំណត់ចំណាំរដ្ឋបាល (Administrative Note)</span>
+                                                <span>{tr('កំណត់ចំណាំរដ្ឋបាល (Administrative Note)')}</span>
                                                 <span className="text-rose-500">*</span>
                                             </div>
                                             <span className="text-[10px] text-zinc-400 font-mono">
-                                                {currentForm.data.review_note.length} តួអក្សរ
+                                                {currentForm.data.review_note.length} {tr('តួអក្សរ')}
                                             </span>
                                         </div>
 
@@ -495,8 +496,8 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                 onChange={(e) => currentForm.setData('review_note', e.target.value)}
                                                 placeholder={
                                                     isApproving
-                                                        ? 'ឧទាហរណ៍៖ អនុម័តសម្រាប់ការបញ្ចុះតម្លៃពិសេសអតិថិជន VIP...'
-                                                        : 'ឧទាហរណ៍៖ បដិសេធដោយសារមិនមានឯកសារយោងគ្រប់គ្រាន់...'
+                                                        ? tr('ឧទាហរណ៍៖ អនុម័តសម្រាប់ការបញ្ចុះតម្លៃពិសេសអតិថិជន VIP...')
+                                                        : tr('ឧទាហរណ៍៖ បដិសេធដោយសារមិនមានឯកសារយោងគ្រប់គ្រាន់...')
                                                 }
                                                 className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all font-sans"
                                             />
@@ -509,7 +510,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                         <div className="space-y-2 pt-1">
                                             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 font-khmer">
                                                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>ជ្រើសរើសកំណត់ចំណាំរហ័ស (Quick Presets)៖</span>
+                                                <span>{tr('ជ្រើសរើសកំណត់ចំណាំរហ័ស (Quick Presets)៖')}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {(isApproving ? approvePresets : rejectPresets).map((preset, idx) => (
@@ -530,10 +531,10 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-2 text-xs">
                                         <div className="flex items-center gap-2 font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <Lock className="w-4 h-4 text-emerald-500" />
-                                            <span>គោលការណ៍សុវត្ថិភាព INV-06 (Security & Audit Compliance)</span>
+                                            <span>{tr('គោលការណ៍សុវត្ថិភាព INV-06 (Security & Audit Compliance)')}</span>
                                         </div>
                                         <p className="text-zinc-600 dark:text-zinc-400 text-[11px] font-khmer leading-relaxed">
-                                            រាល់ការសម្រេចចិត្តអនុម័ត នឹងត្រូវកត់ត្រាចូលក្នុងប្រព័ន្ធសវនកម្ម (Audit Log) ជាអចិន្ត្រៃយ៍ រួមទាំងឈ្មោះអ្នកអនុម័ត, អាសយដ្ឋាន IP និងពេលវេលាជាក់ស្តែង។ សំណើដែលបានអនុម័តមានសុពលភាពត្រឹមតែ 30 នាទីប៉ុណ្ណោះ។
+                                            {tr('រាល់ការសម្រេចចិត្តអនុម័ត នឹងត្រូវកត់ត្រាចូលក្នុងប្រព័ន្ធសវនកម្ម (Audit Log) ជាអចិន្ត្រៃយ៍ រួមទាំងឈ្មោះអ្នកអនុម័ត, អាសយដ្ឋាន IP និងពេលវេលាជាក់ស្តែង។ សំណើដែលបានអនុម័តមានសុពលភាពត្រឹមតែ 30 នាទីប៉ុណ្ណោះ។')}
                                         </p>
                                     </div>
                                 </div>
@@ -562,7 +563,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        ការអនុម័ត
+                                                        {tr('ការអនុម័ត')}
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         SEC-{selectedApproval.id.toString().padStart(6, '0')}
@@ -575,21 +576,21 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                             : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
                                                     }`}
                                                 >
-                                                    {isApproving ? 'រួចរាល់អនុម័ត' : 'រង់ចាំបដិសេធ'}
+                                                    {isApproving ? tr('រួចរាល់អនុម័ត') : tr('រង់ចាំបដិសេធ')}
                                                 </span>
                                             </div>
 
                                             {/* Details Grid */}
                                             <div className="space-y-3 text-xs font-mono">
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">ប្រភេទសំណើ៖</span>
+                                                    <span className="font-khmer">{tr('ប្រភេទសំណើ៖')}</span>
                                                     <span className="text-white font-bold uppercase">
                                                         {selectedApproval.request_type.replace('_', ' ')}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">គោលដៅអនុម័ត៖</span>
+                                                    <span className="font-khmer">{tr('គោលដៅអនុម័ត៖')}</span>
                                                     <span className="text-emerald-400 font-semibold">
                                                         {selectedApproval.target_type} #{selectedApproval.target_id}
                                                     </span>
@@ -597,23 +598,23 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
 
                                                 {selectedApproval.document && (
                                                     <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                        <span className="font-khmer">ឯកសារយោង៖</span>
+                                                        <span className="font-khmer">{tr('ឯកសារយោង៖')}</span>
                                                         <span className="text-white">
                                                             {selectedApproval.document.document_number || `Draft #${selectedApproval.document.id}`}
-                                                            {selectedApproval.document.reference_identifier ? ` (តុ ${selectedApproval.document.reference_identifier})` : ''}
+                                                            {selectedApproval.document.reference_identifier ? ` (${tr('តុ')} ${selectedApproval.document.reference_identifier})` : ''}
                                                         </span>
                                                     </div>
                                                 )}
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">អ្នកស្នើសុំ៖</span>
+                                                    <span className="font-khmer">{tr('អ្នកស្នើសុំ៖')}</span>
                                                     <span className="text-zinc-200">
                                                         {selectedApproval.requester.name} (@{selectedApproval.requester.username})
                                                     </span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400 pb-1.5 border-b border-zinc-800/50">
-                                                    <span className="font-khmer">កាលបរិច្ឆេទស្នើសុំ៖</span>
+                                                    <span className="font-khmer">{tr('កាលបរិច្ឆេទស្នើសុំ៖')}</span>
                                                     <span className="text-zinc-300">
                                                         {selectedApproval.created_at ? selectedApproval.created_at.replace('T', ' ').slice(0, 19) : '—'}
                                                     </span>
@@ -623,7 +624,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                             {/* Reason Box */}
                                             <div className="rounded-xl bg-zinc-950/70 border border-zinc-800 p-3 space-y-1">
                                                 <span className="text-[11px] font-semibold text-zinc-400 font-khmer block">
-                                                    មូលហេតុស្នើសុំពីបុគ្គលិក (Original Reason)៖
+                                                    {tr('មូលហេតុស្នើសុំពីបុគ្គលិក (Original Reason)៖')}
                                                 </span>
                                                 <p className="text-xs text-zinc-200 italic font-sans">
                                                     "{selectedApproval.reason}"
@@ -634,7 +635,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                             {selectedApproval.requested_changes && (
                                                 <div className="rounded-xl bg-zinc-950/70 border border-zinc-800 p-3 space-y-1.5">
                                                     <span className="text-[11px] font-semibold text-zinc-400 font-khmer block">
-                                                        ទិន្នន័យផ្លាស់ប្តូរ (Requested Payload)៖
+                                                        {tr('ទិន្នន័យផ្លាស់ប្តូរ (Requested Payload)៖')}
                                                     </span>
                                                     <pre className="text-[11px] text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap">
                                                         {JSON.stringify(selectedApproval.requested_changes, null, 2)}
@@ -648,17 +649,17 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                                     <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between text-xs">
                                                         <div className="flex items-center gap-2 text-emerald-400 font-khmer font-semibold">
                                                             <Clock className="w-4 h-4 shrink-0 animate-pulse" />
-                                                            <span>សុពលភាពអនុវត្ត៖ 30 នាទី</span>
+                                                            <span>{tr('សុពលភាពអនុវត្ត៖ 30 នាទី')}</span>
                                                         </div>
-                                                        <span className="font-mono text-[10px] text-emerald-300">ប្រើបានតែម្តង</span>
+                                                        <span className="font-mono text-[10px] text-emerald-300">{tr('ប្រើបានតែម្តង')}</span>
                                                     </div>
                                                 ) : (
                                                     <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between text-xs">
                                                         <div className="flex items-center gap-2 text-rose-400 font-khmer font-semibold">
                                                             <XCircle className="w-4 h-4 shrink-0" />
-                                                            <span>ស្ថានភាព៖ បដិសេធចោល</span>
+                                                            <span>{tr('ស្ថានភាព៖ បដិសេធចោល')}</span>
                                                         </div>
-                                                        <span className="font-mono text-[10px] text-rose-300">បដិសេធ</span>
+                                                        <span className="font-mono text-[10px] text-rose-300">{tr('បដិសេធ')}</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -679,7 +680,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                     <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                         Esc
                                     </kbd>
-                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                    <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                                 </div>
 
                                 <div className="flex items-center gap-3 ml-auto">
@@ -688,7 +689,7 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                         onClick={() => setSelectedApproval(null)}
                                         className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
 
                                     <button
@@ -703,10 +704,10 @@ export default function ApprovalsIndex({ approvals }: ApprovalsPageProps) {
                                         {isApproving ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                                         <span>
                                             {currentForm.processing
-                                                ? 'កំពុងដំណើរការ...'
+                                                ? tr('កំពុងដំណើរការ...')
                                                 : isApproving
-                                                ? 'បញ្ជាក់ការយល់ព្រមអនុម័ត (Confirm 30-Min Window)'
-                                                : 'បញ្ជាក់ការបដិសេធសំណើ (Confirm Reject)'}
+                                                ? tr('បញ្ជាក់ការយល់ព្រមអនុម័ត (Confirm 30-Min Window)')
+                                                : tr('បញ្ជាក់ការបដិសេធសំណើ (Confirm Reject)')}
                                         </span>
                                     </button>
                                 </div>

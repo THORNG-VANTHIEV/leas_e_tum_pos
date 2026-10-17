@@ -5,6 +5,7 @@ import { Printer, ArrowLeft, RefreshCw, FileText, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatOrderSource, isDeliveryPlatform } from '@/components/order-source';
 import { paymentMethodLabel } from '@/components/document-status';
+import { tr } from '@/locales/tr';
 
 interface DocumentPrintProps {
     document: {
@@ -109,7 +110,7 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-zinc-900 py-6 px-4 selection:bg-zinc-200">
-            <Head title={`វិក្កយបត្រ A5 - ${doc.document_number || `ព្រាង #${doc.id}`}`} />
+            <Head title={`${tr('វិក្កយបត្រ')} A5 - ${doc.document_number || `${tr('ព្រាង #')}${doc.id}`}`} />
 
             {/* Print styles injected for precise A5 page format */}
             <style>{`
@@ -145,12 +146,12 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                 <Link href={`/invoices/${doc.id}`}>
                     <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">
                         <ArrowLeft className="w-4 h-4 mr-1.5" />
-                        <span className="font-khmer">វិក្កយបត្រ</span>
+                        <span className="font-khmer">{tr('វិក្កយបត្រ')}</span>
                     </Button>
                 </Link>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400 font-khmer">ក្រដាស A5</span>
+                    <span className="text-xs text-zinc-400 font-khmer">{tr('ក្រដាស A5')}</span>
                     <Button
                         size="sm"
                         onClick={handlePrint}
@@ -162,7 +163,7 @@ export default function PreviewA5({ document: doc }: DocumentPrintProps) {
                         ) : (
                             <Printer className="w-4 h-4 mr-1.5" />
                         )}
-                        <span className="font-khmer">{isPrinting ? 'កំពុងកត់ត្រា...' : 'ព្រីន A5'}</span>
+                        <span className="font-khmer">{isPrinting ? tr('កំពុងកត់ត្រា...') : tr('ព្រីន A5')}</span>
                     </Button>
                 </div>
             </div>

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { CashierFilter, CashierOption } from '@/components/cashier-filter';
 import { DocumentStatusBadge } from '@/components/document-status';
+import { tr } from '@/locales/tr';
 
 interface DocumentRecord {
     id: number;
@@ -83,7 +84,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
     };
 
     return (
-        <AppLayout title="បញ្ជីវិក្កយបត្រ">
+        <AppLayout title={tr("បញ្ជីវិក្កយបត្រ")}>
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Filter Controls */}
                 <div className="sticky top-14 md:top-0 z-20 bg-zinc-950/95 backdrop-blur-xl -mt-6 pt-6 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 border-b border-zinc-800/80 space-y-4 shadow-xs">
@@ -93,14 +94,14 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                             <div className="flex items-center gap-2.5">
                                 <ReceiptText className="w-6 h-6 text-emerald-400" />
                                 <h1 className="text-2xl font-bold tracking-tight text-white font-khmer">
-                                    បញ្ជីវិក្កយបត្រ
+                                    {tr('បញ្ជីវិក្កយបត្រ')}
                                 </h1>
                                 <span className="font-mono text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
-                                    សរុប {documents.total}
+                                    {tr('សរុប')} {documents.total}
                                 </span>
                             </div>
                             <p className="text-xs text-zinc-400 mt-1">
-                                ស្វែងរកវិក្កយបត្រតាមលេខ ឬលេខតុ។ ការកម្មង់ដែលមិនទាន់គិតប្រាក់ (ព្រាង) នៅខាងក្រោមគេ។
+                                {tr('ស្វែងរកវិក្កយបត្រតាមលេខ ឬលេខតុ។ ការកម្មង់ដែលមិនទាន់គិតប្រាក់ (ព្រាង) នៅខាងក្រោមគេ។')}
                             </p>
                         </div>
 
@@ -113,13 +114,13 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                             <Link href="/invoices/print-range">
                                 <Button variant="outline" size="md" className="border-zinc-700 hover:border-zinc-600 text-zinc-200">
                                     <Printer className="w-4 h-4 mr-1.5 text-emerald-400" />
-                                    <span className="font-khmer">ព្រីនជាបាច់</span>
+                                    <span className="font-khmer">{tr('ព្រីនជាបាច់')}</span>
                                 </Button>
                             </Link>
                             <Link href="/invoices/create">
                                 <Button size="md" className="shadow-lg shadow-emerald-500/20">
                                     <Plus className="w-4 h-4" />
-                                    <span className="font-khmer">កម្មង់ថ្មី (F2)</span>
+                                    <span className="font-khmer">{tr('កម្មង់ថ្មី (F2)')}</span>
                                 </Button>
                             </Link>
                         </div>
@@ -134,7 +135,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && applyFilter()}
-                                placeholder="ស្វែងរកលេខវិក្កយបត្រ, លេខតុ..."
+                                placeholder={tr("ស្វែងរកលេខវិក្កយបត្រ, លេខតុ...")}
                                 className="w-full pl-9 pr-3 py-1.5 text-xs text-zinc-100 bg-zinc-950 border border-zinc-800 rounded-lg outline-none focus:border-emerald-500"
                             />
                         </div>
@@ -142,10 +143,10 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                         {/* Status Tabs */}
                         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
                             {[
-                                { id: '', label: 'ទាំងអស់' },
-                                { id: 'draft', label: 'ព្រាង' },
-                                { id: 'review', label: 'កំពុងពិនិត្យ' },
-                                { id: 'finalized', label: 'បានគិតប្រាក់' },
+                                { id: '', label: tr('ទាំងអស់') },
+                                { id: 'draft', label: tr('ព្រាង') },
+                                { id: 'review', label: tr('កំពុងពិនិត្យ') },
+                                { id: 'finalized', label: tr('បានគិតប្រាក់') },
                                 { id: 'void', label: 'Void' },
                             ].map((t) => (
                                 <button
@@ -173,23 +174,23 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                         <table className="w-full text-left text-xs">
                             <thead className="bg-zinc-950/80 border-b border-zinc-800 text-zinc-400 font-khmer text-[11px]">
                                 <tr>
-                                    <th className="px-4 py-3">លេខវិក្កយបត្រ</th>
-                                    <th className="px-4 py-3">វគ្គ</th>
-                                    <th className="px-4 py-3">កាលបរិច្ឆេទ & ម៉ោង</th>
-                                    <th className="px-4 py-3">លេខតុ</th>
-                                    <th className="px-4 py-3">ភ្ញៀវ</th>
-                                    <th className="px-4 py-3">សរុប</th>
-                                    <th className="px-4 py-3">ផ្ទៀងផ្ទាត់ក្រដាស</th>
-                                    <th className="px-4 py-3">ស្ថានភាព</th>
-                                    <th className="px-4 py-3">អ្នកគិតប្រាក់</th>
-                                    <th className="px-4 py-3 text-right">សកម្មភាព</th>
+                                    <th className="px-4 py-3">{tr('លេខវិក្កយបត្រ')}</th>
+                                    <th className="px-4 py-3">{tr('វគ្គ')}</th>
+                                    <th className="px-4 py-3">{tr('កាលបរិច្ឆេទ & ម៉ោង')}</th>
+                                    <th className="px-4 py-3">{tr('លេខតុ')}</th>
+                                    <th className="px-4 py-3">{tr('ភ្ញៀវ')}</th>
+                                    <th className="px-4 py-3">{tr('សរុប')}</th>
+                                    <th className="px-4 py-3">{tr('ផ្ទៀងផ្ទាត់ក្រដាស')}</th>
+                                    <th className="px-4 py-3">{tr('ស្ថានភាព')}</th>
+                                    <th className="px-4 py-3">{tr('អ្នកគិតប្រាក់')}</th>
+                                    <th className="px-4 py-3 text-right">{tr('សកម្មភាព')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800/60 font-mono text-[11px]">
                                 {documents.data.length === 0 ? (
                                     <tr>
                                         <td colSpan={10} className="py-12 text-center text-xs text-zinc-500 font-sans">
-                                            <span className="font-khmer">មិនទាន់មានវិក្កយបត្រទេ។ ចុច</span> <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">F2</kbd> <span className="font-khmer">ដើម្បីកម្មង់លើកដំបូង។</span>
+                                            <span className="font-khmer">{tr('មិនទាន់មានវិក្កយបត្រទេ។ ចុច')}</span> <kbd className="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">F2</kbd> <span className="font-khmer">{tr('ដើម្បីកម្មង់លើកដំបូង។')}</span>
                                         </td>
                                     </tr>
                                 ) : (
@@ -200,7 +201,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                     {doc.document_number ? (
                                                         <span className="text-emerald-400">{doc.document_number}</span>
                                                     ) : (
-                                                        <span className="text-zinc-500 italic font-khmer">ព្រាង #{doc.id}</span>
+                                                        <span className="text-zinc-500 italic font-khmer">{tr('ព្រាង #')}{doc.id}</span>
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-zinc-400">
@@ -218,7 +219,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3 text-teal-400 font-semibold">
-                                                    {doc.unit_count} <span className="font-khmer">នាក់</span>
+                                                    {doc.unit_count} <span className="font-khmer">{tr('នាក់')}</span>
                                                 </td>
                                                 <td className="px-4 py-3 font-bold text-white text-xs">
                                                     {business.currency_symbol}
@@ -228,10 +229,10 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                     {doc.source_total_verified ? (
                                                         <Badge variant="emerald">
                                                             <CheckCircle2 className="w-3 h-3" />
-                                                            <span className="font-khmer">ត្រូវគ្នា</span>
+                                                            <span className="font-khmer">{tr('ត្រូវគ្នា')}</span>
                                                         </Badge>
                                                     ) : (
-                                                        <Badge variant="zinc"><span className="font-khmer">មិនទាន់ផ្ទៀងផ្ទាត់</span></Badge>
+                                                        <Badge variant="zinc"><span className="font-khmer">{tr('មិនទាន់ផ្ទៀងផ្ទាត់')}</span></Badge>
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-3 text-[10px]">
@@ -243,7 +244,7 @@ export default function DocumentIndex({ documents, filters, active_period, cashi
                                                 <td className="px-4 py-3 text-right">
                                                     <Link href={`/invoices/${doc.id}`}>
                                                         <Button size="sm" variant="ghost">
-                                                            <span className="font-khmer">មើល</span>
+                                                            <span className="font-khmer">{tr('មើល')}</span>
                                                             <ArrowUpRight className="w-3 h-3" />
                                                         </Button>
                                                     </Link>

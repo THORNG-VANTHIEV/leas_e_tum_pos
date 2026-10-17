@@ -29,6 +29,7 @@ import {
     ShieldCheck,
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
+import { tr } from '@/locales/tr';
 
 interface Customer {
     id: number;
@@ -73,36 +74,36 @@ const TIER_CONFIG: Record<
     { nameKh: string; color: string; badge: string; gradient: string; perk: string; discount: string }
 > = {
     standard: {
-        nameKh: 'Standard (ធម្មតា)',
+        nameKh: tr('Standard (ធម្មតា)'),
         color: 'text-slate-500',
         badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20',
         gradient: 'from-slate-800 via-slate-900 to-zinc-950',
-        perk: 'សន្សំពិន្ទុ 1x មូលដ្ឋាន (1$ = 1 pt)',
-        discount: 'អត្រាតម្លៃទូទៅក្នុងហាង',
+        perk: tr('សន្សំពិន្ទុ 1x មូលដ្ឋាន (1$ = 1 pt)'),
+        discount: tr('អត្រាតម្លៃទូទៅក្នុងហាង'),
     },
     silver: {
-        nameKh: 'Silver (ប្រាក់)',
+        nameKh: tr('Silver (ប្រាក់)'),
         color: 'text-sky-500',
         badge: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20',
         gradient: 'from-slate-700 via-sky-950 to-zinc-950',
-        perk: 'សន្សំពិន្ទុ 1.2x (1$ = 1.2 pts)',
-        discount: 'បញ្ចុះតម្លៃ 3% លើមុខម្ហូប',
+        perk: tr('សន្សំពិន្ទុ 1.2x (1$ = 1.2 pts)'),
+        discount: tr('បញ្ចុះតម្លៃ 3% លើមុខម្ហូប'),
     },
     gold: {
-        nameKh: 'Gold (មាស)',
+        nameKh: tr('Gold (មាស)'),
         color: 'text-amber-500',
         badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
         gradient: 'from-amber-900/60 via-zinc-900 to-amber-950/70',
-        perk: 'សន្សំពិន្ទុ 1.5x (1$ = 1.5 pts)',
-        discount: 'បញ្ចុះតម្លៃ 5% លើមុខម្ហូប & កាដូថ្ងៃកំណើត',
+        perk: tr('សន្សំពិន្ទុ 1.5x (1$ = 1.5 pts)'),
+        discount: tr('បញ្ចុះតម្លៃ 5% លើមុខម្ហូប & កាដូថ្ងៃកំណើត'),
     },
     vip: {
-        nameKh: 'VIP (ពិសេស)',
+        nameKh: tr('VIP (ពិសេស)'),
         color: 'text-purple-500',
         badge: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
         gradient: 'from-purple-950 via-zinc-900 to-zinc-950',
-        perk: 'សន្សំពិន្ទុ 2x (1$ = 2 pts)',
-        discount: 'បញ្ចុះតម្លៃ 10% & អាទិភាពកក់តុមុនគេ',
+        perk: tr('សន្សំពិន្ទុ 2x (1$ = 2 pts)'),
+        discount: tr('បញ្ចុះតម្លៃ 10% & អាទិភាពកក់តុមុនគេ'),
     },
 };
 
@@ -165,7 +166,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
     });
 
     const [pointsAdjustment, setPointsAdjustment] = useState<number>(10);
-    const [pointsReason, setPointsReason] = useState<string>('ការលើកទឹកចិត្តអតិថិជនពិសេស');
+    const [pointsReason, setPointsReason] = useState<string>(tr('ការលើកទឹកចិត្តអតិថិជនពិសេស'));
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -252,28 +253,28 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
                         <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                        <span>មាស</span>
+                        <span>{tr('មាស')}</span>
                     </span>
                 );
             case 'silver':
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-500/15 text-slate-800 dark:text-slate-200 border border-slate-400/40 dark:border-slate-500/40 shadow-2xs">
                         <Award className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
-                        <span>ប្រាក់</span>
+                        <span>{tr('ប្រាក់')}</span>
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/25 shadow-2xs">
-                        <span>ធម្មតា</span>
+                        <span>{tr('ធម្មតា')}</span>
                     </span>
                 );
         }
     };
 
     return (
-        <AppLayout title="អតិថិជន & ពិន្ទុ">
-            <Head title="Customers & Loyalty (CRM) — អតិថិជន & ពិន្ទុសន្សំ" />
+        <AppLayout title={tr("អតិថិជន & ពិន្ទុ")}>
+            <Head title={tr("Customers & Loyalty (CRM) — អតិថិជន & ពិន្ទុសន្សំ")} />
 
             <div className="space-y-6 pb-12">
                 {/* Header & Metrics Strip */}
@@ -285,13 +286,13 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
-                                    អតិថិជន & ពិន្ទុសន្សំ
+                                    {tr('អតិថិជន & ពិន្ទុសន្សំ')}
                                     <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 font-medium font-khmer">
-                                        ប្រព័ន្ធសមាជិក
+                                        {tr('ប្រព័ន្ធសមាជិក')}
                                     </span>
                                 </h1>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                    គ្រប់គ្រងប្រវត្តិអតិថិជន ពិន្ទុសន្សំ Loyalty Rewards និងកម្រិតសមាជិក VIP
+                                    {tr('គ្រប់គ្រងប្រវត្តិអតិថិជន ពិន្ទុសន្សំ Loyalty Rewards និងកម្រិតសមាជិក VIP')}
                                 </p>
                             </div>
                         </div>
@@ -302,7 +303,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-2 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                             >
                                 <UserPlus className="w-4 h-4" />
-                                <span>ចុះឈ្មោះអតិថិជនថ្មី</span>
+                                <span>{tr('ចុះឈ្មោះអតិថិជនថ្មី')}</span>
                             </button>
                         </div>
                     </div>
@@ -311,53 +312,53 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Total Customers / អតិថិជនសរុប</span>
+                                <span>{tr('Total Customers / អតិថិជនសរុប')}</span>
                                 <Users className="w-4 h-4 text-sky-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                                 {metrics.total_customers}
                             </div>
                             <div className="text-xs text-sky-400/90 font-khmer mt-1">
-                                {metrics.total_customers} នាក់បានចុះឈ្មោះ
+                                {metrics.total_customers} {tr('នាក់បានចុះឈ្មោះ')}
                             </div>
                         </Card>
 
                         <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>VIP & Gold / សមាជិកពិសេស</span>
+                                <span>{tr('VIP & Gold / សមាជិកពិសេស')}</span>
                                 <Sparkles className="w-4 h-4 text-purple-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                                 {metrics.vip_customers + metrics.gold_customers}
                             </div>
                             <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                                VIP: {metrics.vip_customers} នាក់ • Gold: {metrics.gold_customers} នាក់
+                                VIP: {metrics.vip_customers} {tr('នាក់ • Gold:')} {metrics.gold_customers} {tr('នាក់')}
                             </div>
                         </Card>
 
                         <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Total Points / ពិន្ទុសន្សំបច្ចុប្បន្ន</span>
+                                <span>{tr('Total Points / ពិន្ទុសន្សំបច្ចុប្បន្ន')}</span>
                                 <Coins className="w-4 h-4 text-amber-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                                 {metrics.total_points.toLocaleString()}
                             </div>
                             <div className="text-xs text-amber-400/90 font-khmer mt-1">
-                                ពិន្ទុអតិថិជនសរុប (Pts)
+                                {tr('ពិន្ទុអតិថិជនសរុប (Pts)')}
                             </div>
                         </Card>
 
                         <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Total Spent / ចំណូលសរុប</span>
+                                <span>{tr('Total Spent / ចំណូលសរុប')}</span>
                                 <TrendingUp className="w-4 h-4 text-emerald-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                                 ${Number(metrics.total_spent_usd || 0).toFixed(2)}
                             </div>
                             <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
-                                ≈ {Math.round(Number(metrics.total_spent_usd || 0) * exchangeRate).toLocaleString()} ៛
+                                ≈ {Math.round(Number(metrics.total_spent_usd || 0) * exchangeRate).toLocaleString()} {tr('៛')}
                             </div>
                         </Card>
                     </div>
@@ -370,7 +371,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                         <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                             type="text"
-                            placeholder="ស្វែងរកតាមឈ្មោះ, លេខទូរស័ព្ទ, ឬអ៊ីមែល..."
+                            placeholder={tr("ស្វែងរកតាមឈ្មោះ, លេខទូរស័ព្ទ, ឬអ៊ីមែល...")}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full h-9 pl-9 pr-8 bg-zinc-900 border border-zinc-800 rounded-xl text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-amber-500 transition-all font-khmer"
@@ -392,13 +393,13 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     {/* Tier Filter Tabs with Counts */}
                     <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-0.5 scrollbar-none">
                         {[
-                            { id: 'all', label: 'ទាំងអស់ (All)', count: metrics.total_customers },
+                            { id: 'all', label: tr('ទាំងអស់ (All)'), count: metrics.total_customers },
                             { id: 'vip', label: 'VIP', count: metrics.vip_customers, icon: Sparkles },
-                            { id: 'gold', label: 'មាស', count: metrics.gold_customers, icon: Award },
-                            { id: 'silver', label: 'ប្រាក់', count: metrics.silver_customers, icon: Award },
+                            { id: 'gold', label: tr('មាស'), count: metrics.gold_customers, icon: Award },
+                            { id: 'silver', label: tr('ប្រាក់'), count: metrics.silver_customers, icon: Award },
                             {
                                 id: 'standard',
-                                label: 'ធម្មតា',
+                                label: tr('ធម្មតា'),
                                 count: Math.max(
                                     0,
                                     metrics.total_customers -
@@ -461,20 +462,20 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                         <table className="w-full text-left text-xs">
                             <thead className="bg-zinc-950/60 border-b border-zinc-800 text-zinc-500 dark:text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                 <tr>
-                                    <th className="py-3 px-4">Customer / ឈ្មោះអតិថិជន</th>
-                                    <th className="py-3 px-4">Tier / កម្រិតសមាជិក</th>
-                                    <th className="py-3 px-4">Points / ពិន្ទុសន្សំ</th>
-                                    <th className="py-3 px-4">Total Spent / ចំណាយសរុប</th>
-                                    <th className="py-3 px-4">Visits / មកញ៉ាំ</th>
-                                    <th className="py-3 px-4">Notes / ចំណាំ</th>
-                                    <th className="py-3 px-4 text-right">Actions / សកម្មភាព</th>
+                                    <th className="py-3 px-4">{tr('Customer / ឈ្មោះអតិថិជន')}</th>
+                                    <th className="py-3 px-4">{tr('Tier / កម្រិតសមាជិក')}</th>
+                                    <th className="py-3 px-4">{tr('Points / ពិន្ទុសន្សំ')}</th>
+                                    <th className="py-3 px-4">{tr('Total Spent / ចំណាយសរុប')}</th>
+                                    <th className="py-3 px-4">{tr('Visits / មកញ៉ាំ')}</th>
+                                    <th className="py-3 px-4">{tr('Notes / ចំណាំ')}</th>
+                                    <th className="py-3 px-4 text-right">{tr('Actions / សកម្មភាព')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800/60 text-zinc-800 dark:text-zinc-200">
                                 {customers.data.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="py-12 text-center text-zinc-500 font-khmer">
-                                            រកមិនឃើញទិន្នន័យអតិថិជនទេ
+                                            {tr('រកមិនឃើញទិន្នន័យអតិថិជនទេ')}
                                         </td>
                                     </tr>
                                 ) : (
@@ -523,7 +524,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                             setPointsAdjustment(10);
                                                         }}
                                                         className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 transition-all cursor-pointer shadow-2xs active:scale-95"
-                                                        title="កែប្រែពិន្ទុសន្សំ (Adjust Points)"
+                                                        title={tr("កែប្រែពិន្ទុសន្សំ (Adjust Points)")}
                                                     >
                                                         <Coins className="w-3 h-3 text-amber-500" />
                                                         <span>+/-</span>
@@ -536,12 +537,12 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     ${Number(c.total_spent_usd).toFixed(2)}
                                                 </div>
                                                 <div className="text-[10px] text-zinc-400 font-mono">
-                                                    ≈ {Math.round(Number(c.total_spent_usd) * exchangeRate).toLocaleString()} ៛
+                                                    ≈ {Math.round(Number(c.total_spent_usd) * exchangeRate).toLocaleString()} {tr('៛')}
                                                 </div>
                                             </td>
                                             <td className="py-3 px-4 whitespace-nowrap">
                                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-800 shadow-2xs">
-                                                    {c.visits_count} ដង
+                                                    {c.visits_count} {tr('ដង')}
                                                 </span>
                                             </td>
                                             <td className="py-3 px-4 max-w-xs">
@@ -563,7 +564,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     <button
                                                         onClick={() => openEditModal(c)}
                                                         className="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white border border-zinc-800 transition-all cursor-pointer shadow-2xs active:scale-95"
-                                                        title="កែប្រែព័ត៌មាន (Edit)"
+                                                        title={tr("កែប្រែព័ត៌មាន (Edit)")}
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5" />
                                                     </button>
@@ -574,7 +575,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                                 ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25'
                                                                 : 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/25'
                                                         }`}
-                                                        title={c.is_active ? 'កំពុងសកម្ម (Active)' : 'អសកម្ម (Inactive)'}
+                                                        title={c.is_active ? tr('កំពុងសកម្ម (Active)') : tr('អសកម្ម (Inactive)')}
                                                     >
                                                         <CheckCircle2 className="w-3.5 h-3.5" />
                                                     </button>
@@ -588,9 +589,9 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                     </div>
                     <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-mono">
                         <span>
-                            បង្ហាញ {customers.data.length} ក្នុងចំណោម {customers.total || customers.data.length} អតិថិជន
+                            {tr('បង្ហាញ')} {customers.data.length} {tr('ក្នុងចំណោម')} {customers.total || customers.data.length} {tr('អតិថិជន')}
                         </span>
-                        <span className="text-[11px] text-zinc-400">បញ្ជីអតិថិជន</span>
+                        <span className="text-[11px] text-zinc-400">{tr('បញ្ជីអតិថិជន')}</span>
                     </div>
                 </div>
 
@@ -609,14 +610,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            ចុះឈ្មោះអតិថិជនថ្មី
+                                            {tr('ចុះឈ្មោះអតិថិជនថ្មី')}
                                         </h2>
                                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
-                                            អតិថិជនថ្មី
+                                            {tr('អតិថិជនថ្មី')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                        បញ្ចូលព័ត៌មានអតិថិជន និងរៀបចំកម្រិតសមាជិកភាព Loyalty
+                                        {tr('បញ្ចូលព័ត៌មានអតិថិជន និងរៀបចំកម្រិតសមាជិកភាព Loyalty')}
                                     </p>
                                 </div>
                             </div>
@@ -627,7 +628,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all shadow-xs cursor-pointer"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                                <span className="font-khmer">ត្រឡប់ក្រោយ</span>
+                                <span className="font-khmer">{tr('ត្រឡប់ក្រោយ')}</span>
                                 <span className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] uppercase font-mono rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
                                     Esc
                                 </span>
@@ -644,18 +645,18 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3.5">
                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                 <Users className="w-4 h-4 text-amber-500" />
-                                                ព័ត៌មានអត្តសញ្ញាណអតិថិជន
+                                                {tr('ព័ត៌មានអត្តសញ្ញាណអតិថិជន')}
                                             </h3>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                                 <div className="sm:col-span-2">
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        ឈ្មោះអតិថិជន *
+                                                        {tr('ឈ្មោះអតិថិជន *')}
                                                     </label>
                                                     <input
                                                         type="text"
                                                         required
-                                                        placeholder="ឧ. សុខ សុវណ្ណ ឬ Mr. John"
+                                                        placeholder={tr("ឧ. សុខ សុវណ្ណ ឬ Mr. John")}
                                                         value={createForm.name}
                                                         onChange={(e) =>
                                                             setCreateForm({ ...createForm, name: e.target.value })
@@ -666,7 +667,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        លេខទូរស័ព្ទ (Phone Number)
+                                                        {tr('លេខទូរស័ព្ទ (Phone Number)')}
                                                     </label>
                                                     <div className="relative">
                                                         <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -684,7 +685,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        អ៊ីមែល (Email)
+                                                        {tr('អ៊ីមែល (Email)')}
                                                     </label>
                                                     <div className="relative">
                                                         <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -702,13 +703,13 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div className="sm:col-span-2">
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        អាសយដ្ឋាន / ទីតាំងដឹកជញ្ជូន
+                                                        {tr('អាសយដ្ឋាន / ទីតាំងដឹកជញ្ជូន')}
                                                     </label>
                                                     <div className="relative">
                                                         <MapPin className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
                                                         <input
                                                             type="text"
-                                                            placeholder="ឧ. ផ្ទះលេខ ១២ ផ្លូវ ២០០ រាជធានីភ្នំពេញ..."
+                                                            placeholder={tr("ឧ. ផ្ទះលេខ ១២ ផ្លូវ ២០០ រាជធានីភ្នំពេញ...")}
                                                             value={createForm.address}
                                                             onChange={(e) =>
                                                                 setCreateForm({ ...createForm, address: e.target.value })
@@ -725,7 +726,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between">
                                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                     <Award className="w-4 h-4 text-amber-500" />
-                                                    កម្រិតសមាជិកភាព (Membership Tier) *
+                                                    {tr('កម្រិតសមាជិកភាព (Membership Tier) *')}
                                                 </label>
                                                 <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
                                                     {TIER_CONFIG[createForm.tier]?.nameKh}
@@ -771,11 +772,11 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         {/* Notes & Special Preferences */}
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-2">
                                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
-                                                ចំណាំពិសេស / ចំណង់ចំណូលចិត្ត (Preferences & Notes)
+                                                {tr('ចំណាំពិសេស / ចំណង់ចំណូលចិត្ត (Preferences & Notes)')}
                                             </label>
                                             <textarea
                                                 rows={2}
-                                                placeholder="ឧ. ចូលចិត្តហឹរតិច, តុជិតកញ្ចក់, អាឡែកហ្ស៊ីអាហារសមុទ្រ..."
+                                                placeholder={tr("ឧ. ចូលចិត្តហឹរតិច, តុជិតកញ្ចក់, អាឡែកហ្ស៊ីអាហារសមុទ្រ...")}
                                                 value={createForm.notes}
                                                 onChange={(e) =>
                                                     setCreateForm({ ...createForm, notes: e.target.value })
@@ -792,10 +793,10 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between">
                                                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                     <CreditCard className="w-4 h-4 text-amber-500" />
-                                                    ប័ណ្ណសមាជិកភាពឌីជីថល (Live Preview)
+                                                    {tr('ប័ណ្ណសមាជិកភាពឌីជីថល (Live Preview)')}
                                                 </span>
                                                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold">
-                                                    សកម្ម
+                                                    {tr('សកម្ម')}
                                                 </span>
                                             </div>
 
@@ -814,7 +815,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                             LEASHAL ETUM POS
                                                         </div>
                                                         <div className="text-xs text-white/70 font-khmer">
-                                                            ប័ណ្ណសមាជិកភាពអតិថិជន
+                                                            {tr('ប័ណ្ណសមាជិកភាពអតិថិជន')}
                                                         </div>
                                                     </div>
                                                     <div className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-white/10 backdrop-blur-md border border-white/20 text-amber-300">
@@ -824,11 +825,11 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div className="relative z-10 space-y-2">
                                                     <div className="text-lg sm:text-xl font-bold tracking-wide truncate">
-                                                        {createForm.name || 'ឈ្មោះអតិថិជន'}
+                                                        {createForm.name || tr('ឈ្មោះអតិថិជន')}
                                                     </div>
                                                     <div className="flex items-center justify-between text-xs text-white/70 font-mono">
                                                         <span>{createForm.phone || '012 XXX XXX'}</span>
-                                                        <span className="text-amber-400 font-bold">0 ពិន្ទុ</span>
+                                                        <span className="text-amber-400 font-bold">{tr('0 ពិន្ទុ')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -838,14 +839,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
                                             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                 <Sparkles className="w-4 h-4 text-amber-500" />
-                                                អត្ថប្រយោជន៍កម្រិត {TIER_CONFIG[createForm.tier]?.nameKh}
+                                                {tr('អត្ថប្រយោជន៍កម្រិត')} {TIER_CONFIG[createForm.tier]?.nameKh}
                                             </h4>
 
                                             <div className="space-y-2.5 text-xs">
                                                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-start gap-2.5">
                                                     <Coins className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                                                     <div>
-                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">អត្រាសន្សំពិន្ទុ:</span>
+                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">{tr('អត្រាសន្សំពិន្ទុ:')}</span>
                                                         <p className="text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
                                                             {TIER_CONFIG[createForm.tier]?.perk}
                                                         </p>
@@ -855,7 +856,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 flex items-start gap-2.5">
                                                     <Award className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                                     <div>
-                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">ការបញ្ចុះតម្លៃពិសេស:</span>
+                                                        <span className="font-bold text-slate-900 dark:text-zinc-100 font-khmer">{tr('ការបញ្ចុះតម្លៃពិសេស:')}</span>
                                                         <p className="text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
                                                             {TIER_CONFIG[createForm.tier]?.discount}
                                                         </p>
@@ -872,7 +873,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 <div className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
                                     <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                                     <span>
-                                        ទិន្នន័យអតិថិជននឹងត្រូវភ្ជាប់ជាមួយប្រព័ន្ធ POS ដើម្បីសន្សំពិន្ទុ និងផ្ដល់ការបញ្ចុះតម្លៃស្វ័យប្រវត្តិ
+                                        {tr('ទិន្នន័យអតិថិជននឹងត្រូវភ្ជាប់ជាមួយប្រព័ន្ធ POS ដើម្បីសន្សំពិន្ទុ និងផ្ដល់ការបញ្ចុះតម្លៃស្វ័យប្រវត្តិ')}
                                     </span>
                                 </div>
 
@@ -882,14 +883,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         onClick={() => setShowCreateModal(false)}
                                         className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
                                     <button
                                         type="submit"
                                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                                     >
                                         <CheckCircle2 className="w-4 h-4" />
-                                        <span>រក្សាទុកអតិថិជន</span>
+                                        <span>{tr('រក្សាទុកអតិថិជន')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -913,14 +914,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            កែប្រែព័ត៌មានអតិថិជន
+                                            {tr('កែប្រែព័ត៌មានអតិថិជន')}
                                         </h2>
                                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
                                             ID #{editingCustomer.id}
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                        ធ្វើបច្ចុប្បន្នភាពព័ត៌មានទំនាក់ទំនង និងកម្រិតសមាជិកភាព
+                                        {tr('ធ្វើបច្ចុប្បន្នភាពព័ត៌មានទំនាក់ទំនង និងកម្រិតសមាជិកភាព')}
                                     </p>
                                 </div>
                             </div>
@@ -931,7 +932,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all shadow-xs cursor-pointer"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                                <span className="font-khmer">ត្រឡប់ក្រោយ</span>
+                                <span className="font-khmer">{tr('ត្រឡប់ក្រោយ')}</span>
                                 <span className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] uppercase font-mono rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
                                     Esc
                                 </span>
@@ -948,13 +949,13 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3.5">
                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                 <Users className="w-4 h-4 text-amber-500" />
-                                                ព័ត៌មានអត្តសញ្ញាណ
+                                                {tr('ព័ត៌មានអត្តសញ្ញាណ')}
                                             </h3>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                                 <div className="sm:col-span-2">
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        ឈ្មោះអតិថិជន *
+                                                        {tr('ឈ្មោះអតិថិជន *')}
                                                     </label>
                                                     <input
                                                         type="text"
@@ -969,7 +970,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        លេខទូរស័ព្ទ
+                                                        {tr('លេខទូរស័ព្ទ')}
                                                     </label>
                                                     <div className="relative">
                                                         <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -986,7 +987,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        អ៊ីមែល
+                                                        {tr('អ៊ីមែល')}
                                                     </label>
                                                     <div className="relative">
                                                         <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -1003,7 +1004,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
 
                                                 <div className="sm:col-span-2">
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1 font-khmer">
-                                                        អាសយដ្ឋាន
+                                                        {tr('អាសយដ្ឋាន')}
                                                     </label>
                                                     <div className="relative">
                                                         <MapPin className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
@@ -1025,7 +1026,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between">
                                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                     <Award className="w-4 h-4 text-amber-500" />
-                                                    កម្រិតសមាជិកភាព *
+                                                    {tr('កម្រិតសមាជិកភាព *')}
                                                 </label>
                                                 <span className="text-xs font-bold text-amber-600 dark:text-amber-400 font-khmer">
                                                     {TIER_CONFIG[editForm.tier]?.nameKh}
@@ -1071,7 +1072,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         {/* Notes */}
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-2">
                                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
-                                                ចំណាំពិសេស / Preferences
+                                                {tr('ចំណាំពិសេស / Preferences')}
                                             </label>
                                             <textarea
                                                 rows={2}
@@ -1091,10 +1092,10 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between">
                                                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                     <CreditCard className="w-4 h-4 text-amber-500" />
-                                                    ប័ណ្ណសមាជិកភាពឌីជីថល
+                                                    {tr('ប័ណ្ណសមាជិកភាពឌីជីថល')}
                                                 </span>
                                                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
-                                                    បានផ្ទៀងផ្ទាត់
+                                                    {tr('បានផ្ទៀងផ្ទាត់')}
                                                 </span>
                                             </div>
 
@@ -1111,7 +1112,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                             LEASHAL ETUM POS
                                                         </div>
                                                         <div className="text-xs text-white/70 font-khmer">
-                                                            ប័ណ្ណសមាជិកភាពអតិថិជន
+                                                            {tr('ប័ណ្ណសមាជិកភាពអតិថិជន')}
                                                         </div>
                                                     </div>
                                                     <div className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-white/10 backdrop-blur-md border border-white/20 text-amber-300">
@@ -1137,7 +1138,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
                                             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5 font-khmer">
                                                 <TrendingUp className="w-4 h-4 text-amber-500" />
-                                                ស្ថិតិការប្រើប្រាស់ & ប្រវត្តិទិញ
+                                                {tr('ស្ថិតិការប្រើប្រាស់ & ប្រវត្តិទិញ')}
                                             </h4>
 
                                             <div className="grid grid-cols-3 gap-2 text-center">
@@ -1146,7 +1147,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                         {editingCustomer.loyalty_points}
                                                     </div>
                                                     <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                                        ពិន្ទុសន្សំ
+                                                        {tr('ពិន្ទុសន្សំ')}
                                                     </div>
                                                 </div>
                                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
@@ -1154,7 +1155,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                         ${Number(editingCustomer.total_spent_usd || 0).toFixed(2)}
                                                     </div>
                                                     <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                                        ចំណាយសរុប
+                                                        {tr('ចំណាយសរុប')}
                                                     </div>
                                                 </div>
                                                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800">
@@ -1162,7 +1163,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                         {editingCustomer.visits_count || 0}
                                                     </div>
                                                     <div className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
-                                                        ចំនួនលើកមកញ៉ាំ
+                                                        {tr('ចំនួនលើកមកញ៉ាំ')}
                                                     </div>
                                                 </div>
                                             </div>
@@ -1176,7 +1177,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 <div className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
                                     <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                                     <span>
-                                        ការកែប្រែកម្រិតសមាជិកភាពនឹងចូលជាធរមានភ្លាមៗសម្រាប់ការបញ្ជាទិញបន្ទាប់
+                                        {tr('ការកែប្រែកម្រិតសមាជិកភាពនឹងចូលជាធរមានភ្លាមៗសម្រាប់ការបញ្ជាទិញបន្ទាប់')}
                                     </span>
                                 </div>
 
@@ -1186,14 +1187,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         onClick={() => setEditingCustomer(null)}
                                         className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
                                     <button
                                         type="submit"
                                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                                     >
                                         <CheckCircle2 className="w-4 h-4" />
-                                        <span>រក្សាទុកការកែប្រែ</span>
+                                        <span>{tr('រក្សាទុកការកែប្រែ')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -1217,14 +1218,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            កែសម្រួលពិន្ទុសន្សំអតិថិជន
+                                            {tr('កែសម្រួលពិន្ទុសន្សំអតិថិជន')}
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            កែពិន្ទុ
+                                            {tr('កែពិន្ទុ')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                        អតិថិជន៖ <strong className="text-zinc-900 dark:text-white">{pointsCustomer.name}</strong> • សមតុល្យបច្ចុប្បន្ន៖ <span className="font-mono font-bold text-amber-600 dark:text-amber-400">{pointsCustomer.loyalty_points} pts</span>
+                                        {tr('អតិថិជន៖')} <strong className="text-zinc-900 dark:text-white">{pointsCustomer.name}</strong> {tr('• សមតុល្យបច្ចុប្បន្ន៖')} <span className="font-mono font-bold text-amber-600 dark:text-amber-400">{pointsCustomer.loyalty_points} pts</span>
                                     </p>
                                 </div>
                             </div>
@@ -1232,10 +1233,10 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                 type="button"
                                 onClick={() => setPointsCustomer(null)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-600 dark:text-amber-400" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -1248,7 +1249,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <Coins className="w-4 h-4 text-amber-500" />
-                                            <span>កំណត់ចំនួនពិន្ទុកែសម្រួល / Points Adjustment Quantity</span>
+                                            <span>{tr('កំណត់ចំនួនពិន្ទុកែសម្រួល / Points Adjustment Quantity')}</span>
                                         </div>
 
                                         <div className="space-y-3">
@@ -1257,7 +1258,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     type="button"
                                                     onClick={() => setPointsAdjustment((prev) => prev - 10)}
                                                     className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-rose-500/10 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:hover:text-rose-400 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
-                                                    title="ដក 10 ពិន្ទុ"
+                                                    title={tr("ដក 10 ពិន្ទុ")}
                                                 >
                                                     <Minus className="w-5 h-5" />
                                                 </button>
@@ -1276,7 +1277,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                                     type="button"
                                                     onClick={() => setPointsAdjustment((prev) => prev + 10)}
                                                     className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-emerald-500/10 hover:text-emerald-500 dark:hover:bg-emerald-500/10 dark:hover:text-emerald-400 text-zinc-700 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700 transition-all cursor-pointer flex items-center justify-center shrink-0 shadow-xs"
-                                                    title="បន្ថែម 10 ពិន្ទុ"
+                                                    title={tr("បន្ថែម 10 ពិន្ទុ")}
                                                 >
                                                     <Plus className="w-5 h-5" />
                                                 </button>
@@ -1285,7 +1286,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             {/* Quick Increment Pills */}
                                             <div className="space-y-1.5 pt-1">
                                                 <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                    ចុចជ្រើសរើសបរិមាណរហ័ស (Quick Delta Values)៖
+                                                    {tr('ចុចជ្រើសរើសបរិមាណរហ័ស (Quick Delta Values)៖')}
                                                 </span>
                                                 <div className="flex flex-wrap gap-2">
                                                     {[-100, -50, -25, -10, 10, 25, 50, 100, 250, 500].map((val) => (
@@ -1314,7 +1315,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="flex items-center justify-between pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                                 <Edit2 className="w-4 h-4 text-amber-500" />
-                                                <span>មូលហេតុនៃការកែប្រែ (Adjustment Reason)</span>
+                                                <span>{tr('មូលហេតុនៃការកែប្រែ (Adjustment Reason)')}</span>
                                                 <span className="text-rose-500">*</span>
                                             </div>
                                         </div>
@@ -1324,7 +1325,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             required
                                             value={pointsReason}
                                             onChange={(e) => setPointsReason(e.target.value)}
-                                            placeholder="ឧទាហរណ៍៖ កាដូលួងចិត្តអតិថិជន, រង្វាន់ខួបកំណើត VIP..."
+                                            placeholder={tr("ឧទាហរណ៍៖ កាដូលួងចិត្តអតិថិជន, រង្វាន់ខួបកំណើត VIP...")}
                                             className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 font-khmer transition-all"
                                         />
 
@@ -1332,14 +1333,14 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         <div className="space-y-1.5 pt-1">
                                             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
                                                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>គំរូមូលហេតុរហ័ស (Quick Presets)៖</span>
+                                                <span>{tr('គំរូមូលហេតុរហ័ស (Quick Presets)៖')}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {[
-                                                    'កាដូលួងចិត្តអតិថិជន (Customer Courtesy)',
-                                                    'រង្វាន់ពិសេសសម្រាប់អតិថិជន VIP (VIP Bonus)',
-                                                    'កែតម្រូវកំហុសឆ្គងបច្ចេកទេស (Correction of Discrepancy)',
-                                                    'បំពេញបន្ថែមពីកម្មវិធីប្រូម៉ូសិន (Campaign Promotion)',
+                                                    tr('កាដូលួងចិត្តអតិថិជន (Customer Courtesy)'),
+                                                    tr('រង្វាន់ពិសេសសម្រាប់អតិថិជន VIP (VIP Bonus)'),
+                                                    tr('កែតម្រូវកំហុសឆ្គងបច្ចេកទេស (Correction of Discrepancy)'),
+                                                    tr('បំពេញបន្ថែមពីកម្មវិធីប្រូម៉ូសិន (Campaign Promotion)'),
                                                 ].map((preset, idx) => (
                                                     <button
                                                         key={idx}
@@ -1358,10 +1359,10 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     <div className="p-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 space-y-1.5 text-xs">
                                         <div className="flex items-center gap-2 font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <ShieldCheck className="w-4 h-4 text-amber-500" />
-                                            <span>កំណត់ហេតុសវនកម្ម (Audit Log Verification)</span>
+                                            <span>{tr('កំណត់ហេតុសវនកម្ម (Audit Log Verification)')}</span>
                                         </div>
                                         <p className="text-zinc-600 dark:text-zinc-400 text-[11px] font-khmer leading-relaxed">
-                                            រាល់ការបន្ថែម ឬដកពិន្ទុ នឹងត្រូវរក្សាទុកក្នុងប្រវត្តិគណនីអតិថិជន និងប្រព័ន្ធសវនកម្មរដ្ឋបាលជាអចិន្ត្រៃយ៍ ដើម្បីភាពច្បាស់លាស់ និងតម្លាភាពក្នុងការគ្រប់គ្រង។
+                                            {tr('រាល់ការបន្ថែម ឬដកពិន្ទុ នឹងត្រូវរក្សាទុកក្នុងប្រវត្តិគណនីអតិថិជន និងប្រព័ន្ធសវនកម្មរដ្ឋបាលជាអចិន្ត្រៃយ៍ ដើម្បីភាពច្បាស់លាស់ និងតម្លាភាពក្នុងការគ្រប់គ្រង។')}
                                         </p>
                                     </div>
                                 </div>
@@ -1380,7 +1381,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             <div className="flex items-center justify-between border-b border-white/10 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-white/70">
-                                                        ប័ណ្ណសមាជិក
+                                                        {tr('ប័ណ្ណសមាជិក')}
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-khmer">
                                                         {pointsCustomer.name}
@@ -1394,24 +1395,24 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             {/* Transition Display */}
                                             <div className="p-4 rounded-xl bg-black/40 border border-white/10 grid grid-cols-2 gap-3 text-center">
                                                 <div className="space-y-0.5 border-r border-white/10 pr-2">
-                                                    <span className="text-[10px] text-white/60 font-khmer block">ពិន្ទុបច្ចុប្បន្ន</span>
+                                                    <span className="text-[10px] text-white/60 font-khmer block">{tr('ពិន្ទុបច្ចុប្បន្ន')}</span>
                                                     <span className="text-lg font-bold font-mono text-white">
                                                         {pointsCustomer.loyalty_points}
                                                     </span>
-                                                    <span className="text-[10px] text-white/40 font-mono block">ពិន្ទុ</span>
+                                                    <span className="text-[10px] text-white/40 font-mono block">{tr('ពិន្ទុ')}</span>
                                                 </div>
                                                 <div className="space-y-0.5 pl-2">
-                                                    <span className="text-[10px] text-amber-300 font-khmer block">ពិន្ទុក្រោយកែប្រែ</span>
+                                                    <span className="text-[10px] text-amber-300 font-khmer block">{tr('ពិន្ទុក្រោយកែប្រែ')}</span>
                                                     <span className="text-lg font-bold font-mono text-amber-400">
                                                         {Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment)}
                                                     </span>
-                                                    <span className="text-[10px] text-amber-300/60 font-mono block">ពិន្ទុ</span>
+                                                    <span className="text-[10px] text-amber-300/60 font-mono block">{tr('ពិន្ទុ')}</span>
                                                 </div>
                                             </div>
 
                                             {/* Delta indicator */}
                                             <div className="flex items-center justify-between text-xs font-mono px-1">
-                                                <span className="text-white/70 font-khmer">ការប្រែប្រួលសុទ្ធ (Net Delta)៖</span>
+                                                <span className="text-white/70 font-khmer">{tr('ការប្រែប្រួលសុទ្ធ (Net Delta)៖')}</span>
                                                 <span className={`font-bold ${pointsAdjustment >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                                                     {pointsAdjustment >= 0 ? `+${pointsAdjustment}` : pointsAdjustment} pts
                                                 </span>
@@ -1420,15 +1421,15 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                             {/* Details Grid */}
                                             <div className="space-y-2 text-xs border-t border-white/10 pt-3">
                                                 <div className="flex items-center justify-between text-white/70">
-                                                    <span className="font-khmer">លេខទូរស័ព្ទ៖</span>
+                                                    <span className="font-khmer">{tr('លេខទូរស័ព្ទ៖')}</span>
                                                     <span className="text-white font-mono">{pointsCustomer.phone || '—'}</span>
                                                 </div>
                                                 <div className="flex items-center justify-between text-white/70">
-                                                    <span className="font-khmer">អត្ថប្រយោជន៍កម្រិត៖</span>
+                                                    <span className="font-khmer">{tr('អត្ថប្រយោជន៍កម្រិត៖')}</span>
                                                     <span className="text-amber-300 text-[11px] font-khmer">{TIER_CONFIG[pointsCustomer.tier]?.perk || '—'}</span>
                                                 </div>
                                                 <div className="flex items-center justify-between text-white/70">
-                                                    <span className="font-khmer">តម្លៃប្តូរប្រហាក់ប្រហែល៖</span>
+                                                    <span className="font-khmer">{tr('តម្លៃប្តូរប្រហាក់ប្រហែល៖')}</span>
                                                     <span className="text-emerald-400 font-mono font-bold">
                                                         ≈ ${(Math.max(0, pointsCustomer.loyalty_points + pointsAdjustment) * 0.01).toFixed(2)} USD
                                                     </span>
@@ -1445,7 +1446,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                     <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                         Esc
                                     </kbd>
-                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                    <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                                 </div>
 
                                 <div className="flex items-center gap-3 ml-auto">
@@ -1454,7 +1455,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         onClick={() => setPointsCustomer(null)}
                                         className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
 
                                     <button
@@ -1463,7 +1464,7 @@ export default function CustomersIndex({ customers, metrics, filters }: Customer
                                         className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <Coins className="w-4 h-4" />
-                                        <span>អនុវត្តការកែប្រែពិន្ទុ (Save Points Adjustment)</span>
+                                        <span>{tr('អនុវត្តការកែប្រែពិន្ទុ (Save Points Adjustment)')}</span>
                                     </button>
                                 </div>
                             </div>

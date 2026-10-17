@@ -34,6 +34,7 @@ import {
     Trash2,
 } from 'lucide-react';
 import { CashierFilter, CashierOption } from '@/components/cashier-filter';
+import { tr } from '@/locales/tr';
 
 interface ExpenseItem {
     id: number;
@@ -89,25 +90,25 @@ interface ExpensesProps {
 }
 
 const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
-    utilities: { nameKh: 'ថ្លៃទឹក & ភ្លើង', color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' },
-    supplies: { nameKh: 'សម្ភារៈប្រើប្រាស់ & ខ្ចប់', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
-    staff_meal: { nameKh: 'ម្ហូបអាហារបុគ្គលិក', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
-    rent: { nameKh: 'ថ្លៃជួលទីតាំង', color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
-    maintenance: { nameKh: 'ជួសជុល & ថែទាំ', color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
-    transport: { nameKh: 'ថ្លៃដឹកជញ្ជូន', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' },
-    marketing: { nameKh: 'ផ្សព្វផ្សាយ & ទីផ្សារ', color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' },
-    other: { nameKh: 'ចំណាយផ្សេងៗ', color: 'text-zinc-400 bg-zinc-500/10 border-zinc-500/30' },
+    utilities: { nameKh: tr('ថ្លៃទឹក & ភ្លើង'), color: 'text-sky-400 bg-sky-500/10 border-sky-500/30' },
+    supplies: { nameKh: tr('សម្ភារៈប្រើប្រាស់ & ខ្ចប់'), color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
+    staff_meal: { nameKh: tr('ម្ហូបអាហារបុគ្គលិក'), color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
+    rent: { nameKh: tr('ថ្លៃជួលទីតាំង'), color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
+    maintenance: { nameKh: tr('ជួសជុល & ថែទាំ'), color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
+    transport: { nameKh: tr('ថ្លៃដឹកជញ្ជូន'), color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30' },
+    marketing: { nameKh: tr('ផ្សព្វផ្សាយ & ទីផ្សារ'), color: 'text-pink-400 bg-pink-500/10 border-pink-500/30' },
+    other: { nameKh: tr('ចំណាយផ្សេងៗ'), color: 'text-zinc-400 bg-zinc-500/10 border-zinc-500/30' },
 };
 
 const COMMON_EXPENSE_TITLES: Record<string, string[]> = {
-    utilities: ['ថ្លៃទឹក & ភ្លើង EDC', 'ថ្លៃអ៊ីនធឺណិត (WiFi)', 'ថ្លៃដកសំរាមប្រចាំខែ'],
-    supplies: ['ទិញសម្ភារៈខ្ចប់ & ថង់', 'ទិញក្រដាសជូតមាត់ & សាប៊ូ', 'ទិញស្រោមដៃ & ប្រអប់'],
-    staff_meal: ['ម្ហូបអាហារបុគ្គលិកថ្ងៃត្រង់', 'ភេសជ្ជៈ & កាហ្វេបុគ្គលិក', 'អាហារសម្រន់ពេលល្ងាច'],
-    rent: ['ថ្លៃជួលទីតាំងហាង', 'ថ្លៃជួលឃ្លាំងស្តុក'],
-    maintenance: ['ជួសជុលម៉ាស៊ីនត្រជាក់', 'ជួសជុលប្រព័ន្ធទឹក & បង្គន់', 'ថែទាំឧបករណ៍ POS & Printer'],
-    transport: ['ថ្លៃដឹកជញ្ជូន PassApp / Grab', 'ថ្លៃសាំងដឹកជញ្ជូនបន្ទាន់'],
-    marketing: ['ផ្សព្វផ្សាយ Facebook Boost', 'បោះពុម្ពបដា & Menu ផ្សព្វផ្សាយ'],
-    other: ['ទិញទឹកកកបន្ថែមបន្ទាន់', 'ចំណាយចៃដន្យផ្សេងៗ'],
+    utilities: [tr('ថ្លៃទឹក & ភ្លើង EDC'), tr('ថ្លៃអ៊ីនធឺណិត (WiFi)'), tr('ថ្លៃដកសំរាមប្រចាំខែ')],
+    supplies: [tr('ទិញសម្ភារៈខ្ចប់ & ថង់'), tr('ទិញក្រដាសជូតមាត់ & សាប៊ូ'), tr('ទិញស្រោមដៃ & ប្រអប់')],
+    staff_meal: [tr('ម្ហូបអាហារបុគ្គលិកថ្ងៃត្រង់'), tr('ភេសជ្ជៈ & កាហ្វេបុគ្គលិក'), tr('អាហារសម្រន់ពេលល្ងាច')],
+    rent: [tr('ថ្លៃជួលទីតាំងហាង'), tr('ថ្លៃជួលឃ្លាំងស្តុក')],
+    maintenance: [tr('ជួសជុលម៉ាស៊ីនត្រជាក់'), tr('ជួសជុលប្រព័ន្ធទឹក & បង្គន់'), tr('ថែទាំឧបករណ៍ POS & Printer')],
+    transport: [tr('ថ្លៃដឹកជញ្ជូន PassApp / Grab'), tr('ថ្លៃសាំងដឹកជញ្ជូនបន្ទាន់')],
+    marketing: [tr('ផ្សព្វផ្សាយ Facebook Boost'), tr('បោះពុម្ពបដា & Menu ផ្សព្វផ្សាយ')],
+    other: [tr('ទិញទឹកកកបន្ថែមបន្ទាន់'), tr('ចំណាយចៃដន្យផ្សេងៗ')],
 };
 
 export default function ExpensesIndex({
@@ -303,8 +304,8 @@ export default function ExpensesIndex({
     };
 
     return (
-        <AppLayout title="ចំណាយ & ថតបេឡា">
-            <Head title="Cash & Expenses — ចំណាយ & ថតបេឡា" />
+        <AppLayout title={tr("ចំណាយ & ថតបេឡា")}>
+            <Head title={tr("Cash & Expenses — ចំណាយ & ថតបេឡា")} />
 
             <div className="space-y-6 pb-12">
                 {/* Fixed / Sticky Header */}
@@ -316,13 +317,13 @@ export default function ExpensesIndex({
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    ចំណាយ & ថតបេឡា
+                                    {tr('ចំណាយ & ថតបេឡា')}
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 font-medium">
-                                        ចំណាយ & ថតបេឡា
+                                        {tr('ចំណាយ & ថតបេឡា')}
                                     </span>
                                 </h1>
                                 <p className="text-xs text-zinc-400">
-                                    កត់ត្រាចំណាយប្រតិបត្តិការទូទៅ និងគ្រប់គ្រងចរន្តសាច់ប្រាក់ចេញចូលថតបេឡា
+                                    {tr('កត់ត្រាចំណាយប្រតិបត្តិការទូទៅ និងគ្រប់គ្រងចរន្តសាច់ប្រាក់ចេញចូលថតបេឡា')}
                                 </p>
                             </div>
                         </div>
@@ -334,7 +335,7 @@ export default function ExpensesIndex({
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition-all cursor-pointer"
                             >
                                 <Lock className="w-4 h-4 text-amber-400" />
-                                <span>ចលនាថតបេឡា</span>
+                                <span>{tr('ចលនាថតបេឡា')}</span>
                             </button>
 
                             <button
@@ -342,13 +343,13 @@ export default function ExpensesIndex({
                                 className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
                             >
                                 <PlusCircle className="w-4 h-4" />
-                                <span>កត់ត្រាចំណាយថ្មី</span>
+                                <span>{tr('កត់ត្រាចំណាយថ្មី')}</span>
                             </button>
 
                             <a
                                 href="/expenses/export/csv"
                                 className="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 transition-all"
-                                title="ទាញយក CSV"
+                                title={tr("ទាញយក CSV")}
                             >
                                 <Download className="w-4 h-4" />
                             </a>
@@ -360,53 +361,53 @@ export default function ExpensesIndex({
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Today's Expenses / ចំណាយថ្ងៃនេះ</span>
+                            <span>{tr('Today\'s Expenses / ចំណាយថ្ងៃនេះ')}</span>
                             <DollarSign className="w-4 h-4 text-amber-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {formatUsd(metrics.today_usd)}
                         </div>
                         <div className="text-xs text-emerald-400 font-mono font-medium mt-1">
-                            ≈ {(metrics.today_khr || 0).toLocaleString()} ៛
+                            ≈ {(metrics.today_khr || 0).toLocaleString()} {tr('៛')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Total Expenses / ចំណាយសរុប</span>
+                            <span>{tr('Total Expenses / ចំណាយសរុប')}</span>
                             <Calendar className="w-4 h-4 text-emerald-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {formatUsd(metrics.total_usd)}
                         </div>
                         <div className="text-xs text-zinc-400 font-mono mt-1">
-                            ≈ {(metrics.total_khr || 0).toLocaleString()} ៛
+                            ≈ {(metrics.total_khr || 0).toLocaleString()} {tr('៛')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Cash Drop / ទម្លាក់ចូលទូដែក</span>
+                            <span>{tr('Cash Drop / ទម្លាក់ចូលទូដែក')}</span>
                             <ArrowDownRight className="w-4 h-4 text-teal-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {formatUsd(metrics.today_drops_usd)}
                         </div>
                         <div className="text-xs text-teal-400/90 font-khmer mt-1">
-                            ប្រតិបត្តិការថ្ងៃនេះ
+                            {tr('ប្រតិបត្តិការថ្ងៃនេះ')}
                         </div>
                     </Card>
 
                     <Card className="bg-zinc-900/70 border-zinc-800/80 p-4 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Cash In / ថែមប្រាក់ចូលបេឡា</span>
+                            <span>{tr('Cash In / ថែមប្រាក់ចូលបេឡា')}</span>
                             <ArrowUpRight className="w-4 h-4 text-purple-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {formatUsd(metrics.today_cash_in_usd)}
                         </div>
                         <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                            ប្រតិបត្តិការថ្ងៃនេះ
+                            {tr('ប្រតិបត្តិការថ្ងៃនេះ')}
                         </div>
                     </Card>
                 </div>
@@ -422,7 +423,7 @@ export default function ExpensesIndex({
                         }`}
                     >
                         <Receipt className="w-3.5 h-3.5" />
-                        <span>បញ្ជីចំណាយប្រតិបត្តិការ ({expenses.total})</span>
+                        <span>{tr('បញ្ជីចំណាយប្រតិបត្តិការ (')}{expenses.total})</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('drawer')}
@@ -433,7 +434,7 @@ export default function ExpensesIndex({
                         }`}
                     >
                         <Lock className="w-3.5 h-3.5" />
-                        <span>កំណត់ត្រាថតបេឡា ({drawerLogs.length})</span>
+                        <span>{tr('កំណត់ត្រាថតបេឡា (')}{drawerLogs.length})</span>
                     </button>
                 </div>
 
@@ -451,7 +452,7 @@ export default function ExpensesIndex({
                                     onChange={(e) => setSelectedCategory(e.target.value)}
                                     className="px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-zinc-200 focus:outline-none focus:border-amber-500"
                                 >
-                                    <option value="all">គ្រប់ប្រភេទចំណាយទាំងអស់</option>
+                                    <option value="all">{tr('គ្រប់ប្រភេទចំណាយទាំងអស់')}</option>
                                     {Object.entries(CATEGORY_MAP).map(([key, val]) => (
                                         <option key={key} value={key}>
                                             {val.nameKh}
@@ -465,7 +466,7 @@ export default function ExpensesIndex({
                                     onChange={(e) => setDateFrom(e.target.value)}
                                     className="px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-zinc-200 focus:outline-none focus:border-amber-500"
                                 />
-                                <span className="text-xs text-zinc-500">ដល់</span>
+                                <span className="text-xs text-zinc-500">{tr('ដល់')}</span>
                                 <input
                                     type="date"
                                     value={dateTo}
@@ -477,7 +478,7 @@ export default function ExpensesIndex({
                                     type="submit"
                                     className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg text-xs font-medium"
                                 >
-                                    ចម្រោះ
+                                    {tr('ចម្រោះ')}
                                 </button>
                             </div>
                         </form>
@@ -488,21 +489,21 @@ export default function ExpensesIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/60 text-zinc-400 border-b border-zinc-800 uppercase text-[10px] tracking-wider">
                                         <tr>
-                                            <th className="py-3 px-4">កាលបរិច្ឆេទ</th>
-                                            <th className="py-3 px-4">ប្រភេទ</th>
-                                            <th className="py-3 px-4">ចំណងជើងចំណាយ</th>
-                                            <th className="py-3 px-4">ចំនួនទឹកប្រាក់</th>
-                                            <th className="py-3 px-4">វិធីទូទាត់</th>
-                                            <th className="py-3 px-4">អ្នកទទួល / បុង</th>
-                                            <th className="py-3 px-4">កត់ត្រាដោយ</th>
-                                            {canManageExpenses && <th className="py-3 px-4 text-right">សកម្មភាព</th>}
+                                            <th className="py-3 px-4">{tr('កាលបរិច្ឆេទ')}</th>
+                                            <th className="py-3 px-4">{tr('ប្រភេទ')}</th>
+                                            <th className="py-3 px-4">{tr('ចំណងជើងចំណាយ')}</th>
+                                            <th className="py-3 px-4">{tr('ចំនួនទឹកប្រាក់')}</th>
+                                            <th className="py-3 px-4">{tr('វិធីទូទាត់')}</th>
+                                            <th className="py-3 px-4">{tr('អ្នកទទួល / បុង')}</th>
+                                            <th className="py-3 px-4">{tr('កត់ត្រាដោយ')}</th>
+                                            {canManageExpenses && <th className="py-3 px-4 text-right">{tr('សកម្មភាព')}</th>}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
                                         {expenses.data.length === 0 ? (
                                             <tr>
                                                 <td colSpan={canManageExpenses ? 8 : 7} className="py-12 text-center text-zinc-500">
-                                                    មិនទាន់មានទិន្នន័យចំណាយត្រូវបានកត់ត្រាទេ
+                                                    {tr('មិនទាន់មានទិន្នន័យចំណាយត្រូវបានកត់ត្រាទេ')}
                                                 </td>
                                             </tr>
                                         ) : (
@@ -536,21 +537,21 @@ export default function ExpensesIndex({
                                                                 ${Number(item.amount_usd).toFixed(2)}
                                                             </div>
                                                             <div className="text-[11px] text-zinc-400">
-                                                                ៛{Number(item.amount_khr).toLocaleString()}
+                                                                {tr('៛')}{Number(item.amount_khr).toLocaleString()}
                                                             </div>
                                                         </td>
                                                         <td className="py-3 px-4 text-zinc-300">
                                                             {item.payment_method === 'cash_drawer'
-                                                                ? 'ថតបេឡា (Cash)'
+                                                                ? tr('ថតបេឡា (Cash)')
                                                                 : item.payment_method === 'petty_cash'
-                                                                ? 'ប្រាក់ចំណាយតូចតាច'
+                                                                ? tr('ប្រាក់ចំណាយតូចតាច')
                                                                 : item.payment_method}
                                                         </td>
                                                         <td className="py-3 px-4 text-zinc-400">
                                                             {item.paid_to || '-'}
                                                             {item.receipt_reference && (
                                                                 <span className="block text-[10px] text-zinc-500 font-mono">
-                                                                    បុង: #{item.receipt_reference}
+                                                                    {tr('បុង: #')}{item.receipt_reference}
                                                                 </span>
                                                             )}
                                                         </td>
@@ -563,7 +564,7 @@ export default function ExpensesIndex({
                                                                     <button
                                                                         type="button"
                                                                         onClick={() => openEditExpense(item)}
-                                                                        title="កែប្រែ (Edit)"
+                                                                        title={tr("កែប្រែ (Edit)")}
                                                                         className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
                                                                     >
                                                                         <Pencil className="w-3.5 h-3.5" />
@@ -571,7 +572,7 @@ export default function ExpensesIndex({
                                                                     <button
                                                                         type="button"
                                                                         onClick={() => setDeletingExpense(item)}
-                                                                        title="លុប (Delete)"
+                                                                        title={tr("លុប (Delete)")}
                                                                         className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                                                                     >
                                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -598,18 +599,18 @@ export default function ExpensesIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-950/60 text-zinc-400 border-b border-zinc-800 uppercase text-[10px] tracking-wider">
                                         <tr>
-                                            <th className="py-3 px-4">ពេលវេលា</th>
-                                            <th className="py-3 px-4">ប្រភេទចលនា</th>
-                                            <th className="py-3 px-4">ចំនួនទឹកប្រាក់</th>
-                                            <th className="py-3 px-4">មូលហេតុ / កំណត់ត្រា</th>
-                                            <th className="py-3 px-4">ប្រតិបត្តិករ</th>
+                                            <th className="py-3 px-4">{tr('ពេលវេលា')}</th>
+                                            <th className="py-3 px-4">{tr('ប្រភេទចលនា')}</th>
+                                            <th className="py-3 px-4">{tr('ចំនួនទឹកប្រាក់')}</th>
+                                            <th className="py-3 px-4">{tr('មូលហេតុ / កំណត់ត្រា')}</th>
+                                            <th className="py-3 px-4">{tr('ប្រតិបត្តិករ')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
                                         {drawerLogs.length === 0 ? (
                                             <tr>
                                                 <td colSpan={5} className="py-12 text-center text-zinc-500">
-                                                    មិនទាន់មានកំណត់ត្រាថតបេឡាទេ
+                                                    {tr('មិនទាន់មានកំណត់ត្រាថតបេឡាទេ')}
                                                 </td>
                                             </tr>
                                         ) : (
@@ -634,11 +635,11 @@ export default function ExpensesIndex({
                                                                 }`}
                                                             >
                                                                 {log.type === 'cash_drop'
-                                                                    ? 'ទម្លាក់ចូលទូដែក (Cash Drop)'
+                                                                    ? tr('ទម្លាក់ចូលទូដែក (Cash Drop)')
                                                                     : log.type === 'cash_in'
-                                                                    ? 'ថែមប្រាក់ចូលបេឡា (Cash In)'
+                                                                    ? tr('ថែមប្រាក់ចូលបេឡា (Cash In)')
                                                                     : log.type === 'opening_float'
-                                                                    ? 'ប្រាក់បម្រុងដើមគ្រា (Float)'
+                                                                    ? tr('ប្រាក់បម្រុងដើមគ្រា (Float)')
                                                                     : log.type}
                                                             </span>
                                                         </td>
@@ -647,7 +648,7 @@ export default function ExpensesIndex({
                                                                 ${Number(log.amount_usd).toFixed(2)}
                                                             </div>
                                                             <div className="text-[11px] text-zinc-400">
-                                                                ៛{Number(log.amount_khr).toLocaleString()}
+                                                                {tr('៛')}{Number(log.amount_khr).toLocaleString()}
                                                             </div>
                                                         </td>
                                                         <td className="py-3 px-4 text-zinc-300">{log.reason || '-'}</td>
@@ -680,16 +681,16 @@ export default function ExpensesIndex({
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h2 className="text-base font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                            {editingExpenseId ? 'កែប្រែចំណាយ' : 'កត់ត្រាចំណាយប្រតិបត្តិការថ្មី'}
+                                            {editingExpenseId ? tr('កែប្រែចំណាយ') : tr('កត់ត្រាចំណាយប្រតិបត្តិការថ្មី')}
                                         </h2>
                                         <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
-                                            {editingExpenseId ? `កែចំណាយ #${editingExpenseId}` : 'ចំណាយថ្មី'}
+                                            {editingExpenseId ? `${tr('កែចំណាយ')} #${editingExpenseId}` : tr('ចំណាយថ្មី')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                        កត់ត្រាចំណាយប្រតិបត្តិការទូទៅ ឬកាត់ចេញពីថតបេឡា • វេនបច្ចុប្បន្ន:{' '}
+                                        {tr('កត់ត្រាចំណាយប្រតិបត្តិការទូទៅ ឬកាត់ចេញពីថតបេឡា • វេនបច្ចុប្បន្ន:')}{' '}
                                         <span className="font-semibold text-slate-700 dark:text-zinc-300">
-                                            {activePeriod?.period_number || 'ទូទៅ'}
+                                            {activePeriod?.period_number || tr('ទូទៅ')}
                                         </span>
                                     </p>
                                 </div>
@@ -701,7 +702,7 @@ export default function ExpensesIndex({
                                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all shadow-xs cursor-pointer"
                             >
                                 <ArrowLeft className="w-4 h-4" />
-                                <span className="font-khmer">ត្រឡប់ក្រោយ</span>
+                                <span className="font-khmer">{tr('ត្រឡប់ក្រោយ')}</span>
                                 <span className="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] uppercase font-mono rounded bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400">
                                     Esc
                                 </span>
@@ -719,10 +720,10 @@ export default function ExpensesIndex({
                                             <div className="flex items-center justify-between mb-3">
                                                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
                                                     <Tag className="w-4 h-4 text-amber-500" />
-                                                    ជ្រើសរើសប្រភេទចំណាយ *
+                                                    {tr('ជ្រើសរើសប្រភេទចំណាយ *')}
                                                 </label>
                                                 <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold font-khmer">
-                                                    {CATEGORY_MAP[expenseForm.category]?.nameKh || 'ចំណាយទូទៅ'}
+                                                    {CATEGORY_MAP[expenseForm.category]?.nameKh || tr('ចំណាយទូទៅ')}
                                                 </span>
                                             </div>
 
@@ -761,12 +762,12 @@ export default function ExpensesIndex({
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
                                             <div>
                                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                                    ចំណងជើងចំណាយ / បរិយាយសង្ខេប *
+                                                    {tr('ចំណងជើងចំណាយ / បរិយាយសង្ខេប *')}
                                                 </label>
                                                 <input
                                                     type="text"
                                                     required
-                                                    placeholder="ឧ. ថ្លៃទឹក & ភ្លើង ប្រចាំសប្ដាហ៍..."
+                                                    placeholder={tr("ឧ. ថ្លៃទឹក & ភ្លើង ប្រចាំសប្ដាហ៍...")}
                                                     value={expenseForm.title}
                                                     onChange={(e) =>
                                                         setExpenseForm({ ...expenseForm, title: e.target.value })
@@ -780,7 +781,7 @@ export default function ExpensesIndex({
                                                 <div>
                                                     <div className="text-[11px] text-slate-400 dark:text-zinc-500 mb-1.5 flex items-center gap-1 font-khmer">
                                                         <Sparkles className="w-3 h-3 text-amber-500" />
-                                                        <span>ចំណងជើងពេញនិយម (ចុចដើម្បីបំពេញ):</span>
+                                                        <span>{tr('ចំណងជើងពេញនិយម (ចុចដើម្បីបំពេញ):')}</span>
                                                     </div>
                                                     <div className="flex flex-wrap gap-1.5">
                                                         {COMMON_EXPENSE_TITLES[expenseForm.category].map((title) => (
@@ -805,7 +806,7 @@ export default function ExpensesIndex({
                                         {/* Payment Method Selector */}
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-3">
                                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
-                                                ប្រភពទូទាត់សាច់ប្រាក់ (Payment Source) *
+                                                {tr('ប្រភពទូទាត់សាច់ប្រាក់ (Payment Source) *')}
                                             </label>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -820,10 +821,10 @@ export default function ExpensesIndex({
                                                 >
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <WalletCards className="w-4 h-4 text-amber-500" />
-                                                        <span className="text-xs font-bold font-khmer">ថតបេឡា (Drawer)</span>
+                                                        <span className="text-xs font-bold font-khmer">{tr('ថតបេឡា (Drawer)')}</span>
                                                     </div>
                                                     <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight font-khmer">
-                                                        កាត់ចេញពីសាច់ប្រាក់វេនផ្ទាល់
+                                                        {tr('កាត់ចេញពីសាច់ប្រាក់វេនផ្ទាល់')}
                                                     </p>
                                                 </button>
 
@@ -838,10 +839,10 @@ export default function ExpensesIndex({
                                                 >
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <Coins className="w-4 h-4 text-emerald-500" />
-                                                        <span className="text-xs font-bold font-khmer">ប្រាក់រាយ (Petty Cash)</span>
+                                                        <span className="text-xs font-bold font-khmer">{tr('ប្រាក់រាយ (Petty Cash)')}</span>
                                                     </div>
                                                     <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight font-khmer">
-                                                        កាត់ពីមូលនិធិបម្រុងបន្ទាន់
+                                                        {tr('កាត់ពីមូលនិធិបម្រុងបន្ទាន់')}
                                                     </p>
                                                 </button>
 
@@ -856,10 +857,10 @@ export default function ExpensesIndex({
                                                 >
                                                     <div className="flex items-center gap-2 mb-1">
                                                         <CreditCard className="w-4 h-4 text-sky-500" />
-                                                        <span className="text-xs font-bold font-khmer">ធនាគារ / KHQR</span>
+                                                        <span className="text-xs font-bold font-khmer">{tr('ធនាគារ / KHQR')}</span>
                                                     </div>
                                                     <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight font-khmer">
-                                                        ផ្ទេរប្រាក់តាមគណនីធនាគារ
+                                                        {tr('ផ្ទេរប្រាក់តាមគណនីធនាគារ')}
                                                     </p>
                                                 </button>
                                             </div>
@@ -868,11 +869,11 @@ export default function ExpensesIndex({
                                         {/* Description / Notes */}
                                         <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs">
                                             <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                                បរិយាយបន្ថែម / កំណត់សម្គាល់ (Description)
+                                                {tr('បរិយាយបន្ថែម / កំណត់សម្គាល់ (Description)')}
                                             </label>
                                             <textarea
                                                 rows={2}
-                                                placeholder="ព័ត៌មានលម្អិតបន្ថែម ឬលេខទូរស័ព្ទអ្នកផ្គត់ផ្គង់..."
+                                                placeholder={tr("ព័ត៌មានលម្អិតបន្ថែម ឬលេខទូរស័ព្ទអ្នកផ្គត់ផ្គង់...")}
                                                 value={expenseForm.description}
                                                 onChange={(e) =>
                                                     setExpenseForm({ ...expenseForm, description: e.target.value })
@@ -889,10 +890,10 @@ export default function ExpensesIndex({
                                             <div className="flex items-center justify-between">
                                                 <label className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5 font-khmer">
                                                     <DollarSign className="w-4 h-4" />
-                                                    ចំនួនទឹកប្រាក់ចំណាយ (Amount) *
+                                                    {tr('ចំនួនទឹកប្រាក់ចំណាយ (Amount) *')}
                                                 </label>
                                                 <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700">
-                                                    1$ = {exchangeRate.toLocaleString()} ៛
+                                                    1$ = {exchangeRate.toLocaleString()} {tr('៛')}
                                                 </span>
                                             </div>
 
@@ -900,7 +901,7 @@ export default function ExpensesIndex({
                                                 {/* USD Input */}
                                                 <div>
                                                     <span className="block text-[11px] font-medium text-slate-500 dark:text-zinc-400 mb-1">
-                                                        ទឹកប្រាក់គិតជាដុល្លារ (USD)
+                                                        {tr('ទឹកប្រាក់គិតជាដុល្លារ (USD)')}
                                                     </span>
                                                     <div className="relative">
                                                         <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-lg font-bold font-mono text-slate-400 dark:text-zinc-500">
@@ -921,7 +922,7 @@ export default function ExpensesIndex({
                                                 {/* KHR Input */}
                                                 <div>
                                                     <span className="block text-[11px] font-medium text-slate-500 dark:text-zinc-400 mb-1">
-                                                        ទឹកប្រាក់គិតជារៀល (KHR)
+                                                        {tr('ទឹកប្រាក់គិតជារៀល (KHR)')}
                                                     </span>
                                                     <div className="relative">
                                                         <input
@@ -932,7 +933,7 @@ export default function ExpensesIndex({
                                                             className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-lg font-bold font-mono text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 transition-all"
                                                         />
                                                         <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-bold font-mono text-slate-400 dark:text-zinc-500">
-                                                            ៛
+                                                            {tr('៛')}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -941,7 +942,7 @@ export default function ExpensesIndex({
                                             {/* Quick Amount Increment Buttons */}
                                             <div>
                                                 <div className="text-[11px] text-slate-400 dark:text-zinc-500 mb-1.5 font-khmer">
-                                                    បន្ថែមទឹកប្រាក់រហ័ស (Quick Pills):
+                                                    {tr('បន្ថែមទឹកប្រាក់រហ័ស (Quick Pills):')}
                                                 </div>
                                                 <div className="grid grid-cols-4 gap-1.5">
                                                     {[5, 10, 20, 50].map((amt) => (
@@ -968,7 +969,7 @@ export default function ExpensesIndex({
                                                         onClick={resetExpenseAmount}
                                                         className="py-1.5 px-2 rounded-lg text-xs font-khmer text-slate-500 hover:text-rose-500 bg-slate-100 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 transition-all cursor-pointer"
                                                     >
-                                                        កំណត់ឡើងវិញ
+                                                        {tr('កំណត់ឡើងវិញ')}
                                                     </button>
                                                 </div>
                                             </div>
@@ -979,11 +980,11 @@ export default function ExpensesIndex({
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1 font-khmer">
-                                                        បង់ជូន (Paid To)
+                                                        {tr('បង់ជូន (Paid To)')}
                                                     </label>
                                                     <input
                                                         type="text"
-                                                        placeholder="ឧ. អគ្គិសនីកម្ពុជា"
+                                                        placeholder={tr("ឧ. អគ្គិសនីកម្ពុជា")}
                                                         value={expenseForm.paid_to}
                                                         onChange={(e) =>
                                                             setExpenseForm({ ...expenseForm, paid_to: e.target.value })
@@ -994,7 +995,7 @@ export default function ExpensesIndex({
 
                                                 <div>
                                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1 font-khmer">
-                                                        កាលបរិច្ឆេទចំណាយ *
+                                                        {tr('កាលបរិច្ឆេទចំណាយ *')}
                                                     </label>
                                                     <input
                                                         type="date"
@@ -1010,11 +1011,11 @@ export default function ExpensesIndex({
 
                                             <div>
                                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 mb-1 font-khmer">
-                                                    លេខវិក្កយបត្រ / បុងយោង (Receipt Ref #)
+                                                    {tr('លេខវិក្កយបត្រ / បុងយោង (Receipt Ref #)')}
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    placeholder="ឧ. EDC-99120 ឬ INV-2026-001"
+                                                    placeholder={tr("ឧ. EDC-99120 ឬ INV-2026-001")}
                                                     value={expenseForm.receipt_reference}
                                                     onChange={(e) =>
                                                         setExpenseForm({ ...expenseForm, receipt_reference: e.target.value })
@@ -1027,21 +1028,21 @@ export default function ExpensesIndex({
                                         {/* Real-Time Impact Summary */}
                                         <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 text-xs space-y-2">
                                             <div className="flex items-center justify-between font-khmer">
-                                                <span className="text-slate-500 dark:text-zinc-400">ផលប៉ះពាល់លើបេឡា:</span>
+                                                <span className="text-slate-500 dark:text-zinc-400">{tr('ផលប៉ះពាល់លើបេឡា:')}</span>
                                                 <span className="font-bold text-amber-600 dark:text-amber-400">
                                                     {expenseForm.payment_method === 'cash_drawer'
-                                                        ? 'ដកចេញពីសាច់ប្រាក់ថតបេឡា'
+                                                        ? tr('ដកចេញពីសាច់ប្រាក់ថតបេឡា')
                                                         : expenseForm.payment_method === 'petty_cash'
-                                                        ? 'កាត់ពីសាច់ប្រាក់រាយ'
-                                                        : 'ទូទាត់ធនាគារ (មិនប៉ះពាល់បេឡា)'}
+                                                        ? tr('កាត់ពីសាច់ប្រាក់រាយ')
+                                                        : tr('ទូទាត់ធនាគារ (មិនប៉ះពាល់បេឡា)')}
                                                 </span>
                                             </div>
                                             <div className="flex items-center justify-between pt-2 border-t border-amber-500/10">
-                                                <span className="text-slate-500 dark:text-zinc-400 font-khmer">សរុបចំណាយ:</span>
+                                                <span className="text-slate-500 dark:text-zinc-400 font-khmer">{tr('សរុបចំណាយ:')}</span>
                                                 <span className="text-base font-bold font-mono text-slate-900 dark:text-zinc-100">
                                                     {formatUsd(expenseForm.amount_usd || 0)}{' '}
                                                     <span className="text-xs font-normal text-slate-400">
-                                                        (≈ {Number(expenseForm.amount_khr || 0).toLocaleString()} ៛)
+                                                        (≈ {Number(expenseForm.amount_khr || 0).toLocaleString()} {tr('៛)')}
                                                     </span>
                                                 </span>
                                             </div>
@@ -1055,7 +1056,7 @@ export default function ExpensesIndex({
                                 <div className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-2 font-khmer">
                                     <Shield className="w-4 h-4 text-emerald-500 shrink-0" />
                                     <span>
-                                        រាល់ការកត់ត្រានឹងត្រូវធ្វើបច្ចុប្បន្នភាពចូលក្នុងរបាយការណ៍បិទវេន និងរបាយការណ៍ចំណេញខាតភ្លាមៗ
+                                        {tr('រាល់ការកត់ត្រានឹងត្រូវធ្វើបច្ចុប្បន្នភាពចូលក្នុងរបាយការណ៍បិទវេន និងរបាយការណ៍ចំណេញខាតភ្លាមៗ')}
                                     </span>
                                 </div>
 
@@ -1065,14 +1066,14 @@ export default function ExpensesIndex({
                                         onClick={() => setShowExpenseModal(false)}
                                         className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-800 transition-all cursor-pointer font-khmer"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
                                     <button
                                         type="submit"
                                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-md shadow-amber-500/20 transition-all cursor-pointer font-khmer"
                                     >
                                         <CheckCircle2 className="w-4 h-4" />
-                                        <span>{editingExpenseId ? 'រក្សាទុកការកែប្រែ' : 'រក្សាទុកចំណាយ'}</span>
+                                        <span>{editingExpenseId ? tr('រក្សាទុកការកែប្រែ') : tr('រក្សាទុកចំណាយ')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -1091,11 +1092,11 @@ export default function ExpensesIndex({
                                 </div>
                                 <div>
                                     <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        លុបចំណាយនេះមែនទេ?
+                                        {tr('លុបចំណាយនេះមែនទេ?')}
                                     </h3>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer mt-1 leading-relaxed">
                                         <span className="font-semibold text-zinc-800 dark:text-zinc-200">{deletingExpense.title}</span>{' '}
-                                        ({formatUsd(deletingExpense.amount_usd)} • {deletingExpense.expense_date}) នឹងត្រូវលុបចេញពីរបាយការណ៍។ ព័ត៌មានដើមត្រូវបានរក្សាទុកក្នុង Audit Trail។
+                                        ({formatUsd(deletingExpense.amount_usd)} • {deletingExpense.expense_date}{tr(') នឹងត្រូវលុបចេញពីរបាយការណ៍។ ព័ត៌មានដើមត្រូវបានរក្សាទុកក្នុង Audit Trail។')}
                                     </p>
                                 </div>
                             </div>
@@ -1105,7 +1106,7 @@ export default function ExpensesIndex({
                                     onClick={() => setDeletingExpense(null)}
                                     className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 transition cursor-pointer font-khmer"
                                 >
-                                    បោះបង់
+                                    {tr('បោះបង់')}
                                 </button>
                                 <button
                                     type="button"
@@ -1113,7 +1114,7 @@ export default function ExpensesIndex({
                                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer font-khmer"
                                 >
                                     <Trash2 className="w-4 h-4" />
-                                    <span>លុបចំណាយ</span>
+                                    <span>{tr('លុបចំណាយ')}</span>
                                 </button>
                             </div>
                         </div>
@@ -1136,14 +1137,14 @@ export default function ExpensesIndex({
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            កត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡា
+                                            {tr('កត់ត្រាចលនាសាច់ប្រាក់ក្នុងថតបេឡា')}
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            ដាក់/ដកលុយពីថតបេឡា
+                                            {tr('ដាក់/ដកលុយពីថតបេឡា')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                        ទម្លាក់ចូលទូដែក (Cash Drop), បន្ថែមប្រាក់បម្រុង (Cash In), ឬដកសាច់ប្រាក់បន្ទាន់ (Pay Out)
+                                        {tr('ទម្លាក់ចូលទូដែក (Cash Drop), បន្ថែមប្រាក់បម្រុង (Cash In), ឬដកសាច់ប្រាក់បន្ទាន់ (Pay Out)')}
                                     </p>
                                 </div>
                             </div>
@@ -1151,10 +1152,10 @@ export default function ExpensesIndex({
                                 type="button"
                                 onClick={() => setShowDrawerModal(false)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-600 dark:text-amber-400" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -1167,7 +1168,7 @@ export default function ExpensesIndex({
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <Layers className="w-4 h-4 text-amber-500" />
-                                            <span>ជ្រើសរើសប្រភេទប្រតិបត្តិការថតបេឡា / Drawer Movement Type</span>
+                                            <span>{tr('ជ្រើសរើសប្រភេទប្រតិបត្តិការថតបេឡា / Drawer Movement Type')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1175,7 +1176,7 @@ export default function ExpensesIndex({
                                                 {
                                                     key: 'cash_drop',
                                                     labelKh: 'ទម្លាក់ចូលទូដែក (Cash Drop)',
-                                                    desc: 'ផ្ទេរសាច់ប្រាក់លើសចូលទូដែកសុវត្ថិភាព',
+                                                    desc: tr('ផ្ទេរសាច់ប្រាក់លើសចូលទូដែកសុវត្ថិភាព'),
                                                     icon: ArrowDownRight,
                                                     color: 'text-amber-500',
                                                     activeBg: 'bg-amber-500/10 border-amber-500 ring-2 ring-amber-500/20',
@@ -1183,7 +1184,7 @@ export default function ExpensesIndex({
                                                 {
                                                     key: 'cash_in',
                                                     labelKh: 'បន្ថែមប្រាក់បម្រុង (Cash In)',
-                                                    desc: 'បន្ថែមក្រដាសប្រាក់អាប់ចូលថតបេឡា',
+                                                    desc: tr('បន្ថែមក្រដាសប្រាក់អាប់ចូលថតបេឡា'),
                                                     icon: ArrowUpRight,
                                                     color: 'text-emerald-500',
                                                     activeBg: 'bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/20',
@@ -1191,7 +1192,7 @@ export default function ExpensesIndex({
                                                 {
                                                     key: 'opening_float',
                                                     labelKh: 'ប្រាក់បម្រុងដើមគ្រា (Opening Float)',
-                                                    desc: 'កំណត់ប្រាក់ដំបូងសម្រាប់បើកវេនលក់',
+                                                    desc: tr('កំណត់ប្រាក់ដំបូងសម្រាប់បើកវេនលក់'),
                                                     icon: Sparkles,
                                                     color: 'text-sky-500',
                                                     activeBg: 'bg-sky-500/10 border-sky-500 ring-2 ring-sky-500/20',
@@ -1199,7 +1200,7 @@ export default function ExpensesIndex({
                                                 {
                                                     key: 'pay_out',
                                                     labelKh: 'ដកសាច់ប្រាក់បន្ទាន់ (Pay Out)',
-                                                    desc: 'ទូទាត់ចំណាយបន្ទាន់ផ្ទាល់ពីថតបេឡា',
+                                                    desc: tr('ទូទាត់ចំណាយបន្ទាន់ផ្ទាល់ពីថតបេឡា'),
                                                     icon: Banknote,
                                                     color: 'text-rose-500',
                                                     activeBg: 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-500/20',
@@ -1240,14 +1241,14 @@ export default function ExpensesIndex({
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <DollarSign className="w-4 h-4 text-amber-500" />
-                                            <span>ចំនួនទឹកប្រាក់ទូទាត់ (Amount)</span>
+                                            <span>{tr('ចំនួនទឹកប្រាក់ទូទាត់ (Amount)')}</span>
                                             <span className="text-rose-500">*</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ចំនួនទឹកប្រាក់ (USD)
+                                                    {tr('ចំនួនទឹកប្រាក់ (USD)')}
                                                 </label>
                                                 <div className="relative">
                                                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold font-mono text-zinc-400">
@@ -1267,11 +1268,11 @@ export default function ExpensesIndex({
 
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ចំនួនទឹកប្រាក់ (KHR - ប្តូរស្វ័យប្រវត្ត)
+                                                    {tr('ចំនួនទឹកប្រាក់ (KHR - ប្តូរស្វ័យប្រវត្ត)')}
                                                 </label>
                                                 <div className="relative">
                                                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold font-mono text-zinc-400">
-                                                        ៛
+                                                        {tr('៛')}
                                                     </span>
                                                     <input
                                                         type="number"
@@ -1286,7 +1287,7 @@ export default function ExpensesIndex({
                                         {/* Quick Amount Pills */}
                                         <div className="space-y-1.5 pt-1">
                                             <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                ចុចជ្រើសរើសចំនួនទឹកប្រាក់រហ័ស (Quick Presets)៖
+                                                {tr('ចុចជ្រើសរើសចំនួនទឹកប្រាក់រហ័ស (Quick Presets)៖')}
                                             </span>
                                             <div className="flex flex-wrap gap-2">
                                                 {['10', '20', '50', '100', '200', '500'].map((amt) => (
@@ -1311,12 +1312,12 @@ export default function ExpensesIndex({
                                     <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                             <FileText className="w-4 h-4 text-amber-500" />
-                                            <span>មូលហេតុ / កំណត់សម្គាល់ (Reason & Notes)</span>
+                                            <span>{tr('មូលហេតុ / កំណត់សម្គាល់ (Reason & Notes)')}</span>
                                         </div>
 
                                         <input
                                             type="text"
-                                            placeholder="ឧ. ដកផ្ទេរចូលទូដែកពេលល្ងាច..."
+                                            placeholder={tr("ឧ. ដកផ្ទេរចូលទូដែកពេលល្ងាច...")}
                                             value={drawerForm.reason}
                                             onChange={(e) => setDrawerForm({ ...drawerForm, reason: e.target.value })}
                                             className="w-full px-3.5 py-2.5 bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 font-khmer transition-all"
@@ -1326,14 +1327,14 @@ export default function ExpensesIndex({
                                         <div className="space-y-1.5 pt-1">
                                             <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-khmer">
                                                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                                                <span>គំរូកំណត់សម្គាល់រហ័ស (Quick Presets)៖</span>
+                                                <span>{tr('គំរូកំណត់សម្គាល់រហ័ស (Quick Presets)៖')}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {[
-                                                    'ដកផ្ទេរចូលទូដែកពេលល្ងាច (Drop to safe)',
-                                                    'បន្ថែមក្រដាសប្រាក់រាយសម្រាប់អាប់ (Small bills)',
-                                                    'ប្រាក់បម្រុងសម្រាប់បើកវេនលក់ (Opening float)',
-                                                    'ដកសាច់ប្រាក់បន្ទាន់ទិញសម្ភារហាង (Emergency payout)',
+                                                    tr('ដកផ្ទេរចូលទូដែកពេលល្ងាច (Drop to safe)'),
+                                                    tr('បន្ថែមក្រដាសប្រាក់រាយសម្រាប់អាប់ (Small bills)'),
+                                                    tr('ប្រាក់បម្រុងសម្រាប់បើកវេនលក់ (Opening float)'),
+                                                    tr('ដកសាច់ប្រាក់បន្ទាន់ទិញសម្ភារហាង (Emergency payout)'),
                                                 ].map((preset, idx) => (
                                                     <button
                                                         key={idx}
@@ -1363,7 +1364,7 @@ export default function ExpensesIndex({
                                             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                                                 <div className="space-y-0.5">
                                                     <span className="text-[10px] font-mono tracking-widest uppercase text-zinc-400">
-                                                        ប័ណ្ណថតបេឡា
+                                                        {tr('ប័ណ្ណថតបេឡា')}
                                                     </span>
                                                     <h4 className="text-sm font-bold text-white font-mono">
                                                         LOG-DRAWER
@@ -1377,7 +1378,7 @@ export default function ExpensesIndex({
                                             {/* Primary Amount Display */}
                                             <div className="p-4 rounded-xl bg-black/40 border border-zinc-800 text-center space-y-1">
                                                 <span className="text-[10px] text-zinc-400 font-khmer block uppercase tracking-wider">
-                                                    ទឹកប្រាក់ប្រតិបត្តិការសរុប
+                                                    {tr('ទឹកប្រាក់ប្រតិបត្តិការសរុប')}
                                                 </span>
                                                 <div className="text-2xl font-bold font-mono text-amber-400">
                                                     ${parseFloat(drawerForm.amount_usd || '0').toFixed(2)} USD
@@ -1390,21 +1391,21 @@ export default function ExpensesIndex({
                                             {/* Voucher Details */}
                                             <div className="space-y-2.5 text-xs font-mono border-t border-zinc-800/80 pt-3">
                                                 <div className="flex items-center justify-between text-zinc-400">
-                                                    <span className="font-khmer">ការិយបរិច្ឆេទ / វេនលក់៖</span>
+                                                    <span className="font-khmer">{tr('ការិយបរិច្ឆេទ / វេនលក់៖')}</span>
                                                     <span className="text-white font-semibold">
-                                                        {activePeriod ? `Period #${activePeriod.period_number}` : 'វេនលក់បច្ចុប្បន្ន'}
+                                                        {activePeriod ? `Period #${activePeriod.period_number}` : tr('វេនលក់បច្ចុប្បន្ន')}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400">
-                                                    <span className="font-khmer">អត្រាប្តូរប្រាក់យោង៖</span>
+                                                    <span className="font-khmer">{tr('អត្រាប្តូរប្រាក់យោង៖')}</span>
                                                     <span className="text-zinc-200">
-                                                        1$ = {exchangeRate.toLocaleString()} ៛
+                                                        1$ = {exchangeRate.toLocaleString()} {tr('៛')}
                                                     </span>
                                                 </div>
 
                                                 <div className="flex items-center justify-between text-zinc-400">
-                                                    <span className="font-khmer">កំណត់សម្គាល់៖</span>
+                                                    <span className="font-khmer">{tr('កំណត់សម្គាល់៖')}</span>
                                                     <span className="text-zinc-300 truncate max-w-[180px] font-sans">
                                                         {drawerForm.reason || '—'}
                                                     </span>
@@ -1414,7 +1415,7 @@ export default function ExpensesIndex({
                                             {/* Voucher Footer */}
                                             <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
                                                 <span>AUDIT: DRAWER_TRANSACTION</span>
-                                                <span>រួចរាល់</span>
+                                                <span>{tr('រួចរាល់')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1427,7 +1428,7 @@ export default function ExpensesIndex({
                                     <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                         Esc
                                     </kbd>
-                                    <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                                    <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                                 </div>
 
                                 <div className="flex items-center gap-3 ml-auto">
@@ -1436,7 +1437,7 @@ export default function ExpensesIndex({
                                         onClick={() => setShowDrawerModal(false)}
                                         className="px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                                     >
-                                        បោះបង់
+                                        {tr('បោះបង់')}
                                     </button>
 
                                     <button
@@ -1445,7 +1446,7 @@ export default function ExpensesIndex({
                                         className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/30 transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <Lock className="w-4 h-4" />
-                                        <span>កត់ត្រាចលនាសាច់ប្រាក់ (Confirm Movement)</span>
+                                        <span>{tr('កត់ត្រាចលនាសាច់ប្រាក់ (Confirm Movement)')}</span>
                                     </button>
                                 </div>
                             </div>

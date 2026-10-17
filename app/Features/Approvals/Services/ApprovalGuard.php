@@ -24,27 +24,27 @@ final class ApprovalGuard
         ?array $normalizedPayload = null
     ): void {
         if ($approval->status !== ApprovalStatus::Approved) {
-            throw new DomainException('សំណើនេះមិនទាន់ត្រូវបានអនុម័តទេ។ (Approval request is not in approved status)');
+            throw new DomainException(__('សំណើនេះមិនទាន់ត្រូវបានអនុម័តទេ។ (Approval request is not in approved status)'));
         }
 
         if ($approval->expires_at === null || ! $approval->expires_at->isFuture()) {
-            throw new DomainException('សំណើនេះផុតកំណត់ហើយ មិនអាចប្រើបានទៀតទេ។ (Approval request has expired)');
+            throw new DomainException(__('សំណើនេះផុតកំណត់ហើយ មិនអាចប្រើបានទៀតទេ។ (Approval request has expired)'));
         }
 
         if ($approval->used_at !== null || $approval->status === ApprovalStatus::Used) {
-            throw new DomainException('សំណើនេះត្រូវបានប្រើរួចហើយ (ប្រើបានតែម្តង)។ (Approval request has already been consumed)');
+            throw new DomainException(__('សំណើនេះត្រូវបានប្រើរួចហើយ (ប្រើបានតែម្តង)។ (Approval request has already been consumed)'));
         }
 
         if ($approval->request_type !== $type) {
-            throw new DomainException("ប្រភេទសំណើមិនត្រូវគ្នា។ ត្រូវការ {$type->value}។");
+            throw new DomainException(__('ប្រភេទសំណើមិនត្រូវគ្នា។ ត្រូវការ :value។', ['value' => $type->value]));
         }
 
         if ($approval->target_type !== $targetType || (int) $approval->target_id !== $targetId) {
-            throw new DomainException('សំណើនេះមិនមែនសម្រាប់ប្រតិបត្តិការនេះទេ។');
+            throw new DomainException(__('សំណើនេះមិនមែនសម្រាប់ប្រតិបត្តិការនេះទេ។'));
         }
 
         if ($normalizedPayload !== null && ($approval->requested_changes ?? []) !== $normalizedPayload) {
-            throw new DomainException('ការកែប្រែមិនដូចអ្វីដែលបានអនុម័តទេ។');
+            throw new DomainException(__('ការកែប្រែមិនដូចអ្វីដែលបានអនុម័តទេ។'));
         }
     }
 }

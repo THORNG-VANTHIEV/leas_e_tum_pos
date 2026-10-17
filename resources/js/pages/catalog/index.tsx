@@ -38,6 +38,7 @@ import {
     Loader2,
     ShieldCheck,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface Unit {
     id: number;
@@ -195,12 +196,12 @@ export default function CatalogIndex({
         if (!file) return;
 
         if (!file.type.startsWith('image/')) {
-            setUploadError('សូមជ្រើសរើសឯកសារជារូបភាព (PNG, JPG, WEBP, GIF)');
+            setUploadError(tr('សូមជ្រើសរើសឯកសារជារូបភាព (PNG, JPG, WEBP, GIF)'));
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            setUploadError('ទំហំរូបភាពធំបំផុតគឺ 5MB');
+            setUploadError(tr('ទំហំរូបភាពធំបំផុតគឺ 5MB'));
             return;
         }
 
@@ -230,10 +231,10 @@ export default function CatalogIndex({
             if (res.ok && data.url) {
                 productForm.setData('image_url', data.url);
             } else {
-                setUploadError(data.message || data.error || 'ការ Upload រូបភាពមិនបានជោគជ័យ');
+                setUploadError(data.message || data.error || tr('ការ Upload រូបភាពមិនបានជោគជ័យ'));
             }
         } catch (err: any) {
-            setUploadError(err.message || 'មានបញ្ហាបណ្តាញពេល Upload រូបភាព');
+            setUploadError(err.message || tr('មានបញ្ហាបណ្តាញពេល Upload រូបភាព'));
         } finally {
             setIsUploadingImage(false);
             if (fileInputRef.current) {
@@ -431,8 +432,8 @@ export default function CatalogIndex({
     const activeProductsCount = products.filter((p) => p.is_active).length;
 
     return (
-        <AppLayout title="Items, Units & Categories / មុខទំនិញ និងឯកតា">
-            <Head title="មុខទំនិញ & ឯកតា" />
+        <AppLayout title={tr("Items, Units & Categories / មុខទំនិញ និងឯកតា")}>
+            <Head title={tr("មុខទំនិញ & ឯកតា")} />
 
             <div className="space-y-6 pb-16">
                 {/* Fixed / Sticky Header & Tabs Switcher */}
@@ -445,14 +446,14 @@ export default function CatalogIndex({
                                     <span className="p-2.5 bg-gradient-to-tr from-amber-600 to-amber-500 rounded-2xl text-zinc-950 shadow-md shadow-amber-500/20 shrink-0">
                                         <Package className="w-5 h-5 stroke-[2.5]" />
                                     </span>
-                                    <span>មុខទំនិញ & ឯកតា</span>
+                                    <span>{tr('មុខទំនិញ & ឯកតា')}</span>
                                 </h1>
                                 <Badge variant="emerald" className="text-xs">
-                                    មុខទំនិញ & ឯកតា
+                                    {tr('មុខទំនិញ & ឯកតា')}
                                 </Badge>
                             </div>
                             <p className="text-xs text-zinc-400 mt-1">
-                                Manage live POS menu products, prices, measurement units, and item categories for លៀសហាល អ៉ីទុម.
+                                {tr('Manage live POS menu products, prices, measurement units, and item categories for លៀសហាល អ៉ីទុម.')}
                             </p>
                         </div>
 
@@ -463,7 +464,7 @@ export default function CatalogIndex({
                                     className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-amber-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
-                                    New Product / បន្ថែមមុខទំនិញ
+                                    {tr('New Product / បន្ថែមមុខទំនិញ')}
                                 </Button>
                             )}
                             {canManageCatalog && activeTab === 'units' && (
@@ -472,7 +473,7 @@ export default function CatalogIndex({
                                     className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-emerald-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
-                                    New Unit / បន្ថែមឯកតា
+                                    {tr('New Unit / បន្ថែមឯកតា')}
                                 </Button>
                             )}
                             {canManageCatalog && activeTab === 'categories' && (
@@ -481,7 +482,7 @@ export default function CatalogIndex({
                                     className="bg-teal-500 hover:bg-teal-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-md shadow-teal-500/20 rounded-xl px-4 py-2.5 cursor-pointer transition-all active:scale-[0.98]"
                                 >
                                     <Plus className="w-4 h-4 stroke-[2.5]" />
-                                    New Category / បន្ថែមប្រភេទ
+                                    {tr('New Category / បន្ថែមប្រភេទ')}
                                 </Button>
                             )}
                         </div>
@@ -499,7 +500,7 @@ export default function CatalogIndex({
                             }`}
                         >
                             <Utensils className="w-3.5 h-3.5 shrink-0" />
-                            <span>Products & Dishes / មុខទំនិញ</span>
+                            <span>{tr('Products & Dishes / មុខទំនិញ')}</span>
                             <span
                                 className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
                                     activeTab === 'products'
@@ -521,7 +522,7 @@ export default function CatalogIndex({
                             }`}
                         >
                             <Scale className="w-3.5 h-3.5 shrink-0" />
-                            <span>Units of Measure / ឯកតា</span>
+                            <span>{tr('Units of Measure / ឯកតា')}</span>
                             <span
                                 className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
                                     activeTab === 'units'
@@ -543,7 +544,7 @@ export default function CatalogIndex({
                             }`}
                         >
                             <Tags className="w-3.5 h-3.5 shrink-0" />
-                            <span>Categories / ប្រភេទមុខទំនិញ</span>
+                            <span>{tr('Categories / ប្រភេទមុខទំនិញ')}</span>
                             <span
                                 className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
                                     activeTab === 'categories'
@@ -561,53 +562,53 @@ export default function CatalogIndex({
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Total Items / មុខទំនិញសរុប</span>
+                            <span>{tr('Total Items / មុខទំនិញសរុប')}</span>
                             <Utensils className="w-4 h-4 text-amber-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {products.length}
                         </div>
                         <div className="text-xs text-emerald-400/90 font-khmer mt-1">
-                            {activeProductsCount} កំពុងដាក់លក់សកម្ម
+                            {activeProductsCount} {tr('កំពុងដាក់លក់សកម្ម')}
                         </div>
                     </Card>
 
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Categories / ប្រភេទមុខទំនិញ</span>
+                            <span>{tr('Categories / ប្រភេទមុខទំនិញ')}</span>
                             <Tags className="w-4 h-4 text-emerald-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {categories.length}
                         </div>
                         <div className="text-xs text-zinc-400 font-khmer mt-1">
-                            ក្រុមមុខម្ហូប និងភេសជ្ជៈ
+                            {tr('ក្រុមមុខម្ហូប និងភេសជ្ជៈ')}
                         </div>
                     </Card>
 
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Units / ខ្នាតរង្វាស់</span>
+                            <span>{tr('Units / ខ្នាតរង្វាស់')}</span>
                             <Scale className="w-4 h-4 text-teal-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
                             {units.length}
                         </div>
                         <div className="text-xs text-teal-400/90 font-khmer mt-1">
-                            ខ្នាតគិត កំប៉ុង/ចាន/គីឡូ
+                            {tr('ខ្នាតគិត កំប៉ុង/ចាន/គីឡូ')}
                         </div>
                     </Card>
 
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Exchange Rate / អត្រាប្តូរប្រាក់</span>
+                            <span>{tr('Exchange Rate / អត្រាប្តូរប្រាក់')}</span>
                             <DollarSign className="w-4 h-4 text-purple-400" />
                         </div>
                         <div className="text-xl sm:text-2xl font-bold text-white font-mono">
-                            {exchange_rate.toLocaleString()} ៛
+                            {exchange_rate.toLocaleString()} {tr('៛')}
                         </div>
                         <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                            អត្រាគិតលុយ 1 USD
+                            {tr('អត្រាគិតលុយ 1 USD')}
                         </div>
                     </Card>
                 </div>
@@ -623,7 +624,7 @@ export default function CatalogIndex({
                                     <Input
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="ស្វែងរកតាមឈ្មោះ ឬ SKU..."
+                                        placeholder={tr("ស្វែងរកតាមឈ្មោះ ឬ SKU...")}
                                         className="pl-9 bg-zinc-950 border-zinc-800 text-xs h-9"
                                     />
                                 </div>
@@ -633,7 +634,7 @@ export default function CatalogIndex({
                                     onChange={(e) => setCategoryFilter(e.target.value)}
                                     className="bg-zinc-950 border border-zinc-800 text-zinc-300 rounded-lg px-3 py-1.5 text-xs h-9 focus:ring-1 focus:ring-amber-500"
                                 >
-                                    <option value="all">គ្រប់ប្រភេទទាំងអស់ (All)</option>
+                                    <option value="all">{tr('គ្រប់ប្រភេទទាំងអស់ (All)')}</option>
                                     {categories.map((c) => (
                                         <option key={c.id} value={c.id.toString()}>
                                             {c.name_primary}
@@ -646,9 +647,9 @@ export default function CatalogIndex({
                                     onChange={(e) => setStatusFilter(e.target.value as any)}
                                     className="bg-zinc-950 border border-zinc-800 text-zinc-300 rounded-lg px-3 py-1.5 text-xs h-9 focus:ring-1 focus:ring-amber-500"
                                 >
-                                    <option value="all">គ្រប់ស្ថានភាព</option>
-                                    <option value="active">សកម្ម (Active)</option>
-                                    <option value="inactive">អសកម្ម (Inactive)</option>
+                                    <option value="all">{tr('គ្រប់ស្ថានភាព')}</option>
+                                    <option value="active">{tr('សកម្ម (Active)')}</option>
+                                    <option value="inactive">{tr('អសកម្ម (Inactive)')}</option>
                                 </select>
                             </div>
 
@@ -663,20 +664,20 @@ export default function CatalogIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3 whitespace-nowrap">លេខកូដ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Product Name / ឈ្មោះមុខទំនិញ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Category / ប្រភេទ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Unit / ឯកតា</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">Unit Price / តម្លៃ</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('លេខកូដ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Product Name / ឈ្មោះមុខទំនិញ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Category / ប្រភេទ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Unit / ឯកតា')}</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">{tr('Unit Price / តម្លៃ')}</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">{tr('Status / ស្ថានភាព')}</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">{tr('សកម្មភាព')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
                                         {filteredProducts.length === 0 ? (
                                             <tr>
                                                 <td colSpan={7} className="px-4 py-12 text-center text-zinc-500">
-                                                    រកមិនឃើញមុខទំនិញដែលត្រូវនឹងការស្វែងរកទេ
+                                                    {tr('រកមិនឃើញមុខទំនិញដែលត្រូវនឹងការស្វែងរកទេ')}
                                                 </td>
                                             </tr>
                                         ) : (
@@ -739,25 +740,25 @@ export default function CatalogIndex({
                                                                 ${priceUSD.toFixed(2)}
                                                             </div>
                                                             <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
-                                                                {priceKHR.toLocaleString()} ៛
+                                                                {priceKHR.toLocaleString()} {tr('៛')}
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             <button
                                                                 onClick={() => handleToggleProduct(p)}
                                                                 disabled={!canManageCatalog}
-                                                                title="ចុចដើម្បីបើក/បិទ"
+                                                                title={tr("ចុចដើម្បីបើក/បិទ")}
                                                                 className="cursor-pointer"
                                                             >
                                                                 {p.is_active ? (
                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                        កំពុងលក់
+                                                                        {tr('កំពុងលក់')}
                                                                     </span>
                                                                 ) : (
                                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60 whitespace-nowrap">
                                                                         <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                        បិទ
+                                                                        {tr('បិទ')}
                                                                     </span>
                                                                 )}
                                                             </button>
@@ -771,7 +772,7 @@ export default function CatalogIndex({
                                                                 className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                             >
                                                                 <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                                កែ
+                                                                {tr('កែ')}
                                                             </Button>
                                                             )}
                                                         </td>
@@ -783,8 +784,8 @@ export default function CatalogIndex({
                                 </table>
                             </div>
                             <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                                <span>បង្ហាញ {filteredProducts.length} ក្នុងចំណោម {products.length} មុខទំនិញសរុប</span>
-                                <span className="text-zinc-500 text-[11px]">លៀសហាល អ៉ីទុម POS Menu</span>
+                                <span>{tr('បង្ហាញ')} {filteredProducts.length} {tr('ក្នុងចំណោម')} {products.length} {tr('មុខទំនិញសរុប')}</span>
+                                <span className="text-zinc-500 text-[11px]">{tr('លៀសហាល អ៉ីទុម POS Menu')}</span>
                             </div>
                         </Card>
                     </div>
@@ -798,12 +799,12 @@ export default function CatalogIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3 whitespace-nowrap">Code / លេខកូដ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Primary Name / ឈ្មោះខ្មែរ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Secondary Name / ឈ្មោះអង់គ្លេស</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Code / លេខកូដ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Primary Name / ឈ្មោះខ្មែរ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Secondary Name / ឈ្មោះអង់គ្លេស')}</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">{tr('Items Count / មុខទំនិញ')}</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">{tr('Status / ស្ថានភាព')}</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">{tr('សកម្មភាព')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -847,12 +848,12 @@ export default function CatalogIndex({
                                                         {u.is_active ? (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                កំពុងប្រើ
+                                                                {tr('កំពុងប្រើ')}
                                                             </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                បិទ
+                                                                {tr('បិទ')}
                                                             </span>
                                                         )}
                                                     </button>
@@ -866,7 +867,7 @@ export default function CatalogIndex({
                                                         className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                        កែ
+                                                        {tr('កែ')}
                                                     </Button>
                                                     )}
                                                 </td>
@@ -876,8 +877,8 @@ export default function CatalogIndex({
                                 </table>
                             </div>
                             <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                                <span>បង្ហាញ {units.length} ឯកតារង្វាស់សរុប</span>
-                                <span className="text-zinc-500 text-[11px]">ឯកតា</span>
+                                <span>{tr('បង្ហាញ')} {units.length} {tr('ឯកតារង្វាស់សរុប')}</span>
+                                <span className="text-zinc-500 text-[11px]">{tr('ឯកតា')}</span>
                             </div>
                         </Card>
                     </div>
@@ -891,13 +892,13 @@ export default function CatalogIndex({
                                 <table className="w-full text-left text-xs">
                                     <thead className="bg-zinc-900/80 border-b border-zinc-800 text-zinc-400 uppercase font-mono text-[10px] whitespace-nowrap tracking-wider">
                                         <tr>
-                                            <th className="px-4 py-3 whitespace-nowrap">Code / លេខកូដ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Category Name / ឈ្មោះប្រភេទ</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Secondary Name / ឈ្មោះអង់គ្លេស</th>
-                                            <th className="px-4 py-3 whitespace-nowrap">Type / ប្រភេទ</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Items Count / មុខទំនិញ</th>
-                                            <th className="px-4 py-3 text-center whitespace-nowrap">Status / ស្ថានភាព</th>
-                                            <th className="px-4 py-3 text-right whitespace-nowrap">សកម្មភាព</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Code / លេខកូដ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Category Name / ឈ្មោះប្រភេទ')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Secondary Name / ឈ្មោះអង់គ្លេស')}</th>
+                                            <th className="px-4 py-3 whitespace-nowrap">{tr('Type / ប្រភេទ')}</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">{tr('Items Count / មុខទំនិញ')}</th>
+                                            <th className="px-4 py-3 text-center whitespace-nowrap">{tr('Status / ស្ថានភាព')}</th>
+                                            <th className="px-4 py-3 text-right whitespace-nowrap">{tr('សកម្មភាព')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-zinc-800/60">
@@ -939,12 +940,12 @@ export default function CatalogIndex({
                                                         {c.is_active ? (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                                                កំពុងប្រើ
+                                                                {tr('កំពុងប្រើ')}
                                                             </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-800 text-zinc-500 border border-zinc-700/60">
                                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-500"></span>
-                                                                បិទ
+                                                                {tr('បិទ')}
                                                             </span>
                                                         )}
                                                     </button>
@@ -958,7 +959,7 @@ export default function CatalogIndex({
                                                         className="h-7 text-xs border-zinc-700 bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 cursor-pointer"
                                                     >
                                                         <Edit2 className="w-3.5 h-3.5 mr-1" />
-                                                        កែ
+                                                        {tr('កែ')}
                                                     </Button>
                                                     )}
                                                 </td>
@@ -968,8 +969,8 @@ export default function CatalogIndex({
                                 </table>
                             </div>
                             <div className="px-4 py-2.5 bg-zinc-950/60 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 font-mono">
-                                <span>បង្ហាញ {categories.length} ប្រភេទមុខទំនិញសរុប</span>
-                                <span className="text-zinc-500 text-[11px]">ប្រភេទ</span>
+                                <span>{tr('បង្ហាញ')} {categories.length} {tr('ប្រភេទមុខទំនិញសរុប')}</span>
+                                <span className="text-zinc-500 text-[11px]">{tr('ប្រភេទ')}</span>
                             </div>
                         </Card>
                     </div>
@@ -992,14 +993,14 @@ export default function CatalogIndex({
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                            {editingProduct ? 'កែប្រែព័ត៌មានមុខទំនិញ' : 'បន្ថែមមុខទំនិញថ្មី'}
+                                            {editingProduct ? tr('កែប្រែព័ត៌មានមុខទំនិញ') : tr('បន្ថែមមុខទំនិញថ្មី')}
                                         </h3>
                                         <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                            {editingProduct ? 'កែមុខទំនិញ' : 'មុខទំនិញថ្មី'}
+                                            {editingProduct ? tr('កែមុខទំនិញ') : tr('មុខទំនិញថ្មី')}
                                         </span>
                                     </div>
                                     <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                        {editingProduct ? editingProduct.name_primary : 'បំពេញព័ត៌មានមុខម្ហូប ភេសជ្ជៈ រូបភាព និងតម្លៃលក់សម្រាប់ប្រព័ន្ធ POS'}
+                                        {editingProduct ? editingProduct.name_primary : tr('បំពេញព័ត៌មានមុខម្ហូប ភេសជ្ជៈ រូបភាព និងតម្លៃលក់សម្រាប់ប្រព័ន្ធ POS')}
                                     </p>
                                 </div>
                             </div>
@@ -1007,10 +1008,10 @@ export default function CatalogIndex({
                                 type="button"
                                 onClick={() => setProductModalOpen(false)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                                title="ត្រឡប់ក្រោយ (Esc)"
+                                title={tr("ត្រឡប់ក្រោយ (Esc)")}
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-amber-500" />
-                                <span>ត្រឡប់ក្រោយ</span>
+                                <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             </button>
                         </div>
 
@@ -1023,19 +1024,19 @@ export default function CatalogIndex({
                                     <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <Utensils className="w-3.5 h-3.5 text-amber-500" />
-                                            <span>ព័ត៌មានទូទៅនៃមុខទំនិញ / General Information</span>
+                                            <span>{tr('ព័ត៌មានទូទៅនៃមុខទំនិញ / General Information')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ឈ្មោះមុខទំនិញជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                                    {tr('ឈ្មោះមុខទំនិញជាភាសាខ្មែរ')} <span className="text-rose-500">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={productForm.data.name_primary}
                                                     onChange={(e) => productForm.setData('name_primary', e.target.value)}
-                                                    placeholder="ឧ. លៀសហាលរសជាតិដើម"
+                                                    placeholder={tr("ឧ. លៀសហាលរសជាតិដើម")}
                                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 font-khmer focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                     required
                                                 />
@@ -1046,13 +1047,13 @@ export default function CatalogIndex({
 
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ឈ្មោះជាភាសាអង់គ្លេស (Optional)
+                                                    {tr('ឈ្មោះជាភាសាអង់គ្លេស (Optional)')}
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={productForm.data.name_secondary}
                                                     onChange={(e) => productForm.setData('name_secondary', e.target.value)}
-                                                    placeholder="ឧ. លៀសហាលដើម"
+                                                    placeholder={tr("ឧ. លៀសហាលដើម")}
                                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3 py-2 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all"
                                                 />
                                             </div>
@@ -1061,7 +1062,7 @@ export default function CatalogIndex({
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-0.5">
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ប្រភេទមុខទំនិញ (Category) <span className="text-rose-500">*</span>
+                                                    {tr('ប្រភេទមុខទំនិញ (Category)')} <span className="text-rose-500">*</span>
                                                 </label>
                                                 <div className="relative">
                                                     <select
@@ -1082,7 +1083,7 @@ export default function CatalogIndex({
 
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    ឯកតាគិត (Unit) <span className="text-rose-500">*</span>
+                                                    {tr('ឯកតាគិត (Unit)')} <span className="text-rose-500">*</span>
                                                 </label>
                                                 <div className="relative">
                                                     <select
@@ -1107,13 +1108,13 @@ export default function CatalogIndex({
                                     <div className="p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 space-y-3">
                                         <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer">
                                             <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
-                                            <span>តម្លៃលក់ និងលេខកូដទំនិញ / Pricing & Identification</span>
+                                            <span>{tr('តម្លៃលក់ និងលេខកូដទំនិញ / Pricing & Identification')}</span>
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    តម្លៃលក់ឯកតា (USD) <span className="text-rose-500">*</span>
+                                                    {tr('តម្លៃលក់ឯកតា (USD)')} <span className="text-rose-500">*</span>
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1132,17 +1133,17 @@ export default function CatalogIndex({
                                                 </div>
                                                 <div className="mt-1 flex items-center gap-1.5 flex-wrap">
                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono font-semibold text-xs">
-                                                        ≈ {Math.round((parseFloat(productForm.data.unit_price) || 0) * exchange_rate).toLocaleString()} ៛
+                                                        ≈ {Math.round((parseFloat(productForm.data.unit_price) || 0) * exchange_rate).toLocaleString()} {tr('៛')}
                                                     </span>
                                                     <span className="text-[10px] text-zinc-400 font-khmer">
-                                                        ($1 = {exchange_rate.toLocaleString()}៛)
+                                                        ($1 = {exchange_rate.toLocaleString()}{tr('៛)')}
                                                     </span>
                                                 </div>
                                             </div>
 
                                             <div>
                                                 <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                    លេខកូដសម្គាល់ (SKU / Barcode)
+                                                    {tr('លេខកូដសម្គាល់ (SKU / Barcode)')}
                                                 </label>
                                                 <div className="relative">
                                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1152,7 +1153,7 @@ export default function CatalogIndex({
                                                         type="text"
                                                         value={productForm.data.sku}
                                                         onChange={(e) => productForm.setData('sku', e.target.value)}
-                                                        placeholder="ឧ. ETUM-20"
+                                                        placeholder={tr("ឧ. ETUM-20")}
                                                         className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl pl-8 pr-3 py-2 text-xs font-mono text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20"
                                                     />
                                                 </div>
@@ -1160,7 +1161,7 @@ export default function CatalogIndex({
                                                     {productForm.errors.sku ? (
                                                         <span className="text-rose-500">{productForm.errors.sku}</span>
                                                     ) : (
-                                                        'ស្រេចចិត្ត សម្រាប់ស្កេន ឬកត់ត្រា'
+                                                        tr('ស្រេចចិត្ត សម្រាប់ស្កេន ឬកត់ត្រា')
                                                     )}
                                                 </p>
                                             </div>
@@ -1186,10 +1187,10 @@ export default function CatalogIndex({
                                             </div>
                                             <div>
                                                 <span className="block text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    ស្ថានភាពមុខទំនិញ (Product Status)
+                                                    {tr('ស្ថានភាពមុខទំនិញ (Product Status)')}
                                                 </span>
                                                 <span className="block text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                    {productForm.data.is_active ? 'បើកដំណើរការលក់លើប្រព័ន្ធ POS (Active)' : 'ផ្អាកលក់បណ្តោះអាសន្នលើប្រព័ន្ធ POS (Inactive)'}
+                                                    {productForm.data.is_active ? tr('បើកដំណើរការលក់លើប្រព័ន្ធ POS (Active)') : tr('ផ្អាកលក់បណ្តោះអាសន្នលើប្រព័ន្ធ POS (Inactive)')}
                                                 </span>
                                             </div>
                                         </div>
@@ -1213,10 +1214,10 @@ export default function CatalogIndex({
                                             </div>
                                             <div>
                                                 <span className="text-xs font-bold text-zinc-900 dark:text-white font-khmer block">
-                                                    រូបភាពមុខម្ហូប / Product Image
+                                                    {tr('រូបភាពមុខម្ហូប / Product Image')}
                                                 </span>
                                                 <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                    ផ្ទុកឡើងរូបភាពទំនិញពីកុំព្យូទ័ររបស់អ្នក
+                                                    {tr('ផ្ទុកឡើងរូបភាពទំនិញពីកុំព្យូទ័ររបស់អ្នក')}
                                                 </span>
                                             </div>
                                         </div>
@@ -1230,10 +1231,10 @@ export default function CatalogIndex({
                                                     setUploadError(null);
                                                 }}
                                                 className="text-xs text-rose-500 hover:text-rose-600 font-khmer flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-rose-500/10 transition-colors cursor-pointer border border-rose-500/20"
-                                                title="ដករូបភាពចេញ"
+                                                title={tr("ដករូបភាពចេញ")}
                                             >
                                                 <Trash2 className="w-3.5 h-3.5" />
-                                                <span>ដករូបភាព</span>
+                                                <span>{tr('ដករូបភាព')}</span>
                                             </button>
                                         )}
                                     </div>
@@ -1267,7 +1268,7 @@ export default function CatalogIndex({
                                                     />
                                                     <div className="absolute top-3 right-3 bg-emerald-500 text-white rounded-full p-1 shadow-md flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-khmer font-bold">
                                                         <Check className="w-3 h-3 stroke-[3]" />
-                                                        <span>បានជ្រើសរើស</span>
+                                                        <span>{tr('បានជ្រើសរើស')}</span>
                                                     </div>
                                                 </div>
 
@@ -1279,10 +1280,10 @@ export default function CatalogIndex({
                                                         </div>
                                                         <div className="truncate">
                                                             <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 block truncate">
-                                                                {uploadedFileName || 'រូបភាពមុខម្ហូប (Product Photo)'}
+                                                                {uploadedFileName || tr('រូបភាពមុខម្ហូប (Product Photo)')}
                                                             </span>
                                                             <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-khmer block">
-                                                                រួចរាល់សម្រាប់បង្ហាញលើប្រព័ន្ធ POS
+                                                                {tr('រួចរាល់សម្រាប់បង្ហាញលើប្រព័ន្ធ POS')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1295,7 +1296,7 @@ export default function CatalogIndex({
                                                             className="border-amber-500/40 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-khmer text-xs rounded-xl h-8 px-3 cursor-pointer"
                                                         >
                                                             <UploadCloud className="w-3.5 h-3.5 mr-1" />
-                                                            <span>ប្តូររូបថ្មី</span>
+                                                            <span>{tr('ប្តូររូបថ្មី')}</span>
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -1326,9 +1327,9 @@ export default function CatalogIndex({
                                                     <div className="flex flex-col items-center gap-2 py-6">
                                                         <Loader2 className="w-10 h-10 text-amber-500 animate-spin" />
                                                         <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-khmer">
-                                                            កំពុងផ្ទុកឡើងរូបភាពពីកុំព្យូទ័រ...
+                                                            {tr('កំពុងផ្ទុកឡើងរូបភាពពីកុំព្យូទ័រ...')}
                                                         </span>
-                                                        <span className="text-xs text-zinc-400 font-mono">កំពុង upload រូបភាព សូមរង់ចាំ...</span>
+                                                        <span className="text-xs text-zinc-400 font-mono">{tr('កំពុង upload រូបភាព សូមរង់ចាំ...')}</span>
                                                     </div>
                                                 ) : (
                                                     <>
@@ -1337,15 +1338,15 @@ export default function CatalogIndex({
                                                         </div>
 
                                                         <h4 className="text-sm font-bold text-zinc-900 dark:text-white font-khmer mb-1">
-                                                            ចុចទីនេះដើម្បី Upload ឬ អូសទម្លាក់រូបភាពពីកុំព្យូទ័រ
+                                                            {tr('ចុចទីនេះដើម្បី Upload ឬ អូសទម្លាក់រូបភាពពីកុំព្យូទ័រ')}
                                                         </h4>
                                                         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer max-w-sm mb-4">
-                                                            ជ្រើសរើសរូបភាពមុខម្ហូប ឬភេសជ្ជៈ ដើម្បីបង្ហាញក្នុងប្រព័ន្ធលក់ POS
+                                                            {tr('ជ្រើសរើសរូបភាពមុខម្ហូប ឬភេសជ្ជៈ ដើម្បីបង្ហាញក្នុងប្រព័ន្ធលក់ POS')}
                                                         </p>
 
                                                         <div className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer text-xs shadow-md shadow-amber-500/20 inline-flex items-center gap-2 transition-transform group-hover:scale-105">
                                                             <FolderUp className="w-4 h-4" />
-                                                            <span>ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (Browse)</span>
+                                                            <span>{tr('ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (Browse)')}</span>
                                                         </div>
 
                                                         <div className="mt-5 flex items-center justify-center gap-3 text-[10px] text-zinc-400 dark:text-zinc-500 font-khmer border-t border-[#cbd5e1] dark:border-zinc-800/60 pt-3 w-full max-w-xs">
@@ -1353,9 +1354,9 @@ export default function CatalogIndex({
                                                                 PNG, JPG, WEBP
                                                             </span>
                                                             <span>•</span>
-                                                            <span>ធំបំផុត 5MB</span>
+                                                            <span>{tr('ធំបំផុត 5MB')}</span>
                                                             <span>•</span>
-                                                            <span>ទំហំ 1:1 (ការ៉េ)</span>
+                                                            <span>{tr('ទំហំ 1:1 (ការ៉េ)')}</span>
                                                         </div>
                                                     </>
                                                 )}
@@ -1375,7 +1376,7 @@ export default function CatalogIndex({
                             {/* Pinned Footer Actions */}
                             <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/90 dark:bg-zinc-900/80 flex items-center justify-between gap-3 shrink-0">
                                 <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer hidden sm:inline-block">
-                                    <span className="text-rose-500 font-bold">*</span> ចាំបាច់ត្រូវបំពេញ
+                                    <span className="text-rose-500 font-bold">*</span> {tr('ចាំបាច់ត្រូវបំពេញ')}
                                 </span>
 
                                 <div className="flex items-center gap-2.5 ml-auto">
@@ -1385,7 +1386,7 @@ export default function CatalogIndex({
                                         onClick={() => setProductModalOpen(false)}
                                         className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer px-4 py-2 rounded-xl text-xs"
                                     >
-                                        បោះបង់ (Cancel)
+                                        {tr('បោះបង់ (Cancel)')}
                                     </Button>
                                     <Button
                                         type="submit"
@@ -1395,17 +1396,17 @@ export default function CatalogIndex({
                                         {productForm.processing ? (
                                             <>
                                                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                                <span>កំពុងរក្សាទុក...</span>
+                                                <span>{tr('កំពុងរក្សាទុក...')}</span>
                                             </>
                                         ) : editingProduct ? (
                                             <>
                                                 <Check className="w-3.5 h-3.5" />
-                                                <span>រក្សាទុកការកែប្រែ</span>
+                                                <span>{tr('រក្សាទុកការកែប្រែ')}</span>
                                             </>
                                         ) : (
                                             <>
                                                 <Plus className="w-3.5 h-3.5" />
-                                                <span>បង្កើតមុខទំនិញថ្មី</span>
+                                                <span>{tr('បង្កើតមុខទំនិញថ្មី')}</span>
                                             </>
                                         )}
                                     </Button>
@@ -1432,14 +1433,14 @@ export default function CatalogIndex({
                             <div>
                                 <div className="flex items-center gap-2">
                                     <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        {editingUnit ? 'កែប្រែឯកតាគិតទំនិញ' : 'បន្ថែមឯកតាគិតថ្មី'}
+                                        {editingUnit ? tr('កែប្រែឯកតាគិតទំនិញ') : tr('បន្ថែមឯកតាគិតថ្មី')}
                                     </h3>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-mono">
-                                        {editingUnit ? 'កែឯកតា' : 'ឯកតាថ្មី'}
+                                        {editingUnit ? tr('កែឯកតា') : tr('ឯកតាថ្មី')}
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                    {editingUnit ? editingUnit.name_primary : 'កំណត់ឯកតាគិតសម្រាប់មុខម្ហូប ភេសជ្ជៈ និងការលក់ក្នុងប្រព័ន្ធ POS'}
+                                    {editingUnit ? editingUnit.name_primary : tr('កំណត់ឯកតាគិតសម្រាប់មុខម្ហូប ភេសជ្ជៈ និងការលក់ក្នុងប្រព័ន្ធ POS')}
                                 </p>
                             </div>
                         </div>
@@ -1447,10 +1448,10 @@ export default function CatalogIndex({
                             type="button"
                             onClick={() => setUnitModalOpen(false)}
                             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                            title="ត្រឡប់ក្រោយ (Esc)"
+                            title={tr("ត្រឡប់ក្រោយ (Esc)")}
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-emerald-600 dark:text-emerald-400" />
-                            <span>ត្រឡប់ក្រោយ</span>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
                         </button>
                     </div>
 
@@ -1462,18 +1463,18 @@ export default function CatalogIndex({
                                 <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                     <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                         <Scale className="w-4 h-4 text-emerald-500" />
-                                        <span>ព័ត៌មានឯកតាគិត / Measurement Unit Identity</span>
+                                        <span>{tr('ព័ត៌មានឯកតាគិត / Measurement Unit Identity')}</span>
                                     </div>
 
                                     <div>
                                         <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                            កូដឯកតា (Unit Code) <span className="text-rose-500">*</span>
+                                            {tr('កូដឯកតា (Unit Code)')} <span className="text-rose-500">*</span>
                                         </label>
                                         <input
                                             type="text"
                                             value={unitForm.data.code}
                                             onChange={(e) => unitForm.setData('code', e.target.value)}
-                                            placeholder="ឧ. CAN, PLATE, SET, BOTTLE"
+                                            placeholder={tr("ឧ. CAN, PLATE, SET, BOTTLE")}
                                             className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                                             required
                                         />
@@ -1481,7 +1482,7 @@ export default function CatalogIndex({
                                             <p className="text-[11px] text-rose-500 font-khmer mt-1">{unitForm.errors.code}</p>
                                         )}
                                         <div className="flex items-center gap-1.5 mt-2">
-                                            <span className="text-[11px] text-zinc-400 font-khmer">កូដគំរូ:</span>
+                                            <span className="text-[11px] text-zinc-400 font-khmer">{tr('កូដគំរូ:')}</span>
                                             {['PLATE', 'CAN', 'BOTTLE', 'GLASS', 'SET', 'BOWL'].map((sample) => (
                                                 <button
                                                     key={sample}
@@ -1498,13 +1499,13 @@ export default function CatalogIndex({
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះឯកតាជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                                {tr('ឈ្មោះឯកតាជាភាសាខ្មែរ')} <span className="text-rose-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 value={unitForm.data.name_primary}
                                                 onChange={(e) => unitForm.setData('name_primary', e.target.value)}
-                                                placeholder="ឧ. ចាន, កំប៉ុង, ដប, កែវ"
+                                                placeholder={tr("ឧ. ចាន, កំប៉ុង, ដប, កែវ")}
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                                                 required
                                             />
@@ -1512,13 +1513,13 @@ export default function CatalogIndex({
 
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះជាភាសាអង់គ្លេស (Optional)
+                                                {tr('ឈ្មោះជាភាសាអង់គ្លេស (Optional)')}
                                             </label>
                                             <input
                                                 type="text"
                                                 value={unitForm.data.name_secondary}
                                                 onChange={(e) => unitForm.setData('name_secondary', e.target.value)}
-                                                placeholder="ឧ. Plate, Can, Bottle, Glass"
+                                                placeholder={tr("ឧ. Plate, Can, Bottle, Glass")}
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                                             />
                                         </div>
@@ -1527,16 +1528,16 @@ export default function CatalogIndex({
                                     {/* Quick Preset Buttons */}
                                     <div>
                                         <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                            គំរូឯកតាពេញនិយម (Quick Unit Presets)
+                                            {tr('គំរូឯកតាពេញនិយម (Quick Unit Presets)')}
                                         </label>
                                         <div className="flex flex-wrap gap-2">
                                             {[
-                                                { code: 'PLATE', kh: 'ចាន', en: 'Plate' },
-                                                { code: 'CAN', kh: 'កំប៉ុង', en: 'Can' },
-                                                { code: 'BOTTLE', kh: 'ដប', en: 'Bottle' },
-                                                { code: 'GLASS', kh: 'កែវ', en: 'Glass' },
-                                                { code: 'SET', kh: 'ឈុត', en: 'Set' },
-                                                { code: 'PORTION', kh: 'ចំណែក', en: 'Portion' },
+                                                { code: 'PLATE', kh: tr('ចាន'), en: 'Plate' },
+                                                { code: 'CAN', kh: tr('កំប៉ុង'), en: 'Can' },
+                                                { code: 'BOTTLE', kh: tr('ដប'), en: 'Bottle' },
+                                                { code: 'GLASS', kh: tr('កែវ'), en: 'Glass' },
+                                                { code: 'SET', kh: tr('ឈុត'), en: 'Set' },
+                                                { code: 'PORTION', kh: tr('ចំណែក'), en: 'Portion' },
                                             ].map((preset) => (
                                                 <button
                                                     key={preset.code}
@@ -1567,7 +1568,7 @@ export default function CatalogIndex({
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-mono">
-                                                មើលឯកតាជាមុន
+                                                {tr('មើលឯកតាជាមុន')}
                                             </span>
                                         </div>
                                         <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
@@ -1578,12 +1579,12 @@ export default function CatalogIndex({
                                     {/* Menu Card Pricing Preview */}
                                     <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3">
                                         <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
-                                            ការបង្ហាញលើបញ្ជីមុខម្ហូប POS:
+                                            {tr('ការបង្ហាញលើបញ្ជីមុខម្ហូប POS:')}
                                         </div>
                                         <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
                                             <div>
                                                 <div className="text-xs font-bold text-zinc-900 dark:text-white font-khmer">
-                                                    លៀសឆាអ៉ីទុមពិសេស
+                                                    {tr('លៀសឆាអ៉ីទុមពិសេស')}
                                                 </div>
                                                 <div className="text-[11px] text-zinc-400 font-mono">
                                                     SKU: POS-001
@@ -1594,7 +1595,7 @@ export default function CatalogIndex({
                                                     $2.50
                                                 </div>
                                                 <div className="text-[11px] text-zinc-500 font-khmer">
-                                                    / {unitForm.data.name_primary || 'ឯកតា'}
+                                                    / {unitForm.data.name_primary || tr('ឯកតា')}
                                                 </div>
                                             </div>
                                         </div>
@@ -1603,16 +1604,16 @@ export default function CatalogIndex({
                                     {/* Receipt Line Item Simulation */}
                                     <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-2 font-mono text-xs">
                                         <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
-                                            ការបោះពុម្ពលើវិក្កយបត្រ (Receipt Line):
+                                            {tr('ការបោះពុម្ពលើវិក្កយបត្រ (Receipt Line):')}
                                         </div>
                                         <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-dashed border-zinc-300 dark:border-zinc-800 text-[11px] text-zinc-700 dark:text-zinc-300 space-y-1 font-khmer">
                                             <div className="flex justify-between font-bold">
-                                                <span>លៀសឆាអ៉ីទុមពិសេស</span>
+                                                <span>{tr('លៀសឆាអ៉ីទុមពិសេស')}</span>
                                                 <span className="font-mono">$5.00</span>
                                             </div>
                                             <div className="flex justify-between text-zinc-400 text-[10px]">
-                                                <span>2 {unitForm.data.name_primary || 'ឯកតា'} x $2.50</span>
-                                                <span className="font-mono">20,500 ៛</span>
+                                                <span>2 {unitForm.data.name_primary || tr('ឯកតា')} x $2.50</span>
+                                                <span className="font-mono">{tr('20,500 ៛')}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1624,7 +1625,7 @@ export default function CatalogIndex({
                         <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
                             <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span>{editingUnit ? 'កំពុងកែសម្រួលឯកតាគិត' : 'កំពុងបង្កើតឯកតាគិតថ្មី'}</span>
+                                <span>{editingUnit ? tr('កំពុងកែសម្រួលឯកតាគិត') : tr('កំពុងបង្កើតឯកតាគិតថ្មី')}</span>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Button
@@ -1633,7 +1634,7 @@ export default function CatalogIndex({
                                     onClick={() => setUnitModalOpen(false)}
                                     className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                 >
-                                    បោះបង់ (Cancel)
+                                    {tr('បោះបង់ (Cancel)')}
                                 </Button>
                                 <Button
                                     type="submit"
@@ -1641,11 +1642,11 @@ export default function CatalogIndex({
                                     className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-emerald-600/20 cursor-pointer flex items-center gap-2"
                                 >
                                     {unitForm.processing ? (
-                                        'កំពុងរក្សាទុក...'
+                                        tr('កំពុងរក្សាទុក...')
                                     ) : (
                                         <>
                                             <Check className="w-4 h-4" />
-                                            <span>{editingUnit ? 'កែប្រែឯកតា' : 'រក្សាទុកឯកតា'}</span>
+                                            <span>{editingUnit ? tr('កែប្រែឯកតា') : tr('រក្សាទុកឯកតា')}</span>
                                         </>
                                     )}
                                 </Button>
@@ -1671,14 +1672,14 @@ export default function CatalogIndex({
                             <div>
                                 <div className="flex items-center gap-2">
                                     <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                        {editingCategory ? 'កែប្រែប្រភេទមុខទំនិញ' : 'បន្ថែមប្រភេទមុខទំនិញថ្មី'}
+                                        {editingCategory ? tr('កែប្រែប្រភេទមុខទំនិញ') : tr('បន្ថែមប្រភេទមុខទំនិញថ្មី')}
                                     </h3>
                                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 font-mono">
-                                        {editingCategory ? 'កែប្រភេទ' : 'ប្រភេទថ្មី'}
+                                        {editingCategory ? tr('កែប្រភេទ') : tr('ប្រភេទថ្មី')}
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
-                                    {editingCategory ? editingCategory.name_primary : 'រៀបចំប្រភេទមុខម្ហូប ភេសជ្ជៈ និងទំនិញដើម្បីបង្ហាញលើផ្ទាំងប៊ូតុង POS ឱ្យងាយស្រួលរក'}
+                                    {editingCategory ? editingCategory.name_primary : tr('រៀបចំប្រភេទមុខម្ហូប ភេសជ្ជៈ និងទំនិញដើម្បីបង្ហាញលើផ្ទាំងប៊ូតុង POS ឱ្យងាយស្រួលរក')}
                                 </p>
                             </div>
                         </div>
@@ -1686,10 +1687,10 @@ export default function CatalogIndex({
                             type="button"
                             onClick={() => setCategoryModalOpen(false)}
                             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer font-khmer text-xs font-semibold shadow-xs group"
-                            title="ត្រឡប់ក្រោយ (Esc)"
+                            title={tr("ត្រឡប់ក្រោយ (Esc)")}
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform text-teal-600 dark:text-teal-400" />
-                            <span>ត្រឡប់ក្រោយ</span>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
                         </button>
                     </div>
 
@@ -1701,20 +1702,20 @@ export default function CatalogIndex({
                                 <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 space-y-4 shadow-xs">
                                     <div className="flex items-center gap-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 font-khmer pb-1 border-b border-zinc-100 dark:border-zinc-800">
                                         <Tags className="w-4 h-4 text-teal-500" />
-                                        <span>ព័ត៌មានប្រភេទមុខទំនិញ / Category Details</span>
+                                        <span>{tr('ព័ត៌មានប្រភេទមុខទំនិញ / Category Details')}</span>
                                     </div>
 
                                     {/* Category Type selector cards */}
                                     <div>
                                         <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-2 font-khmer">
-                                            ចំណាត់ថ្នាក់ចម្បង (Category Classification) <span className="text-rose-500">*</span>
+                                            {tr('ចំណាត់ថ្នាក់ចម្បង (Category Classification)')} <span className="text-rose-500">*</span>
                                         </label>
                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                                             {[
-                                                { type: 'food', label: 'ម្ហូបអាហារ (Food)', icon: Utensils, desc: 'ម្ហូប & ស៊ុប' },
-                                                { type: 'beverage', label: 'ភេសជ្ជៈ (Beverage)', icon: Wine, desc: 'ទឹកក្រូច & ស្រាបៀរ' },
-                                                { type: 'package', label: 'កញ្ចប់ (Package)', icon: Package, desc: 'ឈុត & កញ្ចប់' },
-                                                { type: 'general', label: 'ទូទៅ (General)', icon: Tags, desc: 'មុខទំនិញផ្សេងៗ' },
+                                                { type: 'food', label: tr('ម្ហូបអាហារ (Food)'), icon: Utensils, desc: tr('ម្ហូប & ស៊ុប') },
+                                                { type: 'beverage', label: tr('ភេសជ្ជៈ (Beverage)'), icon: Wine, desc: tr('ទឹកក្រូច & ស្រាបៀរ') },
+                                                { type: 'package', label: tr('កញ្ចប់ (Package)'), icon: Package, desc: tr('ឈុត & កញ្ចប់') },
+                                                { type: 'general', label: tr('ទូទៅ (General)'), icon: Tags, desc: tr('មុខទំនិញផ្សេងៗ') },
                                             ].map((item) => {
                                                 const Icon = item.icon;
                                                 const isSelected = categoryForm.data.category_type === item.type;
@@ -1741,13 +1742,13 @@ export default function CatalogIndex({
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                កូដប្រភេទ (Code) <span className="text-rose-500">*</span>
+                                                {tr('កូដប្រភេទ (Code)')} <span className="text-rose-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 value={categoryForm.data.code}
                                                 onChange={(e) => categoryForm.setData('code', e.target.value)}
-                                                placeholder="ឧ. SOUPS, CLAMS, BEV"
+                                                placeholder={tr("ឧ. SOUPS, CLAMS, BEV")}
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-mono uppercase font-bold text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                                 required
                                             />
@@ -1758,13 +1759,13 @@ export default function CatalogIndex({
 
                                         <div>
                                             <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                                ឈ្មោះប្រភេទជាភាសាខ្មែរ <span className="text-rose-500">*</span>
+                                                {tr('ឈ្មោះប្រភេទជាភាសាខ្មែរ')} <span className="text-rose-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
                                                 value={categoryForm.data.name_primary}
                                                 onChange={(e) => categoryForm.setData('name_primary', e.target.value)}
-                                                placeholder="ឧ. លៀស & គ្រឿងសមុទ្រ"
+                                                placeholder={tr("ឧ. លៀស & គ្រឿងសមុទ្រ")}
                                                 className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs font-khmer text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                                 required
                                             />
@@ -1773,13 +1774,13 @@ export default function CatalogIndex({
 
                                     <div>
                                         <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1 font-khmer">
-                                            ឈ្មោះជាភាសាអង់គ្លេស (English Optional)
+                                            {tr('ឈ្មោះជាភាសាអង់គ្លេស (English Optional)')}
                                         </label>
                                         <input
                                             type="text"
                                             value={categoryForm.data.name_secondary}
                                             onChange={(e) => categoryForm.setData('name_secondary', e.target.value)}
-                                            placeholder="ឧ. លៀស & គ្រឿងសមុទ្រ"
+                                            placeholder={tr("ឧ. លៀស & គ្រឿងសមុទ្រ")}
                                             className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                                         />
                                     </div>
@@ -1787,14 +1788,14 @@ export default function CatalogIndex({
                                     {/* Category Presets */}
                                     <div>
                                         <label className="block text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 mb-1.5 font-khmer">
-                                            គំរូប្រភេទពេញនិយម (Quick Category Presets)
+                                            {tr('គំរូប្រភេទពេញនិយម (Quick Category Presets)')}
                                         </label>
                                         <div className="flex flex-wrap gap-2">
                                             {[
-                                                { code: 'CLAMS', kh: 'លៀស & ងាវស្រស់', en: 'Clams & Shellfish', type: 'food' },
-                                                { code: 'BEVERAGE', kh: 'ភេសជ្ជៈ & ទឹកក្រូច', en: 'Beverages & Soft Drinks', type: 'beverage' },
-                                                { code: 'SNACKS', kh: 'គ្រឿងក្លែម & បំពង', en: 'Appetizers & Fried', type: 'food' },
-                                                { code: 'RICE', kh: 'បាយ & មីឆា', en: 'Rice & Fried Noodles', type: 'food' },
+                                                { code: 'CLAMS', kh: tr('លៀស & ងាវស្រស់'), en: 'Clams & Shellfish', type: 'food' },
+                                                { code: 'BEVERAGE', kh: tr('ភេសជ្ជៈ & ទឹកក្រូច'), en: 'Beverages & Soft Drinks', type: 'beverage' },
+                                                { code: 'SNACKS', kh: tr('គ្រឿងក្លែម & បំពង'), en: 'Appetizers & Fried', type: 'food' },
+                                                { code: 'RICE', kh: tr('បាយ & មីឆា'), en: 'Rice & Fried Noodles', type: 'food' },
                                             ].map((preset) => (
                                                 <button
                                                     key={preset.code}
@@ -1826,7 +1827,7 @@ export default function CatalogIndex({
                                         <div className="flex items-center gap-2">
                                             <Sparkles className="w-4 h-4 text-teal-500" />
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400 font-mono">
-                                                មើលផ្ទាំងម៉ឺនុយ POS ជាមុន
+                                                {tr('មើលផ្ទាំងម៉ឺនុយ POS ជាមុន')}
                                             </span>
                                         </div>
                                         <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20 uppercase">
@@ -1837,15 +1838,15 @@ export default function CatalogIndex({
                                     {/* POS Filter Tab Mock */}
                                     <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 space-y-3">
                                         <div className="text-[11px] font-bold text-zinc-500 font-khmer uppercase tracking-wider">
-                                            ប៊ូតុងប្រភេទលើអេក្រង់ POS:
+                                            {tr('ប៊ូតុងប្រភេទលើអេក្រង់ POS:')}
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             <div className="px-3.5 py-2 rounded-xl bg-amber-500 text-zinc-950 font-bold font-khmer text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5">
                                                 <Tags className="w-3.5 h-3.5" />
-                                                <span>{categoryForm.data.name_primary || 'ឈ្មោះប្រភេទ'}</span>
+                                                <span>{categoryForm.data.name_primary || tr('ឈ្មោះប្រភេទ')}</span>
                                             </div>
                                             <div className="px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-khmer text-xs">
-                                                មុខទំនិញទាំងអស់
+                                                {tr('មុខទំនិញទាំងអស់')}
                                             </div>
                                         </div>
                                     </div>
@@ -1854,10 +1855,10 @@ export default function CatalogIndex({
                                     <div className="p-3.5 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-800 dark:text-teal-300 space-y-1.5">
                                         <div className="font-bold flex items-center gap-1.5 font-khmer">
                                             <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                                            <span>ការបញ្ជូនទៅផ្ទះបាយស្វ័យប្រវត្ត (KDS Routing)</span>
+                                            <span>{tr('ការបញ្ជូនទៅផ្ទះបាយស្វ័យប្រវត្ត (KDS Routing)')}</span>
                                         </div>
                                         <p className="text-[11px] text-teal-700/90 dark:text-teal-300/80 leading-relaxed font-khmer">
-                                            ប្រភេទម្ហូប (Food) នឹងត្រូវបញ្ជូនទៅកាន់អេក្រង់ចុងភៅ KDS ផ្ទះបាយដោយស្វ័យប្រវត្តិ។ ចំណែកឯភេសជ្ជៈ (Beverage) នឹងត្រូវបញ្ជូនទៅកាន់បញ្ជរភេសជ្ជៈ។
+                                            {tr('ប្រភេទម្ហូប (Food) នឹងត្រូវបញ្ជូនទៅកាន់អេក្រង់ចុងភៅ KDS ផ្ទះបាយដោយស្វ័យប្រវត្តិ។ ចំណែកឯភេសជ្ជៈ (Beverage) នឹងត្រូវបញ្ជូនទៅកាន់បញ្ជរភេសជ្ជៈ។')}
                                         </p>
                                     </div>
                                 </div>
@@ -1868,7 +1869,7 @@ export default function CatalogIndex({
                         <div className="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex items-center justify-between shrink-0 shadow-lg">
                             <div className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
-                                <span>{editingCategory ? 'កំពុងកែសម្រួលប្រភេទមុខទំនិញ' : 'កំពុងបង្កើតប្រភេទមុខទំនិញថ្មី'}</span>
+                                <span>{editingCategory ? tr('កំពុងកែសម្រួលប្រភេទមុខទំនិញ') : tr('កំពុងបង្កើតប្រភេទមុខទំនិញថ្មី')}</span>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Button
@@ -1877,7 +1878,7 @@ export default function CatalogIndex({
                                     onClick={() => setCategoryModalOpen(false)}
                                     className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 font-khmer text-xs rounded-xl h-10 px-5 cursor-pointer"
                                 >
-                                    បោះបង់ (Cancel)
+                                    {tr('បោះបង់ (Cancel)')}
                                 </Button>
                                 <Button
                                     type="submit"
@@ -1885,11 +1886,11 @@ export default function CatalogIndex({
                                     className="bg-teal-600 hover:bg-teal-500 text-white font-bold font-khmer text-xs rounded-xl h-10 px-6 shadow-md shadow-teal-600/20 cursor-pointer flex items-center gap-2"
                                 >
                                     {categoryForm.processing ? (
-                                        'កំពុងរក្សាទុក...'
+                                        tr('កំពុងរក្សាទុក...')
                                     ) : (
                                         <>
                                             <Check className="w-4 h-4" />
-                                            <span>{editingCategory ? 'កែប្រែប្រភេទ' : 'រក្សាទុកប្រភេទ'}</span>
+                                            <span>{editingCategory ? tr('កែប្រែប្រភេទ') : tr('រក្សាទុកប្រភេទ')}</span>
                                         </>
                                     )}
                                 </Button>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { ReceiptText, Lock, User as UserIcon, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 export default function Login({ show_demo_accounts = false }: { show_demo_accounts?: boolean }) {
     const { business } = usePage<PageProps>().props;
@@ -50,7 +51,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                     </p>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 font-mono">
                         <Sparkles className="w-3 h-3 text-emerald-400" />
-                        <span className="font-khmer">ប្រព័ន្ធលក់ & គ្រប់គ្រងហាង</span>
+                        <span className="font-khmer">{tr('ប្រព័ន្ធលក់ & គ្រប់គ្រងហាង')}</span>
                     </div>
                 </div>
 
@@ -66,7 +67,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                     <form onSubmit={submit} className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="block text-xs font-semibold text-zinc-300 font-khmer">
-                                ឈ្មោះអ្នកប្រើ (Username)
+                                {tr('ឈ្មោះអ្នកប្រើ (Username)')}
                             </label>
                             <div className="relative">
                                 <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -77,7 +78,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                                     autoFocus
                                     value={data.username}
                                     onChange={(e) => setData('username', e.target.value)}
-                                    placeholder="បញ្ចូលឈ្មោះអ្នកប្រើ..."
+                                    placeholder={tr("បញ្ចូលឈ្មោះអ្នកប្រើ...")}
                                     className="w-full pl-10 pr-3.5 py-2.5 text-sm text-zinc-100 bg-zinc-950/80 border border-zinc-800 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                                 />
                             </div>
@@ -85,7 +86,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
 
                         <div className="space-y-1.5">
                             <label className="block text-xs font-semibold text-zinc-300 font-khmer">
-                                ពាក្យសម្ងាត់ (Password)
+                                {tr('ពាក្យសម្ងាត់ (Password)')}
                             </label>
                             <div className="relative">
                                 <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -112,7 +113,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                                     onChange={(e) => setData('remember', e.target.checked)}
                                     className="rounded border-zinc-700 bg-zinc-800 text-emerald-500 focus:ring-emerald-500/30"
                                 />
-                                <span className="font-khmer">ចងចាំការ login</span>
+                                <span className="font-khmer">{tr('ចងចាំការ login')}</span>
                             </label>
                         </div>
 
@@ -121,7 +122,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                             disabled={processing}
                             className="w-full py-2.5 text-base font-semibold"
                         >
-                            <span className="font-khmer">{processing ? 'កំពុងចូល...' : 'ចូលប្រព័ន្ធ'}</span>
+                            <span className="font-khmer">{processing ? tr('កំពុងចូល...') : tr('ចូលប្រព័ន្ធ')}</span>
                         </Button>
                     </form>
 
@@ -129,8 +130,8 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
                     {show_demo_accounts && (
                     <div className="pt-4 border-t border-zinc-800/80 space-y-2">
                         <div className="text-[11px] text-zinc-500 flex items-center justify-between">
-                            <span className="font-khmer">គណនីសាកល្បង (Development)</span>
-                            <span className="text-emerald-400 font-khmer">ចុចដើម្បីបំពេញ</span>
+                            <span className="font-khmer">{tr('គណនីសាកល្បង (Development)')}</span>
+                            <span className="text-emerald-400 font-khmer">{tr('ចុចដើម្បីបំពេញ')}</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                             <button
@@ -172,7 +173,7 @@ export default function Login({ show_demo_accounts = false }: { show_demo_accoun
 
                 {/* Footer Note */}
                 <div className="text-center text-[11px] text-zinc-500 font-khmer">
-                    រាល់ការ login ត្រូវបានកត់ត្រា • ខុស 5 ដង ត្រូវរង់ចាំ 1 នាទី
+                    {tr('រាល់ការ login ត្រូវបានកត់ត្រា • ខុស 5 ដង ត្រូវរង់ចាំ 1 នាទី')}
                 </div>
             </div>
         </div>

@@ -44,6 +44,7 @@ import {
     Building2,
     Tag,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface ProductItem {
     id: number;
@@ -141,7 +142,7 @@ export default function DocumentCreate({
 
     // Terminal states
     const [orderMode, setOrderMode] = useState<'takeaway' | 'dine_in'>(initial_table ? 'dine_in' : 'takeaway');
-    const [selectedTable, setSelectedTable] = useState<string>(initial_table || tables_list[0] || 'តុ ០១');
+    const [selectedTable, setSelectedTable] = useState<string>(initial_table || tables_list[0] || tr('តុ ០១'));
     const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
     const [currentDraftId, setCurrentDraftId] = useState<number | null>(null);
 
@@ -444,7 +445,7 @@ export default function DocumentCreate({
                 product_id: it.product_id,
                 name_primary: it.name_primary,
                 name_secondary: matchedProduct?.name_secondary || null,
-                unit_name: matchedProduct?.unit.name_primary || 'ចាន',
+                unit_name: matchedProduct?.unit.name_primary || tr('ចាន'),
                 unit_price: it.unit_price,
                 quantity: it.quantity,
                 is_primary_package: matchedProduct?.is_primary_package ?? false,
@@ -492,7 +493,7 @@ export default function DocumentCreate({
 
     // Cancel / Void open table draft
     const handleCancelTable = (tableId: number) => {
-        if (!confirm('តើអ្នកពិតជាចង់លុបចោលការកុម្ម៉ង់តុនេះមែនទេ?')) return;
+        if (!confirm(tr('តើអ្នកពិតជាចង់លុបចោលការកុម្ម៉ង់តុនេះមែនទេ?'))) return;
 
         router.delete(`/invoices/${tableId}/cancel-table`, {
             onSuccess: () => {
@@ -540,7 +541,7 @@ export default function DocumentCreate({
                 },
                 onError: (errors) => {
                     setIsSubmitting(false);
-                    setCheckoutError(Object.values(errors)[0] ?? 'មិនអាចគិតប្រាក់បានទេ។ សូមពិនិត្យព័ត៌មានម្តងទៀត។');
+                    setCheckoutError(Object.values(errors)[0] ?? tr('មិនអាចគិតប្រាក់បានទេ។ សូមពិនិត្យព័ត៌មានម្តងទៀត។'));
                 },
             }
         );
@@ -561,7 +562,7 @@ export default function DocumentCreate({
     const activeTablesCount = active_tables.length;
 
     return (
-        <AppLayout title="ប្រព័ន្ធ POS - លៀសហាល អ៉ីទុម">
+        <AppLayout title={tr("ប្រព័ន្ធ POS - លៀសហាល អ៉ីទុម")}>
             <div className="flex flex-col h-full w-full min-h-0 bg-slate-950 text-slate-100 overflow-hidden select-none">
                 {/* POS Top Operational Bar */}
                 <div className="bg-slate-900/95 backdrop-blur border-b border-slate-800 px-3 sm:px-5 py-2 flex items-center justify-between shrink-0 gap-2">
@@ -624,7 +625,7 @@ export default function DocumentCreate({
                                             const isOccupied = active_tables.some((t) => t.table_identifier === tbl);
                                             return (
                                                 <option key={tbl} value={tbl} className="bg-slate-900 text-slate-100">
-                                                    {tbl} {isOccupied ? '🔴 (មានភ្ញៀវ)' : '🟢 (ទំនេរ)'}
+                                                    {tbl} {isOccupied ? tr('🔴 (មានភ្ញៀវ)') : tr('🟢 (ទំនេរ)')}
                                                 </option>
                                             );
                                         })}
@@ -635,7 +636,7 @@ export default function DocumentCreate({
                                 {/* Active Draft Indicator if editing active table */}
                                 {currentDraftId && (
                                     <div className="h-full flex items-center px-2.5 bg-amber-500/15 text-amber-300 text-[11px] font-mono font-bold whitespace-nowrap">
-                                        កែប្រែ #{currentDraftId}
+                                        {tr('កែប្រែ #')}{currentDraftId}
                                     </div>
                                 )}
 
@@ -643,11 +644,11 @@ export default function DocumentCreate({
                                 <button
                                     type="button"
                                     onClick={() => setIsTablesModalOpen(true)}
-                                    title="មើលប្លង់តុទាំងអស់ (Floor Table Map)"
+                                    title={tr("មើលប្លង់តុទាំងអស់ (Floor Table Map)")}
                                     className="h-full px-2.5 flex items-center gap-1.5 bg-transparent hover:bg-slate-700/50 text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap text-xs font-medium rounded-r-xl"
                                 >
                                     <Users className="w-3.5 h-3.5 text-amber-400" />
-                                    <span className="hidden sm:inline">ប្លង់តុ ({tables_list.length})</span>
+                                    <span className="hidden sm:inline">{tr('ប្លង់តុ (')}{tables_list.length})</span>
                                     {activeTablesCount > 0 && (
                                         <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white leading-none">
                                             {activeTablesCount}
@@ -663,7 +664,7 @@ export default function DocumentCreate({
                                 type="button"
                                 onClick={() => setIsTablesModalOpen(true)}
                                 className="h-9 px-3 rounded-xl border border-slate-700/80 bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-medium flex items-center gap-2 cursor-pointer shadow-xs transition shrink-0 overflow-hidden"
-                                title="មើលប្លង់តុ (Floor Table Map)"
+                                title={tr("មើលប្លង់តុ (Floor Table Map)")}
                             >
                                 <Users className="w-3.5 h-3.5 text-amber-400" />
                                 <span>{t('pos.select_table')} ({tables_list.length})</span>
@@ -716,7 +717,7 @@ export default function DocumentCreate({
                             className={`border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white text-xs gap-1.5 cursor-pointer px-2.5 h-9 shrink-0 ${
                                 isFullscreen ? 'text-amber-400 border-amber-500/50 bg-amber-500/10' : ''
                             }`}
-                            title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                            title={isFullscreen ? tr('ចេញពីពេញអេក្រង់ (Exit Fullscreen)') : tr('ពង្រីកពេញអេក្រង់ (Fullscreen)')}
                         >
                             {isFullscreen ? <Minimize className="w-4 h-4 text-amber-400" /> : <Maximize className="w-4 h-4" />}
                             <span className="hidden xl:inline text-[11px] font-medium">
@@ -741,7 +742,7 @@ export default function DocumentCreate({
                                             e.stopPropagation();
                                             scrollCategories('left');
                                         }}
-                                        title="រមូរទៅឆ្វេង / Scroll Left"
+                                        title={tr("រមូរទៅឆ្វេង / Scroll Left")}
                                         className="w-7 h-7 rounded-lg bg-slate-800/90 hover:bg-amber-500 hover:text-slate-950 text-slate-300 border border-slate-700/80 flex items-center justify-center shadow-lg transition-all cursor-pointer hover:scale-105 active:scale-95"
                                     >
                                         <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
@@ -799,7 +800,7 @@ export default function DocumentCreate({
                                             e.stopPropagation();
                                             scrollCategories('right');
                                         }}
-                                        title="រមូរទៅស្តាំ / Scroll Right"
+                                        title={tr("រមូរទៅស្តាំ / Scroll Right")}
                                         className="w-7 h-7 rounded-lg bg-slate-800/90 hover:bg-amber-500 hover:text-slate-950 text-slate-300 border border-slate-700/80 flex items-center justify-center shadow-lg transition-all cursor-pointer hover:scale-105 active:scale-95"
                                     >
                                         <ChevronRight className="w-4 h-4 stroke-[2.5]" />
@@ -813,8 +814,8 @@ export default function DocumentCreate({
                             {filteredProducts.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-center text-slate-500">
                                     <Utensils className="w-12 h-12 stroke-[1.2] mb-3 text-slate-600" />
-                                    <p className="text-sm font-medium">រកមិនឃើញមុខម្ហូបដែលត្រូវនឹងការស្វែងរកទេ</p>
-                                    <p className="text-xs text-slate-600 mt-1">សូមសាកល្បងវាយពាក្យគន្លឹះផ្សេងទៀត</p>
+                                    <p className="text-sm font-medium">{tr('រកមិនឃើញមុខម្ហូបដែលត្រូវនឹងការស្វែងរកទេ')}</p>
+                                    <p className="text-xs text-slate-600 mt-1">{tr('សូមសាកល្បងវាយពាក្យគន្លឹះផ្សេងទៀត')}</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5">
@@ -856,7 +857,7 @@ export default function DocumentCreate({
                                                         ) : (
                                                             <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900 text-amber-400/50">
                                                                 <Utensils className="w-8 h-8 stroke-[1.4]" />
-                                                                <span className="text-[10px] text-zinc-500 mt-1">លៀសហាល អ៉ីទុម</span>
+                                                                <span className="text-[10px] text-zinc-500 mt-1">{tr('លៀសហាល អ៉ីទុម')}</span>
                                                             </div>
                                                         )}
                                                         <span className="absolute bottom-1.5 left-1.5 text-[10px] px-1.5 py-0.5 rounded-md bg-black/70 backdrop-blur-sm text-zinc-200 font-medium border border-white/10">
@@ -882,7 +883,7 @@ export default function DocumentCreate({
                                                             ${priceUSD.toFixed(2)}
                                                         </div>
                                                         <div className="text-[10px] text-zinc-400 font-medium font-mono">
-                                                            {priceKHR.toLocaleString()} ៛
+                                                            {priceKHR.toLocaleString()} {tr('៛')}
                                                         </div>
                                                     </div>
                                                     <span className="text-[10px] px-2 py-0.5 rounded-lg bg-zinc-800 text-amber-300 font-semibold border border-zinc-700/60 group-hover:bg-amber-500 group-hover:text-zinc-950 transition-colors inline-flex items-center gap-1">
@@ -942,7 +943,7 @@ export default function DocumentCreate({
                             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                                 <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-zinc-800/80 border border-zinc-700/80 text-amber-600 dark:text-amber-300 font-mono text-[11px] sm:text-xs font-bold shadow-sm whitespace-nowrap shrink-0">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shrink-0" />
-                                    <span>$1 = {exchange_rate.toLocaleString()}៛</span>
+                                    <span>$1 = {exchange_rate.toLocaleString()}{tr('៛')}</span>
                                 </div>
 
                                 {lines.length > 0 && (
@@ -960,7 +961,7 @@ export default function DocumentCreate({
                                 <button
                                     type="button"
                                     onClick={() => setIsMobileCartOpen(false)}
-                                    title="បិទកន្ត្រក (Close)"
+                                    title={tr("បិទកន្ត្រក (Close)")}
                                     className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 bg-zinc-800 border border-zinc-700 transition cursor-pointer"
                                 >
                                     <X className="w-4 h-4" />
@@ -996,7 +997,7 @@ export default function DocumentCreate({
                                     {/* Micro Shortcuts Badge */}
                                     <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400 font-mono">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        <span>រួចរាល់ • ចុច [F2] ដើម្បីគិតប្រាក់</span>
+                                        <span>{tr('រួចរាល់ • ចុច [F2] ដើម្បីគិតប្រាក់')}</span>
                                     </div>
                                 </div>
                             ) : (
@@ -1037,7 +1038,7 @@ export default function DocumentCreate({
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, -1)}
                                                     className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
-                                                    title="បន្ថយ"
+                                                    title={tr("បន្ថយ")}
                                                 >
                                                     <Minus className="w-3.5 h-3.5" />
                                                 </button>
@@ -1048,7 +1049,7 @@ export default function DocumentCreate({
                                                     type="button"
                                                     onClick={() => updateQuantity(item.product_id, 1)}
                                                     className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition active:scale-90 cursor-pointer"
-                                                    title="បន្ថែម"
+                                                    title={tr("បន្ថែម")}
                                                 >
                                                     <Plus className="w-3.5 h-3.5" />
                                                 </button>
@@ -1060,7 +1061,7 @@ export default function DocumentCreate({
                                                     ${lineTotalUSD}
                                                 </div>
                                                 <div className="text-[10px] text-emerald-400 font-mono font-medium">
-                                                    {lineTotalKHR.toLocaleString()} ៛
+                                                    {lineTotalKHR.toLocaleString()} {tr('៛')}
                                                 </div>
                                             </div>
 
@@ -1069,7 +1070,7 @@ export default function DocumentCreate({
                                                 type="button"
                                                 onClick={() => removeLine(item.product_id)}
                                                 className="pos-cart-remove-btn text-zinc-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-500/10 transition cursor-pointer shrink-0"
-                                                title="ដកចេញ"
+                                                title={tr("ដកចេញ")}
                                             >
                                                 <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             </button>
@@ -1085,7 +1086,7 @@ export default function DocumentCreate({
                             <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap sm:flex-nowrap">
                                 <span className="text-zinc-400 text-xs font-khmer flex items-center gap-1.5 whitespace-nowrap">
                                     <span>{t('pos.discount_label')}</span>
-                                    <span className="text-[10px] text-zinc-500 font-mono uppercase">បញ្ចុះតម្លៃ</span>
+                                    <span className="text-[10px] text-zinc-500 font-mono uppercase">{tr('បញ្ចុះតម្លៃ')}</span>
                                 </span>
                                 <div className="pos-discount-bar flex items-center gap-0.5 sm:gap-1 bg-zinc-800 p-0.5 sm:p-1 rounded-xl border border-zinc-700/80 shrink-0">
                                     {[
@@ -1124,7 +1125,7 @@ export default function DocumentCreate({
                                 <div className="flex justify-between items-center">
                                     <span className="text-zinc-400 font-khmer">{t('pos.subtotal_label')}:</span>
                                     <span className="text-zinc-100 font-bold">
-                                        ${totals.subtotalUSD} <span className="text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} ៛)</span>
+                                        ${totals.subtotalUSD} <span className="text-zinc-400 text-[11px]">({totals.subtotalKHR.toLocaleString()} {tr('៛)')}</span>
                                     </span>
                                 </div>
                                 {parseFloat(totals.discountUSD) > 0 && (
@@ -1145,7 +1146,7 @@ export default function DocumentCreate({
                                         <span>{t('pos.grand_total')}</span>
                                     </div>
                                     <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/25 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                        <span>៛</span>
+                                        <span>{tr('៛')}</span>
                                         <span>{totals.grandTotalKHR.toLocaleString()}</span>
                                     </div>
                                 </div>
@@ -1220,7 +1221,7 @@ export default function DocumentCreate({
                             </div>
                             <div className="text-sm font-black text-amber-400 font-mono flex items-center gap-1.5">
                                 <span>${totals.grandTotalUSD}</span>
-                                <span className="text-[11px] text-emerald-400 font-normal">({totals.grandTotalKHR.toLocaleString()} ៛)</span>
+                                <span className="text-[11px] text-emerald-400 font-normal">({totals.grandTotalKHR.toLocaleString()} {tr('៛)')}</span>
                             </div>
                         </div>
                     </div>
@@ -1261,24 +1262,24 @@ export default function DocumentCreate({
                             <div>
                                 <div className="flex items-center gap-2">
                                     <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                        ផ្ទាំងគិតប្រាក់ & ចេញវិក្កយបត្រ (POS Checkout)
+                                        {tr('ផ្ទាំងគិតប្រាក់ & ចេញវិក្កយបត្រ (POS Checkout)')}
                                     </h2>
                                     <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                                        ដុល្លារ & រៀល
+                                        {tr('ដុល្លារ & រៀល')}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer mt-0.5">
                                     <span className="font-semibold text-slate-700 dark:text-zinc-300">
-                                        {orderMode === 'takeaway' ? 'ខ្ចប់ (Takeaway)' : `តុ៖ ${selectedTable}`}
+                                        {orderMode === 'takeaway' ? tr('ខ្ចប់ (Takeaway)') : `${tr('តុ៖')} ${selectedTable}`}
                                     </span>
                                     {isDeliveryPlatform(effectiveOrderSource) && (
                                         <OrderSourceBadge source={effectiveOrderSource} externalRef={externalOrderRef.trim() || null} />
                                     )}
                                     <span>•</span>
-                                    <span>{totals.totalItems} មុខទំនិញ</span>
+                                    <span>{totals.totalItems} {tr('មុខទំនិញ')}</span>
                                     <span>•</span>
                                     <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">
-                                        1$ = {exchange_rate.toLocaleString()} ៛
+                                        1$ = {exchange_rate.toLocaleString()} {tr('៛')}
                                     </span>
                                 </div>
                             </div>
@@ -1290,7 +1291,7 @@ export default function DocumentCreate({
                             className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer font-khmer shadow-sm"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>ត្រឡប់ក្រោយ</span>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
                             <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono hidden sm:inline ml-1">
                                 (Esc)
                             </span>
@@ -1306,10 +1307,10 @@ export default function DocumentCreate({
                                 <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-orange-500/15 border border-amber-500/30 flex items-center justify-between shadow-sm">
                                     <div className="space-y-1">
                                         <span className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 font-khmer block">
-                                            សរុបរួមត្រូវទូទាត់ (TOTAL DUE)
+                                            {tr('សរុបរួមត្រូវទូទាត់ (TOTAL DUE)')}
                                         </span>
                                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-mono font-bold text-base">
-                                            <span>៛</span>
+                                            <span>{tr('៛')}</span>
                                             <span>{totals.grandTotalKHR.toLocaleString()}</span>
                                         </div>
                                     </div>
@@ -1327,11 +1328,11 @@ export default function DocumentCreate({
                                             <div className="flex items-center gap-2">
                                                 <Bike className="w-4 h-4 text-amber-500" />
                                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    ប្រភពការកម្មង់ (Order Source) *
+                                                    {tr('ប្រភពការកម្មង់ (Order Source) *')}
                                                 </h3>
                                             </div>
                                             <span className="text-xs text-slate-400 dark:text-zinc-500 font-khmer">
-                                                បង្ហាញលើវិក្កយបត្រ
+                                                {tr('បង្ហាញលើវិក្កយបត្រ')}
                                             </span>
                                         </div>
 
@@ -1362,14 +1363,14 @@ export default function DocumentCreate({
                                         {isDeliveryPlatform(orderSource) && (
                                             <div className="space-y-1.5">
                                                 <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 font-khmer">
-                                                    លេខកម្មង់របស់ App <span className="font-normal text-slate-400">(App Order #)</span>
+                                                    {tr('លេខកម្មង់របស់ App')} <span className="font-normal text-slate-400">(App Order #)</span>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     value={externalOrderRef}
                                                     onChange={(e) => setExternalOrderRef(e.target.value)}
                                                     maxLength={40}
-                                                    placeholder="ឧ. f7k2-x9pq"
+                                                    placeholder={tr("ឧ. f7k2-x9pq")}
                                                     className="w-full h-10 px-3.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-zinc-100 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 transition-all"
                                                 />
                                             </div>
@@ -1383,11 +1384,11 @@ export default function DocumentCreate({
                                         <div className="flex items-center gap-2">
                                             <Coins className="w-4 h-4 text-amber-500" />
                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                វិធីសាស្ត្រទូទាត់ប្រាក់ (Payment Method) *
+                                                {tr('វិធីសាស្ត្រទូទាត់ប្រាក់ (Payment Method) *')}
                                             </h3>
                                         </div>
                                         <span className="text-xs text-slate-400 dark:text-zinc-500 font-khmer">
-                                            ចុចដើម្បីជ្រើសរើស
+                                            {tr('ចុចដើម្បីជ្រើសរើស')}
                                         </span>
                                     </div>
 
@@ -1406,8 +1407,8 @@ export default function DocumentCreate({
                                             }`}>
                                                 <Coins className="w-5 h-5" />
                                             </div>
-                                            <span className="font-bold">សាច់ប្រាក់ (Cash)</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">ដុល្លារ & រៀល</span>
+                                            <span className="font-bold">{tr('សាច់ប្រាក់ (Cash)')}</span>
+                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ដុល្លារ & រៀល')}</span>
                                         </button>
 
                                         <button
@@ -1425,7 +1426,7 @@ export default function DocumentCreate({
                                                 <QrCode className="w-5 h-5" />
                                             </div>
                                             <span className="font-bold">KHQR Bakong</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">ស្កេនទូរស័ព្ទ</span>
+                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ស្កេនទូរស័ព្ទ')}</span>
                                         </button>
 
                                         <button
@@ -1442,8 +1443,8 @@ export default function DocumentCreate({
                                             }`}>
                                                 <CreditCard className="w-5 h-5" />
                                             </div>
-                                            <span className="font-bold">កាតធនាគារ (Card)</span>
-                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">ម៉ាស៊ីនកាត</span>
+                                            <span className="font-bold">{tr('កាតធនាគារ (Card)')}</span>
+                                            <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('ម៉ាស៊ីនកាត')}</span>
                                         </button>
 
                                         {/* Delivery apps collect the money and pay the shop later: not cash in the drawer */}
@@ -1462,8 +1463,8 @@ export default function DocumentCreate({
                                                 }`}>
                                                     <Bike className="w-5 h-5" />
                                                 </div>
-                                                <span className="font-bold">បង់តាម App</span>
-                                                <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">App ផ្ទេរលុយក្រោយ</span>
+                                                <span className="font-bold">{tr('បង់តាម App')}</span>
+                                                <span className="text-[10px] font-normal text-slate-500 dark:text-zinc-400">{tr('App ផ្ទេរលុយក្រោយ')}</span>
                                             </button>
                                         )}
                                     </div>
@@ -1475,12 +1476,12 @@ export default function DocumentCreate({
                                         <div className="flex items-center gap-2">
                                             <Users className="w-4 h-4 text-amber-500" />
                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                អតិថិជន & ពិន្ទុសន្សំ (Customer & Loyalty CRM)
+                                                {tr('អតិថិជន & ពិន្ទុសន្សំ (Customer & Loyalty CRM)')}
                                             </h3>
                                         </div>
                                         {selectedCustomerId && (
                                             <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30 font-khmer">
-                                                +{Math.floor(parseFloat(totals.grandTotalUSD))} ពិន្ទុនឹងទទួលបាន
+                                                +{Math.floor(parseFloat(totals.grandTotalUSD))} {tr('ពិន្ទុនឹងទទួលបាន')}
                                             </span>
                                         )}
                                     </div>
@@ -1490,10 +1491,10 @@ export default function DocumentCreate({
                                         onChange={(e) => setSelectedCustomerId(e.target.value ? Number(e.target.value) : null)}
                                         className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-amber-500 font-khmer cursor-pointer transition-all"
                                     >
-                                        <option value="">-- {t('pos.guest_customer')} (ភ្ញៀវទូទៅ) --</option>
+                                        <option value="">-- {t('pos.guest_customer')} {tr('(ភ្ញៀវទូទៅ) --')}</option>
                                         {customers.map((c) => (
                                             <option key={c.id} value={c.id}>
-                                                {c.name} {c.phone ? `(${c.phone})` : ''} — {c.tier.toUpperCase()} ({c.loyalty_points} ពិន្ទុ)
+                                                {c.name} {c.phone ? `(${c.phone})` : ''} — {c.tier.toUpperCase()} ({c.loyalty_points} {tr('ពិន្ទុ)')}
                                             </option>
                                         ))}
                                     </select>
@@ -1506,12 +1507,12 @@ export default function DocumentCreate({
                                             <div className="flex items-center gap-2">
                                                 <Banknote className="w-4 h-4 text-amber-500" />
                                                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    ប្រាក់ទទួលពីអតិថិជន (Amount Tendered)
+                                                    {tr('ប្រាក់ទទួលពីអតិថិជន (Amount Tendered)')}
                                                 </h3>
                                             </div>
                                             {amountReceived && (
                                                 <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                                    ≈ {(Math.round(parseFloat(amountReceived || '0') * exchange_rate)).toLocaleString()} ៛
+                                                    ≈ {(Math.round(parseFloat(amountReceived || '0') * exchange_rate)).toLocaleString()} {tr('៛')}
                                                 </span>
                                             )}
                                         </div>
@@ -1534,11 +1535,11 @@ export default function DocumentCreate({
                                         {/* Quick USD Chips */}
                                         <div className="space-y-1.5">
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
-                                                ប្រាក់ដុល្លាររហ័ស ($ USD):
+                                                {tr('ប្រាក់ដុល្លាររហ័ស ($ USD):')}
                                             </span>
                                             <div className="flex flex-wrap gap-2">
                                                 {[
-                                                    { label: 'គ្រប់ចំនួន ($)', val: totals.grandTotalUSD },
+                                                    { label: tr('គ្រប់ចំនួន ($)'), val: totals.grandTotalUSD },
                                                     { label: '$5', val: '5.00' },
                                                     { label: '$10', val: '10.00' },
                                                     { label: '$20', val: '20.00' },
@@ -1567,15 +1568,15 @@ export default function DocumentCreate({
                                         {/* Quick KHR Chips */}
                                         <div className="space-y-1.5">
                                             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-khmer">
-                                                ប្រាក់រៀលរហ័ស (៛ KHR):
+                                                {tr('ប្រាក់រៀលរហ័ស (៛ KHR):')}
                                             </span>
                                             <div className="flex flex-wrap gap-2">
                                                 {[
                                                     { label: `${totals.grandTotalKHR.toLocaleString()} ៛ (Exact)`, val: totals.grandTotalUSD },
-                                                    { label: '10,000 ៛', val: (10000 / exchange_rate).toFixed(2) },
-                                                    { label: '20,000 ៛', val: (20000 / exchange_rate).toFixed(2) },
-                                                    { label: '50,000 ៛', val: (50000 / exchange_rate).toFixed(2) },
-                                                    { label: '100,000 ៛', val: (100000 / exchange_rate).toFixed(2) },
+                                                    { label: tr('10,000 ៛'), val: (10000 / exchange_rate).toFixed(2) },
+                                                    { label: tr('20,000 ៛'), val: (20000 / exchange_rate).toFixed(2) },
+                                                    { label: tr('50,000 ៛'), val: (50000 / exchange_rate).toFixed(2) },
+                                                    { label: tr('100,000 ៛'), val: (100000 / exchange_rate).toFixed(2) },
                                                 ].map((btn) => {
                                                     const isSelected = parseFloat(amountReceived || '0') === parseFloat(btn.val);
                                                     return (
@@ -1607,8 +1608,8 @@ export default function DocumentCreate({
                                             <div>
                                                 <span className="text-xs font-bold block text-slate-800 dark:text-zinc-200 font-khmer">
                                                     {parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
-                                                        ? 'នៅខ្វះ (Remaining Balance):'
-                                                        : 'ប្រាក់អាប់ជូនអតិថិជន (Change Due):'}
+                                                        ? tr('នៅខ្វះ (Remaining Balance):')
+                                                        : tr('ប្រាក់អាប់ជូនអតិថិជន (Change Due):')}
                                                 </span>
                                                 <span className="text-xs font-mono font-semibold text-slate-500 dark:text-zinc-400">
                                                     {parseFloat(amountReceived || '0') < parseFloat(totals.grandTotalUSD) && parseFloat(amountReceived || '0') > 0
@@ -1640,18 +1641,18 @@ export default function DocumentCreate({
                                         <div className="w-48 h-48 bg-white p-3 rounded-2xl shadow-xl border-2 border-slate-200 dark:border-zinc-700 flex items-center justify-center relative">
                                             <div className="w-full h-full border-2 border-slate-900 border-dashed rounded-xl flex flex-col items-center justify-center text-slate-900">
                                                 <QrCode className="w-20 h-20 text-slate-900 mb-1" />
-                                                <span className="text-[10px] font-bold font-khmer">ស្កេនដើម្បីទូទាត់</span>
+                                                <span className="text-[10px] font-bold font-khmer">{tr('ស្កេនដើម្បីទូទាត់')}</span>
                                             </div>
                                         </div>
                                         <div className="space-y-1">
                                             <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 font-khmer">
-                                                លៀសហាល អ៉ីទុម POS
+                                                {tr('លៀសហាល អ៉ីទុម POS')}
                                             </h4>
                                             <p className="text-sm text-rose-600 dark:text-rose-400 font-mono font-bold">
-                                                ${totals.grandTotalUSD} ({totals.grandTotalKHR.toLocaleString()} ៛)
+                                                ${totals.grandTotalUSD} ({totals.grandTotalKHR.toLocaleString()} {tr('៛)')}
                                             </p>
                                             <p className="text-[11px] text-slate-500 dark:text-zinc-400 font-khmer pt-1">
-                                                គាំទ្ររាល់កម្មវិធីធនាគារទាំងអស់ (ABA, Acleda, Canadia, Bakong...)
+                                                {tr('គាំទ្ររាល់កម្មវិធីធនាគារទាំងអស់ (ABA, Acleda, Canadia, Bakong...)')}
                                             </p>
                                         </div>
                                     </div>
@@ -1665,10 +1666,10 @@ export default function DocumentCreate({
                                         </div>
                                         <div className="space-y-1 max-w-sm">
                                             <h4 className="font-bold text-base text-slate-900 dark:text-zinc-100 font-khmer">
-                                                ម៉ាស៊ីនឆូតកាតត្រៀមរួចរាល់ (Card Terminal Ready)
+                                                {tr('ម៉ាស៊ីនឆូតកាតត្រៀមរួចរាល់ (Card Terminal Ready)')}
                                             </h4>
                                             <p className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                                សូមឆូតកាត ឬប៉ះកាត (Tap / Insert) លើម៉ាស៊ីន POS Terminal។
+                                                {tr('សូមឆូតកាត ឬប៉ះកាត (Tap / Insert) លើម៉ាស៊ីន POS Terminal។')}
                                             </p>
                                             <div className="flex items-center justify-center gap-2 pt-2 text-[10px] font-mono text-sky-600 dark:text-sky-400 font-bold">
                                                 <span>VISA</span> • <span>MASTERCARD</span> • <span>UNIONPAY</span>
@@ -1685,11 +1686,11 @@ export default function DocumentCreate({
                                         <div className="flex items-center gap-2">
                                             <Receipt className="w-4 h-4 text-amber-500" />
                                             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-zinc-100 font-khmer">
-                                                វិក្កយបត្រគំរូជាក់ស្ដែង (Receipt Preview)
+                                                {tr('វិក្កយបត្រគំរូជាក់ស្ដែង (Receipt Preview)')}
                                             </h3>
                                         </div>
                                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                            វិក្កយបត្រ
+                                            {tr('វិក្កយបត្រ')}
                                         </span>
                                     </div>
 
@@ -1698,17 +1699,17 @@ export default function DocumentCreate({
                                         {/* Receipt Header */}
                                         <div className="text-center space-y-1 pb-3 border-b border-dashed border-slate-300 dark:border-zinc-700">
                                             <h4 className="font-bold text-sm text-slate-900 dark:white font-khmer">
-                                                លៀសហាល អ៉ីទុម POS
+                                                {tr('លៀសហាល អ៉ីទុម POS')}
                                             </h4>
                                             <p className="text-[10px] text-slate-500 dark:text-zinc-400 font-khmer">
-                                                វិក្កយបត្រទូទាត់ប្រាក់ (Official Receipt)
+                                                {tr('វិក្កយបត្រទូទាត់ប្រាក់ (Official Receipt)')}
                                             </p>
                                             <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between pt-1">
                                                 <span>{new Date().toISOString().slice(0, 10)}</span>
-                                                <span>{orderMode === 'takeaway' ? 'ខ្ចប់' : selectedTable}</span>
+                                                <span>{orderMode === 'takeaway' ? tr('ខ្ចប់') : selectedTable}</span>
                                             </div>
                                             <div className="text-[10px] text-slate-500 dark:text-zinc-400 flex items-center justify-between">
-                                                <span className="font-khmer">កម្មង់ពី (Order From)</span>
+                                                <span className="font-khmer">{tr('កម្មង់ពី (Order From)')}</span>
                                                 <span className="font-bold text-slate-900 dark:text-zinc-100">
                                                     {formatOrderSource(effectiveOrderSource)}
                                                     {isDeliveryPlatform(effectiveOrderSource) && externalOrderRef.trim() && ` #${externalOrderRef.trim()}`}
@@ -1738,41 +1739,41 @@ export default function DocumentCreate({
                                         {/* Subtotals & Grand Total */}
                                         <div className="pt-3 border-t border-dashed border-slate-300 dark:border-zinc-700 space-y-1.5 text-xs">
                                             <div className="flex items-center justify-between text-slate-600 dark:text-zinc-400">
-                                                <span className="font-khmer">សរុបរង (Subtotal)</span>
+                                                <span className="font-khmer">{tr('សរុបរង (Subtotal)')}</span>
                                                 <span>${totals.subtotalUSD}</span>
                                             </div>
 
                                             {parseFloat(totals.discountUSD) > 0 && (
                                                 <div className="flex items-center justify-between text-rose-600 dark:text-rose-400">
-                                                    <span className="font-khmer">បញ្ចុះតម្លៃ (Discount)</span>
+                                                    <span className="font-khmer">{tr('បញ្ចុះតម្លៃ (Discount)')}</span>
                                                     <span>-${totals.discountUSD}</span>
                                                 </div>
                                             )}
 
                                             <div className="pt-2 border-t border-slate-300 dark:border-zinc-700 flex items-center justify-between text-base font-black text-slate-900 dark:text-white">
-                                                <span className="font-khmer">សរុប (TOTAL DUE)</span>
+                                                <span className="font-khmer">{tr('សរុប (TOTAL DUE)')}</span>
                                                 <span className="text-amber-600 dark:text-amber-400">${totals.grandTotalUSD}</span>
                                             </div>
                                             <div className="flex items-center justify-end text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                                                <span>៛ {totals.grandTotalKHR.toLocaleString()}</span>
+                                                <span>{tr('៛')} {totals.grandTotalKHR.toLocaleString()}</span>
                                             </div>
                                         </div>
 
                                         {/* Payment Tender on Receipt */}
                                         <div className="pt-3 border-t border-dashed border-slate-300 dark:border-zinc-700 space-y-1 text-[11px] text-slate-600 dark:text-zinc-400">
                                             <div className="flex items-center justify-between">
-                                                <span className="font-khmer">វិធីសាស្ត្រទូទាត់</span>
+                                                <span className="font-khmer">{tr('វិធីសាស្ត្រទូទាត់')}</span>
                                                 <span className="uppercase font-bold text-slate-800 dark:text-zinc-200">{paymentMethod}</span>
                                             </div>
                                             {paymentMethod === 'cash' && (
                                                 <>
                                                     <div className="flex items-center justify-between">
-                                                        <span className="font-khmer">ប្រាក់ទទួល (Tendered)</span>
+                                                        <span className="font-khmer">{tr('ប្រាក់ទទួល (Tendered)')}</span>
                                                         <span>${amountReceived || totals.grandTotalUSD}</span>
                                                     </div>
                                                     <div className="flex items-center justify-between font-bold text-emerald-600 dark:text-emerald-400">
-                                                        <span className="font-khmer">ប្រាក់អាប់ (Change)</span>
-                                                        <span>${totals.changeUSD} ({totals.changeKHR.toLocaleString()} ៛)</span>
+                                                        <span className="font-khmer">{tr('ប្រាក់អាប់ (Change)')}</span>
+                                                        <span>${totals.changeUSD} ({totals.changeKHR.toLocaleString()} {tr('៛)')}</span>
                                                     </div>
                                                 </>
                                             )}
@@ -1780,7 +1781,7 @@ export default function DocumentCreate({
 
                                         {/* Receipt Footer Message */}
                                         <div className="pt-3 border-t border-slate-300 dark:border-zinc-700 text-center text-[10px] text-slate-500 dark:text-zinc-400 font-khmer">
-                                            សូមអរគុណ! សូមអញ្ជើញមកពិសាម្តងទៀត
+                                            {tr('សូមអរគុណ! សូមអញ្ជើញមកពិសាម្តងទៀត')}
                                         </div>
                                     </div>
                                 </div>
@@ -1797,11 +1798,11 @@ export default function DocumentCreate({
                         ) : (
                         <div className="hidden sm:flex items-center gap-3">
                             <span className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                វិធីសាស្ត្រ៖ <strong className="uppercase text-slate-800 dark:text-zinc-200">{paymentMethod}</strong>
+                                {tr('វិធីសាស្ត្រ៖')} <strong className="uppercase text-slate-800 dark:text-zinc-200">{paymentMethod}</strong>
                             </span>
                             <span className="text-slate-300 dark:text-zinc-700">•</span>
                             <span className="text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                សរុបត្រូវបង់៖ <strong className="text-amber-600 dark:text-amber-400 font-mono">${totals.grandTotalUSD}</strong> ({totals.grandTotalKHR.toLocaleString()} ៛)
+                                {tr('សរុបត្រូវបង់៖')} <strong className="text-amber-600 dark:text-amber-400 font-mono">${totals.grandTotalUSD}</strong> ({totals.grandTotalKHR.toLocaleString()} {tr('៛)')}
                             </span>
                         </div>
                         )}
@@ -1812,7 +1813,7 @@ export default function DocumentCreate({
                                 onClick={() => setIsCheckoutModalOpen(false)}
                                 className="px-4 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-all cursor-pointer font-khmer"
                             >
-                                ថយក្រោយ
+                                {tr('ថយក្រោយ')}
                             </button>
                             <button
                                 type="button"
@@ -1821,7 +1822,7 @@ export default function DocumentCreate({
                                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-zinc-950 font-black text-xs shadow-lg shadow-amber-500/25 border border-amber-300/40 transition active:scale-[0.98] cursor-pointer font-khmer disabled:opacity-50"
                             >
                                 <Printer className="w-4 h-4" />
-                                <span>{isSubmitting ? 'កំពុងដំណើរការ...' : 'បញ្ជាក់ការទូទាត់ & ចេញវិក្កយបត្រ'}</span>
+                                <span>{isSubmitting ? tr('កំពុងដំណើរការ...') : tr('បញ្ជាក់ការទូទាត់ & ចេញវិក្កយបត្រ')}</span>
                             </button>
                         </div>
                     </div>
@@ -1844,23 +1845,23 @@ export default function DocumentCreate({
                             <div>
                                 <div className="flex items-center gap-2">
                                     <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
-                                        តារាងប្លង់តុ និងការគ្រប់គ្រងភ្ញៀវ (Floor & Table Management Suite)
+                                        {tr('តារាងប្លង់តុ និងការគ្រប់គ្រងភ្ញៀវ (Floor & Table Management Suite)')}
                                     </h2>
                                     <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                                        ញ៉ាំនៅហាង
+                                        {tr('ញ៉ាំនៅហាង')}
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
                                     <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
                                         <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                        {activeTablesCount} តុ កំពុងទទួលភ្ញៀវ (Occupied)
+                                        {activeTablesCount} {tr('តុ កំពុងទទួលភ្ញៀវ (Occupied)')}
                                     </span>
                                     <span>•</span>
                                     <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                                        {tables_list.length - activeTablesCount} តុទំនេរ (Vacant)
+                                        {tables_list.length - activeTablesCount} {tr('តុទំនេរ (Vacant)')}
                                     </span>
                                     <span>•</span>
-                                    <span>{tables_list.length} តុសរុប (Total)</span>
+                                    <span>{tables_list.length} {tr('តុសរុប (Total)')}</span>
                                 </p>
                             </div>
                         </div>
@@ -1871,7 +1872,7 @@ export default function DocumentCreate({
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>ត្រឡប់ក្រោយ</span>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
                         </button>
                     </div>
 
@@ -1900,12 +1901,12 @@ export default function DocumentCreate({
                                     {/* Filter Pills */}
                                     <div className="flex flex-wrap items-center gap-2 pb-1">
                                         {[
-                                            { id: 'all', label: `តុទាំងអស់ (${tables_list.length})` },
-                                            { id: 'occupied', label: `កំពុងទទួលភ្ញៀវ (${activeTablesCount})` },
-                                            { id: 'vacant', label: `តុទំនេរ (${tables_list.length - activeTablesCount})` },
-                                            { id: 'indoor', label: 'សាលធំ (Indoor)' },
-                                            { id: 'vip', label: 'បន្ទប់ VIP' },
-                                            { id: 'garden', label: 'សួនក្រៅ (Outdoor)' },
+                                            { id: 'all', label: `${tr('តុទាំងអស់')} (${tables_list.length})` },
+                                            { id: 'occupied', label: `${tr('កំពុងទទួលភ្ញៀវ')} (${activeTablesCount})` },
+                                            { id: 'vacant', label: `${tr('តុទំនេរ')} (${tables_list.length - activeTablesCount})` },
+                                            { id: 'indoor', label: tr('សាលធំ (Indoor)') },
+                                            { id: 'vip', label: tr('បន្ទប់ VIP') },
+                                            { id: 'garden', label: tr('សួនក្រៅ (Outdoor)') },
                                         ].map((tab) => (
                                             <button
                                                 key={tab.id}
@@ -1951,7 +1952,7 @@ export default function DocumentCreate({
                                                                 </h4>
                                                                 {isCurrentSelected && (
                                                                     <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
-                                                                        កំពុងប្រើ
+                                                                        {tr('កំពុងប្រើ')}
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -1961,7 +1962,7 @@ export default function DocumentCreate({
                                                                 <span className={`w-1.5 h-1.5 rounded-full ${
                                                                     activeDoc ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
                                                                 }`} />
-                                                                {activeDoc ? 'មានភ្ញៀវ' : 'ទំនេរ'}
+                                                                {activeDoc ? tr('មានភ្ញៀវ') : tr('ទំនេរ')}
                                                             </span>
                                                         </div>
                                                         <div className={`p-2 rounded-xl ${
@@ -1980,7 +1981,7 @@ export default function DocumentCreate({
                                                                     ${parseFloat(activeDoc.grand_total).toFixed(2)}
                                                                 </span>
                                                                 <span className="text-[10.5px] text-zinc-500 dark:text-zinc-400 font-khmer">
-                                                                    {activeDoc.items.length} មុខ
+                                                                    {activeDoc.items.length} {tr('មុខ')}
                                                                 </span>
                                                             </div>
 
@@ -1990,13 +1991,13 @@ export default function DocumentCreate({
                                                                     onClick={() => handleSelectActiveTable(activeDoc)}
                                                                     className="flex-1 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs shadow-xs transition cursor-pointer font-khmer flex items-center justify-center gap-1"
                                                                 >
-                                                                    <span>បើកតុ</span>
+                                                                    <span>{tr('បើកតុ')}</span>
                                                                 </button>
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleCancelTable(activeDoc.id)}
                                                                     className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-rose-500 hover:bg-rose-500/20 transition cursor-pointer"
-                                                                    title="លុបចោលតុ"
+                                                                    title={tr("លុបចោលតុ")}
                                                                 >
                                                                     <Trash2 className="w-3.5 h-3.5" />
                                                                 </button>
@@ -2015,7 +2016,7 @@ export default function DocumentCreate({
                                                                 }}
                                                                 className="w-full py-1.5 text-center text-[11px] font-bold text-zinc-600 dark:text-zinc-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition font-khmer bg-zinc-50 dark:bg-zinc-800/50 hover:bg-emerald-500/10 rounded-lg cursor-pointer"
                                                             >
-                                                                ជ្រើសរើសតុនេះ
+                                                                {tr('ជ្រើសរើសតុនេះ')}
                                                             </button>
                                                         </div>
                                                     )}
@@ -2035,10 +2036,10 @@ export default function DocumentCreate({
                                                 </div>
                                                 <div>
                                                     <h3 className="text-sm font-bold text-zinc-900 dark:text-white font-khmer">
-                                                        ព័ត៌មានតុ
+                                                        {tr('ព័ត៌មានតុ')}
                                                     </h3>
                                                     <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block">
-                                                        ព័ត៌មានតុ
+                                                        {tr('ព័ត៌មានតុ')}
                                                     </span>
                                                 </div>
                                             </div>
@@ -2048,7 +2049,7 @@ export default function DocumentCreate({
                                                     : 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
                                             }`}>
                                                 <span className={`w-1.5 h-1.5 rounded-full ${isFocusedOccupied ? 'bg-amber-500' : 'bg-emerald-500'}`} />
-                                                {isFocusedOccupied ? 'មានភ្ញៀវ' : 'ទំនេរ'}
+                                                {isFocusedOccupied ? tr('មានភ្ញៀវ') : tr('ទំនេរ')}
                                             </span>
                                         </div>
 
@@ -2056,17 +2057,17 @@ export default function DocumentCreate({
                                         <div className="p-4 rounded-2xl bg-white dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/90 shadow-xs dark:shadow-none space-y-3 text-xs">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">តុដែលកំពុងមើល (Selected)</span>
+                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">{tr('តុដែលកំពុងមើល (Selected)')}</span>
                                                     <h3 className="text-xl font-bold text-zinc-900 dark:text-white font-khmer">{focusedTableName}</h3>
                                                 </div>
                                                 <div className="text-right">
-                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">តំបន់ (Zone)</span>
+                                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-khmer block">{tr('តំបន់ (Zone)')}</span>
                                                     <span className="text-amber-600 dark:text-amber-400 font-bold font-khmer">
                                                         {focusedTableName.toLowerCase().includes('vip')
-                                                            ? 'បន្ទប់ VIP'
+                                                            ? tr('បន្ទប់ VIP')
                                                             : focusedTableName.includes('សួន')
-                                                            ? 'សួនក្រៅ'
-                                                            : 'សាលធំ'}
+                                                            ? tr('សួនក្រៅ')
+                                                            : tr('សាលធំ')}
                                                     </span>
                                                 </div>
                                             </div>
@@ -2074,15 +2075,15 @@ export default function DocumentCreate({
                                             {isFocusedOccupied && activeFocusedTable ? (
                                                 <div className="space-y-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
                                                     <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
-                                                        <span className="font-khmer">លេខកូដវិក្កយបត្រ៖</span>
+                                                        <span className="font-khmer">{tr('លេខកូដវិក្កយបត្រ៖')}</span>
                                                         <span className="text-amber-600 dark:text-amber-400 font-bold font-mono">#TBL-DRAFT-{activeFocusedTable.id}</span>
                                                     </div>
                                                     <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
-                                                        <span className="font-khmer">ពេលអង្គុយ៖</span>
+                                                        <span className="font-khmer">{tr('ពេលអង្គុយ៖')}</span>
                                                         <span className="text-zinc-800 dark:text-zinc-200 font-medium font-mono">{activeFocusedTable.created_at}</span>
                                                     </div>
                                                     <div className="flex items-center justify-between text-zinc-600 dark:text-zinc-400 text-xs">
-                                                        <span className="font-khmer">ទឹកប្រាក់សរុប៖</span>
+                                                        <span className="font-khmer">{tr('ទឹកប្រាក់សរុប៖')}</span>
                                                         <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm font-mono">
                                                             ${parseFloat(activeFocusedTable.grand_total).toFixed(2)}
                                                         </span>
@@ -2091,7 +2092,7 @@ export default function DocumentCreate({
                                                     {/* Ordered Items Preview */}
                                                     <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800/80">
                                                         <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-sans font-bold block mb-1.5">
-                                                            មុខម្ហូបដែលបានកុម្ម៉ង់ ({activeFocusedTable.items.length} មុខ)៖
+                                                            {tr('មុខម្ហូបដែលបានកុម្ម៉ង់ (')}{activeFocusedTable.items.length} {tr('មុខ)៖')}
                                                         </span>
                                                         <div className="max-h-36 overflow-y-auto space-y-1.5 pr-1">
                                                             {activeFocusedTable.items.map((item, idx) => (
@@ -2118,10 +2119,10 @@ export default function DocumentCreate({
                                                         <Check className="w-5 h-5 stroke-[2.5]" />
                                                     </div>
                                                     <p className="text-xs font-bold text-zinc-800 dark:text-zinc-100 font-khmer">
-                                                        តុនេះទំនេរ រួចរាល់សម្រាប់ទទួលភ្ញៀវថ្មីភ្លាមៗ
+                                                        {tr('តុនេះទំនេរ រួចរាល់សម្រាប់ទទួលភ្ញៀវថ្មីភ្លាមៗ')}
                                                     </p>
                                                     <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer leading-relaxed">
-                                                        ចុចលើប៊ូតុងខាងក្រោមដើម្បីកំណត់តុនេះសម្រាប់វិក្កយបត្របច្ចុប្បន្ន
+                                                        {tr('ចុចលើប៊ូតុងខាងក្រោមដើម្បីកំណត់តុនេះសម្រាប់វិក្កយបត្របច្ចុប្បន្ន')}
                                                     </p>
                                                 </div>
                                             )}
@@ -2131,7 +2132,7 @@ export default function DocumentCreate({
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="p-4 rounded-2xl bg-white dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/90 shadow-xs dark:shadow-none space-y-2">
                                                 <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                    តុមានភ្ញៀវ
+                                                    {tr('តុមានភ្ញៀវ')}
                                                 </span>
                                                 <div className="flex items-baseline gap-1">
                                                     <span className="text-xl font-bold text-amber-600 dark:text-amber-400 font-mono">
@@ -2150,13 +2151,13 @@ export default function DocumentCreate({
                                             </div>
                                             <div className="p-4 rounded-2xl bg-white dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/90 shadow-xs dark:shadow-none space-y-2">
                                                 <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-khmer block">
-                                                    វិក្កយបត្រមិនទាន់ទូទាត់
+                                                    {tr('វិក្កយបត្រមិនទាន់ទូទាត់')}
                                                 </span>
                                                 <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400 font-mono block">
                                                     ${floorTotalUSD.toFixed(2)}
                                                 </span>
                                                 <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono block">
-                                                    ≈ {floorTotalKHR.toLocaleString()} ៛
+                                                    ≈ {floorTotalKHR.toLocaleString()} {tr('៛')}
                                                 </span>
                                             </div>
                                         </div>
@@ -2165,7 +2166,7 @@ export default function DocumentCreate({
                                         <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5">
                                             <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
                                             <p className="text-zinc-700 dark:text-zinc-300 font-khmer text-xs leading-relaxed">
-                                                ចុច <span className="font-bold text-amber-700 dark:text-amber-400">{t('pos.hold_order')}</span> ដើម្បីទុកការកម្មង់របស់តុនេះ។ អាចកម្មង់បន្ថែម ឬគិតប្រាក់នៅពេលក្រោយបាន ដោយមិនបាត់ទិន្នន័យ។
+                                                {tr('ចុច')} <span className="font-bold text-amber-700 dark:text-amber-400">{t('pos.hold_order')}</span> {tr('ដើម្បីទុកការកម្មង់របស់តុនេះ។ អាចកម្មង់បន្ថែម ឬគិតប្រាក់នៅពេលក្រោយបាន ដោយមិនបាត់ទិន្នន័យ។')}
                                             </p>
                                         </div>
                                     </div>
@@ -2180,7 +2181,7 @@ export default function DocumentCreate({
                             <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                 Esc
                             </kbd>
-                            <span>ដើម្បីត្រឡប់ក្រោយ / បោះបង់</span>
+                            <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បោះបង់')}</span>
                         </div>
 
                         <div className="flex items-center gap-3 ml-auto">
@@ -2189,7 +2190,7 @@ export default function DocumentCreate({
                                 onClick={() => setIsTablesModalOpen(false)}
                                 className="px-5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                             >
-                                បោះបង់
+                                {tr('បោះបង់')}
                             </button>
 
                             {(() => {
@@ -2203,7 +2204,7 @@ export default function DocumentCreate({
                                         className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
                                     >
                                         <Utensils className="w-4 h-4" />
-                                        <span>បើកវិក្កយបត្រ {focusedTableName}</span>
+                                        <span>{tr('បើកវិក្កយបត្រ')} {focusedTableName}</span>
                                     </button>
                                 ) : (
                                     <button
@@ -2217,7 +2218,7 @@ export default function DocumentCreate({
                                         className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold font-khmer shadow-sm hover:shadow-emerald-600/20 transition-all cursor-pointer flex items-center gap-2"
                                     >
                                         <Check className="w-4 h-4" />
-                                        <span>ជ្រើសរើស {focusedTableName}</span>
+                                        <span>{tr('ជ្រើសរើស')} {focusedTableName}</span>
                                     </button>
                                 );
                             })()}

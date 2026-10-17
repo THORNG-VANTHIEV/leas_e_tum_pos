@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { Users } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 export interface CashierOption {
     id: number;
@@ -40,7 +41,7 @@ export function CashierFilter({ cashiers, value, query = {} }: CashierFilterProp
                 className="bg-transparent outline-none cursor-pointer font-khmer pr-1"
                 aria-label="Filter by staff"
             >
-                <option value="">បុគ្គលិកទាំងអស់ (All staff)</option>
+                <option value="">{tr('បុគ្គលិកទាំងអស់ (All staff)')}</option>
                 {cashiers.map((cashier) => (
                     <option key={cashier.id} value={cashier.id}>
                         {cashier.name} (@{cashier.username})

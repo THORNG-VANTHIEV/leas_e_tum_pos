@@ -15,6 +15,7 @@ import {
     Loader2,
     Receipt,
 } from 'lucide-react';
+import { tr } from '@/locales/tr';
 
 interface KdsItem {
     id: number;
@@ -116,15 +117,15 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
     };
 
     const formatElapsed = (mins: number) => {
-        if (mins < 1) return 'ទើបកុម្ម៉ង់';
-        if (mins < 60) return `${mins} នាទី`;
+        if (mins < 1) return tr('ទើបកុម្ម៉ង់');
+        if (mins < 60) return `${mins} ${tr('នាទី')}`;
         const hours = Math.floor(mins / 60);
         const rem = mins % 60;
         if (hours < 24) {
-            return rem > 0 ? `${hours} ម៉ោង ${rem} ន` : `${hours} ម៉ោង`;
+            return rem > 0 ? `${hours} ${tr('ម៉ោង')} ${rem} ${tr('ន')}` : `${hours} ${tr('ម៉ោង')}`;
         }
         const days = Math.floor(hours / 24);
-        return `${days} ថ្ងៃមុន`;
+        return `${days} ${tr('ថ្ងៃមុន')}`;
     };
 
     const getCardStyle = (status: string) => {
@@ -146,28 +147,28 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <UtensilsCrossed className="w-3 h-3 text-amber-400 shrink-0" />
-                        កំពុងធ្វើ
+                        {tr('កំពុងធ្វើ')}
                     </span>
                 );
             case 'ready':
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
-                        ឆ្អិនរួចរាល់
+                        {tr('ឆ្អិនរួចរាល់')}
                     </span>
                 );
             case 'served':
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <Coffee className="w-3 h-3 text-zinc-400 shrink-0" />
-                        លើកជូនរួច
+                        {tr('លើកជូនរួច')}
                     </span>
                 );
             default: // pending
                 return (
                     <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center gap-1 whitespace-nowrap shrink-0">
                         <Clock className="w-3 h-3 text-amber-400 shrink-0" />
-                        រង់ចាំ
+                        {tr('រង់ចាំ')}
                     </span>
                 );
         }
@@ -176,8 +177,8 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
     const totalActiveOrders = counts.pending + counts.cooking + counts.ready;
 
     return (
-        <AppLayout title="Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ">
-            <Head title="Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ" />
+        <AppLayout title={tr("Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ")}>
+            <Head title={tr("Kitchen Display (KDS) — ផ្ទាំងផ្ទះបាយ")} />
 
             <div className="space-y-6 pb-12">
                 {/* Fixed / Sticky Header Synchronized with Floor & Tables Style */}
@@ -189,9 +190,9 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
-                                    ផ្ទះបាយ (KDS)
+                                    {tr('ផ្ទះបាយ (KDS)')}
                                     <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
-                                        ផ្ទាំងផ្ទះបាយ
+                                        {tr('ផ្ទាំងផ្ទះបាយ')}
                                     </span>
                                     {totalActiveOrders > 0 && (
                                         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
@@ -201,7 +202,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     )}
                                 </h1>
                                 <p className="text-xs text-zinc-400">
-                                    គ្រប់គ្រងលំដាប់លំហូរចម្អិនម្ហូប និងជូនភ្ញៀវតាមតុក្នុងពេលវេលាពិត
+                                    {tr('គ្រប់គ្រងលំដាប់លំហូរចម្អិនម្ហូប និងជូនភ្ញៀវតាមតុក្នុងពេលវេលាពិត')}
                                 </p>
                             </div>
                         </div>
@@ -215,17 +216,17 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                         ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
                                         : 'bg-zinc-900 text-zinc-400 border-zinc-800 hover:text-zinc-200'
                                 }`}
-                                title="សំឡេងប្រាប់ដំណឹង (Sound Alert)"
+                                title={tr("សំឡេងប្រាប់ដំណឹង (Sound Alert)")}
                             >
                                 {soundEnabled ? (
                                     <>
                                         <Volume2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                                        <span>សំឡេង បើក</span>
+                                        <span>{tr('សំឡេង បើក')}</span>
                                     </>
                                 ) : (
                                     <>
                                         <VolumeX className="w-4 h-4 text-zinc-400 shrink-0" />
-                                        <span>សំឡេង បិទ</span>
+                                        <span>{tr('សំឡេង បិទ')}</span>
                                     </>
                                 )}
                             </button>
@@ -233,16 +234,16 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             <button
                                 onClick={() => router.reload()}
                                 className="px-3 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-850 flex items-center gap-1.5 transition-all cursor-pointer"
-                                title="ផ្ទុកឡើងវិញ (Reload)"
+                                title={tr("ផ្ទុកឡើងវិញ (Reload)")}
                             >
                                 <RefreshCw className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                <span>ផ្ទុកឡើងវិញ</span>
+                                <span>{tr('ផ្ទុកឡើងវិញ')}</span>
                             </button>
 
                             <button
                                 onClick={toggleFullscreen}
                                 className="p-2 rounded-xl text-xs font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800 hover:bg-zinc-850 flex items-center transition-all cursor-pointer"
-                                title="ពង្រីកពេញអេក្រង់ (Fullscreen)"
+                                title={tr("ពង្រីកពេញអេក្រង់ (Fullscreen)")}
                             >
                                 <Maximize2 className="w-4 h-4 text-zinc-300" />
                             </button>
@@ -260,14 +261,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             }`}
                         >
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Active / កំពុងដំណើរការ</span>
+                                <span>{tr('Active / កំពុងដំណើរការ')}</span>
                                 <ChefHat className="w-4 h-4 text-amber-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {totalActiveOrders}
                             </div>
                             <div className="text-xs text-amber-400/90 font-khmer mt-1">
-                                សំបុត្រសរុបក្នុងផ្ទះបាយ
+                                {tr('សំបុត្រសរុបក្នុងផ្ទះបាយ')}
                             </div>
                         </div>
 
@@ -280,14 +281,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             }`}
                         >
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Pending / រង់ចាំចម្អិន</span>
+                                <span>{tr('Pending / រង់ចាំចម្អិន')}</span>
                                 <Clock className="w-4 h-4 text-amber-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {counts.pending}
                             </div>
                             <div className="text-xs text-zinc-400 font-khmer mt-1">
-                                សំបុត្រទើបកម្ម៉ង់ថ្មី
+                                {tr('សំបុត្រទើបកម្ម៉ង់ថ្មី')}
                             </div>
                         </div>
 
@@ -300,14 +301,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             }`}
                         >
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Cooking / កំពុងចម្អិន</span>
+                                <span>{tr('Cooking / កំពុងចម្អិន')}</span>
                                 <UtensilsCrossed className="w-4 h-4 text-amber-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {counts.cooking}
                             </div>
                             <div className="text-xs text-amber-400/90 font-khmer mt-1">
-                                កំពុងធ្វើលើចង្ក្រាន
+                                {tr('កំពុងធ្វើលើចង្ក្រាន')}
                             </div>
                         </div>
 
@@ -320,14 +321,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             }`}
                         >
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Ready / ឆ្អិនរួចរាល់</span>
+                                <span>{tr('Ready / ឆ្អិនរួចរាល់')}</span>
                                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {counts.ready}
                             </div>
                             <div className="text-xs text-emerald-400/90 font-khmer mt-1">
-                                រង់ចាំបុគ្គលិកលើកជូន
+                                {tr('រង់ចាំបុគ្គលិកលើកជូន')}
                             </div>
                         </div>
 
@@ -340,14 +341,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                             }`}
                         >
                             <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                                <span>Served / លើកជូនថ្ងៃនេះ</span>
+                                <span>{tr('Served / លើកជូនថ្ងៃនេះ')}</span>
                                 <Coffee className="w-4 h-4 text-purple-400" />
                             </div>
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
                                 {counts.served_today}
                             </div>
                             <div className="text-xs text-purple-400/90 font-khmer mt-1">
-                                សំបុត្របានបញ្ចប់រួចរាល់
+                                {tr('សំបុត្របានបញ្ចប់រួចរាល់')}
                             </div>
                         </div>
                     </div>
@@ -362,7 +363,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            គ្រប់ការកុម្ម៉ង់ទាំងអស់ ({totalActiveOrders})
+                            {tr('គ្រប់ការកុម្ម៉ង់ទាំងអស់ (')}{totalActiveOrders})
                         </button>
                         <button
                             onClick={() => handleFilterChange('pending')}
@@ -372,7 +373,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            រង់ចាំចម្អិន ({counts.pending})
+                            {tr('រង់ចាំចម្អិន (')}{counts.pending})
                         </button>
                         <button
                             onClick={() => handleFilterChange('cooking')}
@@ -382,7 +383,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            កំពុងចម្អិន ({counts.cooking})
+                            {tr('កំពុងចម្អិន (')}{counts.cooking})
                         </button>
                         <button
                             onClick={() => handleFilterChange('ready')}
@@ -392,7 +393,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            ឆ្អិនរួចរាល់ ({counts.ready})
+                            {tr('ឆ្អិនរួចរាល់ (')}{counts.ready})
                         </button>
                         <button
                             onClick={() => handleFilterChange('served')}
@@ -402,7 +403,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                     : 'bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-850'
                             }`}
                         >
-                            បានលើកជូនថ្ងៃនេះ ({counts.served_today})
+                            {tr('បានលើកជូនថ្ងៃនេះ (')}{counts.served_today})
                         </button>
                     </div>
                 </div>
@@ -413,9 +414,9 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                         <div className="w-16 h-16 rounded-2xl bg-zinc-800/80 border border-zinc-700 flex items-center justify-center mx-auto mb-4 text-zinc-500">
                             <ChefHat className="w-8 h-8" />
                         </div>
-                        <h3 className="text-base font-semibold text-zinc-200">គ្មានការកុម្ម៉ង់ក្នុងជួរផ្ទះបាយទេ</h3>
+                        <h3 className="text-base font-semibold text-zinc-200">{tr('គ្មានការកុម្ម៉ង់ក្នុងជួរផ្ទះបាយទេ')}</h3>
                         <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
-                            នៅពេលមានការបញ្ជាទិញថ្មីពីបញ្ជរ POS ឬតុភ្ញៀវ សំបុត្រម្ហូបនឹងបង្ហាញនៅទីនេះដោយស្វ័យប្រវត្តិ
+                            {tr('នៅពេលមានការបញ្ជាទិញថ្មីពីបញ្ជរ POS ឬតុភ្ញៀវ សំបុត្រម្ហូបនឹងបង្ហាញនៅទីនេះដោយស្វ័យប្រវត្តិ')}
                         </p>
                     </div>
                 ) : (
@@ -467,7 +468,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             </div>
                                             <span className="text-zinc-500 text-xs shrink-0">•</span>
                                             <p className="text-xs font-medium text-amber-400 truncate min-w-0 flex-1">
-                                                {order.customer_name ? `ភ្ញៀវ: ${order.customer_name}` : (isTakeaway ? 'ការកុម្ម៉ង់ខ្ចប់' : 'ការកុម្ម៉ង់ក្នុងហាង')}
+                                                {order.customer_name ? `${tr('ភ្ញៀវ:')} ${order.customer_name}` : (isTakeaway ? tr('ការកុម្ម៉ង់ខ្ចប់') : tr('ការកុម្ម៉ង់ក្នុងហាង'))}
                                             </p>
                                         </div>
 
@@ -476,7 +477,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             <div className="flex items-center gap-1.5 min-w-0">
                                                 <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 shrink-0" />
                                                 <span className="truncate">
-                                                    អ្នកកត់: <strong className="font-medium text-zinc-300">{order.creator_name || 'បុគ្គលិក'}</strong>
+                                                    {tr('អ្នកកត់:')} <strong className="font-medium text-zinc-300">{order.creator_name || tr('បុគ្គលិក')}</strong>
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-1 shrink-0 font-medium text-[11px] text-zinc-400">
@@ -488,7 +489,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                         {/* Order Note if any */}
                                         {order.note && (
                                             <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-3 text-xs text-amber-300 font-medium">
-                                                <span className="font-bold">ចំណាំ: </span>
+                                                <span className="font-bold">{tr('ចំណាំ:')} </span>
                                                 {order.note}
                                             </div>
                                         )}
@@ -498,10 +499,10 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                             <div className="flex items-center justify-between text-zinc-300 font-semibold border-b border-zinc-700/60 pb-1.5">
                                                 <span className="flex items-center gap-1 text-zinc-200">
                                                     <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                                                    <span>មុខម្ហូបត្រូវធ្វើ</span>
+                                                    <span>{tr('មុខម្ហូបត្រូវធ្វើ')}</span>
                                                 </span>
                                                 <span className="font-mono text-[10px] text-zinc-400">
-                                                    {order.items.reduce((sum, it) => sum + it.quantity, 0)} ចាន ({order.items.length} មុខ)
+                                                    {order.items.reduce((sum, it) => sum + it.quantity, 0)} {tr('ចាន (')}{order.items.length} {tr('មុខ)')}
                                                 </span>
                                             </div>
 
@@ -550,7 +551,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 ) : (
                                                     <UtensilsCrossed className="w-3.5 h-3.5 text-zinc-950" />
                                                 )}
-                                                <span>ចាប់ផ្ដើមធ្វើ (Start Cooking)</span>
+                                                <span>{tr('ចាប់ផ្ដើមធ្វើ (Start Cooking)')}</span>
                                             </button>
                                         )}
 
@@ -565,7 +566,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 ) : (
                                                     <CheckCircle2 className="w-3.5 h-3.5 text-zinc-950" />
                                                 )}
-                                                <span>ឆ្អិនរួចរាល់ (Mark Ready)</span>
+                                                <span>{tr('ឆ្អិនរួចរាល់ (Mark Ready)')}</span>
                                             </button>
                                         )}
 
@@ -580,14 +581,14 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                 ) : (
                                                     <Coffee className="w-3.5 h-3.5 text-amber-400" />
                                                 )}
-                                                <span>បានលើកជូន (Mark Served)</span>
+                                                <span>{tr('បានលើកជូន (Mark Served)')}</span>
                                             </button>
                                         )}
 
                                         {isServed && (
                                             <div className="w-full py-2 px-3 rounded-xl text-xs font-medium bg-zinc-800/60 text-zinc-400 border border-zinc-700/50 flex items-center justify-center gap-1.5">
                                                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                                                <span>បានលើកជូនរួចរាល់</span>
+                                                <span>{tr('បានលើកជូនរួចរាល់')}</span>
                                             </div>
                                         )}
 
@@ -601,7 +602,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
-                                                រង់ចាំ
+                                                {tr('រង់ចាំ')}
                                             </button>
                                             <button
                                                 onClick={() => handleUpdateStatus(order.id, 'cooking')}
@@ -611,7 +612,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
-                                                ចម្អិន
+                                                {tr('ចម្អិន')}
                                             </button>
                                             <button
                                                 onClick={() => handleUpdateStatus(order.id, 'ready')}
@@ -621,7 +622,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
-                                                ឆ្អិន
+                                                {tr('ឆ្អិន')}
                                             </button>
                                             <button
                                                 onClick={() => handleUpdateStatus(order.id, 'served')}
@@ -631,7 +632,7 @@ export default function KdsIndex({ orders, counts, currentFilter }: KdsProps) {
                                                         : 'text-zinc-500 hover:text-zinc-300 border-transparent hover:bg-zinc-800'
                                                 }`}
                                             >
-                                                លើកជូន
+                                                {tr('លើកជូន')}
                                             </button>
                                         </div>
                                     </div>

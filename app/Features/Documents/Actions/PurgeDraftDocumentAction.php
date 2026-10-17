@@ -27,11 +27,11 @@ final class PurgeDraftDocumentAction
                 || $document->sequence_no !== null
                 || $document->document_number !== null
                 || $document->finalized_at !== null) {
-                throw new DomainException('អាចលុបបានតែការកម្មង់ព្រាងដែលមិនទាន់មានលេខវិក្កយបត្រប៉ុណ្ណោះ។ (Only an unnumbered draft may be purged)');
+                throw new DomainException(__('អាចលុបបានតែការកម្មង់ព្រាងដែលមិនទាន់មានលេខវិក្កយបត្រប៉ុណ្ណោះ។ (Only an unnumbered draft may be purged)'));
             }
 
             if ($document->revisions()->exists() || $document->printLogs()->exists()) {
-                throw new DomainException('មិនអាចលុបវិក្កយបត្រដែលធ្លាប់កែ ឬធ្លាប់ព្រីនជាផ្លូវការបានទេ។');
+                throw new DomainException(__('មិនអាចលុបវិក្កយបត្រដែលធ្លាប់កែ ឬធ្លាប់ព្រីនជាផ្លូវការបានទេ។'));
             }
 
             $snapshot = [

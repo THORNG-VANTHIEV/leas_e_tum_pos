@@ -3,6 +3,7 @@
 use App\Http\Middleware\ActiveUserCheck;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RoleGuard;
+use App\Http\Middleware\SetLocaleFromCookie;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // The language cookie is written by JavaScript, so it is not encrypted
+        $middleware->encryptCookies(except: [SetLocaleFromCookie::COOKIE]);
+
         $middleware->web(append: [
+            SetLocaleFromCookie::class,
             HandleInertiaRequests::class,
         ]);
 

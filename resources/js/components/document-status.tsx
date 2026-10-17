@@ -1,13 +1,14 @@
 import { Badge } from '@/components/ui/badge';
+import { tr } from '@/locales/tr';
 
 export type DocumentStatusValue = 'draft' | 'review' | 'finalized' | 'void';
 
 // Mirrors App\Enums\DocumentStatus
 export const DOCUMENT_STATUS_LABELS: Record<DocumentStatusValue, string> = {
-    draft: 'ព្រាង / កំពុងកម្មង់',
-    review: 'កំពុងពិនិត្យ',
-    finalized: 'បានគិតប្រាក់',
-    void: 'បានលុបចោល (Void)',
+    draft: tr('ព្រាង / កំពុងកម្មង់'),
+    review: tr('កំពុងពិនិត្យ'),
+    finalized: tr('បានគិតប្រាក់'),
+    void: tr('បានលុបចោល (Void)'),
 };
 
 const STATUS_VARIANTS: Record<DocumentStatusValue, 'zinc' | 'amber' | 'emerald' | 'rose'> = {
@@ -31,11 +32,11 @@ export function DocumentStatusBadge({ status }: { status: string }) {
 
 /** Bilingual payment method names, used on screen and on printed receipts */
 export const PAYMENT_METHOD_LABELS: Record<string, string> = {
-    cash: 'សាច់ប្រាក់ / Cash',
+    cash: tr('សាច់ប្រាក់ / Cash'),
     khqr: 'KHQR',
-    qr_transfer: 'ផ្ទេរតាម QR / QR Transfer',
-    card: 'កាត / Card',
-    app: 'បង់តាម App / Paid via App',
+    qr_transfer: tr('ផ្ទេរតាម QR / QR Transfer'),
+    card: tr('កាត / Card'),
+    app: tr('បង់តាម App / Paid via App'),
 };
 
 export function paymentMethodLabel(method: string | null | undefined): string {

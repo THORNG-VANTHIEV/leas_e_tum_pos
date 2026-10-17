@@ -49,7 +49,7 @@ class AuthenticatedSessionController extends Controller
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             throw ValidationException::withMessages([
-                'username' => "ព្យាយាម login ច្រើនដងពេក។ សូមរង់ចាំ {$seconds} វិនាទី។",
+                'username' => __('ព្យាយាម login ច្រើនដងពេក។ សូមរង់ចាំ :seconds វិនាទី។', ['seconds' => $seconds]),
             ]);
         }
 
@@ -70,7 +70,7 @@ class AuthenticatedSessionController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'username' => 'ឈ្មោះអ្នកប្រើ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។',
+                'username' => __('ឈ្មោះអ្នកប្រើ ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។'),
             ]);
         }
 
@@ -88,7 +88,7 @@ class AuthenticatedSessionController extends Controller
             );
 
             throw ValidationException::withMessages([
-                'username' => 'គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។',
+                'username' => __('គណនីរបស់អ្នកត្រូវបានបិទ។ សូមទាក់ទង Admin។'),
             ]);
         }
 

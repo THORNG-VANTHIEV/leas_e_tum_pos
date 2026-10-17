@@ -1,4 +1,5 @@
 export type OrderSourceValue = 'walk_in' | 'foodpanda' | 'grab' | 'nham24' | 'wownow' | 'other';
+import { tr } from '@/locales/tr';
 
 interface OrderSourceOption {
     value: OrderSourceValue;
@@ -12,7 +13,7 @@ export const ORDER_SOURCES: OrderSourceOption[] = [
     {
         value: 'walk_in',
         label: 'Walk-in',
-        labelKm: 'ហាង',
+        labelKm: tr('ហាង'),
         badgeClass: 'bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border-zinc-500/30',
     },
     {
@@ -42,7 +43,7 @@ export const ORDER_SOURCES: OrderSourceOption[] = [
     {
         value: 'other',
         label: 'Other App',
-        labelKm: 'App ផ្សេងៗ',
+        labelKm: tr('App ផ្សេងៗ'),
         badgeClass: 'bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/30',
     },
 ];

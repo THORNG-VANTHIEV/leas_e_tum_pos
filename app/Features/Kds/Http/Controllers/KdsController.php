@@ -112,7 +112,7 @@ class KdsController extends Controller
             return response()->json(['success' => true, 'kitchen_status' => $status]);
         }
 
-        return back()->with('success', "បច្ចុប្បន្នភាពផ្ទះបាយ (#{$document->reference_identifier}) បានផ្លាស់ប្ដូរទៅជា {$status}");
+        return back()->with('success', __('បច្ចុប្បន្នភាពផ្ទះបាយ (#:reference_identifier) បានផ្លាស់ប្ដូរទៅជា :status', ['reference_identifier' => $document->reference_identifier, 'status' => $status]));
     }
 
     public function updateItemStatus(Request $request, DocumentItem $item): RedirectResponse|JsonResponse

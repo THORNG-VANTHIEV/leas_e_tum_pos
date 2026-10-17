@@ -29,11 +29,11 @@ final class VoidDocumentAction
             $document = Document::query()->lockForUpdate()->findOrFail($documentId);
 
             if ($document->status === DocumentStatus::Void) {
-                throw new DomainException('វិក្កយបត្រនេះត្រូវបានលុបចោល (Void) រួចហើយ។');
+                throw new DomainException(__('វិក្កយបត្រនេះត្រូវបានលុបចោល (Void) រួចហើយ។'));
             }
 
             if ($document->status !== DocumentStatus::Finalized) {
-                throw new DomainException('អាច Void បានតែវិក្កយបត្រដែលបានគិតប្រាក់ និងមានលេខរួចហើយប៉ុណ្ណោះ។');
+                throw new DomainException(__('អាច Void បានតែវិក្កយបត្រដែលបានគិតប្រាក់ និងមានលេខរួចហើយប៉ុណ្ណោះ។'));
             }
 
             // If approval is provided, validate and consume it atomically

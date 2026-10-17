@@ -44,6 +44,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/context/language-context';
 import { PrintQueue } from '@/components/print-queue';
+import { tr } from '@/locales/tr';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -162,7 +163,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         }
     }, [collapsed]);
 
-    const { language, t, getName, getSecondaryName } = useTranslation();
+    const { language, setLanguage, toggleLanguage, t, getName, getSecondaryName } = useTranslation();
 
     const toggleTheme = () => {
         setIsDark((prev) => !prev);
@@ -892,7 +893,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                         >
                             <Settings className="w-3.5 h-3.5 text-zinc-400" />
-                            <span>ការកំណត់ / Settings</span>
+                            <span>{tr('ការកំណត់ / Settings')}</span>
                         </Link>
                         <Link
                             href="/periods"
@@ -903,7 +904,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                         >
                             <ReceiptText className="w-3.5 h-3.5 text-zinc-400" />
-                            <span>វគ្គលក់ / Shifts & Sessions</span>
+                            <span>{tr('វគ្គលក់ / Shifts & Sessions')}</span>
                         </Link>
                         <button
                             type="button"
@@ -914,7 +915,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors text-left cursor-pointer"
                         >
                             <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
-                            <span>ជំនួយ & ផ្លូវកាត់ / Shortcuts</span>
+                            <span>{tr('ជំនួយ & ផ្លូវកាត់ / Shortcuts')}</span>
                         </button>
                     </div>
                     <div className="pt-1 border-t border-zinc-800">
@@ -928,7 +929,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
                         >
                             <LogOut className="w-3.5 h-3.5" />
-                            <span>ចាកចេញ / Log Out</span>
+                            <span>{tr('ចាកចេញ / Log Out')}</span>
                         </button>
                     </div>
                 </div>
@@ -963,7 +964,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
                             userMenuOpen ? 'text-white bg-zinc-800' : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80'
                         }`}
-                        title="ជម្រើស"
+                        title={tr("ជម្រើស")}
                     >
                         <MoreVertical className="w-4 h-4" />
                     </button>
@@ -994,7 +995,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     ? 'text-amber-400 bg-amber-500/15 border border-amber-500/30'
                                     : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80'
                             }`}
-                            title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                            title={isFullscreen ? tr('ចេញពីពេញអេក្រង់ (Exit Fullscreen)') : tr('ពង្រីកពេញអេក្រង់ (Fullscreen)')}
                         >
                             {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                         </button>
@@ -1003,12 +1004,39 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             type="button"
                             onClick={() => setHelpModalOpen(true)}
                             className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80 transition-colors cursor-pointer"
-                            title="Help & Shortcuts / ជំនួយ"
+                            title={tr("Help & Shortcuts / ជំនួយ")}
                         >
                             <HelpCircle className="w-4 h-4" />
                         </button>
                     </div>
 
+                    {/* Right: Modern 2-Language Segmented Switch [ ខ្មែរ | EN ] */}
+                    <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-lg p-0.5 shadow-xs">
+                        <button
+                            type="button"
+                            onClick={() => setLanguage('km')}
+                            className={`px-2.5 py-1 text-xs rounded-md transition-all cursor-pointer font-khmer ${
+                                language === 'km'
+                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm'
+                                    : 'text-zinc-400 hover:text-zinc-200 font-medium'
+                            }`}
+                            title="ប្តូរទៅ ភាសាខ្មែរ"
+                        >
+                            ខ្មែរ
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setLanguage('en')}
+                            className={`px-2.5 py-1 text-xs rounded-md transition-all cursor-pointer font-sans ${
+                                language === 'en'
+                                    ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm'
+                                    : 'text-zinc-400 hover:text-zinc-200 font-medium'
+                            }`}
+                            title="Switch to English"
+                        >
+                            EN
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1028,7 +1056,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         type="button"
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white cursor-pointer"
-                        aria-label="បើក/បិទម៉ឺនុយ"
+                        aria-label={tr("បើក/បិទម៉ឺនុយ")}
                     >
                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </button>
@@ -1051,7 +1079,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
                                 : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:text-white'
                         }`}
-                        title={isFullscreen ? 'ចេញពីពេញអេក្រង់ (Exit Fullscreen)' : 'ពង្រីកពេញអេក្រង់ (Fullscreen)'}
+                        title={isFullscreen ? tr('ចេញពីពេញអេក្រង់ (Exit Fullscreen)') : tr('ពង្រីកពេញអេក្រង់ (Fullscreen)')}
                     >
                         {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                     </button>
@@ -1063,7 +1091,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         variant="ghost"
                         size="sm"
                         onClick={handleLogout}
-                        title="ចាកចេញ"
+                        title={tr("ចាកចេញ")}
                         className="text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 p-1.5 h-8 w-8 cursor-pointer"
                     >
                         <LogOut className="w-4 h-4" />
@@ -1104,7 +1132,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
                             <div className="py-4">
                                 <div className="px-2 pb-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold">
-                                    Menu / ម៉ឺនុយ
+                                    {tr('Menu / ម៉ឺនុយ')}
                                 </div>
                                 {renderNavLinks(false)}
                             </div>
@@ -1140,7 +1168,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             id="sidebar-expand-btn"
                             type="button"
                             onClick={toggleCollapsed}
-                            title="ពង្រីកម៉ឺនុយ / Expand sidebar (Ctrl+B)"
+                            title={tr("ពង្រីកម៉ឺនុយ / Expand sidebar (Ctrl+B)")}
                             className="p-2 rounded-xl text-zinc-400 hover:text-amber-400 hover:bg-zinc-900 border border-zinc-800 bg-zinc-900/60 shadow-sm transition-colors cursor-pointer"
                         >
                             <PanelLeftOpen className="w-4 h-4" />
@@ -1170,7 +1198,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 id="sidebar-collapse-btn"
                                 type="button"
                                 onClick={toggleCollapsed}
-                                title="បង្រួមម៉ឺនុយ / Collapse sidebar (Ctrl+B)"
+                                title={tr("បង្រួមម៉ឺនុយ / Collapse sidebar (Ctrl+B)")}
                                 className="p-1.5 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-zinc-900 border border-zinc-800/80 bg-zinc-900/60 shadow-sm transition-colors shrink-0 cursor-pointer"
                             >
                                 <PanelLeftClose className="w-4 h-4" />
@@ -1181,7 +1209,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <div className="mt-3 flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-zinc-900/90 border border-zinc-800/80 text-xs text-zinc-400">
                             <div className="flex items-center gap-2 min-w-0">
                                 <Store className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                                <span className="truncate text-[11px] text-zinc-300">ហាងមេ</span>
+                                <span className="truncate text-[11px] text-zinc-300">{tr('ហាងមេ')}</span>
                             </div>
                             <span className="font-mono text-[10px] text-zinc-400 shrink-0 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-750">
                                 LOC-01
@@ -1198,7 +1226,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                 >
                     {!collapsed && (
                         <div className="px-2 text-[10px] font-mono tracking-wider uppercase text-zinc-400 font-semibold flex items-center justify-between">
-                            <span className="font-khmer">ម៉ឺនុយ</span>
+                            <span className="font-khmer">{tr('ម៉ឺនុយ')}</span>
                         </div>
                     )}
                     {renderNavLinks(collapsed)}
@@ -1220,7 +1248,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                                     >
                                         <Settings className="w-3.5 h-3.5 text-zinc-400" />
-                                        <span>ការកំណត់ / Settings</span>
+                                        <span>{tr('ការកំណត់ / Settings')}</span>
                                     </Link>
                                     <Link
                                         href="/periods"
@@ -1228,7 +1256,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
                                     >
                                         <ReceiptText className="w-3.5 h-3.5 text-zinc-400" />
-                                        <span>វគ្គលក់ / Shifts</span>
+                                        <span>{tr('វគ្គលក់ / Shifts')}</span>
                                     </Link>
                                     <button
                                         type="button"
@@ -1239,7 +1267,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors text-left cursor-pointer"
                                     >
                                         <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
-                                        <span>ជំនួយ / Help</span>
+                                        <span>{tr('ជំនួយ / Help')}</span>
                                     </button>
                                 </div>
                                 <div className="pt-1 border-t border-zinc-800">
@@ -1253,7 +1281,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                         className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
                                     >
                                         <LogOut className="w-3.5 h-3.5" />
-                                        <span>ចាកចេញ / Log Out</span>
+                                        <span>{tr('ចាកចេញ / Log Out')}</span>
                                     </button>
                                 </div>
                             </div>
@@ -1271,12 +1299,22 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             {getInitials(user?.name)}
                         </div>
 
+                        {/* Compact Language Toggle (KM / EN) */}
+                        <button
+                            type="button"
+                            onClick={toggleLanguage}
+                            title={language === 'km' ? 'ប្តូរទៅ English' : 'Switch to ខ្មែរ'}
+                            className="w-8 h-8 rounded-lg text-xs font-bold text-amber-400 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors font-mono border border-zinc-800"
+                        >
+                            {language === 'km' ? 'ខ្មែរ' : 'EN'}
+                        </button>
+
                         {/* Compact Moon / Sun Toggle */}
                         <button
                             id="collapsed-theme-toggle-btn"
                             type="button"
                             onClick={toggleTheme}
-                            title={isDark ? "Dark Theme Active (ចុចសម្រាប់ Light Mode)" : "Light Theme Active (ចុចសម្រាប់ Dark Mode)"}
+                            title={isDark ? tr("Dark Theme Active (ចុចសម្រាប់ Light Mode)") : tr("Light Theme Active (ចុចសម្រាប់ Dark Mode)")}
                             className="w-8 h-8 rounded-lg text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors"
                         >
                             {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
@@ -1287,7 +1325,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             id="collapsed-fullscreen-toggle-btn"
                             type="button"
                             onClick={toggleFullscreen}
-                            title={isFullscreen ? "ចេញពីពេញអេក្រង់ (Exit Fullscreen)" : "ពង្រីកពេញអេក្រង់ (Fullscreen)"}
+                            title={isFullscreen ? tr("ចេញពីពេញអេក្រង់ (Exit Fullscreen)") : tr("ពង្រីកពេញអេក្រង់ (Fullscreen)")}
                             className={`w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-colors ${
                                 isFullscreen
                                     ? 'text-amber-400 bg-amber-500/15'
@@ -1301,7 +1339,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                         <button
                             type="button"
                             onClick={() => setHelpModalOpen(true)}
-                            title="ជំនួយ & ផ្លូវកាត់"
+                            title={tr("ជំនួយ & ផ្លូវកាត់")}
                             className="w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 flex items-center justify-center cursor-pointer transition-colors"
                         >
                             <HelpCircle className="w-4 h-4" />
@@ -1391,14 +1429,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             <div>
                                 <div className="flex items-center gap-2">
                                     <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 font-khmer">
-                                        មជ្ឈមណ្ឌលជំនួយ & ផ្លូវកាត់ក្តារចុច (POS System Guide & Shortcuts)
+                                        {tr('មជ្ឈមណ្ឌលជំនួយ & ផ្លូវកាត់ក្តារចុច (POS System Guide & Shortcuts)')}
                                     </h2>
                                     <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                                         REFERENCE SUITE V2.0
                                     </span>
                                 </div>
                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
-                                    <span>មគ្គុទ្ទេសក៍ប្រតិបត្តិការរហ័ស • POS High-Speed Shortcuts & Operational Reference</span>
+                                    <span>{tr('មគ្គុទ្ទេសក៍ប្រតិបត្តិការរហ័ស • POS High-Speed Shortcuts & Operational Reference')}</span>
                                 </p>
                             </div>
                         </div>
@@ -1409,7 +1447,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-xs font-semibold font-khmer transition-all cursor-pointer shadow-xs"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>ត្រឡប់ក្រោយ</span>
+                            <span>{tr('ត្រឡប់ក្រោយ')}</span>
                         </button>
                     </div>
 
@@ -1423,7 +1461,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     <div className="flex items-center gap-2">
                                         <Keyboard className="w-4 h-4 text-amber-500" />
                                         <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
-                                            ផ្លូវកាត់ក្តារចុចសំខាន់ៗ (Core POS Keyboard Shortcuts)
+                                            {tr('ផ្លូវកាត់ក្តារចុចសំខាន់ៗ (Core POS Keyboard Shortcuts)')}
                                         </h4>
                                     </div>
                                     <span className="text-[10px] font-mono text-zinc-400">F2 • Esc • Ctrl+B</span>
@@ -1433,9 +1471,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                                         <div>
                                             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
-                                                បញ្ជាទិញថ្មី (New POS Order)
+                                                {tr('បញ្ជាទិញថ្មី (New POS Order)')}
                                             </span>
-                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បើកផ្ទាំងគិតលុយលឿន</span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('បើកផ្ទាំងគិតលុយលឿន')}</span>
                                         </div>
                                         <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                                             F2
@@ -1445,9 +1483,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                                         <div>
                                             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
-                                                គិតលុយ (Checkout / Pay)
+                                                {tr('គិតលុយ (Checkout / Pay)')}
                                             </span>
-                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បើកផ្ទាំងទូទាត់ប្រាក់</span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('បើកផ្ទាំងទូទាត់ប្រាក់')}</span>
                                         </div>
                                         <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                                             F8
@@ -1457,9 +1495,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                                         <div>
                                             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
-                                                បង្រួម/ពង្រីក Sidebar
+                                                {tr('បង្រួម/ពង្រីក Sidebar')}
                                             </span>
-                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">ផ្លាស់ប្តូរទំហំម៉ឺនុយ</span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('ផ្លាស់ប្តូរទំហំម៉ឺនុយ')}</span>
                                         </div>
                                         <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
                                             Ctrl+B / ⌘+B
@@ -1469,9 +1507,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                     <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                                         <div>
                                             <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 font-khmer block">
-                                                ត្រឡប់ក្រោយ / បោះបង់
+                                                {tr('ត្រឡប់ក្រោយ / បោះបង់')}
                                             </span>
-                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">បិទ Workspace ឬ Modal</span>
+                                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">{tr('បិទ Workspace ឬ Modal')}</span>
                                         </div>
                                         <kbd className="px-2.5 py-1 text-xs font-mono font-bold rounded-lg bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">
                                             Esc
@@ -1485,26 +1523,26 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
                                     <Coins className="w-4 h-4 text-emerald-500" />
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
-                                        ប្រព័ន្ធគណនាលុយពីររូបិយប័ណ្ណ (Dual-Currency Pricing & Settlement)
+                                        {tr('ប្រព័ន្ធគណនាលុយពីររូបិយប័ណ្ណ (Dual-Currency Pricing & Settlement)')}
                                     </h4>
                                 </div>
 
                                 <div className="space-y-3 text-xs text-zinc-600 dark:text-zinc-400 font-khmer">
                                     <p className="leading-relaxed">
-                                        ប្រព័ន្ធគាំទ្រការទូទាត់ប្រាក់ដុល្លារអាមេរិក ($) និងប្រាក់រៀលកម្ពុជា (៛) ដោយស្វ័យប្រវត្តិតាមអត្រាប្តូរប្រាក់ផ្លូវការដែលបានកំណត់ក្នុង Settings។
+                                        {tr('ប្រព័ន្ធគាំទ្រការទូទាត់ប្រាក់ដុល្លារអាមេរិក ($) និងប្រាក់រៀលកម្ពុជា (៛) ដោយស្វ័យប្រវត្តិតាមអត្រាប្តូរប្រាក់ផ្លូវការដែលបានកំណត់ក្នុង Settings។')}
                                     </p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
                                         <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-200">
                                             <div className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 font-sans">
-                                                អត្រាប្តូរប្រាក់គោល (Base Rate)
+                                                {tr('អត្រាប្តូរប្រាក់គោល (Base Rate)')}
                                             </div>
                                             <div className="text-sm font-bold mt-0.5">1 USD = {(business?.exchange_rate_khr || 4000).toLocaleString()} KHR</div>
                                         </div>
                                         <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-200">
                                             <div className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-sans">
-                                                ក្បួនបង្គត់លុយអាប់ (Rounding Policy)
+                                                {tr('ក្បួនបង្គត់លុយអាប់ (Rounding Policy)')}
                                             </div>
-                                            <div className="text-sm font-bold mt-0.5">បង្គត់ត្រឹម ១០០ រៀល</div>
+                                            <div className="text-sm font-bold mt-0.5">{tr('បង្គត់ត្រឹម ១០០ រៀល')}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1515,16 +1553,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
                                     <Printer className="w-4 h-4 text-blue-500" />
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 font-khmer">
-                                        ម៉ាស៊ីនព្រីនវិក្កយបត្រកម្តៅ (Thermal Printer & Hardware Support)
+                                        {tr('ម៉ាស៊ីនព្រីនវិក្កយបត្រកម្តៅ (Thermal Printer & Hardware Support)')}
                                     </h4>
                                 </div>
 
                                 <div className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 font-khmer leading-relaxed">
                                     <p>
-                                        ប្រព័ន្ធគាំទ្រម៉ាស៊ីនព្រីនប្រភេទ Thermal ESC/POS ទំហំ <strong>80mm</strong> (ស្ដង់ដារ) និង <strong>58mm</strong> (ខ្នាតតូច) ព្រមទាំងភ្ជាប់មកជាមួយ KHQR Standard QR Code សម្រាប់ការស្កេនទូទាត់ប្រាក់ភ្លាមៗ។
+                                        {tr('ប្រព័ន្ធគាំទ្រម៉ាស៊ីនព្រីនប្រភេទ Thermal ESC/POS ទំហំ')} <strong>80mm</strong> {tr('(ស្ដង់ដារ) និង')} <strong>58mm</strong> {tr('(ខ្នាតតូច) ព្រមទាំងភ្ជាប់មកជាមួយ KHQR Standard QR Code សម្រាប់ការស្កេនទូទាត់ប្រាក់ភ្លាមៗ។')}
                                     </p>
                                     <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                                        រាល់ការបោះពុម្ពវិក្កយបត្រឡើងវិញ នឹងត្រូវបានកត់ត្រាក្នុង Append-Only Audit Stream ដោយស្វ័យប្រវត្តិ។
+                                        {tr('រាល់ការបោះពុម្ពវិក្កយបត្រឡើងវិញ នឹងត្រូវបានកត់ត្រាក្នុង Append-Only Audit Stream ដោយស្វ័យប្រវត្តិ។')}
                                     </div>
                                 </div>
                             </div>
@@ -1536,33 +1574,33 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
                                     <div>
                                         <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">
-                                            ព័ត៌មានប្រព័ន្ធ
+                                            {tr('ព័ត៌មានប្រព័ន្ធ')}
                                         </span>
                                         <h3 className="text-sm font-bold font-mono text-white">
                                             LEASHAL ETUM POS
                                         </h3>
                                     </div>
                                     <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                                        ដំណើរការ
+                                        {tr('ដំណើរការ')}
                                     </span>
                                 </div>
 
                                 {/* System Info Card */}
                                 <div className="space-y-2.5 text-xs font-mono border-b border-zinc-800/80 pb-4">
                                     <div className="flex items-center justify-between text-zinc-400">
-                                        <span className="font-khmer">កំណែប្រព័ន្ធ (Version)៖</span>
+                                        <span className="font-khmer">{tr('កំណែប្រព័ន្ធ (Version)៖')}</span>
                                         <span className="text-amber-400 font-bold">V2.0</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-400">
-                                        <span className="font-khmer">ឈ្មោះហាង (Business)៖</span>
+                                        <span className="font-khmer">{tr('ឈ្មោះហាង (Business)៖')}</span>
                                         <span className="text-white font-bold font-khmer">{business.business_name_primary || 'លៀសហាល អ៉ីទុម'}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-400">
-                                        <span className="font-khmer">គណនីបច្ចុប្បន្ន៖</span>
+                                        <span className="font-khmer">{tr('គណនីបច្ចុប្បន្ន៖')}</span>
                                         <span className="text-zinc-200">@{user?.username || 'admin'}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-400">
-                                        <span className="font-khmer">តួនាទី (Role)៖</span>
+                                        <span className="font-khmer">{tr('តួនាទី (Role)៖')}</span>
                                         <span className="text-emerald-400 uppercase">{user?.role || 'admin'}</span>
                                     </div>
                                 </div>
@@ -1570,19 +1608,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 {/* Security Invariants Status */}
                                 <div className="p-3.5 rounded-xl bg-black/40 border border-zinc-800 space-y-2 text-xs font-mono">
                                     <div className="text-[10px] text-zinc-400 uppercase font-sans font-bold mb-1">
-                                        ការការពារទិន្នន័យ
+                                        {tr('ការការពារទិន្នន័យ')}
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>វិក្កយបត្រមិនអាចកែបាន:</span>
-                                        <span className="text-emerald-400 font-bold">បើក</span>
+                                        <span>{tr('វិក្កយបត្រមិនអាចកែបាន:')}</span>
+                                        <span className="text-emerald-400 font-bold">{tr('បើក')}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>Backup មាន SHA-256:</span>
-                                        <span className="text-emerald-400 font-bold">បើក</span>
+                                        <span>{tr('Backup មាន SHA-256:')}</span>
+                                        <span className="text-emerald-400 font-bold">{tr('បើក')}</span>
                                     </div>
                                     <div className="flex items-center justify-between text-zinc-300">
-                                        <span>Audit មិនអាចលុបបាន:</span>
-                                        <span className="text-emerald-400 font-bold">បើក</span>
+                                        <span>{tr('Audit មិនអាចលុបបាន:')}</span>
+                                        <span className="text-emerald-400 font-bold">{tr('បើក')}</span>
                                     </div>
                                 </div>
 
@@ -1590,17 +1628,17 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/80 space-y-2 text-xs">
                                     <div className="font-bold text-amber-400 font-khmer flex items-center gap-1.5">
                                         <Sparkles className="w-4 h-4" />
-                                        <span>គន្លឹះប្រើប្រាស់រហ័ស (Speed Tips)</span>
+                                        <span>{tr('គន្លឹះប្រើប្រាស់រហ័ស (Speed Tips)')}</span>
                                     </div>
                                     <p className="text-zinc-300 font-khmer text-[11.5px] leading-relaxed">
-                                        ចុច <strong>F2</strong> ពីគ្រប់ទីកន្លែងក្នុងប្រព័ន្ធ ដើម្បីបើកផ្ទាំងលក់ POS ភ្លាមៗ ឬចុច <strong>Esc</strong> ដើម្បីត្រឡប់ក្រោយវិញ។
+                                        {tr('ចុច')} <strong>F2</strong> {tr('ពីគ្រប់ទីកន្លែងក្នុងប្រព័ន្ធ ដើម្បីបើកផ្ទាំងលក់ POS ភ្លាមៗ ឬចុច')} <strong>Esc</strong> {tr('ដើម្បីត្រឡប់ក្រោយវិញ។')}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Security Stamp Footer */}
                             <div className="pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[10px] font-mono text-zinc-500">
-                                <span>ជំនួយប្រព័ន្ធ</span>
+                                <span>{tr('ជំនួយប្រព័ន្ធ')}</span>
                                 <span>F2 = POS</span>
                             </div>
                         </div>
@@ -1612,7 +1650,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             <kbd className="px-2 py-0.5 text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded border border-zinc-300 dark:border-zinc-700">
                                 Esc
                             </kbd>
-                            <span>ដើម្បីត្រឡប់ក្រោយ / បិទមគ្គុទ្ទេសក៍</span>
+                            <span>{tr('ដើម្បីត្រឡប់ក្រោយ / បិទមគ្គុទ្ទេសក៍')}</span>
                         </div>
 
                         <div className="flex items-center gap-3 ml-auto">
@@ -1622,7 +1660,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 className="px-6 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-zinc-950 text-xs font-bold font-khmer shadow-sm hover:shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
                             >
                                 <Check className="w-4 h-4" />
-                                <span>យល់ព្រម (Acknowledge & Close)</span>
+                                <span>{tr('យល់ព្រម (Acknowledge & Close)')}</span>
                             </button>
                         </div>
                     </div>
@@ -1650,7 +1688,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                             id="logout-confirm-close-btn"
                             type="button"
                             onClick={() => setLogoutConfirmOpen(false)}
-                            title="បិទ (Close)"
+                            title={tr("បិទ (Close)")}
                             className="absolute top-4 right-4 p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition cursor-pointer"
                         >
                             <X className="w-4 h-4" />
@@ -1663,12 +1701,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
 
                         {/* Title & Description */}
                         <h3 id="logout-dialog-title" className="text-base sm:text-lg font-bold text-zinc-100 font-khmer leading-snug">
-                            {t('nav.logout_confirm_title', 'តើអ្នកពិតជាចង់ចាកចេញមែនទេ?')}
+                            {t('nav.logout_confirm_title', tr('តើអ្នកពិតជាចង់ចាកចេញមែនទេ?'))}
                         </h3>
                         <p className="text-xs text-zinc-400 font-khmer mt-2 leading-relaxed">
                             {t(
                                 'nav.logout_confirm_desc',
-                                'សូមប្រាកដថាអ្នកបានរក្សាទុក ឬទូទាត់ការកុម្ម៉ង់ទាំងអស់រួចរាល់ មុនពេលចាកចេញពីប្រព័ន្ធ។'
+                                tr('សូមប្រាកដថាអ្នកបានរក្សាទុក ឬទូទាត់ការកុម្ម៉ង់ទាំងអស់រួចរាល់ មុនពេលចាកចេញពីប្រព័ន្ធ។')
                             )}
                         </p>
 
@@ -1688,7 +1726,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 </div>
                             </div>
                             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 whitespace-nowrap shrink-0">
-                                {business.business_name_primary || 'លៀសហាល'}
+                                {business.business_name_primary || tr('លៀសហាល')}
                             </span>
                         </div>
 
@@ -1700,7 +1738,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 onClick={() => setLogoutConfirmOpen(false)}
                                 className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-zinc-200 hover:text-zinc-100 text-xs font-semibold font-khmer transition cursor-pointer"
                             >
-                                {t('nav.logout_cancel', 'បោះបង់ (Cancel)')}
+                                {t('nav.logout_cancel', tr('បោះបង់ (Cancel)'))}
                             </button>
                             <button
                                 id="logout-confirm-proceed-btn"
@@ -1709,7 +1747,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
                                 className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-bold text-xs font-khmer transition shadow-lg shadow-rose-600/30 active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
                             >
                                 <LogOut className="w-3.5 h-3.5" />
-                                <span>{t('nav.logout_proceed', 'ចាកចេញពីប្រព័ន្ធ')}</span>
+                                <span>{t('nav.logout_proceed', tr('ចាកចេញពីប្រព័ន្ធ'))}</span>
                             </button>
                         </div>
                     </div>

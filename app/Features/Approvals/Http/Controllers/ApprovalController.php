@@ -68,7 +68,7 @@ class ApprovalController extends Controller
             $validated['reason']
         );
 
-        return back()->with('success', 'បានផ្ញើសំណើសុំការអនុម័តរួចហើយ។');
+        return back()->with('success', __('បានផ្ញើសំណើសុំការអនុម័តរួចហើយ។'));
     }
 
     /**
@@ -77,7 +77,7 @@ class ApprovalController extends Controller
     public function approve(Request $request, ApprovalRequest $approval): RedirectResponse
     {
         if ($approval->status !== ApprovalStatus::Pending) {
-            return back()->with('error', 'អាចអនុម័តបានតែសំណើដែលកំពុងរង់ចាំប៉ុណ្ណោះ។');
+            return back()->with('error', __('អាចអនុម័តបានតែសំណើដែលកំពុងរង់ចាំប៉ុណ្ណោះ។'));
         }
 
         $setting = BusinessSetting::current();
@@ -101,7 +101,7 @@ class ApprovalController extends Controller
             'Approved exception request'
         );
 
-        return back()->with('success', "បានអនុម័ត។ មានសុពលភាព {$expiryMinutes} នាទី។");
+        return back()->with('success', __('បានអនុម័ត។ មានសុពលភាព :expiryMinutes នាទី។', ['expiryMinutes' => $expiryMinutes]));
     }
 
     /**
@@ -130,6 +130,6 @@ class ApprovalController extends Controller
             $validated['review_note']
         );
 
-        return back()->with('success', 'បានបដិសេធសំណើ។');
+        return back()->with('success', __('បានបដិសេធសំណើ។'));
     }
 }

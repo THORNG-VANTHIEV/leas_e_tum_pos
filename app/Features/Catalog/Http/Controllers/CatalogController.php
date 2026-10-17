@@ -125,7 +125,7 @@ class CatalogController extends Controller
             "Created product '{$product->name_primary}'"
         );
 
-        return back()->with('success', "បានបន្ថែមមុខទំនិញ '{$product->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានបន្ថែមមុខទំនិញ \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $product->name_primary]));
     }
 
     /**
@@ -177,7 +177,7 @@ class CatalogController extends Controller
             "Updated product '{$product->name_primary}'"
         );
 
-        return back()->with('success', "បានកែប្រែមុខទំនិញ '{$product->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានកែប្រែមុខទំនិញ \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $product->name_primary]));
     }
 
     /**
@@ -191,7 +191,7 @@ class CatalogController extends Controller
             'updated_by' => $request->user()->id,
         ]);
 
-        $statusLabel = $product->is_active ? 'បើកដំណើរការ' : 'ផ្អាកដំណើរការ';
+        $statusLabel = $product->is_active ? __('បើកដំណើរការ') : __('ផ្អាកដំណើរការ');
 
         $this->audit->record(
             'product.toggled',
@@ -203,7 +203,7 @@ class CatalogController extends Controller
             "Toggled product active status to {$statusLabel}"
         );
 
-        return back()->with('success', "បាន{$statusLabel}មុខទំនិញ '{$product->name_primary}'");
+        return back()->with('success', __('បាន:statusLabelមុខទំនិញ \':name_primary\'', ['statusLabel' => $statusLabel, 'name_primary' => $product->name_primary]));
     }
 
     /**
@@ -236,7 +236,7 @@ class CatalogController extends Controller
             "Created unit '{$unit->name_primary}' ({$unit->code})"
         );
 
-        return back()->with('success', "បានបន្ថែមឯកតា '{$unit->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានបន្ថែមឯកតា \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $unit->name_primary]));
     }
 
     /**
@@ -271,7 +271,7 @@ class CatalogController extends Controller
             "Updated unit '{$unit->name_primary}'"
         );
 
-        return back()->with('success', "បានកែប្រែឯកតា '{$unit->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានកែប្រែឯកតា \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $unit->name_primary]));
     }
 
     /**
@@ -284,9 +284,9 @@ class CatalogController extends Controller
             'is_active' => ! $oldState,
         ]);
 
-        $statusLabel = $unit->is_active ? 'បើកដំណើរការ' : 'ផ្អាកដំណើរការ';
+        $statusLabel = $unit->is_active ? __('បើកដំណើរការ') : __('ផ្អាកដំណើរការ');
 
-        return back()->with('success', "បាន{$statusLabel}ឯកតា '{$unit->name_primary}'");
+        return back()->with('success', __('បាន:statusLabelឯកតា \':name_primary\'', ['statusLabel' => $statusLabel, 'name_primary' => $unit->name_primary]));
     }
 
     /**
@@ -320,7 +320,7 @@ class CatalogController extends Controller
             "Created category '{$category->name_primary}'"
         );
 
-        return back()->with('success', "បានបន្ថែមប្រភេទ '{$category->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានបន្ថែមប្រភេទ \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $category->name_primary]));
     }
 
     /**
@@ -356,7 +356,7 @@ class CatalogController extends Controller
             "Updated category '{$category->name_primary}'"
         );
 
-        return back()->with('success', "បានកែប្រែប្រភេទ '{$category->name_primary}' ដោយជោគជ័យ");
+        return back()->with('success', __('បានកែប្រែប្រភេទ \':name_primary\' ដោយជោគជ័យ', ['name_primary' => $category->name_primary]));
     }
 
     /**
@@ -369,8 +369,8 @@ class CatalogController extends Controller
             'is_active' => ! $oldState,
         ]);
 
-        $statusLabel = $category->is_active ? 'បើកដំណើរការ' : 'ផ្អាកដំណើរការ';
+        $statusLabel = $category->is_active ? __('បើកដំណើរការ') : __('ផ្អាកដំណើរការ');
 
-        return back()->with('success', "បាន{$statusLabel}ប្រភេទ '{$category->name_primary}'");
+        return back()->with('success', __('បាន:statusLabelប្រភេទ \':name_primary\'', ['statusLabel' => $statusLabel, 'name_primary' => $category->name_primary]));
     }
 }
