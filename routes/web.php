@@ -62,6 +62,8 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::post('/expenses/drawer-log', [ExpenseController::class, 'storeDrawerLog'])->name('expenses.drawer-log');
+    Route::patch('/expenses/{expense}', [ExpenseController::class, 'update'])->middleware('role:admin,supervisor')->name('expenses.update');
+    Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->middleware('role:admin,supervisor')->name('expenses.destroy');
     Route::get('/expenses/export/csv', [ExpenseController::class, 'exportCsv'])->name('expenses.export.csv');
 
     // POS Live Terminal, Fast Checkout & Table Management
