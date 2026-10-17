@@ -38,6 +38,7 @@ import {
     Building2,
     Sparkles,
     X,
+    Pencil,
 } from 'lucide-react';
 import { InvoiceDesigner } from './components/invoice-designer';
 
@@ -266,41 +267,104 @@ export default function SettingsIndex({
 
     // New Location Modal State
     const [showLocModal, setShowLocModal] = useState(false);
+    const [editingLocId, setEditingLocId] = useState<number | null>(null);
     const locForm = useForm({
         code: '',
         name_primary: '',
         name_secondary: '',
         address: '',
+        is_active: true,
     });
+
+    const openNewLocation = () => {
+        setEditingLocId(null);
+        locForm.reset();
+        locForm.clearErrors();
+        setShowLocModal(true);
+    };
+
+    const openEditLocation = (loc: SettingsPageProps['locations'][number]) => {
+        setEditingLocId(loc.id);
+        locForm.clearErrors();
+        locForm.setData({
+            code: loc.code,
+            name_primary: loc.name_primary,
+            name_secondary: loc.name_secondary ?? '',
+            address: loc.address ?? '',
+            is_active: loc.is_active,
+        });
+        setShowLocModal(true);
+    };
 
     const submitLocation = (e: React.FormEvent) => {
         e.preventDefault();
-        locForm.post('/settings/locations', {
+        const options = {
+            preserveScroll: true,
             onSuccess: () => {
                 setShowLocModal(false);
+                setEditingLocId(null);
                 locForm.reset();
             },
-        });
+        };
+
+        if (editingLocId) {
+            locForm.patch(`/settings/locations/${editingLocId}`, options);
+            return;
+        }
+
+        locForm.post('/settings/locations', options);
     };
 
     // New User Modal State
     const [showUserModal, setShowUserModal] = useState(false);
+    const [editingUserId, setEditingUserId] = useState<number | null>(null);
     const userForm = useForm({
         name: '',
         username: '',
         password: '',
         role: 'cashier',
+        is_active: true,
         location_ids: [locations[0]?.id || 1],
     });
 
+    const openNewUser = () => {
+        setEditingUserId(null);
+        userForm.reset();
+        userForm.clearErrors();
+        setShowUserModal(true);
+    };
+
+    const openEditUser = (u: SettingsPageProps['users'][number]) => {
+        setEditingUserId(u.id);
+        userForm.clearErrors();
+        userForm.setData({
+            name: u.name,
+            username: u.username,
+            password: '',
+            role: u.role,
+            is_active: u.is_active,
+            location_ids: u.locations?.map((l) => l.id) ?? [],
+        });
+        setShowUserModal(true);
+    };
+
     const submitUser = (e: React.FormEvent) => {
         e.preventDefault();
-        userForm.post('/settings/users', {
+        const options = {
+            preserveScroll: true,
             onSuccess: () => {
                 setShowUserModal(false);
+                setEditingUserId(null);
                 userForm.reset();
             },
-        });
+        };
+
+        if (editingUserId) {
+            userForm.patch(`/settings/users/${editingUserId}`, options);
+            return;
+        }
+
+        userForm.post('/settings/users', options);
     };
 
     // Archive User Modal State
@@ -601,7 +665,7 @@ export default function SettingsIndex({
                                     Store branches and physical dining halls. Non-admin users are scoped to assigned branches.
                                 </p>
                             </div>
-                            <Button size="sm" onClick={() => setShowLocModal(true)}>
+                            <Button size="sm" onClick={openNewLocation}>
                                 <Plus className="w-4 h-4" />
                                 <span>Add Location</span>
                             </Button>
@@ -629,6 +693,15 @@ export default function SettingsIndex({
                                                 </div>
                                             )}
                                         </div>
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => openEditLocation(loc)}
+                                            title="កែប្រែសាខា (Edit)"
+                                            className="h-8 w-8 p-0 text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10"
+                                        >
+                                            <Pencil className="w-3.5 h-3.5" />
+                                        </Button>
                                     </div>
                                     <div className="text-xs text-zinc-500 pt-2 border-t border-zinc-800/80 flex items-center justify-between">
                                         <span>{loc.address || 'No physical address specified'}</span>
@@ -653,7 +726,7 @@ export default function SettingsIndex({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    បង្កើតសាខាហាងថ្មី
+                                                    {editingLocId ? 'កែប្រែសាខាហាង' : 'បង្កើតសាខាហាងថ្មី'}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 uppercase">
                                                     MULTI-BRANCH ENGINE
@@ -896,10 +969,22 @@ export default function SettingsIndex({
 
                                     {/* Footer */}
                                     <div className="shrink-0 flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
-                                        <div className="text-xs text-slate-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                                            <span>កំពុងរៀបចំបង្កើតសាខាហាងថ្មីក្នុងប្រព័ន្ធ</span>
-                                        </div>
+                                        {editingLocId ? (
+                                            <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-300 font-khmer cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={locForm.data.is_active}
+                                                    onChange={(e) => locForm.setData('is_active', e.target.checked)}
+                                                    className="w-4 h-4 accent-emerald-500"
+                                                />
+                                                <span>សាខាកំពុងដំណើរការ (Active)</span>
+                                            </label>
+                                        ) : (
+                                            <div className="text-xs text-slate-500 dark:text-zinc-400 font-khmer flex items-center gap-2">
+                                                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                                <span>កំពុងរៀបចំបង្កើតសាខាហាងថ្មីក្នុងប្រព័ន្ធ</span>
+                                            </div>
+                                        )}
                                         <div className="flex items-center gap-3">
                                             <button
                                                 type="button"
@@ -917,11 +1002,11 @@ export default function SettingsIndex({
                                                 className="px-6 py-2.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-zinc-950 font-khmer shadow-md shadow-amber-500/20 transition-all cursor-pointer flex items-center gap-2"
                                             >
                                                 {locForm.processing ? (
-                                                    'កំពុងបង្កើតសាខា...'
+                                                    'កំពុងរក្សាទុក...'
                                                 ) : (
                                                     <>
                                                         <Check className="w-4 h-4" />
-                                                        <span>បង្កើតសាខាហាង</span>
+                                                        <span>{editingLocId ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតសាខាហាង'}</span>
                                                     </>
                                                 )}
                                             </button>
@@ -944,7 +1029,7 @@ export default function SettingsIndex({
                                     Role-based permissions (Admin, Cashier, Supervisor) and server-enforced self-protection guards.
                                 </p>
                             </div>
-                            <Button size="sm" onClick={() => setShowUserModal(true)}>
+                            <Button size="sm" onClick={openNewUser}>
                                 <Plus className="w-4 h-4" />
                                 <span>Create Staff Account</span>
                             </Button>
@@ -1019,7 +1104,17 @@ export default function SettingsIndex({
                                                                 <span>Restore</span>
                                                             </Button>
                                                         ) : (
-                                                            !isSelf && (
+                                                            <>
+                                                            <Button
+                                                                size="sm"
+                                                                variant="ghost"
+                                                                onClick={() => openEditUser(u)}
+                                                                className="text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10"
+                                                            >
+                                                                <Pencil className="w-3.5 h-3.5" />
+                                                                <span>Edit</span>
+                                                            </Button>
+                                                            {!isSelf && (
                                                                 <Button
                                                                     size="sm"
                                                                     variant="ghost"
@@ -1029,7 +1124,8 @@ export default function SettingsIndex({
                                                                     <Archive className="w-3.5 h-3.5" />
                                                                     <span>Archive</span>
                                                                 </Button>
-                                                            )
+                                                            )}
+                                                            </>
                                                         )}
                                                     </td>
                                                 </tr>
@@ -1055,7 +1151,7 @@ export default function SettingsIndex({
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <h2 className="text-lg font-bold text-slate-900 dark:text-zinc-100 font-khmer">
-                                                    បង្កើតគណនីបុគ្គលិកថ្មី
+                                                    {editingUserId ? 'កែប្រែគណនីបុគ្គលិក' : 'បង្កើតគណនីបុគ្គលិកថ្មី'}
                                                 </h2>
                                                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
                                                     INV-07 COMPLIANT
@@ -1138,12 +1234,12 @@ export default function SettingsIndex({
 
                                                             <div>
                                                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 font-khmer">
-                                                                    ពាក្យសម្ងាត់ដំបូង (Initial Password) *
+                                                                    {editingUserId ? 'ពាក្យសម្ងាត់ថ្មី (ទុកទទេ បើមិនប្តូរ)' : 'ពាក្យសម្ងាត់ដំបូង (Initial Password) *'}
                                                                 </label>
                                                                 <div className="relative">
                                                                     <input
                                                                         type={showPassword ? 'text' : 'password'}
-                                                                        required
+                                                                        required={!editingUserId}
                                                                         placeholder="យ៉ាងតិច ៦ តួអក្សរ"
                                                                         value={userForm.data.password}
                                                                         onChange={(e) =>
@@ -1380,10 +1476,27 @@ export default function SettingsIndex({
 
                                     {/* Fixed Action Footer */}
                                     <div className="shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                                        <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
-                                            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                            <span>គណនីបុគ្គលិកថ្មីនឹងដំណើរការភ្លាមៗក្រោយបង្កើត</span>
-                                        </div>
+                                        {editingUserId ? (
+                                            <div className="space-y-0.5">
+                                                <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-zinc-300 font-khmer cursor-pointer">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={userForm.data.is_active}
+                                                        onChange={(e) => userForm.setData('is_active', e.target.checked)}
+                                                        className="w-4 h-4 accent-emerald-500"
+                                                    />
+                                                    <span>គណនីកំពុងប្រើប្រាស់ (Active)</span>
+                                                </label>
+                                                {userForm.errors.is_active && (
+                                                    <p className="text-[11px] text-rose-500">{userForm.errors.is_active}</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-zinc-400 font-khmer">
+                                                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                                <span>គណនីបុគ្គលិកថ្មីនឹងដំណើរការភ្លាមៗក្រោយបង្កើត</span>
+                                            </div>
+                                        )}
 
                                         <div className="flex items-center gap-2.5 ml-auto">
                                             <button
@@ -1402,7 +1515,7 @@ export default function SettingsIndex({
                                                 className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all cursor-pointer font-khmer disabled:opacity-50"
                                             >
                                                 <UserPlus className="w-4 h-4" />
-                                                <span>{userForm.processing ? 'កំពុងបង្កើត...' : 'បង្កើតគណនីបុគ្គលិក'}</span>
+                                                <span>{userForm.processing ? 'កំពុងរក្សាទុក...' : editingUserId ? 'រក្សាទុកការកែប្រែ' : 'បង្កើតគណនីបុគ្គលិក'}</span>
                                             </button>
                                         </div>
                                     </div>
