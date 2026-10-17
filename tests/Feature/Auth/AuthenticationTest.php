@@ -3,11 +3,10 @@
 namespace Tests\Feature\Auth;
 
 use App\Enums\UserRole;
-use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
+use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -18,6 +17,24 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get('/');
         $response->assertRedirect('/login');
+    }
+
+    public function test_login_page_hides_demo_accounts_outside_local_development(): void
+    {
+        $this->app['env'] = 'production';
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('show_demo_accounts', false));
+    }
+
+    public function test_login_page_shows_demo_accounts_in_local_development(): void
+    {
+        $this->app['env'] = 'local';
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page->where('show_demo_accounts', true));
     }
 
     public function test_active_user_can_authenticate_with_valid_credentials(): void

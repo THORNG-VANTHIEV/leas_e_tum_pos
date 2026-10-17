@@ -25,7 +25,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/login');
+        return Inertia::render('auth/login', [
+            // The seeded test accounts and passwords are a development shortcut only, never shown in the shop
+            'show_demo_accounts' => app()->isLocal(),
+        ]);
     }
 
     /**

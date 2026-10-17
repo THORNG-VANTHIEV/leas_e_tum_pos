@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { useExchangeRate } from '@/components/currency';
 import { OrderSourceBadge } from '@/components/order-source';
+import { DocumentStatusBadge } from '@/components/document-status';
 
 const CATEGORY_MAP: Record<string, { nameKh: string; color: string }> = {
     utilities: { nameKh: 'ថ្លៃទឹក-ភ្លើង-សំរាម', color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
@@ -185,8 +186,8 @@ export default function ReportsIndex({
     };
 
     return (
-        <AppLayout title="Operational Reports & Reconciliation Hub">
-            <Head title="Reports & Reconciliation" />
+        <AppLayout title="របាយការណ៍">
+            <Head title="របាយការណ៍" />
 
             <div className="space-y-6">
                 {/* Fixed / Sticky Header & Filter Controls */}
@@ -199,13 +200,13 @@ export default function ReportsIndex({
                                     <BarChart3 className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold tracking-tight text-white">
-                                        Operational Reports & Sales Register
+                                    <h1 className="text-xl font-bold tracking-tight text-white font-khmer">
+                                        របាយការណ៍ការលក់
                                     </h1>
-                                    <p className="text-xs text-zinc-400">
+                                    <p className="text-xs text-zinc-400 font-khmer">
                                         {canViewAll
-                                            ? 'Store-wide financial aggregation & cashier audit'
-                                            : 'Personal cashier sales breakdown & register history'}
+                                            ? 'សង្ខេបហិរញ្ញវត្ថុទាំងហាង និងតាមបុគ្គលិក'
+                                            : 'ការលក់ និងប្រវត្តិវិក្កយបត្ររបស់ខ្ញុំ'}
                                     </p>
                                 </div>
                             </div>
@@ -219,7 +220,7 @@ export default function ReportsIndex({
                                 className="border-zinc-800 hover:bg-zinc-800 text-zinc-200"
                             >
                                 <Download className="w-4 h-4 mr-1.5 text-teal-400" />
-                                <span>Export CSV Register</span>
+                                <span className="font-khmer">ទាញយក CSV</span>
                             </Button>
                         </div>
                     </div>
@@ -236,13 +237,13 @@ export default function ReportsIndex({
                                     តម្រងស្វែងរកទិន្នន័យ
                                 </span>
                                 <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-mono">
-                                    / Filter Controls
+                                    / Filter
                                 </span>
                             </div>
                             {(periodId || startDate || endDate || cashierId) && (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-teal-500/15 text-teal-700 dark:text-teal-300 border border-teal-500/30">
                                     <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-                                    Active Filter
+                                    <span className="font-khmer">កំពុងច្រោះ</span>
                                 </span>
                             )}
                         </div>
@@ -253,7 +254,7 @@ export default function ReportsIndex({
                             <div className={`${canViewAll ? 'lg:col-span-3' : 'lg:col-span-4'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Clock className="w-3 h-3 text-teal-500" />
-                                    <span>Period / វគ្គ</span>
+                                    <span className="font-khmer">វគ្គ</span>
                                 </label>
                                 <div className="relative">
                                     <select
@@ -275,7 +276,7 @@ export default function ReportsIndex({
                             <div className={`${canViewAll ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Calendar className="w-3 h-3 text-teal-500" />
-                                    <span>From / ចាប់ពីថ្ងៃ</span>
+                                    <span className="font-khmer">ចាប់ពីថ្ងៃ</span>
                                 </label>
                                 <div className="relative">
                                     <input
@@ -291,7 +292,7 @@ export default function ReportsIndex({
                             <div className={`${canViewAll ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-1.5`}>
                                 <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                     <Calendar className="w-3 h-3 text-teal-500" />
-                                    <span>To / ដល់ថ្ងៃ</span>
+                                    <span className="font-khmer">ដល់ថ្ងៃ</span>
                                 </label>
                                 <div className="relative">
                                     <input
@@ -308,7 +309,7 @@ export default function ReportsIndex({
                                 <div className="lg:col-span-3 space-y-1.5">
                                     <label className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider font-mono">
                                         <Users className="w-3 h-3 text-teal-500" />
-                                        <span>Cashier / បេឡាករ</span>
+                                        <span className="font-khmer">បុគ្គលិក</span>
                                     </label>
                                     <div className="relative">
                                         <select
@@ -335,17 +336,17 @@ export default function ReportsIndex({
                                     className="flex-1 h-9.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl shadow-xs font-medium cursor-pointer transition-all active:scale-[0.98] text-xs gap-1.5"
                                 >
                                     <Filter className="w-3.5 h-3.5" />
-                                    <span>Filter</span>
+                                    <span className="font-khmer">ច្រោះ</span>
                                 </Button>
                                 <Button
                                     size="sm"
                                     variant="outline"
                                     onClick={handleReset}
-                                    title="Reset Filters / សម្អាតតម្រង"
+                                    title="សម្អាតតម្រង"
                                     className="h-9.5 px-3 border-zinc-700/60 dark:border-zinc-800 bg-zinc-800/60 hover:bg-zinc-700/60 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white rounded-xl cursor-pointer transition-all text-xs gap-1.5 shadow-2xs"
                                 >
                                     <RotateCcw className="w-3.5 h-3.5" />
-                                    <span className="hidden sm:inline">Reset</span>
+                                    <span className="hidden sm:inline font-khmer">សម្អាត</span>
                                 </Button>
                             </div>
                         </div>
@@ -401,7 +402,7 @@ export default function ReportsIndex({
                     {/* Gross Sales */}
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Gross Sales / ចំណូលសរុប</span>
+                            <span className="font-khmer">ចំណូលសរុប</span>
                             <DollarSign className="w-4 h-4 text-emerald-400" />
                         </div>
                         <div className="mt-2">
@@ -420,7 +421,7 @@ export default function ReportsIndex({
                     {/* Net Sales */}
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Net Sales / ចំណូលសុទ្ធ</span>
+                            <span className="font-khmer">ចំណូលសុទ្ធ</span>
                             <ArrowUpRight className="w-4 h-4 text-teal-400" />
                         </div>
                         <div className="mt-2">
@@ -439,7 +440,7 @@ export default function ReportsIndex({
                     {/* Cash Collected & Change */}
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Net Cash / សាច់ប្រាក់ក្នុងបេឡា</span>
+                            <span className="font-khmer">សាច់ប្រាក់ក្នុងថតបេឡា</span>
                             <Receipt className="w-4 h-4 text-amber-400" />
                         </div>
                         <div className="mt-2">
@@ -449,8 +450,8 @@ export default function ReportsIndex({
                             <div className="text-xs text-amber-400 font-mono font-medium mt-1">
                                 ≈ {Math.round((parseFloat(metrics.net_cash_received) || 0) * exchangeRate).toLocaleString()} ៛
                             </div>
-                            <div className="text-[11px] text-zinc-400 font-mono mt-1">
-                                Tendered: {business.currency_symbol}{metrics.cash_tendered} • Change: {business.currency_symbol}{metrics.change_given}
+                            <div className="text-[11px] text-zinc-400 font-khmer mt-1">
+                                ទទួល: {business.currency_symbol}{metrics.cash_tendered} • អាប់: {business.currency_symbol}{metrics.change_given}
                             </div>
                         </div>
                     </Card>
@@ -458,18 +459,18 @@ export default function ReportsIndex({
                     {/* Volume & Exceptions */}
                     <Card className="p-4 bg-zinc-900/70 border-zinc-800/80 rounded-2xl flex flex-col justify-between relative overflow-hidden">
                         <div className="flex items-center justify-between text-zinc-400 text-xs mb-1">
-                            <span>Orders & Guests / វិក្កយបត្រ & ភ្ញៀវ</span>
+                            <span className="font-khmer">វិក្កយបត្រ & ភ្ញៀវ</span>
                             <Users className="w-4 h-4 text-purple-400" />
                         </div>
                         <div className="mt-2">
                             <div className="text-xl sm:text-2xl font-bold font-mono text-white">
-                                {metrics.total_documents} <span className="text-xs font-normal text-zinc-400">docs</span>
+                                {metrics.total_documents} <span className="text-xs font-normal text-zinc-400 font-khmer">សន្លឹក</span>
                             </div>
                             <div className="flex items-center justify-between text-xs text-purple-400/90 font-khmer mt-1">
                                 <span>{metrics.total_units} ភ្ញៀវសរុប (Pax)</span>
                                 {metrics.void_count > 0 && (
                                     <span className="text-rose-400 font-semibold font-mono">
-                                        {metrics.void_count} voids
+                                        {metrics.void_count} Void
                                     </span>
                                 )}
                             </div>
@@ -482,8 +483,8 @@ export default function ReportsIndex({
                     <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
                             <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                            <span>
-                                <strong>Reconciliation Alert:</strong> {metrics.unverified_count} document(s) have unverified physical source totals.
+                            <span className="font-khmer">
+                                <strong>ត្រូវពិនិត្យ:</strong> វិក្កយបត្រ {metrics.unverified_count} សន្លឹក មិនទាន់ផ្ទៀងផ្ទាត់ជាមួយក្រដាសកម្មង់។
                             </span>
                         </div>
                     </div>
@@ -531,19 +532,19 @@ export default function ReportsIndex({
                 {/* Cashier Breakdown Table (Admin Only) */}
                 {canViewAll && cashierBreakdown.length > 0 && (
                     <div className="space-y-3">
-                        <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
-                            Cashier Performance & Shift Reconciliation
+                        <h2 className="text-sm font-bold tracking-tight text-zinc-200 font-khmer">
+                            ការលក់តាមបុគ្គលិក
                         </h2>
                         <Card className="overflow-hidden bg-zinc-900/80 border-zinc-800">
                             <table className="w-full text-left border-collapse text-xs">
                                 <thead>
                                     <tr className="bg-zinc-950/80 text-zinc-400 border-b border-zinc-800 font-mono">
-                                        <th className="p-3">Cashier Name</th>
-                                        <th className="p-3 text-center">Docs Processed</th>
-                                        <th className="p-3 text-right">Gross Sales</th>
-                                        <th className="p-3 text-right">Net Sales</th>
-                                        <th className="p-3 text-right">Change Given</th>
-                                        <th className="p-3 text-right">Net Cash Received</th>
+                                        <th className="p-3">បុគ្គលិក</th>
+                                        <th className="p-3 text-center">វិក្កយបត្រ</th>
+                                        <th className="p-3 text-right">ចំណូលសរុប</th>
+                                        <th className="p-3 text-right">ចំណូលសុទ្ធ</th>
+                                        <th className="p-3 text-right">ប្រាក់អាប់</th>
+                                        <th className="p-3 text-right">សាច់ប្រាក់សុទ្ធ</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-zinc-800/60 font-sans">
@@ -577,42 +578,31 @@ export default function ReportsIndex({
 
                 {/* Recent Documents in Report Scope */}
                 <div className="space-y-3">
-                    <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
+                    <h2 className="text-sm font-bold text-zinc-200 font-khmer">
                         Document Register Preview (Latest {documents.length})
                     </h2>
                     <Card className="overflow-hidden bg-zinc-900/80 border-zinc-800">
                         <table className="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr className="bg-zinc-950/80 text-zinc-400 border-b border-zinc-800 font-mono">
-                                    <th className="p-3">Doc #</th>
-                                    <th className="p-3">Status</th>
-                                    <th className="p-3">Date / Time</th>
-                                    <th className="p-3">Ref</th>
-                                    <th className="p-3">Cashier</th>
-                                    <th className="p-3 text-center">Pax</th>
-                                    <th className="p-3 text-right">Total</th>
-                                    <th className="p-3 text-right">Action</th>
+                                    <th className="p-3">លេខវិក្កយបត្រ</th>
+                                    <th className="p-3">ស្ថានភាព</th>
+                                    <th className="p-3">កាលបរិច្ឆេទ</th>
+                                    <th className="p-3">តុ</th>
+                                    <th className="p-3">អ្នកគិតប្រាក់</th>
+                                    <th className="p-3 text-center">ភ្ញៀវ</th>
+                                    <th className="p-3 text-right">សរុប</th>
+                                    <th className="p-3 text-right">សកម្មភាព</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-800/60 font-sans">
                                 {documents.map((doc) => (
                                     <tr key={doc.id} className="hover:bg-zinc-800/30">
                                         <td className="p-3 font-mono font-bold text-white">
-                                            {doc.document_number || `DRAFT-${String(doc.provisional_order).padStart(4, '0')}`}
+                                            {doc.document_number || `ព្រាង-${String(doc.provisional_order).padStart(4, '0')}`}
                                         </td>
                                         <td className="p-3">
-                                            <Badge
-                                                variant={
-                                                    doc.status === 'finalized'
-                                                        ? 'emerald'
-                                                        : doc.status === 'void'
-                                                        ? 'rose'
-                                                        : 'zinc'
-                                                }
-                                                className="text-[10px] font-mono uppercase"
-                                            >
-                                                {doc.status}
-                                            </Badge>
+                                            <DocumentStatusBadge status={doc.status} />
                                         </td>
                                         <td className="p-3 font-mono text-zinc-400">
                                             {doc.business_date} {doc.event_time.slice(0, 5)}
@@ -633,7 +623,7 @@ export default function ReportsIndex({
                                             <Link href={`/invoices/${doc.id}`}>
                                                 <Button size="sm" variant="ghost" className="h-7 px-2 text-zinc-400 hover:text-white">
                                                     <Eye className="w-3.5 h-3.5 mr-1" />
-                                                    <span>View</span>
+                                                    <span className="font-khmer">មើល</span>
                                                 </Button>
                                             </Link>
                                         </td>
@@ -754,12 +744,12 @@ export default function ReportsIndex({
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <FileSpreadsheet className="w-4 h-4 text-teal-400" />
-                                        <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
-                                            Profit & Loss Statement / តារាងរបាយការណ៍ចំណេញ-ខាតផ្លូវការ
+                                        <h2 className="text-sm font-bold text-zinc-200 font-khmer">
+                                            របាយការណ៍ចំណេញ-ខាត (Profit & Loss)
                                         </h2>
                                     </div>
-                                    <span className="text-[11px] text-zinc-400 font-mono">
-                                        Period: {periods.find(p => String(p.id) === String(periodId))?.name || 'All Periods'}
+                                    <span className="text-[11px] text-zinc-400 font-khmer">
+                                        វគ្គ: {periods.find(p => String(p.id) === String(periodId))?.name || 'គ្រប់វគ្គ'}
                                     </span>
                                 </div>
 
@@ -767,10 +757,10 @@ export default function ReportsIndex({
                                     <table className="w-full text-left border-collapse text-xs">
                                         <thead>
                                             <tr className="bg-zinc-950/80 text-zinc-400 border-b border-zinc-800 font-mono">
-                                                <th className="p-3">Financial Line Item / មុខទំនិញ-ប្រតិបត្តិការ</th>
-                                                <th className="p-3 text-right">USD ($)</th>
-                                                <th className="p-3 text-right">KHR (៛)</th>
-                                                <th className="p-3 text-right">% of Net Revenue</th>
+                                                <th className="p-3">ប្រតិបត្តិការ</th>
+                                                <th className="p-3 text-right">ដុល្លារ ($)</th>
+                                                <th className="p-3 text-right">រៀល (៛)</th>
+                                                <th className="p-3 text-right">% នៃចំណូលសុទ្ធ</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-zinc-800/60 font-sans">
@@ -945,8 +935,8 @@ export default function ReportsIndex({
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
                                     <PieChart className="w-4 h-4 text-amber-400" />
-                                    <h2 className="text-sm font-bold tracking-tight text-zinc-200 uppercase tracking-wider">
-                                        Expense Category Breakdown
+                                    <h2 className="text-sm font-bold text-zinc-200 font-khmer">
+                                        <span className="font-khmer">ចំណាយតាមប្រភេទ</span>
                                     </h2>
                                 </div>
 
@@ -994,7 +984,7 @@ export default function ReportsIndex({
 
                                     <div className="pt-3 border-t border-zinc-800 space-y-2">
                                         <div className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider font-mono">
-                                            Quick Navigation
+                                            <span className="font-khmer">ទៅកាន់</span>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2">
                                             <Link href="/expenses">

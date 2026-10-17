@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { ReceiptText, Lock, User as UserIcon, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 
-export default function Login() {
+export default function Login({ show_demo_accounts = false }: { show_demo_accounts?: boolean }) {
     const { business } = usePage<PageProps>().props;
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -50,7 +50,7 @@ export default function Login() {
                     </p>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 font-mono">
                         <Sparkles className="w-3 h-3 text-emerald-400" />
-                        <span>High-Speed Re-entry & Reconciliation Terminal</span>
+                        <span className="font-khmer">ប្រព័ន្ធលក់ & គ្រប់គ្រងហាង</span>
                     </div>
                 </div>
 
@@ -65,8 +65,8 @@ export default function Login() {
 
                     <form onSubmit={submit} className="space-y-4">
                         <div className="space-y-1.5">
-                            <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider">
-                                Username / អត្តសញ្ញាណ
+                            <label className="block text-xs font-semibold text-zinc-300 font-khmer">
+                                ឈ្មោះអ្នកប្រើ (Username)
                             </label>
                             <div className="relative">
                                 <UserIcon className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -77,15 +77,15 @@ export default function Login() {
                                     autoFocus
                                     value={data.username}
                                     onChange={(e) => setData('username', e.target.value)}
-                                    placeholder="Enter operator username..."
+                                    placeholder="បញ្ចូលឈ្មោះអ្នកប្រើ..."
                                     className="w-full pl-10 pr-3.5 py-2.5 text-sm text-zinc-100 bg-zinc-950/80 border border-zinc-800 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider">
-                                Password / ពាក្យសម្ងាត់
+                            <label className="block text-xs font-semibold text-zinc-300 font-khmer">
+                                ពាក្យសម្ងាត់ (Password)
                             </label>
                             <div className="relative">
                                 <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -112,9 +112,8 @@ export default function Login() {
                                     onChange={(e) => setData('remember', e.target.checked)}
                                     className="rounded border-zinc-700 bg-zinc-800 text-emerald-500 focus:ring-emerald-500/30"
                                 />
-                                <span>Remember terminal session</span>
+                                <span className="font-khmer">ចងចាំការ login</span>
                             </label>
-                            <span className="font-mono text-[11px] text-zinc-500">Security Gate V2.0</span>
                         </div>
 
                         <Button
@@ -122,15 +121,16 @@ export default function Login() {
                             disabled={processing}
                             className="w-full py-2.5 text-base font-semibold"
                         >
-                            {processing ? 'Authenticating...' : 'Sign In to Terminal'}
+                            <span className="font-khmer">{processing ? 'កំពុងចូល...' : 'ចូលប្រព័ន្ធ'}</span>
                         </Button>
                     </form>
 
-                    {/* Quick Demo Credentials Preset Pills */}
+                    {/* Quick Demo Credentials Preset Pills (development only) */}
+                    {show_demo_accounts && (
                     <div className="pt-4 border-t border-zinc-800/80 space-y-2">
-                        <div className="text-[11px] font-mono uppercase tracking-wider text-zinc-500 flex items-center justify-between">
-                            <span>One-Click Test Accounts</span>
-                            <span className="text-emerald-400">Default Passwords Seeded</span>
+                        <div className="text-[11px] text-zinc-500 flex items-center justify-between">
+                            <span className="font-khmer">គណនីសាកល្បង (Development)</span>
+                            <span className="text-emerald-400 font-khmer">ចុចដើម្បីបំពេញ</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                             <button
@@ -141,7 +141,7 @@ export default function Login() {
                                 <div className="text-xs font-semibold text-emerald-400 group-hover:text-emerald-300">
                                     admin
                                 </div>
-                                <div className="text-[10px] text-zinc-400">Administrator</div>
+                                <div className="text-[10px] text-zinc-400">Admin</div>
                             </button>
 
                             <button
@@ -152,7 +152,7 @@ export default function Login() {
                                 <div className="text-xs font-semibold text-teal-400 group-hover:text-teal-300">
                                     cashier1
                                 </div>
-                                <div className="text-[10px] text-zinc-400">Operator</div>
+                                <div className="text-[10px] text-zinc-400">Cashier</div>
                             </button>
 
                             <button
@@ -167,12 +167,12 @@ export default function Login() {
                             </button>
                         </div>
                     </div>
+                    )}
                 </Card>
 
-                {/* Footer Invariant Note */}
-                <div className="text-center text-[11px] text-zinc-500 space-y-1">
-                    <div>Session Authentication • Append-Only Audit Logging • Zero Open API</div>
-                    <div>Rate Limiter Guard: 5 failed attempts / 60s per terminal IP</div>
+                {/* Footer Note */}
+                <div className="text-center text-[11px] text-zinc-500 font-khmer">
+                    រាល់ការ login ត្រូវបានកត់ត្រា • ខុស 5 ដង ត្រូវរង់ចាំ 1 នាទី
                 </div>
             </div>
         </div>
