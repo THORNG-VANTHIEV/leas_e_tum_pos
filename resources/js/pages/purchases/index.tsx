@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { PageProps } from '@/types';
 import {
     Truck,
     Plus,
@@ -37,6 +38,7 @@ import {
     Sparkles,
     ShieldCheck,
     Tag,
+    Pencil,
 } from 'lucide-react';
 
 interface Supplier {
@@ -263,14 +265,59 @@ export default function PurchasesIndex({
     const formTax = Number(purchaseForm.data.tax_amount) || 0;
     const formTotal = Math.max(0, formSubtotal + formTax - formDiscount);
 
+    // Edit purchase (admin & supervisor only — mirrors route middleware)
+    const { auth } = usePage<PageProps>().props;
+    const canEditPurchases = ['admin', 'supervisor'].includes(auth.user?.role ?? '');
+    const [editingPurchase, setEditingPurchase] = useState<Purchase | null>(null);
+
+    const openNewPurchase = () => {
+        setEditingPurchase(null);
+        purchaseForm.reset();
+        purchaseForm.clearErrors();
+        setPurchaseModalOpen(true);
+    };
+
+    const openEditPurchase = (purchase: Purchase) => {
+        setEditingPurchase(purchase);
+        purchaseForm.clearErrors();
+        purchaseForm.setData({
+            supplier_id: purchase.supplier_id ? String(purchase.supplier_id) : '',
+            purchase_date: formatDateOnly(purchase.purchase_date),
+            status: purchase.status,
+            reference_note: purchase.reference_note ?? '',
+            notes: purchase.notes ?? '',
+            discount_amount: Number(purchase.discount_amount) || 0,
+            tax_amount: Number(purchase.tax_amount) || 0,
+            items: purchase.items.map((item) => ({
+                product_id: item.product_id ? String(item.product_id) : '',
+                item_name: item.item_name,
+                unit_name: item.unit_name,
+                quantity: Number(item.quantity) || 0,
+                unit_cost: Number(item.unit_cost) || 0,
+                notes: item.notes ?? '',
+            })),
+        });
+        setViewPurchaseModal(null);
+        setPurchaseModalOpen(true);
+    };
+
     const handleCreatePurchase = (e: React.FormEvent) => {
         e.preventDefault();
-        purchaseForm.post('/purchases', {
+        const options = {
+            preserveScroll: true,
             onSuccess: () => {
                 setPurchaseModalOpen(false);
+                setEditingPurchase(null);
                 purchaseForm.reset();
             },
-        });
+        };
+
+        if (editingPurchase) {
+            purchaseForm.patch(`/purchases/${editingPurchase.id}`, options);
+            return;
+        }
+
+        purchaseForm.post('/purchases', options);
     };
 
     // Quick status updater
@@ -401,10 +448,7 @@ export default function PurchasesIndex({
                                 <span>អ្នកផ្គត់ផ្គង់ (Supplier)</span>
                             </Button>
                             <Button
-                                onClick={() => {
-                                    purchaseForm.reset();
-                                    setPurchaseModalOpen(true);
-                                }}
+                                onClick={openNewPurchase}
                                 className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
                             >
                                 <Plus className="w-4 h-4 stroke-[3]" />
@@ -683,6 +727,18 @@ export default function PurchasesIndex({
                                                                 <Eye className="w-3.5 h-3.5 text-amber-400" />
                                                             </Button>
 
+                                                            {canEditPurchases && (
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="ghost"
+                                                                    onClick={() => openEditPurchase(purchase)}
+                                                                    className="h-7 w-7 p-0 text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10 rounded-lg inline-flex items-center justify-center cursor-pointer"
+                                                                    title="កែប្រែ (Edit)"
+                                                                >
+                                                                    <Pencil className="w-3.5 h-3.5" />
+                                                                </Button>
+                                                            )}
+
                                                             {purchase.status === 'pending' && (
                                                                 <Button
                                                                     size="sm"
@@ -862,10 +918,10 @@ export default function PurchasesIndex({
                                     <div>
                                         <div className="flex items-center gap-2">
                                             <h3 className="text-base font-bold text-zinc-900 dark:text-white font-khmer">
-                                                កត់ត្រាការទិញចូលស្តុកថ្មី
+                                                {editingPurchase ? `កែប្រែការទិញចូល #${editingPurchase.purchase_number}` : 'កត់ត្រាការទិញចូលស្តុកថ្មី'}
                                             </h3>
                                             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-mono">
-                                                New Purchase Order
+                                                {editingPurchase ? 'Edit Purchase' : 'New Purchase Order'}
                                             </span>
                                         </div>
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400 font-khmer">
@@ -1190,7 +1246,7 @@ export default function PurchasesIndex({
                                             className="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold font-khmer text-xs rounded-xl h-9 px-5 shadow-md shadow-amber-500/20 inline-flex items-center gap-2 cursor-pointer"
                                         >
                                             <Truck className="w-4 h-4" />
-                                            <span>{purchaseForm.processing ? 'កំពុងរក្សាទុក...' : 'កត់ត្រាទិញចូលស្តុក (Save)'}</span>
+                                            <span>{purchaseForm.processing ? 'កំពុងរក្សាទុក...' : editingPurchase ? 'រក្សាទុកការកែប្រែ (Save)' : 'កត់ត្រាទិញចូលស្តុក (Save)'}</span>
                                         </Button>
                                     </div>
                                 </div>

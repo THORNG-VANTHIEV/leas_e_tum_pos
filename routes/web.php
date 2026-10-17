@@ -124,6 +124,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('/', [PurchaseController::class, 'index'])->name('index');
         Route::post('/', [PurchaseController::class, 'store'])->name('store');
         Route::patch('/{purchase}/status', [PurchaseController::class, 'updateStatus'])->name('status');
+        Route::patch('/{purchase}', [PurchaseController::class, 'update'])->middleware('role:admin,supervisor')->name('update');
 
         Route::post('/suppliers', [PurchaseController::class, 'storeSupplier'])->name('suppliers.store');
         Route::patch('/suppliers/{supplier}', [PurchaseController::class, 'updateSupplier'])->name('suppliers.update');

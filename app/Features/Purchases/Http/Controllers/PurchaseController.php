@@ -2,12 +2,12 @@
 
 namespace App\Features\Purchases\Http\Controllers;
 
+use App\Enums\PeriodStatus;
 use App\Http\Controllers\Controller;
 use App\Models\BusinessSetting;
 use App\Models\Period;
 use App\Models\Product;
 use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use App\Models\Supplier;
 use App\Models\Unit;
 use App\Support\Audit\AuditService;
@@ -83,31 +83,16 @@ class PurchaseController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'supplier_id' => ['nullable', 'exists:suppliers,id'],
-            'purchase_date' => ['required', 'date'],
-            'status' => ['required', 'in:received,pending,cancelled'],
-            'reference_note' => ['nullable', 'string', 'max:120'],
-            'notes' => ['nullable', 'string', 'max:500'],
-            'discount_amount' => ['nullable', 'numeric', 'min:0'],
-            'tax_amount' => ['nullable', 'numeric', 'min:0'],
-            'items' => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['nullable', 'exists:products,id'],
-            'items.*.item_name' => ['required', 'string', 'max:180'],
-            'items.*.unit_name' => ['nullable', 'string', 'max:50'],
-            'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
-            'items.*.unit_cost' => ['required', 'numeric', 'min:0'],
-            'items.*.notes' => ['nullable', 'string', 'max:255'],
-        ]);
+        $validated = $request->validate($this->purchaseRules());
 
         $activePeriod = Period::resolveActive();
 
         $purchase = DB::transaction(function () use ($validated, $request, $activePeriod) {
             // Generate sequential purchase number: PUR-YYMM-XXXX
             $date = Carbon::parse($validated['purchase_date']);
-            $prefix = 'PUR-' . $date->format('ym') . '-';
-            
-            $lastPurchase = Purchase::where('purchase_number', 'LIKE', $prefix . '%')
+            $prefix = 'PUR-'.$date->format('ym').'-';
+
+            $lastPurchase = Purchase::where('purchase_number', 'LIKE', $prefix.'%')
                 ->orderByDesc('id')
                 ->lockForUpdate()
                 ->first();
@@ -116,32 +101,9 @@ class PurchaseController extends Controller
             if ($lastPurchase && preg_match('/PUR-\d{4}-(\d+)/', $lastPurchase->purchase_number, $matches)) {
                 $sequence = (int) $matches[1] + 1;
             }
-            $purchaseNumber = $prefix . str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
+            $purchaseNumber = $prefix.str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
 
-            // Compute line items totals
-            $subtotal = 0;
-            $itemsData = [];
-
-            foreach ($validated['items'] as $item) {
-                $lineQty = (float) $item['quantity'];
-                $lineCost = (float) $item['unit_cost'];
-                $lineTotal = round($lineQty * $lineCost, 2);
-                $subtotal += $lineTotal;
-
-                $itemsData[] = [
-                    'product_id' => $item['product_id'] ?? null,
-                    'item_name' => $item['item_name'],
-                    'unit_name' => $item['unit_name'] ?? 'ឯកតា',
-                    'quantity' => $lineQty,
-                    'unit_cost' => $lineCost,
-                    'total_cost' => $lineTotal,
-                    'notes' => $item['notes'] ?? null,
-                ];
-            }
-
-            $discountAmount = (float) ($validated['discount_amount'] ?? 0);
-            $taxAmount = (float) ($validated['tax_amount'] ?? 0);
-            $totalAmount = max(0, round($subtotal + $taxAmount - $discountAmount, 2));
+            ['items' => $itemsData, 'totals' => $totals] = $this->buildItemsAndTotals($validated);
 
             $purchase = Purchase::create([
                 'purchase_number' => $purchaseNumber,
@@ -149,10 +111,7 @@ class PurchaseController extends Controller
                 'period_id' => $activePeriod?->id,
                 'purchase_date' => $validated['purchase_date'],
                 'status' => $validated['status'],
-                'subtotal' => $subtotal,
-                'discount_amount' => $discountAmount,
-                'tax_amount' => $taxAmount,
-                'total_amount' => $totalAmount,
+                ...$totals,
                 'reference_note' => $validated['reference_note'] ?? null,
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => $request->user()->id,
@@ -176,6 +135,112 @@ class PurchaseController extends Controller
         );
 
         return back()->with('success', "បានកត់ត្រាការទិញចូល #{$purchase->purchase_number} ដោយជោគជ័យ");
+    }
+
+    /**
+     * Edit a purchase's header and line items, keeping its purchase number.
+     */
+    public function update(Request $request, Purchase $purchase): RedirectResponse
+    {
+        if ($purchase->period?->status === PeriodStatus::Closed) {
+            return back()->with('error', 'មិនអាចកែការទិញចូលក្នុងវគ្គគណនេយ្យដែលបានបិទរួចហើយទេ។');
+        }
+
+        $validated = $request->validate($this->purchaseRules());
+        $oldValues = $purchase->load('items')->toArray();
+
+        DB::transaction(function () use ($validated, $purchase) {
+            ['items' => $itemsData, 'totals' => $totals] = $this->buildItemsAndTotals($validated);
+
+            $purchase->update([
+                'supplier_id' => $validated['supplier_id'] ?? null,
+                'purchase_date' => $validated['purchase_date'],
+                'status' => $validated['status'],
+                ...$totals,
+                'reference_note' => $validated['reference_note'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            $purchase->items()->delete();
+            foreach ($itemsData as $item) {
+                $purchase->items()->create($item);
+            }
+        });
+
+        $this->audit->record(
+            'purchase.updated',
+            $purchase,
+            $oldValues,
+            $purchase->load('items')->toArray(),
+            null,
+            $request->user()->id,
+            "Edited purchase order {$purchase->purchase_number} (now \${$purchase->total_amount})"
+        );
+
+        return back()->with('success', "បានកែប្រែការទិញចូល #{$purchase->purchase_number} ដោយជោគជ័យ");
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    private function purchaseRules(): array
+    {
+        return [
+            'supplier_id' => ['nullable', 'exists:suppliers,id'],
+            'purchase_date' => ['required', 'date'],
+            'status' => ['required', 'in:received,pending,cancelled'],
+            'reference_note' => ['nullable', 'string', 'max:120'],
+            'notes' => ['nullable', 'string', 'max:500'],
+            'discount_amount' => ['nullable', 'numeric', 'min:0'],
+            'tax_amount' => ['nullable', 'numeric', 'min:0'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.product_id' => ['nullable', 'exists:products,id'],
+            'items.*.item_name' => ['required', 'string', 'max:180'],
+            'items.*.unit_name' => ['nullable', 'string', 'max:50'],
+            'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
+            'items.*.unit_cost' => ['required', 'numeric', 'min:0'],
+            'items.*.notes' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @return array{items: array<int, array<string, mixed>>, totals: array{subtotal: float, discount_amount: float, tax_amount: float, total_amount: float}}
+     */
+    private function buildItemsAndTotals(array $validated): array
+    {
+        $subtotal = 0;
+        $itemsData = [];
+
+        foreach ($validated['items'] as $item) {
+            $lineQty = (float) $item['quantity'];
+            $lineCost = (float) $item['unit_cost'];
+            $lineTotal = round($lineQty * $lineCost, 2);
+            $subtotal += $lineTotal;
+
+            $itemsData[] = [
+                'product_id' => $item['product_id'] ?? null,
+                'item_name' => $item['item_name'],
+                'unit_name' => $item['unit_name'] ?? 'ឯកតា',
+                'quantity' => $lineQty,
+                'unit_cost' => $lineCost,
+                'total_cost' => $lineTotal,
+                'notes' => $item['notes'] ?? null,
+            ];
+        }
+
+        $discountAmount = (float) ($validated['discount_amount'] ?? 0);
+        $taxAmount = (float) ($validated['tax_amount'] ?? 0);
+
+        return [
+            'items' => $itemsData,
+            'totals' => [
+                'subtotal' => $subtotal,
+                'discount_amount' => $discountAmount,
+                'tax_amount' => $taxAmount,
+                'total_amount' => max(0, round($subtotal + $taxAmount - $discountAmount, 2)),
+            ],
+        ];
     }
 
     /**
