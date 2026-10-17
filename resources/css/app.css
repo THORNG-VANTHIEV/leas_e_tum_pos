@@ -329,6 +329,31 @@ html.light .hover\:bg-slate-800\/40:hover {
     background-color: #e2e8f0 !important;
 }
 
+/* Light-first hover shades (zinc/slate 50–300, 900–950 are inverted by the light palette above,
+   so e.g. hover:bg-slate-100 would otherwise turn near-black on hover) */
+html.light .hover\:bg-zinc-100:hover,
+html.light .hover\:bg-slate-100:hover,
+html.light .hover\:bg-slate-100\/70:hover {
+    background-color: #f1f5f9 !important;
+}
+
+html.light .hover\:bg-zinc-200:hover,
+html.light .hover\:bg-slate-200:hover {
+    background-color: #e2e8f0 !important;
+}
+
+html.light .hover\:text-zinc-900:hover,
+html.light .hover\:text-zinc-950:hover,
+html.light .hover\:text-slate-900:hover,
+html.light .hover\:text-slate-950:hover {
+    color: #0f172a !important;
+}
+
+html.light .hover\:border-zinc-300:hover,
+html.light .hover\:border-slate-300:hover {
+    border-color: #cbd5e1 !important;
+}
+
 /* Dividers & Borders */
 html.light .border-zinc-800,
 html.light .border-zinc-800\/90,
