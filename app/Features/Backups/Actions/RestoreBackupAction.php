@@ -2,6 +2,7 @@
 
 namespace App\Features\Backups\Actions;
 
+use App\Features\Backups\Services\BackupArchiver;
 use App\Support\Audit\AuditService;
 use DomainException;
 use Illuminate\Http\UploadedFile;
@@ -11,59 +12,41 @@ use ZipArchive;
 
 class RestoreBackupAction
 {
-    public const ALLOWLIST = [
-        'users',
-        'business_settings',
-        'locations',
-        'user_locations',
-        'units',
-        'product_categories',
-        'products',
-        'periods',
-        'documents',
-        'document_items',
-        'approval_requests',
-        'document_revisions',
-        'audit_logs',
-        'print_logs',
-    ];
+    public const ALLOWLIST = BackupArchiver::TABLES;
 
+    /**
+     * Children first, so rows are removed before the rows they reference.
+     */
     public const DELETE_ORDER = [
         'print_logs',
+        'audit_logs',
+        'cash_drawer_logs',
+        'expenses',
+        'purchase_items',
+        'purchases',
         'document_revisions',
-        'document_items',
         'approval_requests',
+        'kitchen_tickets',
+        'document_items',
         'documents',
         'periods',
+        'restaurant_tables',
+        'suppliers',
+        'customers',
         'products',
         'product_categories',
         'units',
         'user_locations',
         'locations',
-        'audit_logs',
         'business_settings',
         'users',
     ];
 
-    public const INSERT_ORDER = [
-        'users',
-        'business_settings',
-        'locations',
-        'user_locations',
-        'units',
-        'product_categories',
-        'products',
-        'periods',
-        'documents',
-        'document_items',
-        'approval_requests',
-        'document_revisions',
-        'audit_logs',
-        'print_logs',
-    ];
+    public const INSERT_ORDER = BackupArchiver::TABLES;
 
     public function __construct(
         protected AuditService $audit,
+        protected BackupArchiver $archiver,
     ) {}
 
     /**
@@ -79,7 +62,7 @@ class RestoreBackupAction
             throw new DomainException('Backup archive file not found.');
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($filePath) !== true) {
             throw new DomainException('Corrupt or invalid ZIP archive file.');
         }
@@ -153,7 +136,7 @@ class RestoreBackupAction
         $zip->close();
 
         // 3. Prepare Pre-Restore Recovery Point
-        $recoveryPointId = 'recovery_point_' . now()->format('Ymd_His') . '_' . bin2hex(random_bytes(4));
+        $recoveryPointId = 'recovery_point_'.now()->format('Ymd_His').'_'.bin2hex(random_bytes(4));
         $recoveryDir = storage_path('app/backups/recovery_points');
         File::ensureDirectoryExists($recoveryDir);
         $recoveryZipPath = "{$recoveryDir}/{$recoveryPointId}.zip";
@@ -195,7 +178,7 @@ class RestoreBackupAction
             if ($driver === 'mysql') {
                 DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             }
-            throw new DomainException('Restore database transaction failed: ' . $e->getMessage(), 0, $e);
+            throw new DomainException('Restore database transaction failed: '.$e->getMessage(), 0, $e);
         }
 
         // 5. Record Audit Log for the restore event
@@ -225,31 +208,7 @@ class RestoreBackupAction
      */
     protected function createRecoveryPoint(string $zipPath): void
     {
-        $zip = new ZipArchive();
-        $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        $manifest = [
-            'format_version' => '2.0',
-            'app_version' => '2.0.0',
-            'type' => 'pre_restore_recovery_point',
-            'generated_at' => now()->toIso8601String(),
-            'tables' => [],
-        ];
-
-        foreach (self::ALLOWLIST as $tableName) {
-            $rows = DB::table($tableName)->get();
-            $json = json_encode($rows, JSON_UNESCAPED_UNICODE);
-            $zip->addFromString("tables/{$tableName}.json", $json);
-
-            $manifest['tables'][$tableName] = [
-                'row_count' => $rows->count(),
-                'byte_size' => strlen($json),
-                'checksum' => hash('sha256', $json),
-            ];
-        }
-
-        $zip->addFromString('manifest.json', json_encode($manifest, JSON_PRETTY_PRINT));
-        $zip->close();
+        $this->archiver->write($zipPath, ['type' => 'pre_restore_recovery_point']);
     }
 
     /**
@@ -265,7 +224,7 @@ class RestoreBackupAction
             throw new DomainException('Backup archive file not found.');
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($filePath) !== true) {
             throw new DomainException('Corrupt or invalid ZIP archive file.');
         }

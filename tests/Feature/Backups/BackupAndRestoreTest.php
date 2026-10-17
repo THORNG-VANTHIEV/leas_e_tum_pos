@@ -2,12 +2,13 @@
 
 namespace Tests\Feature\Backups;
 
+use App\Features\Backups\Services\BackupArchiver;
 use App\Models\BusinessSetting;
 use App\Models\Location;
-use App\Models\Period;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 use ZipArchive;
@@ -17,6 +18,7 @@ class BackupAndRestoreTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $cashier;
 
     protected function setUp(): void
@@ -69,7 +71,7 @@ class BackupAndRestoreTest extends TestCase
 
         $filePath = $response->getFile()->getPathname();
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $this->assertTrue($zip->open($filePath) === true);
 
         // Verify manifest
@@ -78,7 +80,10 @@ class BackupAndRestoreTest extends TestCase
 
         $manifest = json_decode($manifestJson, true);
         $this->assertEquals('2.0', $manifest['format_version']);
-        $this->assertCount(14, $manifest['tables']);
+        $this->assertSame(BackupArchiver::TABLES, array_keys($manifest['tables']));
+        foreach (['customers', 'expenses', 'purchases', 'purchase_items', 'restaurant_tables', 'kitchen_tickets'] as $businessTable) {
+            $this->assertArrayHasKey($businessTable, $manifest['tables']);
+        }
 
         // Verify users table exists and checksum matches
         $this->assertArrayHasKey('users', $manifest['tables']);
@@ -215,8 +220,8 @@ class BackupAndRestoreTest extends TestCase
             'print_logs',
         ];
 
-        $tempPath = tempnam(sys_get_temp_dir(), 'valid_bk_') . '.zip';
-        $zip = new ZipArchive();
+        $tempPath = tempnam(sys_get_temp_dir(), 'valid_bk_').'.zip';
+        $zip = new ZipArchive;
         $zip->open($tempPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $manifest = [
@@ -227,7 +232,7 @@ class BackupAndRestoreTest extends TestCase
         ];
 
         foreach ($tables as $table) {
-            $rows = \Illuminate\Support\Facades\DB::table($table)->get();
+            $rows = DB::table($table)->get();
             $json = json_encode($rows, JSON_UNESCAPED_UNICODE);
             $zip->addFromString("tables/{$table}.json", $json);
 
@@ -263,8 +268,8 @@ class BackupAndRestoreTest extends TestCase
             'print_logs',
         ];
 
-        $tempPath = tempnam(sys_get_temp_dir(), 'corrupt_bk_') . '.zip';
-        $zip = new ZipArchive();
+        $tempPath = tempnam(sys_get_temp_dir(), 'corrupt_bk_').'.zip';
+        $zip = new ZipArchive;
         $zip->open($tempPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $manifest = [
@@ -275,7 +280,7 @@ class BackupAndRestoreTest extends TestCase
         ];
 
         foreach ($tables as $table) {
-            $rows = \Illuminate\Support\Facades\DB::table($table)->get();
+            $rows = DB::table($table)->get();
             $json = json_encode($rows, JSON_UNESCAPED_UNICODE);
             $zip->addFromString("tables/{$table}.json", $json);
 
