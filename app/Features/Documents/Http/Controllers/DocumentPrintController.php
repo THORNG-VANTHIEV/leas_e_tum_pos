@@ -27,6 +27,8 @@ class DocumentPrintController extends Controller
      */
     public function previewThermal(Request $request, Document $invoice): Response
     {
+        abort_unless($request->user()->canViewInvoice($invoice), 403, 'Unauthorized. You cannot view invoices created by other operators.');
+
         $invoice->load(['creator', 'period', 'items.product', 'printLogs']);
 
         return Inertia::render('documents/preview-80mm', [
@@ -39,6 +41,8 @@ class DocumentPrintController extends Controller
      */
     public function previewA5(Request $request, Document $invoice): Response
     {
+        abort_unless($request->user()->canViewInvoice($invoice), 403, 'Unauthorized. You cannot view invoices created by other operators.');
+
         $invoice->load(['creator', 'period', 'items.product', 'printLogs']);
 
         return Inertia::render('documents/preview-a5', [
@@ -128,7 +132,7 @@ class DocumentPrintController extends Controller
                 'print_type' => $isReprint ? 'reprint' : 'original',
                 'request_id' => $validated['request_id'],
                 'requested_by' => $request->user()->id,
-                'document_checksum' => hash('sha256', (string) $invoice->grand_total . (string) $invoice->sequence_no),
+                'document_checksum' => hash('sha256', (string) $invoice->grand_total.(string) $invoice->sequence_no),
             ]);
 
             $this->audit->record(
@@ -180,7 +184,7 @@ class DocumentPrintController extends Controller
 
         DB::transaction(function () use ($documents, $validated, $request, $batchNamespace) {
             foreach ($documents as $doc) {
-                $docRequestId = Uuid::uuid5($batchNamespace, $validated['batch_request_id'] . '-' . $doc->id)->toString();
+                $docRequestId = Uuid::uuid5($batchNamespace, $validated['batch_request_id'].'-'.$doc->id)->toString();
 
                 $existing = PrintLog::where('request_id', $docRequestId)->first();
                 if (! $existing) {
@@ -192,7 +196,7 @@ class DocumentPrintController extends Controller
                         'print_type' => $isReprint ? 'reprint' : 'original',
                         'request_id' => $docRequestId,
                         'requested_by' => $request->user()->id,
-                        'document_checksum' => hash('sha256', (string) $doc->grand_total . (string) $doc->sequence_no),
+                        'document_checksum' => hash('sha256', (string) $doc->grand_total.(string) $doc->sequence_no),
                     ]);
                 }
             }

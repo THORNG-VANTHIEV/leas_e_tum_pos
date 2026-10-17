@@ -57,6 +57,17 @@ class User extends Authenticatable
         return $this->role === UserRole::Supervisor;
     }
 
+    /**
+     * Managers can open any invoice (e.g. to reprint or void it); cashiers only orders they opened or settled.
+     */
+    public function canViewInvoice(Document $document): bool
+    {
+        return $this->isAdmin()
+            || $this->isSupervisor()
+            || $document->created_by === $this->id
+            || $document->finalized_by === $this->id;
+    }
+
     public function locations(): BelongsToMany
     {
         return $this->belongsToMany(Location::class, 'user_locations')

@@ -344,7 +344,7 @@ class DocumentController extends Controller
         $user = $request->user();
 
         // Cashier ownership scoping
-        if (! $user->isAdmin() && $invoice->created_by !== $user->id) {
+        if (! $user->canViewInvoice($invoice)) {
             abort(403, 'Unauthorized. You cannot view invoices created by other operators.');
         }
 
